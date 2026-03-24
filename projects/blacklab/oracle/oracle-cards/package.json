@@ -1,0 +1,21 @@
+{
+  "name": "oracle-cards",
+  "version": "1.0.0",
+  "description": "Digital oracle card readings with AI-powered narratives",
+  "main": "public/index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server public -p 8080 -o",
+    "build": "echo 'Static site - no build required'",
+    "preview": "npx http-server public -p 8080"
+  },
+  "keywords": ["oracle", "cards", "divination", "spiritual", "readings"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

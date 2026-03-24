@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validate JSON — mdothree</title>
+  <meta name="description" content="Check JSON syntax and pinpoint exact error locations with line numbers." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/validate" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Validate JSON — mdothree" />
+  <meta property="og:description" content="Check JSON syntax and pinpoint exact error locations with line numbers." />
+  <meta property="og:url"         content="https://mdothree.com/validate" />
+  <meta property="og:site_name"   content="mdothree" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="Validate JSON — mdothree" />
+  <meta name="twitter:description" content="Check JSON syntax and pinpoint exact error locations with line numbers." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/pages/validate.css" />
+  
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html">Format</a></li>
+        <li><a href="validate.html" class="active">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html">→ CSV</a></li>
+        <li><a href="json-diff.html">Diff</a></li>
+        <li><a href="to-xml.html">→ XML</a></li>
+        <li><a href="to-typescript.html">→ TS</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="json-path.html">JSONPath ✨</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main class="tool-page" id="main-content">
+    <div class="container">
+      <div class="tool-header animate-fade-up">
+        <div class="breadcrumb"><a href="index.html">JSON Tools</a><span>/</span> Validate</div>
+        <h1>✅ Validate JSON</h1>
+        <p>Check JSON syntax and pinpoint exactly where errors occur.</p>
+      </div>
+
+      <div class="tool-layout" class="animate-fade-up-2">
+        <div class="panel">
+          <div class="panel-title">Input JSON</div>
+          <textarea class="form-textarea" id="inputJson" style="min-height:420px;font-size:0.82rem;" placeholder='Paste JSON to validate...'></textarea>
+          <button class="btn btn-primary mt-16" id="validateBtn">✅ Validate</button>
+        </div>
+
+        <div>
+          <div id="validResult" class="hidden">
+            <div class="alert alert-success" style="margin-bottom:16px;">
+              ✅ <strong>Valid JSON</strong> — no syntax errors found.
+            </div>
+            <div class="panel">
+              <div class="panel-title">Structure Summary</div>
+              <div id="structSummary" style="display:flex;flex-direction:column;gap:8px;font-family:var(--font-mono);font-size:0.82rem;color:var(--slate-300);"></div>
+            </div>
+          </div>
+
+          <div id="invalidResult" class="hidden">
+            <div class="alert alert-error" style="margin-bottom:16px;">
+              ❌ <strong>Invalid JSON</strong> — <span id="errorMsg"></span>
+            </div>
+            <div class="panel">
+              <div class="panel-title">Error Location</div>
+              <div class="code-output" id="errorContext" style="font-size:0.8rem;line-height:1.8;"></div>
+            </div>
+          </div>
+
+          <div id="emptyState" class="panel" style="min-height:100px;display:flex;align-items:center;justify-content:center;">
+            <span class="text-muted text-mono text-sm">Paste JSON and click Validate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div class="footer-copy">© 2024 mdothree.com</div></div></footer>
+
+  
+  <script type="module" src="js/pages/validate.js"></script>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

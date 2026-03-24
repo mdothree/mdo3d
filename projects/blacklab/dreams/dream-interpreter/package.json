@@ -1,0 +1,24 @@
+{
+  "name": "dream-interpreter",
+  "version": "1.0.0",
+  "description": "BlackLabb Dreams - AI-powered dream interpretation platform",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server public -p 8083 -o",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "dreams",
+    "dream-interpretation",
+    "dream-symbols",
+    "spirituality",
+    "psychology",
+    "blacklabb"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlackLabb - Oracle Cards | Daily Mystical Guidance</title>
+    <meta name="description" content="Unlock the mysteries within. Draw oracle cards for daily guidance, spiritual insight, and personal reflection. Get AI-powered personalized readings.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://blacklabb.com/">
+    <meta property="og:title" content="BlackLabb - Oracle Cards | Mystical Guidance">
+    <meta property="og:description" content="Unlock the mysteries within. Draw oracle cards for daily guidance, spiritual insight, and personal reflection.">
+    <meta property="og:image" content="./og-image.jpg">
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://blacklabb.com/">
+    <meta property="twitter:title" content="BlackLabb - Oracle Cards | Mystical Guidance">
+    <meta property="twitter:description" content="Unlock the mysteries within. Draw oracle cards for daily guidance and spiritual insight 🔮✨">
+    <meta property="twitter:image" content="./og-image.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <h1>✨ Oracle Cards</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#spreads">Card Spreads</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#" id="sign-in-btn">Sign In</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h2>Receive Divine Guidance</h2>
+                <p class="subtitle">Draw oracle cards for insight, clarity, and spiritual wisdom</p>
+                
+                <div class="daily-draw-cta">
+                    <button class="btn-primary btn-large" id="start-reading-btn">
+                        <span class="sparkle">✨</span>
+                        Draw Your Cards
+                        <span class="sparkle">✨</span>
+                    </button>
+                    <p class="daily-note">Free daily card draw • No signup required</p>
+                </div>
+
+                <div class="trust-indicators">
+                    <div class="indicator">
+                        <div class="number">50K+</div>
+                        <div class="label">Daily Readings</div>
+                    </div>
+                    <div class="indicator">
+                        <div class="number">44</div>
+                        <div class="label">Oracle Cards</div>
+                    </div>
+                    <div class="indicator">
+                        <div class="number">AI</div>
+                        <div class="label">Powered</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card Drawing Section (Hidden initially) -->
+        <section class="card-section" id="card-section" style="display: none;">
+            <div class="container">
+                <div class="reading-setup">
+                    <h2>Set Your Intention</h2>
+                    <p>Take a deep breath and focus on your question or what guidance you seek today.</p>
+                    
+                    <div class="question-input">
+                        <textarea 
+                            id="user-question" 
+                            placeholder="What would you like guidance on? (Optional but enhances your reading)"
+                            rows="3"
+                            maxlength="500"
+                        ></textarea>
+                        <div class="char-count"><span id="char-count">0</span>/500</div>
+                    </div>
+
+                    <div class="spread-selector">
+                        <h3>Choose Your Spread</h3>
+                        <div class="spread-options">
+                            <div class="spread-option active" data-spread="single">
+                                <div class="spread-icon">🃏</div>
+                                <div class="spread-name">Single Card</div>
+                                <div class="spread-desc">Daily guidance</div>
+                                <div class="spread-badge">FREE</div>
+                            </div>
+                            <div class="spread-option" data-spread="three">
+                                <div class="spread-icon">🃏🃏🃏</div>
+                                <div class="spread-name">Three Card</div>
+                                <div class="spread-desc">Past, Present, Future</div>
+                                <div class="spread-badge premium">$4.99</div>
+                            </div>
+                            <div class="spread-option" data-spread="celtic">
+                                <div class="spread-icon">🃏✨🃏</div>
+                                <div class="spread-name">Celtic Cross</div>
+                                <div class="spread-desc">Deep insight (10 cards)</div>
+                                <div class="spread-badge premium">$9.99</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary btn-large" id="draw-cards-btn">
+                        Draw Cards
+                    </button>
+                </div>
+
+                <!-- Card Display Area -->
+                <div class="card-display" id="card-display" style="display: none;">
+                    <div class="card-deck">
+                        <!-- Cards will be populated by JavaScript -->
+                    </div>
+                    <div class="draw-instruction">
+                        <p>Select your card(s) by clicking</p>
+                    </div>
+                </div>
+
+                <!-- Reading Display -->
+                <div class="reading-display" id="reading-display" style="display: none;">
+                    <div class="reading-header">
+                        <h2>Your Reading</h2>
+                        <p class="reading-date" id="reading-date"></p>
+                    </div>
+
+                    <div class="cards-drawn" id="cards-drawn">
+                        <!-- Revealed cards will appear here -->
+                    </div>
+
+                    <div class="reading-content" id="reading-content">
+                        <!-- AI-generated reading will appear here -->
+                    </div>
+
+                    <div class="reading-actions">
+                        <button class="btn-secondary" id="save-reading-btn">
+                            💾 Save Reading
+                        </button>
+                        <button class="btn-secondary" id="share-reading-btn">
+                            📤 Share
+                        </button>
+                        <button class="btn-primary" id="new-reading-btn">
+                            ✨ New Reading
+                        </button>
+                    </div>
+
+                    <!-- Premium Upsell -->
+                    <div class="premium-upsell" id="premium-upsell">
+                        <h3>Want a Deeper Reading?</h3>
+                        <div class="upsell-features">
+                            <div class="feature">✓ Personalized AI interpretation</div>
+                            <div class="feature">✓ Detailed guidance for your specific question</div>
+                            <div class="feature">✓ Action steps and affirmations</div>
+                            <div class="feature">✓ Save unlimited readings</div>
+                        </div>
+                        <button class="btn-premium" id="upgrade-btn">
+                            Unlock Full Reading - $2.99
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="section-light">
+            <div class="container">
+                <h2>How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">🧘</div>
+                        <h3>Set Intention</h3>
+                        <p>Focus on your question or what guidance you seek</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🃏</div>
+                        <h3>Draw Cards</h3>
+                        <p>Choose from single card or multi-card spreads</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">✨</div>
+                        <h3>Receive Guidance</h3>
+                        <p>Get AI-powered personalized interpretation</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">📖</div>
+                        <h3>Reflect</h3>
+                        <p>Journal and integrate the wisdom</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card Spreads Info -->
+        <section id="spreads" class="spreads-section">
+            <div class="container">
+                <h2>Card Spreads</h2>
+                <div class="spreads-grid">
+                    <div class="spread-detail">
+                        <h3>Single Card Draw</h3>
+                        <p>Perfect for daily guidance and quick insights</p>
+                        <div class="price">FREE</div>
+                    </div>
+                    <div class="spread-detail featured">
+                        <h3>Three Card Spread</h3>
+                        <p>Past, Present, Future - see the timeline of your situation</p>
+                        <div class="price">$4.99</div>
+                    </div>
+                    <div class="spread-detail">
+                        <h3>Celtic Cross</h3>
+                        <p>10-card deep dive into complex questions</p>
+                        <div class="price">$9.99</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <h2>Pricing</h2>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">$0</div>
+                        <ul>
+                            <li>1 free card daily</li>
+                            <li>Basic interpretation</li>
+                            <li>44 oracle cards</li>
+                            <li>Card meanings</li>
+                        </ul>
+                        <button class="btn-secondary">Try Free</button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="badge">Popular</div>
+                        <h3>Premium Reading</h3>
+                        <div class="price">$2.99<span>/reading</span></div>
+                        <ul>
+                            <li>Personalized AI interpretation</li>
+                            <li>Detailed guidance</li>
+                            <li>Action steps</li>
+                            <li>Save readings</li>
+                            <li>Multi-card spreads</li>
+                        </ul>
+                        <button class="btn-premium">Get Reading</button>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Monthly</h3>
+                        <div class="price">$9.99<span>/month</span></div>
+                        <ul>
+                            <li>Unlimited readings</li>
+                            <li>All card spreads</li>
+                            <li>Reading history</li>
+                            <li>Priority support</li>
+                            <li>Early access to new cards</li>
+                        </ul>
+                        <button class="btn-secondary">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Oracle Cards. For entertainment and reflection purposes.</p>
+            <div class="footer-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Three.js -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+    </script>
+    
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

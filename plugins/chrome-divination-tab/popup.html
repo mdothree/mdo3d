@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystic Tab</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.25rem;
+    }
+    .info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.5rem;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .premium {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border: none;
+    }
+    .premium:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <h2>✨ Mystic Tab</h2>
+  <div class="info">
+    Open a new tab to see your daily oracle card and spiritual guidance.
+  </div>
+  <button onclick="chrome.tabs.create({})">Open New Tab</button>
+  <button onclick="chrome.runtime.openOptionsPage()">Settings</button>
+  <button class="premium" onclick="window.open('https://your-payment-page.com', '_blank')">
+    ⭐ Go Premium
+  </button>
+</body>
+</html>

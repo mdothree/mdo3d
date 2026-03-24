@@ -1,0 +1,20 @@
+{
+  "name": "crypto-arbitrage-bot",
+  "version": "1.0.0",
+  "description": "Automated cryptocurrency arbitrage trading bot",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test"
+  },
+  "keywords": ["crypto", "arbitrage", "trading", "bot"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "ws": "^8.16.0",
+    "dotenv": "^16.4.0"
+  }
+}

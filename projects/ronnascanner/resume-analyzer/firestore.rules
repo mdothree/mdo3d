@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users collection - users can read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Analyses collection - users can read/write their own analyses
+    match /analyses/{analysisId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+    }
+    
+    // Email leads - write only (for free tier email capture)
+    match /leads/{leadId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // Payments - users can read their own payment records
+    match /payments/{paymentId} {
+      allow read: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow create: if false; // Created by backend only
+    }
+  }
+}

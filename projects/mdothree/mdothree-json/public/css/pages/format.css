@@ -1,0 +1,17 @@
+/* Page-specific styles: format.html */
+
+.json-key     { color: #7DD3FC; }
+    .json-string  { color: #86EFAC; }
+    .json-number  { color: #FCA5A5; }
+    .json-boolean { color: #FCD34D; }
+    .json-null    { color: #C4B5FD; }
+    .json-punct   { color: var(--slate-500); }
+    #outputWrapper { position: relative; }
+    #outputWrapper .copy-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--slate-700); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--slate-300); border-radius: 6px; padding: 5px 12px;
+      font-family: var(--font-mono); font-size: 0.75rem; cursor: pointer;
+      transition: all 180ms;
+    }
+    #outputWrapper .copy-btn:hover { background: var(--slate-600); color: var(--white); }

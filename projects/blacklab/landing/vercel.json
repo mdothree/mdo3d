@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "public/**", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)\\.html", "dest": "/public/$1.html" },
+    { "src": "/(.*)\\.css", "dest": "/public/css/$1.css" },
+    { "src": "/(.*)\\.js", "dest": "/public/js/$1.js" },
+    { "src": "/(.*)", "dest": "/public/$1", "status": 200 }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}

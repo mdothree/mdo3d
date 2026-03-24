@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystic Tab - Settings</title>
+  <link rel="stylesheet" href="css/newtab.css">
+  <style>
+    body {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .settings-page {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  
+  <div class="settings-page">
+    <h1>⚙️ Settings</h1>
+    
+    <div class="settings-section">
+      <h3>Display Options</h3>
+      <label>
+        <input type="checkbox" id="show24Hour"> Use 24-hour time format
+      </label>
+      <label>
+        <input type="checkbox" id="showMoonPhase" checked> Show current moon phase
+      </label>
+      <label>
+        <input type="checkbox" id="showAffirmation" checked> Show daily affirmation
+      </label>
+    </div>
+
+    <div class="settings-section">
+      <h3>Background Theme</h3>
+      <select id="backgroundTheme">
+        <option value="stars">Starfield (default)</option>
+        <option value="gradient">Cosmic Gradient</option>
+        <option value="nebula">Nebula</option>
+        <option value="dark">Dark Minimal</option>
+      </select>
+    </div>
+
+    <div class="settings-section">
+      <h3>Data Management</h3>
+      <button id="resetData" class="btn-secondary">Reset All Data</button>
+      <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">
+        This will clear your card history and premium status.
+      </p>
+    </div>
+
+    <div class="settings-section">
+      <button class="btn-primary" onclick="window.close()">Save & Close</button>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/starfield.js"></script>
+  <script>
+    // Load settings
+    async function loadSettings() {
+      const settings = await Storage.getSettings();
+      document.getElementById('show24Hour').checked = settings.show24Hour;
+      document.getElementById('showMoonPhase').checked = settings.showMoonPhase;
+      document.getElementById('showAffirmation').checked = settings.showAffirmation;
+      document.getElementById('backgroundTheme').value = settings.backgroundTheme;
+    }
+
+    // Save settings
+    async function saveSettings() {
+      const settings = {
+        show24Hour: document.getElementById('show24Hour').checked,
+        showMoonPhase: document.getElementById('showMoonPhase').checked,
+        showAffirmation: document.getElementById('showAffirmation').checked,
+        backgroundTheme: document.getElementById('backgroundTheme').value
+      };
+      await Storage.saveSettings(settings);
+    }
+
+    // Reset data
+    document.getElementById('resetData').addEventListener('click', async () => {
+      if (confirm('Are you sure? This will delete all your data.')) {
+        await Storage.clearAll();
+        alert('All data has been reset.');
+        window.close();
+      }
+    });
+
+    // Auto-save on change
+    document.querySelectorAll('input, select').forEach(input => {
+      input.addEventListener('change', saveSettings);
+    });
+
+    // Initialize
+    loadSettings();
+  </script>
+</body>
+</html>

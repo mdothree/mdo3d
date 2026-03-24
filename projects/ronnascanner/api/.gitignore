@@ -1,0 +1,21 @@
+# Environment
+.env
+
+# Dependencies
+node_modules/
+
+# Uploads
+uploads/
+*.pdf
+*.docx
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

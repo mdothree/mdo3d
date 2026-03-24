@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystic Tab</title>
+  <link rel="stylesheet" href="css/newtab.css">
+</head>
+<body>
+  <!-- Starfield Background -->
+  <canvas id="starfield"></canvas>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1 class="logo">✨ Mystic Tab</h1>
+      <div class="datetime">
+        <div id="time" class="time"></div>
+        <div id="date" class="date"></div>
+        <div id="moonPhase" class="moon-phase"></div>
+      </div>
+    </header>
+
+    <!-- Daily Card Section -->
+    <main class="card-section">
+      <div class="card-container">
+        <div id="cardBack" class="card card-back">
+          <div class="card-pattern">🔮</div>
+          <p class="card-prompt">Click to reveal your daily message</p>
+        </div>
+        
+        <div id="cardFront" class="card card-front hidden">
+          <div class="card-header">
+            <h2 id="cardName"></h2>
+            <p id="cardKeywords" class="keywords"></p>
+          </div>
+          <div class="card-body">
+            <p id="cardBrief" class="brief"></p>
+            <div class="card-details">
+              <p id="cardMeaning" class="meaning"></p>
+              <p id="cardGuidance" class="guidance"></p>
+            </div>
+            <div class="card-meta">
+              <span id="cardElement" class="element"></span>
+              <span id="cardTheme" class="theme"></span>
+            </div>
+          </div>
+          <button id="newCard" class="btn-secondary">Draw Another</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button id="drawCard" class="btn-primary">
+          <span class="icon">🔮</span>
+          Draw Your Daily Card
+        </button>
+        <button id="threeCardBtn" class="btn-premium" title="Premium Feature">
+          <span class="icon">⭐</span>
+          3-Card Spread
+          <span class="badge">Premium</span>
+        </button>
+      </div>
+
+      <!-- Daily Affirmation -->
+      <div class="affirmation-box">
+        <p id="affirmation" class="affirmation"></p>
+      </div>
+    </main>
+
+    <!-- Quick Links (Optional) -->
+    <div class="quick-links">
+      <input type="text" id="searchInput" placeholder="Search or enter URL..." class="search-input">
+      <div id="bookmarks" class="bookmarks"></div>
+    </div>
+
+    <!-- Settings Icon -->
+    <button id="settingsBtn" class="settings-btn" title="Settings">⚙️</button>
+  </div>
+
+  <!-- Premium Modal -->
+  <div id="premiumModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">×</button>
+      <h2>✨ Unlock Premium Features</h2>
+      <div class="premium-features">
+        <div class="feature">
+          <span class="feature-icon">🔮</span>
+          <h3>Unlimited Card Draws</h3>
+          <p>Draw cards anytime, not just once per day</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🌟</span>
+          <h3>3-Card Spreads</h3>
+          <p>Past, Present, Future readings</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🌙</span>
+          <h3>Daily Horoscope</h3>
+          <p>Personalized astrological guidance</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">💫</span>
+          <h3>Custom Themes</h3>
+          <p>Beautiful backgrounds and color schemes</p>
+        </div>
+      </div>
+      <div class="pricing">
+        <div class="price-option">
+          <h4>Monthly</h4>
+          <p class="price">$4.99<span>/month</span></p>
+          <button class="btn-primary" data-plan="monthly">Subscribe</button>
+        </div>
+        <div class="price-option featured">
+          <span class="popular-badge">Most Popular</span>
+          <h4>Lifetime</h4>
+          <p class="price">$19.99<span>one-time</span></p>
+          <button class="btn-primary" data-plan="lifetime">Get Lifetime Access</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" id="closeSettings">×</button>
+      <h2>⚙️ Settings</h2>
+      <div class="settings-section">
+        <h3>Display</h3>
+        <label>
+          <input type="checkbox" id="show24Hour"> Use 24-hour time
+        </label>
+        <label>
+          <input type="checkbox" id="showMoonPhase" checked> Show moon phase
+        </label>
+        <label>
+          <input type="checkbox" id="showAffirmation" checked> Show daily affirmation
+        </label>
+      </div>
+      <div class="settings-section">
+        <h3>Background</h3>
+        <select id="backgroundTheme">
+          <option value="stars">Starfield (default)</option>
+          <option value="gradient">Cosmic Gradient</option>
+          <option value="nebula">Nebula</option>
+          <option value="dark">Dark Minimal</option>
+        </select>
+      </div>
+      <div class="settings-section">
+        <h3>Data</h3>
+        <button id="resetData" class="btn-secondary">Reset All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/cardDatabase.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/starfield.js"></script>
+  <script src="js/newtab.js"></script>
+</body>
+</html>

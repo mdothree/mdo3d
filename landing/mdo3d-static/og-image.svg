@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d1b69"/>
+      <stop offset="50%" style="stop-color:#4c2fa0"/>
+      <stop offset="100%" style="stop-color:#1a1a24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="560" y="200" width="80" height="80" rx="16" fill="#4c2fa0"/>
+  <text x="600" y="255" font-family="Courier New, monospace" font-size="28" font-weight="700" fill="white" text-anchor="middle">M3</text>
+  <text x="600" y="340" font-family="Arial, sans-serif" font-size="48" font-weight="700" fill="white" text-anchor="middle">MDO3D</text>
+  <text x="600" y="385" font-family="Arial, sans-serif" font-size="24" fill="#c4b5f4" text-anchor="middle" font-style="italic">AI Platform Ecosystem</text>
+  <text x="600" y="450" font-family="Arial, sans-serif" font-size="18" fill="#9090a8" text-anchor="middle">Building AI-powered platforms across spiritual guidance,</text>
+  <text x="600" y="475" font-family="Arial, sans-serif" font-size="18" fill="#9090a8" text-anchor="middle">professional development, productivity, and commerce.</text>
+  <text x="1140" y="600" font-family="Courier New, monospace" font-size="14" fill="#5a5a72">mdo3d.com</text>
+</svg>

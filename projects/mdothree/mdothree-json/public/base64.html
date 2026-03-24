@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base64 ↔ JSON — mdothree</title>
+  <meta name="description" content="Encode JSON to Base64 or decode Base64 strings back to formatted JSON." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/base64" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Base64 ↔ JSON — mdothree" />
+  <meta property="og:description" content="Encode JSON to Base64 or decode Base64 strings back to formatted JSON." />
+  <meta property="og:url"         content="https://mdothree.com/base64" />
+  <meta property="og:site_name"   content="mdothree" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="Base64 ↔ JSON — mdothree" />
+  <meta name="twitter:description" content="Encode JSON to Base64 or decode Base64 strings back to formatted JSON." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html">Format</a></li>
+        <li><a href="validate.html">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html">→ CSV</a></li>
+        <li><a href="base64.html" class="active">Base64</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main class="tool-page" id="main-content">
+    <div class="container">
+      <div class="tool-header animate-fade-up">
+        <div class="breadcrumb"><a href="index.html">JSON Tools</a><span>/</span> Base64</div>
+        <h1>🔐 Base64 ↔ JSON</h1>
+        <p>Encode JSON to Base64 or decode Base64 strings back to JSON.</p>
+      </div>
+
+      <div class="panel animate-fade-up-2">
+        <div class="tabs">
+          <button class="tab-btn active" data-mode="encode">JSON → Base64</button>
+          <button class="tab-btn" data-mode="decode">Base64 → JSON</button>
+        </div>
+
+        <div id="modeEncode">
+          <div class="form-group">
+            <label class="form-label">JSON Input</label>
+            <textarea class="form-textarea" id="jsonInput" style="min-height:200px;font-size:0.82rem;" placeholder='{"key": "value"}'></textarea>
+          </div>
+          <div class="toggle-group">
+            <label class="toggle"><input type="checkbox" id="urlSafe" /><span class="toggle-slider"></span></label>
+            <span class="toggle-label">URL-safe Base64 (replace +/ with -_)</span>
+          </div>
+          <button class="btn btn-primary mt-16" id="encodeBtn">🔐 Encode to Base64</button>
+          <div class="form-group mt-16" id="encodeOutput" style="display:none;">
+            <label class="form-label">Base64 Output</label>
+            <div style="position:relative;">
+              <div class="code-output" id="base64Output" style="word-break:break-all;"></div>
+              <button class="btn btn-secondary" id="copyEncoded" style="position:absolute;top:10px;right:10px;padding:6px 12px;font-size:0.78rem;">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="modeDecode" class="hidden">
+          <div class="form-group">
+            <label class="form-label">Base64 Input</label>
+            <textarea class="form-textarea" id="base64Input" style="min-height:140px;font-size:0.82rem;" placeholder="Paste Base64 encoded JSON..."></textarea>
+          </div>
+          <button class="btn btn-primary mt-16" id="decodeBtn">🔓 Decode to JSON</button>
+          <div class="form-group mt-16" id="decodeOutput" style="display:none;">
+            <label class="form-label">JSON Output</label>
+            <div style="position:relative;">
+              <div class="code-output" id="jsonOutput" style="min-height:200px;"></div>
+              <button class="btn btn-secondary" id="copyDecoded" style="position:absolute;top:10px;right:10px;padding:6px 12px;font-size:0.78rem;">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="alertArea" class="mt-16"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div class="footer-copy">© 2024 mdothree.com</div></div></footer>
+
+  
+  <script type="module" src="js/pages/base64.js"></script>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

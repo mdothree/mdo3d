@@ -1,0 +1,22 @@
+{
+  "name": "tarot-cards",
+  "version": "1.0.0",
+  "description": "Online tarot reading platform with 78-card deck",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server public -p 8081 -o",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "tarot",
+    "divination",
+    "spirituality",
+    "cards"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

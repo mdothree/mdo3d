@@ -1,0 +1,6 @@
+/* Page-specific styles: validate.html */
+
+.error-line { background: rgba(239,68,68,0.12); border-left: 3px solid var(--danger); }
+    .line-num { color: var(--slate-600); user-select: none; padding-right: 16px; min-width: 40px; display: inline-block; text-align: right; }
+    .code-line { display: block; padding: 0 8px; }
+    .code-line:hover { background: rgba(255,255,255,0.03); }

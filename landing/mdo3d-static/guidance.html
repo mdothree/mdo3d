@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guidance — MDO3D · AI-Powered Spiritual Insight</title>
+<meta name="description" content="AI-powered oracle readings, dream interpretation, tarot, numerology, astrology, and feng shui. Ancient wisdom, modern intelligence.">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://guidance.mdo3d.com/">
+<link rel="canonical" href="https://guidance.mdo3d.com/">
+<meta property="og:title" content="Guidance — MDO3D · AI-Powered Spiritual Insight">
+<meta property="og:description" content="AI-powered oracle readings, dream interpretation, tarot, numerology, astrology, and feng shui. Ancient wisdom, modern intelligence.">
+<meta property="og:image" content="https://guidance.mdo3d.com/guidance-og-image.svg">
+<meta property="og:site_name" content="MDO3D Guidance">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@mdo3d">
+<meta name="twitter:url" content="https://guidance.mdo3d.com/">
+<meta name="twitter:title" content="Guidance — MDO3D · AI-Powered Spiritual Insight">
+<meta name="twitter:description" content="AI-powered oracle readings, dream interpretation, tarot, numerology, astrology, and feng shui. Ancient wisdom, modern intelligence.">
+<meta name="twitter:image" content="https://guidance.mdo3d.com/guidance-og-image.svg">
+
+<!-- LinkedIn -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Pinterest -->
+<meta name="pinterest-rich-pin" content="false">
+
+<!-- Theme & Mobile -->
+<meta name="theme-color" content="#4c2fa0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MDO3D Guidance">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234c2fa0'/><text x='16' y='23' font-size='18' text-anchor='middle' fill='%23c4b5f4'>✦</text></svg>">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --void: #03020a;
+  --deep: #07051a;
+  --well: #0e0b28;
+  --veil: #160f3a;
+  --cavern: #1f1550;
+
+  --amethyst: #6b2fa0;
+  --violet: #9333ea;
+  --lavender: #c084fc;
+  --mist: #e9d5ff;
+
+  --gold: #b8892a;
+  --amber: #d4a839;
+  --glow: #f0c956;
+  --parch: #fef3c7;
+
+  --pearl: #f0eef8;
+  --fog: #b8b0d8;
+  --shadow: #5a5080;
+
+  --border-dim: rgba(255,255,255,0.06);
+  --border-mid: rgba(255,255,255,0.1);
+  --border-glow: rgba(147,51,234,0.25);
+
+  --glass: rgba(255,255,255,0.03);
+  --glass-mid: rgba(255,255,255,0.05);
+
+  --r: 8px;
+  --t: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--pearl);
+  font-family: 'Manrope', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* CANVAS BACKGROUND */
+canvas#cosmos { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* NOISE OVERLAY */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.022; pointer-events: none;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 1.25rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(180deg, rgba(3,2,10,0.85) 0%, transparent 100%);
+}
+.nav-home {
+  display: flex; align-items: center; gap: 0.5rem;
+  text-decoration: none; color: var(--fog); font-size: 0.75rem;
+  letter-spacing: 0.06em; transition: color var(--t);
+}
+.nav-home:hover { color: var(--pearl); }
+.nav-home-arrow { margin-right: 0.2rem; }
+.nav-brand {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  text-align: center;
+}
+.nav-brand-name {
+  font-family: 'Cinzel', serif; font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--pearl);
+  display: block;
+}
+.nav-brand-sub {
+  font-size: 0.62rem; letter-spacing: 0.2em; color: var(--shadow);
+  text-transform: uppercase;
+}
+.nav-right-link {
+  font-size: 0.75rem; letter-spacing: 0.06em; color: var(--fog);
+  text-decoration: none; transition: color var(--t);
+}
+.nav-right-link:hover { color: var(--glow); }
+
+/* HERO */
+.hero {
+  min-height: 100vh; position: relative; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 8rem 2rem 5rem;
+}
+.hero-orb {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(107,47,160,0.18) 0%,
+    rgba(107,47,160,0.06) 40%,
+    transparent 70%);
+  pointer-events: none; z-index: -1;
+}
+.hero-symbol {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem; letter-spacing: 0.5em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 2.5rem;
+  display: flex; align-items: center; gap: 1.25rem;
+}
+.hero-symbol::before, .hero-symbol::after {
+  content: ''; display: block; width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber));
+}
+.hero-symbol::after { background: linear-gradient(90deg, var(--amber), transparent); }
+
+.hero-sigil {
+  width: 100px; height: 100px; margin: 0 auto 2.5rem;
+  position: relative; display: flex; align-items: center; justify-content: center;
+}
+.sigil-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid;
+}
+.sigil-ring-1 { inset: 0; border-color: rgba(147,51,234,0.3); animation: spin 25s linear infinite; }
+.sigil-ring-2 { inset: 12px; border-color: rgba(184,137,42,0.25); animation: spin 18s linear infinite reverse; }
+.sigil-ring-3 { inset: 24px; border-color: rgba(147,51,234,0.2); animation: spin 12s linear infinite; }
+.sigil-center { font-size: 2rem; z-index: 1; animation: breathe 4s ease-in-out infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes breathe {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700;
+  line-height: 1.05; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--pearl); margin-bottom: 1.5rem;
+}
+.hero h1 span {
+  display: block; font-family: 'EB Garamond', serif;
+  font-size: clamp(1.4rem, 3vw, 2.4rem); font-weight: 400; font-style: italic;
+  text-transform: none; letter-spacing: 0.01em;
+  background: linear-gradient(135deg, var(--lavender), var(--glow));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-top: 0.5rem;
+}
+.hero-sub {
+  font-family: 'EB Garamond', serif; font-size: 1.15rem; font-style: italic;
+  color: var(--fog); line-height: 1.8; max-width: 520px; margin: 0 auto 3rem;
+}
+.hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem; }
+.cta-primary {
+  background: linear-gradient(135deg, var(--amethyst), var(--violet));
+  color: white; padding: 0.85rem 2.2rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.2em;
+  text-transform: uppercase; text-decoration: none; border: none; cursor: pointer;
+  transition: opacity var(--t), transform var(--t);
+  box-shadow: 0 0 40px rgba(107,47,160,0.3);
+}
+.cta-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+.cta-ghost {
+  background: transparent; color: var(--fog);
+  padding: 0.85rem 2.2rem; border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.2em;
+  text-transform: uppercase; text-decoration: none;
+  border: 1px solid var(--border-mid); cursor: pointer;
+  transition: all var(--t);
+}
+.cta-ghost:hover { color: var(--pearl); border-color: rgba(255,255,255,0.2); }
+
+/* PLATFORM NAV PILLS */
+.platform-nav {
+  display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+  padding: 0.5rem; background: var(--glass);
+  border: 1px solid var(--border-dim); border-radius: 40px;
+  max-width: 700px; margin: 0 auto;
+}
+.platform-pill {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.72rem; letter-spacing: 0.05em;
+  color: var(--shadow); padding: 0.4rem 1rem; border-radius: 30px;
+  text-decoration: none; transition: all var(--t); cursor: pointer;
+}
+.platform-pill:hover, .platform-pill.active {
+  background: rgba(147,51,234,0.15); color: var(--lavender);
+}
+
+/* SECTION BASE */
+section { position: relative; z-index: 10; }
+.section-wrap { max-width: 1100px; margin: 0 auto; padding: 5rem 2rem; }
+
+/* DIVIDER */
+.rune-divider {
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 0 2rem; max-width: 1100px; margin: 0 auto;
+}
+.rune-divider::before, .rune-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-mid));
+}
+.rune-divider::after { background: linear-gradient(90deg, var(--border-mid), transparent); }
+.rune-glyph { font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--border-mid); white-space: nowrap; }
+
+/* READINGS SECTION */
+.readings-header { text-align: center; margin-bottom: 4rem; }
+.section-kicker {
+  font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.35em;
+  text-transform: uppercase; color: var(--amber); margin-bottom: 1.25rem;
+}
+.section-title {
+  font-family: 'Cinzel', serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 600; letter-spacing: 0.05em;
+  color: var(--pearl); line-height: 1.2;
+}
+.section-title em {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-weight: 400; letter-spacing: 0; font-size: 1.1em;
+  background: linear-gradient(135deg, var(--lavender), var(--glow));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-body {
+  font-family: 'EB Garamond', serif; font-size: 1.1rem;
+  color: var(--fog); line-height: 1.8; margin-top: 1rem;
+  max-width: 500px; margin-left: auto; margin-right: auto;
+}
+
+/* PLATFORM CARDS */
+.readings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.reading-card {
+  background: var(--glass-mid); border: 1px solid var(--border-dim);
+  border-radius: var(--r); padding: 2rem;
+  transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+  text-decoration: none; color: inherit; display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.reading-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+  opacity: 0; transition: opacity var(--t);
+}
+.reading-card:hover { transform: translateY(-4px); border-color: var(--border-glow); box-shadow: 0 20px 60px rgba(107,47,160,0.15); }
+.reading-card:hover::before { opacity: 1; }
+
+.reading-card.flagship { grid-column: span 2; background: linear-gradient(135deg, rgba(107,47,160,0.12), rgba(147,51,234,0.06)); border-color: rgba(147,51,234,0.2); }
+.reading-card.flagship:hover { border-color: rgba(147,51,234,0.4); box-shadow: 0 24px 80px rgba(107,47,160,0.2); }
+
+.card-glyph { font-size: 2.2rem; margin-bottom: 1.25rem; line-height: 1; }
+.card-status {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 1rem;
+}
+.cs-live { color: #86efac; }
+.cs-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #86efac; animation: pulse-g 2s infinite; }
+.cs-soon { color: var(--amber); }
+@keyframes pulse-g { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.card-title { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; letter-spacing: 0.05em; }
+.card-body { font-family: 'EB Garamond', serif; font-size: 1rem; color: var(--fog); line-height: 1.65; flex: 1; }
+.card-action {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 1.5rem; font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; font-weight: 500;
+  color: var(--lavender); transition: gap var(--t);
+}
+.reading-card:hover .card-action { gap: 0.65rem; }
+.card-action::after { content: '→'; }
+.flagship-tag {
+  position: absolute; top: 1.25rem; right: 1.25rem;
+  background: linear-gradient(135deg, var(--amethyst), var(--violet));
+  color: white; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 0.2rem 0.7rem; border-radius: 20px; font-weight: 600;
+}
+
+/* COMING SOON GRID */
+.soon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 4rem; }
+.soon-card {
+  background: var(--glass); border: 1px solid var(--border-dim);
+  border-radius: var(--r); padding: 1.5rem;
+  display: flex; align-items: center; gap: 1.25rem;
+  transition: border-color var(--t);
+}
+.soon-card:hover { border-color: rgba(184,137,42,0.2); }
+.soon-icon { font-size: 1.8rem; flex-shrink: 0; }
+.soon-title { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 500; margin-bottom: 0.3rem; }
+.soon-desc { font-size: 0.8rem; color: var(--shadow); line-height: 1.4; }
+.soon-badge {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--amber); background: rgba(184,137,42,0.1);
+  padding: 0.2rem 0.6rem; border-radius: 3px; border: 1px solid rgba(184,137,42,0.2);
+}
+
+/* HOW IT WORKS */
+.how-section { background: var(--deep); padding: 5rem 0; }
+.how-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem; }
+.step { text-align: center; padding: 2rem; }
+.step-num {
+  font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.3em;
+  color: var(--border-mid); margin-bottom: 1.5rem; text-transform: uppercase;
+}
+.step-icon {
+  width: 64px; height: 64px; margin: 0 auto 1.5rem;
+  background: var(--glass); border: 1px solid var(--border-dim); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+}
+.step-title { font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+.step-body { font-family: 'EB Garamond', serif; font-size: 1rem; color: var(--fog); line-height: 1.7; }
+
+/* TESTIMONIALS */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 3.5rem; }
+.tcard {
+  background: var(--glass-mid); border: 1px solid var(--border-dim);
+  border-radius: var(--r); padding: 1.75rem;
+  transition: border-color var(--t);
+}
+.tcard:hover { border-color: var(--border-mid); }
+.tcard-quote { font-family: 'EB Garamond', serif; font-size: 1rem; font-style: italic; color: var(--fog); line-height: 1.75; margin-bottom: 1.5rem; }
+.tcard-foot { display: flex; align-items: center; gap: 0.75rem; }
+.tcard-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--veil), var(--amethyst));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 600; flex-shrink: 0;
+}
+.tcard-name { font-size: 0.8rem; font-weight: 500; }
+.tcard-platform { font-size: 0.7rem; color: var(--shadow); }
+
+/* CTA BAND */
+.cta-band {
+  padding: 6rem 2rem; text-align: center;
+  background: radial-gradient(ellipse at 50% 100%, rgba(107,47,160,0.12) 0%, transparent 60%);
+}
+.cta-band h2 {
+  font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600; letter-spacing: 0.05em; color: var(--pearl);
+  margin-bottom: 1rem;
+}
+.cta-band p {
+  font-family: 'EB Garamond', serif; font-size: 1.1rem; font-style: italic;
+  color: var(--fog); margin-bottom: 2.5rem; max-width: 420px; margin-left: auto; margin-right: auto;
+}
+.cta-band .cta-primary { margin-right: 0.75rem; }
+
+/* FOOTER */
+footer {
+  background: var(--deep); border-top: 1px solid var(--border-dim);
+  padding: 3.5rem 2rem 2rem; position: relative; z-index: 10;
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 3rem; margin-bottom: 3rem; }
+.footer-brand { max-width: 280px; }
+.footer-name { font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; }
+.footer-tag { font-size: 0.78rem; color: var(--shadow); line-height: 1.6; }
+.footer-tag em { color: var(--amber); font-style: normal; }
+.footer-col h4 { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--shadow); margin-bottom: 1rem; font-family: 'Cinzel', serif; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-col a { font-size: 0.82rem; color: var(--shadow); text-decoration: none; transition: color var(--t); }
+.footer-col a:hover { color: var(--pearl); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-dim); flex-wrap: wrap; gap: 1rem; }
+.footer-copy { font-size: 0.72rem; color: #2e2860; }
+.footer-back { font-size: 0.72rem; color: var(--shadow); text-decoration: none; transition: color var(--t); }
+.footer-back:hover { color: var(--pearl); }
+
+/* FADE */
+.fade { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade.in { opacity: 1; transform: none; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .readings-grid { grid-template-columns: 1fr; }
+  .reading-card.flagship { grid-column: span 1; }
+  .soon-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-top { flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 2rem; }
+  .platform-nav { display: grid; grid-template-columns: repeat(3, 1fr); border-radius: 8px; padding: 0.5rem; }
+  .nav-brand { display: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="cosmos"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-home" href="https://mdo3d.com">
+    <span class="nav-home-arrow">←</span> mdo3d.com
+  </a>
+  <div class="nav-brand">
+    <span class="nav-brand-name">Guidance</span>
+    <span class="nav-brand-sub">by MDO3D</span>
+  </div>
+  <a href="#readings" class="nav-right-link">Begin a Reading</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-orb"></div>
+
+  <div class="hero-symbol">The Oracle Awaits</div>
+
+  <div class="hero-sigil">
+    <div class="sigil-ring sigil-ring-1"></div>
+    <div class="sigil-ring sigil-ring-2"></div>
+    <div class="sigil-ring sigil-ring-3"></div>
+    <div class="sigil-center">✦</div>
+  </div>
+
+  <h1>
+    Guidance
+    <span>Ancient wisdom, modern intelligence</span>
+  </h1>
+
+  <p class="hero-sub">AI-powered spiritual tools for seekers, intuitives, and those standing at the threshold of change. Your path awaits.</p>
+
+  <div class="hero-ctas">
+    <a href="#readings" class="cta-primary">Begin a Reading</a>
+    <a href="#readings" class="cta-ghost">Explore Tools</a>
+  </div>
+
+  <div class="platform-nav">
+    <a href="#oracle" class="platform-pill active">🔮 Oracle</a>
+    <a href="#dreams" class="platform-pill">🌙 Dreams</a>
+    <a href="#tarot" class="platform-pill">🃏 Tarot</a>
+    <a href="#numerology" class="platform-pill">🔢 Numbers</a>
+    <a href="#astrology" class="platform-pill">⭐ Astro</a>
+    <a href="#fengshui" class="platform-pill">☯️ Feng Shui</a>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="rune-divider"><span class="rune-glyph">✦ · ✦ · ✦</span></div>
+
+<!-- READINGS -->
+<section id="readings">
+  <div class="section-wrap">
+    <div class="readings-header fade">
+      <div class="section-kicker">The Sanctum</div>
+      <h2 class="section-title">Choose Your <em>Path of Inquiry</em></h2>
+      <p class="section-body">Each platform is a doorway. Some open immediately — others are being woven into being.</p>
+    </div>
+
+    <div class="readings-grid fade">
+
+      <!-- ORACLE — FLAGSHIP -->
+      <a href="/oracle" class="reading-card flagship" id="oracle">
+        <div class="flagship-tag">✦ Flagship</div>
+        <div class="card-glyph">🔮</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Oracle Cards</div>
+        <div class="card-body">Draw from the digital aether. Our AI-powered oracle deck interprets your question through layers of symbolic meaning — drawing on Jungian archetypes, numerology, and elemental correspondences to surface what your intuition already knows. Each reading is singular, personalized, and unrepeatable.</div>
+        <div class="card-action">Begin a Reading</div>
+      </a>
+
+      <!-- DREAMS -->
+      <a href="/dreams" class="reading-card" id="dreams">
+        <div class="card-glyph">🌙</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Dream Interpreter</div>
+        <div class="card-body">Describe what you saw in the dark. Our AI maps the symbolic landscape of your dreams — translating symbols, figures, and feelings into psychological insight and personal meaning.</div>
+        <div class="card-action">Decode a Dream</div>
+      </a>
+
+      <!-- TAROT -->
+      <a href="/tarot" class="reading-card" id="tarot">
+        <div class="card-glyph">🃏</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Tarot Readings</div>
+        <div class="card-body">Full AI-guided tarot spreads — the Celtic Cross, the Three Card Draw, and beyond. Ask your question and let the cards speak with clarity you can act on.</div>
+        <div class="card-action">Draw the Cards</div>
+      </a>
+
+      <!-- NUMEROLOGY -->
+      <a href="/numerology" class="reading-card" id="numerology">
+        <div class="card-glyph">🔢</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Numerology Lab</div>
+        <div class="card-body">Numbers carry vibration. Discover your life path number, expression number, and soul urge — and understand the numeric forces shaping your current cycle.</div>
+        <div class="card-action">Find Your Numbers</div>
+      </a>
+
+    </div>
+
+    <!-- COMING SOON -->
+    <div class="soon-grid fade">
+      <div class="soon-card" id="astrology">
+        <div class="soon-icon">⭐</div>
+        <div>
+          <div class="soon-title">Astrology Charts</div>
+          <div class="soon-desc">Natal charts, transit readings, and synastry analysis powered by AI.</div>
+        </div>
+        <div class="soon-badge">Arriving Soon</div>
+      </div>
+      <div class="soon-card" id="fengshui">
+        <div class="soon-icon">☯️</div>
+        <div>
+          <div class="soon-title">Feng Shui Advisor</div>
+          <div class="soon-desc">AI-guided space harmony and environmental energy mapping.</div>
+        </div>
+        <div class="soon-badge">Arriving Soon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="rune-divider"><span class="rune-glyph">◈</span></div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="how-inner">
+    <div class="readings-header fade">
+      <div class="section-kicker">The Process</div>
+      <h2 class="section-title">How the <em>reading unfolds</em></h2>
+    </div>
+    <div class="steps-grid fade">
+      <div class="step">
+        <div class="step-num">Step I</div>
+        <div class="step-icon">🪬</div>
+        <div class="step-title">Set Your Intention</div>
+        <div class="step-body">Choose your platform and bring a question — something you truly wish to understand. The clarity of your intent shapes the depth of what returns.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step II</div>
+        <div class="step-icon">✦</div>
+        <div class="step-title">The AI Reads</div>
+        <div class="step-body">Our intelligence processes symbolic patterns, archetypal structures, and your unique input to generate an interpretation that is genuinely your own.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step III</div>
+        <div class="step-icon">🌙</div>
+        <div class="step-title">Integrate the Insight</div>
+        <div class="step-body">Readings are invitations, not edicts. Take what resonates, sit with what puzzles you, and let time do the rest of the work.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="rune-divider"><span class="rune-glyph">✦ · ✦ · ✦</span></div>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="section-wrap">
+    <div class="readings-header fade">
+      <div class="section-kicker">From the Seekers</div>
+      <h2 class="section-title">Words from the <em>community</em></h2>
+    </div>
+    <div class="testimonials-grid fade">
+      <div class="tcard">
+        <p class="tcard-quote">The Oracle reading described my situation so accurately I had to re-read it three times. It felt less like a prediction and more like a conversation with a very wise part of myself.</p>
+        <div class="tcard-foot">
+          <div class="tcard-avatar">S</div>
+          <div><div class="tcard-name">Sofia R.</div><div class="tcard-platform">Oracle Cards</div></div>
+        </div>
+      </div>
+      <div class="tcard">
+        <p class="tcard-quote">I've been journaling dreams for years. The Dream Interpreter found patterns I never consciously noticed. The interpretation was grounded yet genuinely profound.</p>
+        <div class="tcard-foot">
+          <div class="tcard-avatar">A</div>
+          <div><div class="tcard-name">Aisha K.</div><div class="tcard-platform">Dream Interpreter</div></div>
+        </div>
+      </div>
+      <div class="tcard">
+        <p class="tcard-quote">The Numerology reading was unsettlingly accurate about the cycles I'm in right now. Simple to use, the output was rich and specific in ways I didn't expect.</p>
+        <div class="tcard-foot">
+          <div class="tcard-avatar">J</div>
+          <div><div class="tcard-name">Jordan M.</div><div class="tcard-platform">Numerology Lab</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band fade">
+  <h2>Your reading awaits</h2>
+  <p>Step across the threshold. The oracle is ready when you are.</p>
+  <a href="#oracle" class="cta-primary">Begin with Oracle Cards</a>
+  <a href="#readings" class="cta-ghost">See all platforms</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-name">Guidance · MDO3D</div>
+        <p class="footer-tag">AI-powered spiritual tools for seekers and intuitives.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platforms</h4>
+        <ul>
+          <li><a href="/oracle">Oracle Cards</a></li>
+          <li><a href="/dreams">Dream Interpreter</a></li>
+          <li><a href="/tarot">Tarot Readings</a></li>
+          <li><a href="/numerology">Numerology Lab</a></li>
+          <li><a href="/astrology">Astrology (Soon)</a></li>
+          <li><a href="/fengshui">Feng Shui (Soon)</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>MDO3D Universe</h4>
+        <ul>
+          <li><a href="https://mdo3d.com">mdo3d.com</a></li>
+          <li><a href="https://mdo3d.com/professional">Professional Tools</a></li>
+          <li><a href="https://mdo3d.com/utilities">Utilities</a></li>
+          <li><a href="https://mdo3d.com/commerce">Commerce</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Guidance · MDO3D</span>
+      <a href="https://mdo3d.com" class="footer-back">← Back to mdo3d.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// COSMOS CANVAS
+const canvas = document.getElementById('cosmos');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const stars = Array.from({ length: 220 }, () => ({
+  x: Math.random(), y: Math.random(),
+  r: Math.random() * 1.2 + 0.15,
+  o: Math.random() * 0.55 + 0.1,
+  t: Math.random() * Math.PI * 2,
+  speed: Math.random() * 0.0006 + 0.0002,
+  color: ['255,255,255', '192,132,252', '240,201,86', '168,199,255'][Math.floor(Math.random() * 4)]
+}));
+
+let mX = 0.5, mY = 0.5;
+document.addEventListener('mousemove', e => { mX = e.clientX / W; mY = e.clientY / H; });
+
+function draw(ts) {
+  ctx.clearRect(0, 0, W, H);
+  // Vignette
+  const vg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.7);
+  vg.addColorStop(0, 'rgba(3,2,10,0)');
+  vg.addColorStop(1, 'rgba(3,2,10,0.85)');
+  ctx.fillStyle = vg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Mouse glow
+  const mg = ctx.createRadialGradient(mX*W, mY*H, 0, mX*W, mY*H, 280);
+  mg.addColorStop(0, 'rgba(107,47,160,0.055)');
+  mg.addColorStop(1, 'transparent');
+  ctx.fillStyle = mg;
+  ctx.fillRect(0, 0, W, H);
+
+  stars.forEach(s => {
+    s.t += s.speed;
+    const pulse = Math.sin(s.t) * 0.35 + 0.65;
+    ctx.beginPath();
+    ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${s.color},${s.o * pulse})`;
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// FADE IN
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 100);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+
+// PLATFORM NAV HIGHLIGHT
+const pillLinks = document.querySelectorAll('.platform-pill');
+pillLinks.forEach(pill => {
+  pill.addEventListener('click', () => {
+    pillLinks.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

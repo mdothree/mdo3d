@@ -1,0 +1,16 @@
+# robots.txt for mdo3d.com
+User-agent: *
+Allow: /
+
+# Disallow admin/internal paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*.js$
+Disallow: /*.css$
+
+# Sitemap
+Sitemap: https://mdo3d.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

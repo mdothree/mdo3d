@@ -1,0 +1,24 @@
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Trade history data
+data/
+*.db
+*.sqlite

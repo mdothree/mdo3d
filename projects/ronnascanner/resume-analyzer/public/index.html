@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer - Get Your ATS Score Instantly</title>
+    <meta name="description" content="Upload your resume and get an instant ATS compatibility score. Find out if your resume will pass applicant tracking systems.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Resume Analyzer - I got my ATS Score!">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a4fa3'/><text x='16' y='23' font-family='serif' font-weight='700' font-size='14' fill='white'>R</text></svg>">
+    <meta property="og:description" content="Upload your resume and get an instant ATS compatibility score. Find out if your resume will pass applicant tracking systems.">
+    <meta property="og:image" content="./og-image.jpg">
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://resume-analyzer.vercel.app">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Resume Analyzer - I got my ATS Score!">
+    <meta name="twitter:description" content="Upload your resume and get an instant ATS compatibility score. Find out if your resume will pass applicant tracking systems.">
+    <meta name="twitter:image" content="./og-image.jpg">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <h1>Resume Analyzer</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#" id="sign-in-btn">Sign In</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h2>Is Your Resume ATS-Friendly?</h2>
+                <p class="subtitle">75% of resumes never reach human eyes. Get your ATS score in seconds.</p>
+                
+                <div class="upload-container" id="upload-section">
+                    <div class="upload-box" id="upload-box">
+                        <svg class="upload-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <h3>Upload Your Resume</h3>
+                        <p>Drag and drop or click to browse</p>
+                        <p class="file-types">PDF or Word (.docx) • Max 5MB</p>
+                        <input type="file" id="file-input" accept=".pdf,.docx" hidden>
+                        <button class="btn-primary" id="browse-btn">Browse Files</button>
+                    </div>
+
+                    <div class="upload-progress" id="upload-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <p id="progress-text">Analyzing your resume...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section (Hidden initially) -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <div class="container">
+                <div class="score-card">
+                    <h3>Your ATS Score</h3>
+                    <div class="score-circle">
+                        <svg width="200" height="200">
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0" stroke-width="12"></circle>
+                            <circle id="score-circle" cx="100" cy="100" r="90" fill="none" stroke="#4CAF50" stroke-width="12" 
+                                    stroke-dasharray="565.48" stroke-dashoffset="565.48" transform="rotate(-90 100 100)"></circle>
+                        </svg>
+                        <div class="score-number" id="score-number">0</div>
+                    </div>
+                    <p class="score-label" id="score-label">Needs Improvement</p>
+                    <button class="btn-share" id="share-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Share My Score
+                    </button>
+                </div>
+
+                <div class="issues-preview">
+                    <h3>Top Issues Found</h3>
+                    <ul id="issues-list">
+                        <!-- Populated by JavaScript -->
+                    </ul>
+                </div>
+
+                <div class="email-capture">
+                    <h3>Get Your Free Report</h3>
+                    <p>Enter your email to receive your detailed analysis</p>
+                    <form id="email-form">
+                        <input type="email" id="email-input" placeholder="your@email.com" required>
+                        <button type="submit" class="btn-primary">Get Free Report</button>
+                    </form>
+                </div>
+
+                <div class="premium-cta">
+                    <h3>Want More?</h3>
+                    <div class="premium-features">
+                        <div class="feature">
+                            <span class="check">✓</span>
+                            <span>Complete issue breakdown</span>
+                        </div>
+                        <div class="feature">
+                            <span class="check">✓</span>
+                            <span>AI-powered rewrite suggestions</span>
+                        </div>
+                        <div class="feature">
+                            <span class="check">✓</span>
+                            <span>Industry-specific keywords</span>
+                        </div>
+                        <div class="feature">
+                            <span class="check">✓</span>
+                            <span>Before/after comparison</span>
+                        </div>
+                    </div>
+                    <button class="btn-premium" id="upgrade-btn">Upgrade to Premium - $29</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="section-light">
+            <div class="container">
+                <h2>How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Upload Resume</h3>
+                        <p>Upload your PDF or Word document</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>AI Analysis</h3>
+                        <p>Our AI scans for ATS compatibility</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Get Score</h3>
+                        <p>Receive instant feedback and tips</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Improve</h3>
+                        <p>Fix issues and boost your chances</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <h2>Pricing</h2>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">$0</div>
+                        <ul>
+                            <li>ATS compatibility score</li>
+                            <li>Top 3 issues identified</li>
+                            <li>Basic keyword analysis</li>
+                            <li>Format check</li>
+                        </ul>
+                        <button class="btn-secondary">Get Started</button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="badge">Popular</div>
+                        <h3>Premium</h3>
+                        <div class="price">$29</div>
+                        <ul>
+                            <li>Everything in Free</li>
+                            <li>Complete issue breakdown</li>
+                            <li>AI rewrite suggestions</li>
+                            <li>Industry keywords</li>
+                            <li>Before/after comparison</li>
+                            <li>Job description matcher</li>
+                        </ul>
+                        <button class="btn-premium">Upgrade Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Resume Analyzer. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

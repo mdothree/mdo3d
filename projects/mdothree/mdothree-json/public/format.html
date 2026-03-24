@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Format JSON — mdothree</title>
+  <meta name="description" content="Beautify or minify JSON with syntax highlighting. Adjustable indentation. Download as .json." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/format" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Format JSON — mdothree" />
+  <meta property="og:description" content="Beautify or minify JSON with syntax highlighting. Adjustable indentation. Download as .json." />
+  <meta property="og:url"         content="https://mdothree.com/format" />
+  <meta property="og:site_name"   content="mdothree" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="Format JSON — mdothree" />
+  <meta name="twitter:description" content="Beautify or minify JSON with syntax highlighting. Adjustable indentation. Download as .json." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/pages/format.css" />
+  
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html" class="active">Format</a></li>
+        <li><a href="validate.html">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html">→ CSV</a></li>
+        <li><a href="json-diff.html">Diff</a></li>
+        <li><a href="to-xml.html">→ XML</a></li>
+        <li><a href="to-typescript.html">→ TS</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="json-path.html">JSONPath ✨</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main class="tool-page" id="main-content">
+    <div class="container">
+      <div class="tool-header animate-fade-up">
+        <div class="breadcrumb"><a href="index.html">JSON Tools</a><span>/</span> Format</div>
+        <h1>✨ Format JSON</h1>
+        <p>Beautify or minify JSON with syntax highlighting.</p>
+      </div>
+
+      <div class="alert alert-info animate-fade-up" id="freeBanner" style="margin-bottom:20px;">
+        ℹ️ <strong>Free plan:</strong> Format JSON up to 50KB. <a href="#" onclick="requirePremium('Large JSON formatting','json-format');return false;" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade to Pro →</a>
+      </div>
+      <div class="tool-layout" class="animate-fade-up-2">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div class="panel-title" style="border:none;margin:0;padding:0;">Input JSON</div>
+            <div class="btn-group">
+              <button class="btn btn-ghost" id="clearBtn" style="padding:6px 12px;font-size:0.78rem;">Clear</button>
+              <button class="btn btn-ghost" id="sampleBtn" style="padding:6px 12px;font-size:0.78rem;">Sample</button>
+            </div>
+          </div>
+          <textarea class="form-textarea" id="inputJson" style="min-height:400px;font-size:0.82rem;" placeholder='{"paste": "your JSON here"}'></textarea>
+          <div class="btn-group mt-12">
+            <button class="btn btn-primary" id="formatBtn">✨ Beautify</button>
+            <button class="btn btn-secondary" id="minifyBtn">Minify</button>
+            <div class="form-group" style="margin:0;display:flex;align-items:center;gap:8px;">
+              <label class="form-label" style="margin:0;white-space:nowrap;">Indent</label>
+              <select class="form-select" id="indent" style="width:80px;">
+                <option value="2" selected>2</option>
+                <option value="4">4</option>
+                <option value="tab">tab</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div id="outputWrapper" class="panel" style="min-height:460px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div class="panel-title" style="border:none;margin:0;padding:0;">Output</div>
+              <div class="btn-group">
+                <span class="text-xs text-muted text-mono" id="sizeInfo"></span>
+                <button class="btn btn-ghost" id="downloadBtn" style="padding:6px 12px;font-size:0.78rem;display:none;">⬇️ .json</button>
+              </div>
+            </div>
+            <button class="copy-btn" id="copyBtn">Copy</button>
+            <div id="jsonOutput" class="code-output" style="min-height:380px;"></div>
+          </div>
+          <div id="alertArea" class="mt-12"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div class="footer-copy">© 2024 mdothree.com</div></div></footer>
+
+  
+  <script type="module" src="js/pages/format.js"></script>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

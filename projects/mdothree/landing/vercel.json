@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "redirects": [
+    {"source": "/pdf", "destination": "https://mdothree-pdf.vercel.app", "permanent": true},
+    {"source": "/image", "destination": "https://mdothree-image.vercel.app", "permanent": true},
+    {"source": "/json", "destination": "https://mdothree-json.vercel.app", "permanent": true},
+    {"source": "/qr", "destination": "https://mdothree-qr.vercel.app", "permanent": true},
+    {"source": "/text", "destination": "https://mdothree-text.vercel.app", "permanent": true},
+    {"source": "/hash", "destination": "https://mdothree-hash.vercel.app", "permanent": true},
+    {"source": "/password", "destination": "https://mdothree-password.vercel.app", "permanent": true},
+    {"source": "/timestamp", "destination": "https://mdothree-timestamp.vercel.app", "permanent": true},
+    {"source": "/color", "destination": "https://mdothree-color.vercel.app", "permanent": true}
+  ]
+}

@@ -1,0 +1,7 @@
+/* Page-specific styles: to-typescript.html */
+
+.ts-keyword  { color: #C4B5FD; }
+    .ts-type     { color: #7DD3FC; }
+    .ts-name     { color: #86EFAC; }
+    .ts-punct    { color: var(--slate-500); }
+    .ts-comment  { color: var(--slate-600); font-style: italic; }

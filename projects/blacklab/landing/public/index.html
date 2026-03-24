@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blacklab B - Future Technology Trackers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(236, 72, 153, 0.1) 100%);
+        }
+        .logo {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #a78bfa;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h1 span { 
+            display: block;
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        .tagline {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        .tagline em {
+            color: #a78bfa;
+            font-style: normal;
+        }
+        .trackers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            padding: 0 2rem;
+            margin-top: 1rem;
+        }
+        .tracker-card {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.8), rgba(20, 20, 40, 0.9));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        .tracker-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tracker-card:hover {
+            border-color: rgba(139, 92, 246, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+        }
+        .tracker-card:hover::before {
+            opacity: 1;
+        }
+        .tracker-icon { 
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        .tracker-card h3 { 
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #e2e8f0;
+        }
+        .tracker-card p { 
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        .tracker-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .tracker-meta span {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+        .tracker-card.quantum { --accent: #60a5fa; --secondary: #3b82f6; }
+        .tracker-card.space { --accent: #f472b6; --secondary: #ec4899; }
+        .tracker-card.neuro { --accent: #a78bfa; --secondary: #8b5cf6; }
+
+        .tracker-card.quantum:hover { box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25); border-color: rgba(59, 130, 246, 0.6); }
+        .tracker-card.quantum::before { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+        .tracker-card.quantum .tracker-meta span { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+        .tracker-card.space:hover { box-shadow: 0 20px 40px rgba(236, 72, 153, 0.25); border-color: rgba(236, 72, 153, 0.6); }
+        .tracker-card.space::before { background: linear-gradient(90deg, #f472b6, #ec4899); }
+        .tracker-card.space .tracker-meta span { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+
+        .tracker-card.neuro:hover { box-shadow: 0 20px 40px rgba(139, 92, 246, 0.25); border-color: rgba(139, 92, 246, 0.6); }
+        .tracker-card.neuro::before { background: linear-gradient(90deg, #a78bfa, #8b5cf6); }
+
+        .status-badge {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        .footer {
+            text-align: center;
+            padding: 3rem;
+            color: #475569;
+            margin-top: 2rem;
+        }
+        .footer a { color: #a78bfa; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        
+        @media (max-width: 640px) {
+            h1 { font-size: 2.5rem; }
+            h1 span { font-size: 1.5rem; }
+            .trackers-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="logo">A MDO3D Division</div>
+        <h1>Blacklab<span>B</span></h1>
+        <p class="tagline">Track the future of <em>transformative technologies</em>. We monitor quantum computing, space exploration, and brain-computer interfaces as they reshape our world.</p>
+        
+        <div class="trackers-grid">
+            <a href="https://quantum.blacklabb.com" class="tracker-card quantum">
+                <span class="tracker-icon">⚛️</span>
+                <h3>Quantum</h3>
+                <p>Track quantum computing breakthroughs, quantum communication networks, and foundational research from leading companies and institutions.</p>
+                <div class="tracker-meta">
+                    <span>Quantum Computing</span>
+                    <span>QKD & Communication</span>
+                </div>
+                <div class="status-badge">Live</div>
+            </a>
+            
+            <a href="https://space.blacklabb.com" class="tracker-card space">
+                <span class="tracker-icon">🚀</span>
+                <h3>Space</h3>
+                <p>Monitor launches, missions, and developments across the commercial space industry—from SpaceX to NASA to emerging space agencies.</p>
+                <div class="tracker-meta">
+                    <span>Launch Tracking</span>
+                    <span>Mission Updates</span>
+                </div>
+                <div class="status-badge">Live</div>
+            </a>
+            
+            <a href="https://neuro.blacklabb.com" class="tracker-card neuro">
+                <span class="tracker-icon">🧠</span>
+                <h3>Neuro</h3>
+                <p>Follow brain-computer interface developments, neural implant breakthroughs, and the evolving neurotechnology landscape.</p>
+                <div class="tracker-meta">
+                    <span>BCI Technology</span>
+                    <span>Neural Implants</span>
+                </div>
+                <div class="status-badge">Live</div>
+            </a>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <p>A <a href="https://mdo3d.com">MDO3D</a> Platform &mdash; Track the Future</p>
+    </footer>
+</body>
+</html>

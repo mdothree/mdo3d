@@ -1,0 +1,6 @@
+/* Page-specific styles: json-diff.html */
+
+.diff-added   { background: rgba(16,185,129,0.15); color: #34D399; display: block; padding: 1px 8px; border-left: 3px solid var(--emerald); }
+    .diff-removed { background: rgba(239,68,68,0.15); color: #FCA5A5; display: block; padding: 1px 8px; border-left: 3px solid var(--danger); text-decoration: line-through; }
+    .diff-equal   { display: block; padding: 1px 8px; color: var(--slate-400); }
+    .diff-key     { color: #7DD3FC; }

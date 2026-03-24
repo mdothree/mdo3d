@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDO3D — AI Platform Ecosystem</title>
+<meta name="description" content="MDO3D builds AI-powered platforms across spiritual guidance, professional development, productivity, and commerce.">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mdo3d.com/">
+<link rel="canonical" href="https://mdo3d.com/">
+<meta property="og:title" content="MDO3D — AI Platform Ecosystem">
+<meta property="og:description" content="MDO3D builds AI-powered platforms across spiritual guidance, professional development, productivity, and commerce.">
+<meta property="og:image" content="https://mdo3d.com/og-image.svg">
+<meta property="og:site_name" content="MDO3D">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@mdo3d">
+<meta name="twitter:url" content="https://mdo3d.com/">
+<meta name="twitter:title" content="MDO3D — AI Platform Ecosystem">
+<meta name="twitter:description" content="MDO3D builds AI-powered platforms across spiritual guidance, professional development, productivity, and commerce.">
+<meta name="twitter:image" content="https://mdo3d.com/og-image.svg">
+
+<!-- LinkedIn -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Pinterest -->
+<meta name="pinterest-rich-pin" content="false">
+
+<!-- Discord / Slack unfurling -->
+<meta property="discord:webhook" content="">
+
+<!-- Theme & Mobile -->
+<meta name="theme-color" content="#2d1b69">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MDO3D">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "MDO3D",
+  "url": "https://mdo3d.com",
+  "logo": "https://mdo3d.com/logo.svg",
+  "description": "AI-powered platforms across spiritual guidance, professional development, productivity, and commerce.",
+  "founder": {
+    "@type": "Person",
+    "name": "Latarence Butts",
+    "url": "https://latarence.com"
+  },
+  "sameAs": [
+    "https://twitter.com/mdo3d",
+    "https://github.com/mdo3d"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "hello@mdo3d.com",
+    "contactType": "Customer Service"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232d1b69'/><text x='16' y='22' font-family='monospace' font-weight='600' font-size='12' fill='white'>M3</text></svg>">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0a0a0f;
+  --ink-80: #1a1a24;
+  --ink-60: #2e2e3d;
+  --ink-40: #5a5a72;
+  --ink-20: #9090a8;
+  --ink-10: #c4c4d4;
+  --ink-5: #eeeef4;
+  --paper: #f8f8fc;
+  --white: #ffffff;
+
+  --accent: #2d1b69;
+  --accent-mid: #4c2fa0;
+  --accent-soft: #ede8ff;
+
+  --gold: #c17f24;
+  --gold-soft: #fff4e0;
+
+  --green: #0d7a4e;
+  --green-soft: #e2f5ed;
+
+  --blue: #1a4fa3;
+  --blue-soft: #e8efff;
+
+  --rose: #a82040;
+  --rose-soft: #ffeef2;
+
+  --border: #e2e2ec;
+  --border-strong: #c8c8d8;
+
+  --radius: 6px;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(248,248,252,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 3rem;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 0.6rem;
+  text-decoration: none; color: var(--ink);
+}
+.logo-mark {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 500;
+  color: white; letter-spacing: -0.03em;
+}
+.logo-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  letter-spacing: -0.01em; color: var(--ink);
+}
+.nav-center { display: flex; gap: 0.25rem; }
+.nav-link {
+  color: var(--ink-40); text-decoration: none;
+  font-size: 0.82rem; font-weight: 500;
+  padding: 0.4rem 0.9rem; border-radius: 5px;
+  transition: color var(--transition), background var(--transition);
+}
+.nav-link:hover { color: var(--ink); background: var(--ink-5); }
+.nav-link.active { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 0.75rem; }
+.btn-ghost {
+  color: var(--ink-40); background: none; border: 1px solid var(--border);
+  padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.82rem;
+  font-weight: 500; cursor: pointer; text-decoration: none;
+  transition: all var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--border-strong); }
+.btn-solid {
+  color: white; background: var(--accent); border: none;
+  padding: 0.45rem 1.1rem; border-radius: 5px; font-size: 0.82rem;
+  font-weight: 500; cursor: pointer; text-decoration: none;
+  transition: background var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.btn-solid:hover { background: var(--accent-mid); }
+
+/* HERO */
+.hero {
+  padding: 7rem 3rem 5rem;
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5rem; align-items: center;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent-soft); color: var(--accent-mid);
+  padding: 0.3rem 0.8rem; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; margin-bottom: 1.5rem;
+}
+.hero-eyebrow-dot { width: 6px; height: 6px; background: var(--accent-mid); border-radius: 50%; }
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  line-height: 1.08; letter-spacing: -0.02em;
+  color: var(--ink); margin-bottom: 1.5rem;
+}
+.hero h1 em { font-style: italic; color: var(--accent-mid); }
+.hero-desc {
+  font-size: 1.05rem; line-height: 1.75; color: var(--ink-40);
+  margin-bottom: 2.5rem; font-weight: 300;
+}
+.hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.btn-hero {
+  background: var(--accent); color: white;
+  padding: 0.75rem 1.8rem; border-radius: 6px;
+  font-size: 0.88rem; font-weight: 500; text-decoration: none;
+  transition: background var(--transition), transform var(--transition);
+  border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+}
+.btn-hero:hover { background: var(--accent-mid); transform: translateY(-1px); }
+.btn-hero-outline {
+  background: transparent; color: var(--ink);
+  padding: 0.75rem 1.8rem; border-radius: 6px;
+  font-size: 0.88rem; font-weight: 500; text-decoration: none;
+  border: 1px solid var(--border-strong); cursor: pointer;
+  transition: all var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.btn-hero-outline:hover { border-color: var(--ink-40); background: var(--ink-5); }
+.hero-meta { display: flex; gap: 2rem; }
+.meta-item { }
+.meta-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--ink); letter-spacing: -0.03em;
+}
+.meta-label { font-size: 0.75rem; color: var(--ink-20); font-weight: 400; margin-top: 0.1rem; }
+
+/* HERO VISUAL */
+.hero-visual { position: relative; }
+.hero-card-stack { position: relative; height: 400px; }
+.stack-card {
+  position: absolute; background: white;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stack-card:hover { transform: translateY(-4px) !important; box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important; }
+.card-c1 { width: 260px; top: 0; left: 30px; transform: rotate(-2deg); z-index: 1; }
+.card-c2 { width: 260px; top: 60px; left: 110px; transform: rotate(1deg); z-index: 2; }
+.card-c3 { width: 240px; top: 140px; left: 20px; transform: rotate(-0.5deg); z-index: 3; }
+.card-c4 { width: 200px; top: 200px; left: 140px; transform: rotate(2deg); z-index: 4; }
+.stack-card-tag {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 20px;
+  margin-bottom: 0.75rem;
+}
+.stack-card-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.3rem; }
+.stack-card-sub { font-size: 0.78rem; color: var(--ink-40); line-height: 1.4; }
+.stack-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.live-pill {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.06em;
+  color: var(--green); background: var(--green-soft);
+  padding: 0.15rem 0.5rem; border-radius: 20px;
+  float: right; margin-top: 0.75rem;
+}
+.live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* SECTION STRUCTURE */
+.section { padding: 5rem 3rem; max-width: 1200px; margin: 0 auto; }
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-20);
+  margin-bottom: 0.75rem;
+}
+.section-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em; line-height: 1.15;
+  color: var(--ink); margin-bottom: 1rem;
+}
+.section-h2 em { font-style: italic; color: var(--accent-mid); }
+.section-desc { font-size: 0.95rem; color: var(--ink-40); line-height: 1.7; max-width: 540px; }
+
+/* CATEGORIES */
+.section-divider { height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto; }
+
+.categories { padding: 5rem 3rem; }
+.categories-inner { max-width: 1200px; margin: 0 auto; }
+.categories-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+.cat-card {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 2rem; position: relative; overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+  text-decoration: none; color: inherit; display: block;
+}
+.cat-card:hover { transform: translateY(-3px); }
+.cat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  opacity: 0; transition: opacity var(--transition);
+}
+.cat-card:hover::before { opacity: 1; }
+.cat-card:hover .cat-arrow { transform: translateX(3px); }
+
+.cat-card.guidance::before { background: linear-gradient(90deg, #4c2fa0, #7c5ccf); }
+.cat-card.guidance:hover { border-color: #c4b5f4; box-shadow: 0 8px 32px rgba(76,47,160,0.08); }
+.cat-card.professional::before { background: linear-gradient(90deg, #1a4fa3, #4a7fd4); }
+.cat-card.professional:hover { border-color: #b8d0f8; box-shadow: 0 8px 32px rgba(26,79,163,0.08); }
+.cat-card.utilities::before { background: linear-gradient(90deg, #0d7a4e, #2ea86d); }
+.cat-card.utilities:hover { border-color: #a8dfc8; box-shadow: 0 8px 32px rgba(13,122,78,0.08); }
+.cat-card.lead::before { background: linear-gradient(90deg, #c17f24, #e0a83a); }
+.cat-card.lead:hover { border-color: #f0d498; box-shadow: 0 8px 32px rgba(193,127,36,0.08); }
+.cat-card.commerce::before { background: linear-gradient(90deg, #a82040, #d4506a); }
+.cat-card.commerce:hover { border-color: #f0b0be; box-shadow: 0 8px 32px rgba(168,32,64,0.08); }
+.cat-card.plugins::before { background: linear-gradient(90deg, #3a3a5c, #6060a0); }
+.cat-card.plugins:hover { border-color: #c4c4e0; box-shadow: 0 8px 32px rgba(58,58,92,0.08); }
+
+.cat-icon-wrap {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 1.25rem;
+}
+.ic-guidance { background: var(--accent-soft); }
+.ic-professional { background: var(--blue-soft); }
+.ic-utilities { background: var(--green-soft); }
+.ic-lead { background: var(--gold-soft); }
+.ic-commerce { background: var(--rose-soft); }
+.ic-plugins { background: var(--ink-5); }
+
+.cat-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+.cat-desc { font-size: 0.82rem; color: var(--ink-40); line-height: 1.55; margin-bottom: 1.25rem; }
+.cat-count { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-20); }
+.cat-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+.cat-link { font-size: 0.8rem; font-weight: 500; color: var(--ink-40); text-decoration: none; }
+.cat-arrow { display: inline-block; transition: transform var(--transition); }
+
+/* GUIDANCE SPOTLIGHT */
+.guidance-spotlight { padding: 5rem 3rem; background: var(--ink); }
+.guidance-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+.gs-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #9090a8; margin-bottom: 0.75rem; }
+.gs-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  line-height: 1.1; letter-spacing: -0.02em;
+  color: white; margin-bottom: 1.25rem;
+}
+.gs-h2 em { font-style: italic; color: #c4b5f4; }
+.gs-desc { font-size: 0.95rem; line-height: 1.75; color: #9090a8; margin-bottom: 2.5rem; font-weight: 300; }
+.btn-light {
+  background: white; color: var(--ink); padding: 0.75rem 1.8rem;
+  border-radius: 6px; font-size: 0.88rem; font-weight: 500;
+  text-decoration: none; transition: all var(--transition); border: none;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; display: inline-block;
+}
+.btn-light:hover { background: var(--ink-5); transform: translateY(-1px); }
+.btn-outline-light {
+  background: transparent; color: #9090a8; padding: 0.75rem 1.8rem;
+  border-radius: 6px; font-size: 0.88rem; font-weight: 500;
+  text-decoration: none; border: 1px solid #2e2e3d; cursor: pointer;
+  transition: all var(--transition); font-family: 'DM Sans', sans-serif; display: inline-block;
+}
+.btn-outline-light:hover { color: white; border-color: #5a5a72; }
+
+.guidance-platforms { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.gp-item {
+  background: #131320; border: 1px solid #2e2e3d;
+  border-radius: 8px; padding: 1.25rem;
+  transition: border-color var(--transition), background var(--transition);
+  cursor: pointer; text-decoration: none; color: inherit; display: block;
+}
+.gp-item:hover { background: #1a1a2e; border-color: #4c2fa0; }
+.gp-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.gp-name { font-size: 0.85rem; font-weight: 500; color: white; margin-bottom: 0.2rem; }
+.gp-tag { font-size: 0.7rem; color: #5a5a72; }
+.gp-item.new .gp-tag { color: #c4b5f4; }
+
+/* PLATFORM TABLE */
+.platform-table-section { padding: 5rem 3rem; max-width: 1200px; margin: 0 auto; }
+.filter-row { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.filter-btn {
+  background: white; border: 1px solid var(--border);
+  color: var(--ink-40); padding: 0.35rem 0.9rem; border-radius: 5px;
+  font-size: 0.78rem; font-weight: 500; cursor: pointer;
+  transition: all var(--transition); font-family: 'DM Sans', sans-serif;
+}
+.filter-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+.filter-btn:hover:not(.active) { border-color: var(--border-strong); color: var(--ink); }
+
+.ptable { width: 100%; border-collapse: collapse; }
+.ptable th {
+  text-align: left; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-20);
+  padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+.ptable td {
+  padding: 0.9rem 1rem; border-bottom: 1px solid var(--ink-5);
+  font-size: 0.85rem; vertical-align: middle;
+}
+.ptable tr:last-child td { border-bottom: none; }
+.ptable tr:hover td { background: var(--ink-5); }
+.ptable .platform-name { font-weight: 500; color: var(--ink); }
+.ptable .platform-desc { color: var(--ink-40); font-size: 0.8rem; }
+.ptable .platform-icon { font-size: 1.1rem; }
+.status-badge {
+  display: inline-block; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.04em; padding: 0.2rem 0.6rem; border-radius: 4px;
+}
+.s-live { background: var(--green-soft); color: var(--green); }
+.s-soon { background: var(--gold-soft); color: var(--gold); }
+.s-dev { background: var(--ink-5); color: var(--ink-20); }
+.cat-badge {
+  display: inline-block; font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.03em; padding: 0.2rem 0.6rem; border-radius: 4px;
+  background: var(--ink-5); color: var(--ink-40);
+}
+.ptable a.row-link {
+  color: var(--accent-mid); font-size: 0.75rem; text-decoration: none;
+  font-weight: 500; opacity: 0;
+  transition: opacity var(--transition);
+}
+.ptable tr:hover .row-link { opacity: 1; }
+
+/* TRUST BAR */
+.trust-bar { background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.5rem 3rem; }
+.trust-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+.trust-label { font-size: 0.75rem; color: var(--ink-20); white-space: nowrap; font-family: 'JetBrains Mono', monospace; }
+.trust-badges { display: flex; gap: 2rem; flex-wrap: wrap; }
+.trust-badge {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem; font-weight: 500; color: var(--ink-40);
+}
+.trust-badge-icon { font-size: 1rem; }
+
+/* FOOTER */
+footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; }
+.footer-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; margin-bottom: 1rem; }
+.footer-logo .logo-text { color: white; }
+.footer-tagline { font-size: 0.85rem; color: #5a5a72; line-height: 1.65; margin-bottom: 1rem; }
+.footer-sub { font-size: 0.72rem; color: #3a3a5c; }
+.footer-col h4 { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #5a5a72; margin-bottom: 1.25rem; font-family: 'JetBrains Mono', monospace; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-links a { font-size: 0.83rem; color: #3a3a5c; text-decoration: none; transition: color var(--transition); }
+.footer-links a:hover { color: white; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid #1a1a24; flex-wrap: wrap; gap: 1rem; }
+.footer-copy { font-size: 0.75rem; color: #3a3a5c; }
+.footer-legal { display: flex; gap: 1.5rem; }
+.footer-legal a { font-size: 0.72rem; color: #3a3a5c; text-decoration: none; transition: color var(--transition); }
+.footer-legal a:hover { color: #9090a8; }
+
+/* FADE ANIMATION */
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: none; }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  nav { padding: 0 1.5rem; }
+  .nav-center { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 4rem 1.5rem 3rem; gap: 3rem; }
+  .hero-visual { display: none; }
+  .cat-grid { grid-template-columns: 1fr 1fr; }
+  .guidance-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .section, .platform-table-section, .categories { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .guidance-spotlight { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .trust-bar { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+@media (max-width: 600px) {
+  .cat-grid { grid-template-columns: 1fr; }
+  .guidance-platforms { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .trust-inner { flex-direction: column; align-items: flex-start; }
+  .hero-meta { gap: 1.25rem; }
+  .ptable th:nth-child(3), .ptable td:nth-child(3),
+  .ptable th:nth-child(4), .ptable td:nth-child(4) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="logo-mark">M3</div>
+    <span class="logo-text">MDO3D</span>
+  </a>
+  <div class="nav-center">
+    <a href="#categories" class="nav-link">Platforms</a>
+    <a href="https://guidance.mdo3d.com" class="nav-link">Guidance</a>
+    <a href="#professional" class="nav-link">Professional</a>
+    <a href="#utilities" class="nav-link">Utilities</a>
+    <a href="#commerce" class="nav-link">Commerce</a>
+  </div>
+  <div class="nav-right">
+    <a href="#contact" class="btn-ghost">Contact</a>
+    <a href="https://guidance.mdo3d.com" class="btn-solid">Explore Guidance →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section style="background: white; border-bottom: 1px solid var(--border);">
+  <div class="hero">
+    <div class="hero-content fade-in">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        AI Platform Ecosystem
+      </div>
+      <h1>One ecosystem.<br><em>Many dimensions</em><br>of intelligence.</h1>
+      <p class="hero-desc">MDO3D builds AI-powered tools across spiritual guidance, professional development, productivity utilities, and commerce — each platform engineered with precision and purpose.</p>
+      <div class="hero-actions">
+        <a href="#categories" class="btn-hero">Browse All Platforms</a>
+        <a href="https://guidance.mdo3d.com" class="btn-hero-outline">Visit Guidance →</a>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <div class="meta-num">15+</div>
+          <div class="meta-label">Active platforms</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-num">6</div>
+          <div class="meta-label">Categories</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-num">2024</div>
+          <div class="meta-label">Founded</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="stack-card card-c1">
+          <div class="stack-icon">🔮</div>
+          <div class="stack-card-tag" style="background:#ede8ff;color:#4c2fa0;">Guidance</div>
+          <div class="stack-card-title">Oracle Cards</div>
+          <div class="stack-card-sub">AI-powered divination & personal readings</div>
+          <div class="live-pill"><div class="live-dot"></div> Live</div>
+        </div>
+        <div class="stack-card card-c2">
+          <div class="stack-icon">📄</div>
+          <div class="stack-card-tag" style="background:#e8efff;color:#1a4fa3;">Professional</div>
+          <div class="stack-card-title">Resume Analyzer</div>
+          <div class="stack-card-sub">AI resume scoring & optimization</div>
+          <div class="live-pill"><div class="live-dot"></div> Live</div>
+        </div>
+        <div class="stack-card card-c3">
+          <div class="stack-icon">🛍️</div>
+          <div class="stack-card-tag" style="background:#ffeef2;color:#a82040;">Commerce</div>
+          <div class="stack-card-title">Runwae</div>
+          <div class="stack-card-sub">Next-gen commerce platform</div>
+          <div class="live-pill"><div class="live-dot"></div> Live</div>
+        </div>
+        <div class="stack-card card-c4" style="background:var(--ink);">
+          <div style="font-size:1rem;margin-bottom:0.4rem;">✦</div>
+          <div style="font-size:0.78rem;font-weight:600;color:white;margin-bottom:0.2rem;">guidance.mdo3d.com</div>
+          <div style="font-size:0.7rem;color:#5a5a72;">Mystical AI experiences</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <span class="trust-label">Powered by</span>
+    <div class="trust-badges">
+      <div class="trust-badge"><span class="trust-badge-icon">▲</span> Next.js</div>
+      <div class="trust-badge"><span class="trust-badge-icon">⚛</span> React</div>
+      <div class="trust-badge"><span class="trust-badge-icon">🤖</span> AI / ML</div>
+      <div class="trust-badge"><span class="trust-badge-icon">◆</span> TypeScript</div>
+      <div class="trust-badge"><span class="trust-badge-icon">⚡</span> Vercel Edge</div>
+      <div class="trust-badge"><span class="trust-badge-icon">🔒</span> Privacy First</div>
+    </div>
+    <span class="trust-label" style="text-align:right;">MDO3D</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories" id="categories">
+  <div class="categories-inner">
+    <div class="categories-header fade-in">
+      <div>
+        <div class="section-label">Platform Categories</div>
+        <h2 class="section-h2">Everything we build,<br><em>organized by purpose</em></h2>
+      </div>
+      <a href="#all-platforms" class="btn-ghost" style="white-space:nowrap;">View all platforms →</a>
+    </div>
+    <div class="cat-grid fade-in">
+
+      <div class="cat-card guidance" onclick="window.location='https://guidance.mdo3d.com'">
+        <div class="cat-icon-wrap ic-guidance">🔮</div>
+        <div class="cat-title">Spiritual Guidance</div>
+        <div class="cat-desc">Oracle readings, dream interpretation, numerology, astrology, and more. AI meets ancient wisdom.</div>
+        <div class="cat-count">6 platforms · guidance.mdo3d.com</div>
+        <div class="cat-footer">
+          <span class="cat-link">guidance.mdo3d.com</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="cat-card professional" id="professional" onclick="window.location='#'">
+        <div class="cat-icon-wrap ic-professional">💼</div>
+        <div class="cat-title">Professional & Career</div>
+        <div class="cat-desc">Resume analysis, interview coaching, LinkedIn optimization, and career trajectory tools.</div>
+        <div class="cat-count">4 platforms · rigor.design</div>
+        <div class="cat-footer">
+          <span class="cat-link">rigor.design</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="cat-card utilities" id="utilities" onclick="window.location='#'">
+        <div class="cat-icon-wrap ic-utilities">⚙️</div>
+        <div class="cat-title">Utilities & Productivity</div>
+        <div class="cat-desc">Smart notes, focus tools, research accelerators, and ritual planning systems.</div>
+        <div class="cat-count">4 platforms · mdothree.com</div>
+        <div class="cat-footer">
+          <span class="cat-link">mdothree.com</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="cat-card lead" onclick="window.location='#'">
+        <div class="cat-icon-wrap ic-lead">🎯</div>
+        <div class="cat-title">Lead Generation</div>
+        <div class="cat-desc">AI-driven lead scoring, outreach engines, and pipeline intelligence for growth teams.</div>
+        <div class="cat-count">3 platforms</div>
+        <div class="cat-footer">
+          <span class="cat-link">Explore tools</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="cat-card commerce" id="commerce" onclick="window.location='#'">
+        <div class="cat-icon-wrap ic-commerce">🛍️</div>
+        <div class="cat-title">Commerce</div>
+        <div class="cat-desc">Runwae and next-generation commerce infrastructure, built for the AI era.</div>
+        <div class="cat-count">1 platform · runwae.com</div>
+        <div class="cat-footer">
+          <span class="cat-link">runwae.com</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="cat-card plugins" onclick="window.location='#'">
+        <div class="cat-icon-wrap ic-plugins">🔌</div>
+        <div class="cat-title">Plugins & Extensions</div>
+        <div class="cat-desc">Browser extensions and integrations that embed AI into your existing workflows.</div>
+        <div class="cat-count">4 platforms</div>
+        <div class="cat-footer">
+          <span class="cat-link">Explore tools</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GUIDANCE SPOTLIGHT -->
+<section class="guidance-spotlight">
+  <div class="guidance-inner fade-in">
+    <div>
+      <div class="gs-label">Featured Subdomain</div>
+      <h2 class="gs-h2">Spiritual intelligence<br>meets <em>ancient wisdom</em></h2>
+      <p class="gs-desc">guidance.mdo3d.com is our dedicated platform for AI-powered divination, dream interpretation, and mystical exploration. A distinct experience built for seekers, intuitives, and the spiritually curious.</p>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <a href="https://guidance.mdo3d.com" class="btn-light">Visit Guidance</a>
+        <a href="https://guidance.mdo3d.com/oracle" class="btn-outline-light">Try Oracle Cards →</a>
+      </div>
+    </div>
+    <div class="guidance-platforms">
+      <a href="https://guidance.mdo3d.com/oracle" class="gp-item new">
+        <div class="gp-icon">🔮</div>
+        <div class="gp-name">Oracle Cards</div>
+        <div class="gp-tag">✦ Flagship</div>
+      </a>
+      <a href="https://guidance.mdo3d.com/dreams" class="gp-item">
+        <div class="gp-icon">🌙</div>
+        <div class="gp-name">Dream Interpreter</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://guidance.mdo3d.com/tarot" class="gp-item">
+        <div class="gp-icon">🃏</div>
+        <div class="gp-name">Tarot Readings</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://guidance.mdo3d.com/numerology" class="gp-item">
+        <div class="gp-icon">🔢</div>
+        <div class="gp-name">Numerology</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://guidance.mdo3d.com/astrology" class="gp-item">
+        <div class="gp-icon">⭐</div>
+        <div class="gp-name">Astrology</div>
+        <div class="gp-tag">Coming Soon</div>
+      </a>
+      <a href="https://guidance.mdo3d.com/fengshui" class="gp-item">
+        <div class="gp-icon">☯️</div>
+        <div class="gp-name">Feng Shui</div>
+        <div class="gp-tag">Coming Soon</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ALL PLATFORMS TABLE -->
+<section class="platform-table-section" id="all-platforms">
+  <div class="fade-in">
+    <div class="section-label">Full Directory</div>
+    <h2 class="section-h2" style="margin-bottom:2rem;">All <em>platforms</em></h2>
+  </div>
+  <div class="filter-row fade-in">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="spiritual">Guidance</button>
+    <button class="filter-btn" data-cat="professional">Professional</button>
+    <button class="filter-btn" data-cat="utility">Utilities</button>
+    <button class="filter-btn" data-cat="lead">Lead Gen</button>
+    <button class="filter-btn" data-cat="commerce">Commerce</button>
+    <button class="filter-btn" data-cat="plugins">Plugins</button>
+  </div>
+  <table class="ptable fade-in" id="platformTable">
+    <thead>
+      <tr>
+        <th style="width:40px;"></th>
+        <th>Platform</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th style="width:80px;"></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a class="footer-logo" href="/">
+          <div class="logo-mark">M3</div>
+          <span class="logo-text">MDO3D</span>
+        </a>
+        <p class="footer-tagline">Building AI-powered platforms across spiritual guidance, professional development, utilities, and commerce.</p>
+        <p class="footer-sub">MDO3D</p>
+      </div>
+      <div class="footer-col">
+        <h4>Subdomains</h4>
+        <ul class="footer-links">
+          <li><a href="https://guidance.mdo3d.com">guidance.mdo3d.com</a></li>
+          <li><a href="#">rigor.design</a></li>
+          <li><a href="#">mdothree.com</a></li>
+          <li><a href="#">runwae.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul class="footer-links">
+          <li><a href="#categories">Spiritual Guidance</a></li>
+          <li><a href="#professional">Professional</a></li>
+          <li><a href="#utilities">Utilities</a></li>
+          <li><a href="#commerce">Commerce</a></li>
+          <li><a href="#all-platforms">All Platforms</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About MDO3D</a></li>
+          <li><a href="#">MDO3D</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 MDO3D · All rights reserved</span>
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Platform data
+const platforms = [
+  { icon:'🔮', name:'Oracle Cards', desc:'AI-powered divination & personalized readings', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/oracle' },
+  { icon:'🌙', name:'Dream Interpreter', desc:'Decode subconscious symbols with AI analysis', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/dreams' },
+  { icon:'🃏', name:'Tarot Readings', desc:'Full spread tarot with AI interpretation', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/tarot' },
+  { icon:'🔢', name:'Numerology Lab', desc:'Life path numbers and numeric pattern discovery', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/numerology' },
+  { icon:'⭐', name:'Astrology Charts', desc:'Natal charts and planetary transit readings', cat:'spiritual', status:'soon', href:'https://guidance.mdo3d.com/astrology' },
+  { icon:'☯️', name:'Feng Shui Advisor', desc:'Space harmony guidance powered by AI', cat:'spiritual', status:'soon', href:'https://guidance.mdo3d.com/fengshui' },
+  { icon:'📄', name:'Resume Analyzer', desc:'AI resume optimization with job-specific gap analysis', cat:'professional', status:'live', href:'#' },
+  { icon:'🎤', name:'Interview Coach', desc:'Real-time AI mock interviews and feedback', cat:'professional', status:'live', href:'#' },
+  { icon:'📊', name:'Career Compass', desc:'Long-term career planning with labor market AI', cat:'professional', status:'soon', href:'#' },
+  { icon:'💼', name:'LinkedIn Optimizer', desc:'AI profile and outreach optimization', cat:'professional', status:'dev', href:'#' },
+  { icon:'📝', name:'Smart Notes', desc:'AI-enhanced note-taking with auto summarization', cat:'utility', status:'live', href:'#' },
+  { icon:'⏱️', name:'Focus Timer', desc:'Intelligent Pomodoro adapted to your rhythm', cat:'utility', status:'live', href:'#' },
+  { icon:'📅', name:'Ritual Planner', desc:'Productivity planning aligned with energy cycles', cat:'utility', status:'soon', href:'#' },
+  { icon:'🔍', name:'Research Lens', desc:'AI-accelerated research and source synthesis', cat:'utility', status:'dev', href:'#' },
+  { icon:'🎯', name:'Lead Alchemist', desc:'AI lead scoring and conversion optimization', cat:'lead', status:'live', href:'#' },
+  { icon:'📧', name:'Outreach Engine', desc:'Personalized AI-powered cold email campaigns', cat:'lead', status:'soon', href:'#' },
+  { icon:'📈', name:'Pipeline Vision', desc:'Sales pipeline intelligence and forecasting', cat:'lead', status:'dev', href:'#' },
+  { icon:'🛍️', name:'Runwae', desc:'Next-generation AI-powered commerce platform', cat:'commerce', status:'live', href:'#' },
+  { icon:'🔌', name:'Chrome Companion', desc:'AI browsing assistant and workflow extension', cat:'plugins', status:'live', href:'#' },
+  { icon:'✍️', name:'Writer Block', desc:'AI writing assistant browser extension', cat:'plugins', status:'live', href:'#' },
+  { icon:'💡', name:'Insight Tag', desc:'Automatic content tagging and knowledge graph', cat:'plugins', status:'soon', href:'#' },
+  { icon:'🔒', name:'Cipher Key', desc:'Privacy-first AI interaction wrapper', cat:'plugins', status:'dev', href:'#' },
+];
+
+const statusMap = { live: ['s-live','Live'], soon: ['s-soon','Coming Soon'], dev: ['s-dev','In Dev'] };
+const catLabels = { spiritual:'Guidance', professional:'Professional', utility:'Utility', lead:'Lead Gen', commerce:'Commerce', plugins:'Plugin' };
+
+function renderTable(cat) {
+  const filtered = cat === 'all' ? platforms : platforms.filter(p => p.cat === cat);
+  document.getElementById('tableBody').innerHTML = filtered.map(p => `
+    <tr>
+      <td class="platform-icon">${p.icon}</td>
+      <td>
+        <div class="platform-name">${p.name}</div>
+        <div class="platform-desc">${p.desc}</div>
+      </td>
+      <td><span class="cat-badge">${catLabels[p.cat]}</span></td>
+      <td><span class="status-badge ${statusMap[p.status][0]}">${statusMap[p.status][1]}</span></td>
+      <td><a href="${p.href}" class="row-link">Open →</a></td>
+    </tr>
+  `).join('');
+}
+renderTable('all');
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable(btn.dataset.cat);
+  });
+});
+
+// Fade in
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

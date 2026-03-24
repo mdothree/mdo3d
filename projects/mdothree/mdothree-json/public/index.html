@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Tools — mdothree</title>
+  <meta name="description" content="Free JSON tools — format, validate, convert to YAML/CSV/XML/TypeScript, diff, Base64, and JSONPath." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/index" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="JSON Tools — mdothree" />
+  <meta property="og:description" content="Free JSON tools — format, validate, convert to YAML/CSV/XML/TypeScript, diff, Base64, and JSONPath." />
+  <meta property="og:url"         content="https://mdothree.com/index" />
+  <meta property="og:site_name"   content="mdothree" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230d7a4e'/><text x='16' y='22' font-family='monospace' font-weight='700' font-size='14' fill='white'>{ }</text></svg>">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="JSON Tools — mdothree" />
+  <meta name="twitter:description" content="Free JSON tools — format, validate, convert to YAML/CSV/XML/TypeScript, diff, Base64, and JSONPath." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html">Format</a></li>
+        <li><a href="validate.html">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html">→ CSV</a></li>
+        <li><a href="json-diff.html">Diff</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main id="main-content">
+    <section class="hero">
+      <div class="container">
+        <span class="hero-tag animate-fade-up">{ } JSON Tools</span>
+        <h1 class="animate-fade-up-2">Format, validate,<br><em>convert JSON.</em></h1>
+        <p class="animate-fade-up-3">Everything you need to work with JSON data — formatter, validator, converters, diff, and more.</p>
+      </div>
+    </section>
+
+    <section class="container animate-fade-up-4">
+      <div class="tools-grid">
+        <a href="format.html" class="tool-card">
+          <div class="tool-card-icon">✨</div>
+          <div class="tool-card-title">Format / Beautify</div>
+          <div class="tool-card-desc">Pretty-print JSON with syntax highlighting and indentation.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="validate.html" class="tool-card">
+          <div class="tool-card-icon">✅</div>
+          <div class="tool-card-title">Validate JSON</div>
+          <div class="tool-card-desc">Check syntax and pinpoint errors with line numbers.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="to-yaml.html" class="tool-card">
+          <div class="tool-card-icon">📄</div>
+          <div class="tool-card-title">JSON → YAML</div>
+          <div class="tool-card-desc">Convert JSON to YAML format instantly.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="to-csv.html" class="tool-card">
+          <div class="tool-card-icon">📊</div>
+          <div class="tool-card-title">JSON → CSV</div>
+          <div class="tool-card-desc">Flatten JSON arrays to CSV table format.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="to-xml.html" class="tool-card">
+          <div class="tool-card-icon">🏷️</div>
+          <div class="tool-card-title">JSON → XML</div>
+          <div class="tool-card-desc">Convert JSON objects to valid XML structure.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="to-typescript.html" class="tool-card">
+          <div class="tool-card-icon">🔷</div>
+          <div class="tool-card-title">JSON → TypeScript</div>
+          <div class="tool-card-desc">Generate TypeScript interfaces from JSON data.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="json-diff.html" class="tool-card">
+          <div class="tool-card-icon">⟺</div>
+          <div class="tool-card-title">JSON Diff</div>
+          <div class="tool-card-desc">Compare two JSON objects and highlight differences.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+        <a href="base64.html" class="tool-card">
+          <div class="tool-card-icon">🔐</div>
+          <div class="tool-card-title">Base64 ↔ JSON</div>
+          <div class="tool-card-desc">Encode JSON to Base64 or decode Base64 back to JSON.</div>
+          <div class="tool-card-arrow">→</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="format.html">Format</a>
+        <a href="validate.html">Validate</a>
+        <a href="to-yaml.html">YAML</a>
+        <a href="to-csv.html">CSV</a>
+        <a href="json-diff.html">Diff</a>
+      </div>
+      <div class="footer-copy">© 2024 mdothree.com — Free utilities for everyone.</div>
+    </div>
+  </footer>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

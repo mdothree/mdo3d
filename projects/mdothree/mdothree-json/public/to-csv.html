@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON to CSV — mdothree</title>
+  <meta name="description" content="Flatten JSON arrays of objects to CSV format. Choose delimiter. Download as .csv." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/to-csv" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="JSON to CSV — mdothree" />
+  <meta property="og:description" content="Flatten JSON arrays of objects to CSV format. Choose delimiter. Download as .csv." />
+  <meta property="og:url"         content="https://mdothree.com/to-csv" />
+  <meta property="og:site_name"   content="mdothree" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="JSON to CSV — mdothree" />
+  <meta name="twitter:description" content="Flatten JSON arrays of objects to CSV format. Choose delimiter. Download as .csv." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html">Format</a></li>
+        <li><a href="validate.html">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html" class="active">→ CSV</a></li>
+        <li><a href="json-diff.html">Diff</a></li>
+        <li><a href="to-xml.html">→ XML</a></li>
+        <li><a href="to-typescript.html">→ TS</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="json-path.html">JSONPath ✨</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main class="tool-page" id="main-content">
+    <div class="container">
+      <div class="tool-header animate-fade-up">
+        <div class="breadcrumb"><a href="index.html">JSON Tools</a><span>/</span> JSON → CSV</div>
+        <h1>📊 JSON → CSV</h1>
+        <p>Flatten a JSON array of objects to a CSV table.</p>
+      </div>
+
+      <div class="tool-layout" class="animate-fade-up-2">
+        <div class="panel">
+          <div class="panel-title">JSON Input (array of objects)</div>
+          <textarea class="form-textarea" id="inputJson" style="min-height:380px;font-size:0.82rem;" placeholder='[{"name":"Alice","age":30},{"name":"Bob","age":25}]'></textarea>
+          <div class="form-group mt-16">
+            <label class="form-label">Delimiter</label>
+            <select class="form-select" id="delimiter" style="max-width:160px;">
+              <option value=",">Comma (,)</option>
+              <option value=";">Semicolon (;)</option>
+              <option value="&#9;">Tab</option>
+              <option value="|">Pipe (|)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="convertBtn">→ Convert to CSV</button>
+        </div>
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div class="panel-title" style="border:none;margin:0;padding:0;">CSV Output</div>
+            <div class="btn-group">
+              <button class="btn btn-ghost" id="copyBtn" style="padding:6px 12px;font-size:0.78rem;">Copy</button>
+              <button class="btn btn-ghost" id="dlBtn" style="padding:6px 12px;font-size:0.78rem;display:none;">⬇️ .csv</button>
+            </div>
+          </div>
+          <div class="code-output" id="output" style="min-height:380px;"></div>
+          <div id="alertArea" class="mt-12"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div class="footer-copy">© 2024 mdothree.com</div></div></footer>
+
+  
+  <script type="module" src="js/pages/to-csv.js"></script>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

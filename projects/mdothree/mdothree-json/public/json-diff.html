@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Diff — mdothree</title>
+  <meta name="description" content="Compare two JSON objects and highlight added, removed, and changed values." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/json-diff" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="JSON Diff — mdothree" />
+  <meta property="og:description" content="Compare two JSON objects and highlight added, removed, and changed values." />
+  <meta property="og:url"         content="https://mdothree.com/json-diff" />
+  <meta property="og:site_name"   content="mdothree" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="JSON Diff — mdothree" />
+  <meta name="twitter:description" content="Compare two JSON objects and highlight added, removed, and changed values." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/pages/json-diff.css" />
+  
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html">Format</a></li>
+        <li><a href="validate.html">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html">→ CSV</a></li>
+        <li><a href="json-diff.html" class="active">Diff</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main class="tool-page" id="main-content">
+    <div class="container">
+      <div class="tool-header animate-fade-up">
+        <div class="breadcrumb"><a href="index.html">JSON Tools</a><span>/</span> JSON Diff</div>
+        <h1>⟺ JSON Diff</h1>
+        <p>Compare two JSON objects and visualize what changed.</p>
+      </div>
+
+      <div class="tool-layout" class="animate-fade-up-2">
+        <div class="panel">
+          <div class="panel-title">JSON A (original)</div>
+          <textarea class="form-textarea" id="jsonA" style="min-height:280px;font-size:0.82rem;" placeholder='{"name":"Alice","age":30}'></textarea>
+        </div>
+        <div class="panel">
+          <div class="panel-title">JSON B (modified)</div>
+          <textarea class="form-textarea" id="jsonB" style="min-height:280px;font-size:0.82rem;" placeholder='{"name":"Alice","age":31,"email":"alice@example.com"}'></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin:16px 0;align-items:center;" class="animate-fade-up-3">
+        <button class="btn btn-primary" id="diffBtn">⟺ Compare</button>
+        <div class="toggle-group" style="padding:0;">
+          <label class="toggle"><input type="checkbox" id="ignoreOrder" /><span class="toggle-slider"></span></label>
+          <span class="toggle-label text-sm">Ignore array order</span>
+        </div>
+      </div>
+
+      <div class="panel animate-fade-up-4" id="resultPanel" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div class="panel-title" style="border:none;margin:0;padding:0;">Diff Result</div>
+          <div style="display:flex;gap:16px;font-family:var(--font-mono);font-size:0.78rem;">
+            <span style="color:var(--emerald);">+ <span id="addedCount">0</span> added</span>
+            <span style="color:var(--danger);">- <span id="removedCount">0</span> removed</span>
+            <span style="color:var(--warning);">~ <span id="changedCount">0</span> changed</span>
+          </div>
+        </div>
+        <div class="code-output" id="diffOutput" style="min-height:200px;max-height:500px;"></div>
+      </div>
+      <div id="alertArea" class="mt-16"></div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div class="footer-copy">© 2024 mdothree.com</div></div></footer>
+
+  
+  <script type="module" src="js/pages/json-diff.js"></script>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

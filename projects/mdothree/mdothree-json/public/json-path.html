@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSONPath Query — mdothree</title>
+  <meta name="description" content="Query JSON data using JSONPath expressions. Filters, wildcards, recursive descent, slices." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mdothree.com/json-path" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="JSONPath Query — mdothree" />
+  <meta property="og:description" content="Query JSON data using JSONPath expressions. Filters, wildcards, recursive descent, slices." />
+  <meta property="og:url"         content="https://mdothree.com/json-path" />
+  <meta property="og:site_name"   content="mdothree" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="JSONPath Query — mdothree" />
+  <meta name="twitter:description" content="Query JSON data using JSONPath expressions. Filters, wildcards, recursive descent, slices." />
+  <!-- PWA -->
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#10B981" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <!-- DNS prefetch / preconnect for external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/pages/json-path.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <ul class="nav-links">
+        <li><a href="format.html">Format</a></li>
+        <li><a href="validate.html">Validate</a></li>
+        <li><a href="to-yaml.html">→ YAML</a></li>
+        <li><a href="to-csv.html">→ CSV</a></li>
+        <li><a href="json-diff.html">Diff</a></li>
+        <li><a href="to-xml.html">→ XML</a></li>
+        <li><a href="to-typescript.html">→ TS</a></li>
+        <li><a href="base64.html">Base64</a></li>
+        <li><a href="json-path.html" class="active">JSONPath</a></li>
+        <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
+        <li><a href="account.html">Account</a></li>
+      </ul>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+
+  <main class="tool-page" id="main-content">
+    <div class="container">
+      <div class="tool-header animate-fade-up">
+        <div class="breadcrumb"><a href="index.html">JSON Tools</a><span>/</span> JSONPath</div>
+        <h1>🔎 JSONPath Query</h1>
+        <p>Query JSON data using JSONPath expressions. Supports filters, wildcards, slices, and recursive descent.</p>
+      </div>
+
+      <!-- Pro gate banner -->
+      <div class="alert alert-info animate-fade-up" id="freeBanner" style="margin-bottom:20px;">
+        🔒 <strong>Pro feature:</strong> JSONPath is available on the Pro plan.
+        <a href="#" id="upgradeLink" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade →</a>
+      </div>
+
+      <div class="tool-layout animate-fade-up-2" id="toolContent">
+        <!-- Left: Input -->
+        <div>
+          <div class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div class="panel-title" style="border:none;margin:0;padding:0;">JSON Input</div>
+              <button class="btn btn-ghost" id="sampleBtn" style="padding:6px 12px;font-size:0.78rem;">Load sample</button>
+            </div>
+            <textarea class="form-textarea" id="jsonInput" style="min-height:320px;font-size:0.82rem;" placeholder='{"store":{"books":[{"title":"Foo","price":8.99},{"title":"Bar","price":12.99}]}}'></textarea>
+          </div>
+
+          <div class="panel mt-16">
+            <div class="panel-title">JSONPath Expression</div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input type="text" class="form-input" id="pathInput"
+                placeholder="$.store.books[*].title" style="flex:1;font-family:var(--font-mono);" />
+              <button class="btn btn-primary" id="queryBtn">Run →</button>
+            </div>
+            <div class="mt-8" id="pathError" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--danger);min-height:18px;"></div>
+          </div>
+
+          <!-- Quick reference -->
+          <div class="panel mt-16">
+            <div class="panel-title">Quick Reference</div>
+            <div id="examples" style="display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
+        </div>
+
+        <!-- Right: Results -->
+        <div>
+          <div class="panel" style="min-height:420px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <div class="panel-title" style="border:none;margin:0;padding:0;">
+                Results <span id="resultCount" class="text-xs text-muted text-mono" style="margin-left:8px;"></span>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-ghost" id="copyBtn" style="padding:6px 12px;font-size:0.78rem;display:none;">Copy</button>
+              </div>
+            </div>
+            <div class="code-output" id="resultOutput" style="min-height:360px;color:var(--slate-500);font-style:italic;">
+              Results will appear here...
+            </div>
+          </div>
+
+          <div class="panel mt-16">
+            <div class="panel-title">Expression History</div>
+            <div id="history" style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;"></div>
+            <p class="text-xs text-muted mt-8" id="historyEmpty">No queries yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div class="footer-copy">© 2024 mdothree.com</div></div></footer>
+
+  <script type="module" src="js/pages/json-path.js"></script>
+  <script src="js/nav-toggle.js"></script>
+</body>
+</html>

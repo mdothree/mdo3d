@@ -1,0 +1,9 @@
+{
+  "name": "blacklab-landing",
+  "version": "1.0.0",
+  "description": "Blacklab B - Future Technology Trackers landing page",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  }
+}

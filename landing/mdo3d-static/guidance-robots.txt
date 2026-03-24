@@ -1,0 +1,9 @@
+# robots.txt for guidance.mdo3d.com
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://guidance.mdo3d.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
