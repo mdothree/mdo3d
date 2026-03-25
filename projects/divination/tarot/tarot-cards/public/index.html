@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Readings | MDO3D Guidance</title>
+    <meta name="description" content="Get your free tarot reading online. Draw cards from a complete 78-card deck and receive AI-powered interpretations.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Tarot Readings | MDO3D Guidance">
+    <meta property="og:description" content="Get your free tarot reading online. Draw cards from a complete 78-card deck and receive AI-powered interpretations.">
+    <meta property="og:image" content="./og-image.jpg">
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234c2fa0'/><text x='16' y='23' font-size='16' text-anchor='middle' fill='%23c4b5f4'>🃏</text></svg>">
+    <meta property="og:url" content="https://guidance.mdo3d.com/tarot">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tarot Readings | MDO3D Guidance">
+    <meta name="twitter:description" content="Get your free tarot reading online. Draw cards from a complete 78-card deck and receive AI-powered interpretations.">
+    <meta name="twitter:image" content="./og-image.jpg">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <h1>✨ Tarot Reading</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#spreads">Spreads</a>
+                <a href="#pricing">Pricing</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h2 class="hero-title">Seek Guidance from the Tarot</h2>
+                <p class="hero-subtitle">78 sacred cards hold the wisdom you seek</p>
+                
+                <!-- Question Input -->
+                <div class="question-section" id="question-section">
+                    <label for="question-input">What guidance do you seek?</label>
+                    <textarea 
+                        id="question-input" 
+                        placeholder="Type your question here... (optional)"
+                        rows="3"
+                        maxlength="200"></textarea>
+                    <p class="char-count"><span id="char-count">0</span>/200</p>
+                </div>
+
+                <!-- Spread Selection -->
+                <div class="spread-selector">
+                    <h3>Choose Your Spread</h3>
+                    <div class="spread-options">
+                        <div class="spread-option active" data-spread="single">
+                            <div class="spread-badge">FREE</div>
+                            <h4>Single Card</h4>
+                            <p>Quick daily guidance</p>
+                            <span class="price">Free</span>
+                        </div>
+                        <div class="spread-option" data-spread="three">
+                            <div class="spread-badge premium">PREMIUM</div>
+                            <h4>Three Card</h4>
+                            <p>Past • Present • Future</p>
+                            <span class="price">$4.99</span>
+                        </div>
+                        <div class="spread-option" data-spread="celtic">
+                            <div class="spread-badge premium">PREMIUM</div>
+                            <h4>Celtic Cross</h4>
+                            <p>Deep 10-card insight</p>
+                            <span class="price">$9.99</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Draw Button -->
+                <button class="btn-primary btn-draw" id="draw-btn">
+                    <span>Draw Cards</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Card Display Section (Hidden initially) -->
+        <section class="card-display" id="card-display" style="display: none;">
+            <div class="container">
+                <h3 class="section-title">Your Cards</h3>
+                <div class="cards-container" id="cards-container">
+                    <!-- Cards will be rendered here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Reading Section (Hidden initially) -->
+        <section class="reading-section" id="reading-section" style="display: none;">
+            <div class="container">
+                <div class="reading-content">
+                    <h3>Your Reading</h3>
+                    
+                    <!-- Free Reading -->
+                    <div class="free-reading" id="free-reading">
+                        <div class="card-meanings" id="card-meanings">
+                            <!-- Card interpretations will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Premium Upsell -->
+                    <div class="premium-upsell" id="premium-upsell">
+                        <h4>Want Deeper Insights?</h4>
+                        <p>Unlock AI-powered personalized interpretation of your reading</p>
+                        <ul class="premium-features">
+                            <li>✨ Personalized AI interpretation</li>
+                            <li>✨ Deep insights and connections</li>
+                            <li>✨ Actionable guidance</li>
+                            <li>✨ Custom affirmation</li>
+                        </ul>
+                        <button class="btn-premium" id="upgrade-btn" onclick="window.location.href='https://buy.stripe.com/7sYfZg4cU8ad5yc1Fx8k805'">
+                            Get Premium Reading - <span id="premium-price">$2.99</span>
+                        </button>
+                    </div>
+
+                    <!-- Share Button -->
+                    <button class="btn-share" id="share-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Share My Reading
+                    </button>
+
+                    <!-- New Reading Button -->
+                    <button class="btn-secondary" id="new-reading-btn">Draw New Cards</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="section-light">
+            <div class="container">
+                <h2>How Tarot Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">🎴</div>
+                        <h3>Ask Your Question</h3>
+                        <p>Focus on what you seek guidance about</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">✨</div>
+                        <h3>Choose a Spread</h3>
+                        <p>Select from single card to Celtic Cross</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🔮</div>
+                        <h3>Receive Wisdom</h3>
+                        <p>Get your personalized interpretation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spreads Section -->
+        <section id="spreads" class="spreads-info">
+            <div class="container">
+                <h2>Tarot Spreads</h2>
+                <div class="spread-details">
+                    <div class="spread-detail">
+                        <h3>Single Card</h3>
+                        <p>Perfect for daily guidance or quick answers. One card drawn from the 78-card deck provides focused insight.</p>
+                        <span class="spread-price">Free</span>
+                    </div>
+                    <div class="spread-detail">
+                        <h3>Three Card Spread</h3>
+                        <p>Past influences, present situation, and future potential revealed through three cards.</p>
+                        <span class="spread-price">$4.99</span>
+                    </div>
+                    <div class="spread-detail">
+                        <h3>Celtic Cross</h3>
+                        <p>The most comprehensive 10-card spread covering all aspects of your situation.</p>
+                        <span class="spread-price">$9.99</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <h2>Pricing</h2>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">$0</div>
+                        <ul>
+                            <li>Single card draws</li>
+                            <li>Basic card meanings</li>
+                            <li>Unlimited free readings</li>
+                            <li>Share your readings</li>
+                        </ul>
+                        <button class="btn-secondary" onclick="document.getElementById('draw-btn').scrollIntoView({behavior: 'smooth'})">
+                            Start Free Reading
+                        </button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="badge">Most Popular</div>
+                        <h3>Pay Per Reading</h3>
+                        <div class="price">$2.99 - $9.99</div>
+                        <ul>
+                            <li>AI-powered interpretations</li>
+                            <li>Multi-card spreads</li>
+                            <li>Deep personalized insights</li>
+                            <li>Actionable guidance</li>
+                            <li>Custom affirmations</li>
+                        </ul>
+                        <button class="btn-premium" onclick="window.location.href='https://buy.stripe.com/7sYfZg4cU8ad5yc1Fx8k805'">Upgrade Reading</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Tarot Reading. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Interpreter | MDO3D Guidance</title>
+    <meta name="description" content="Interpret your dreams with AI-powered analysis. Discover hidden meanings with our comprehensive symbol database. Unlock the mysteries within.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Dream Interpreter | MDO3D Guidance">
+    <meta property="og:description" content="Decode your subconscious. AI-powered dream interpretation with comprehensive symbol database.">
+    <meta property="og:image" content="./og-image.jpg">
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234c2fa0'/><text x='16' y='23' font-size='18' text-anchor='middle' fill='%23c4b5f4'>🌙</text></svg>">
+    <meta property="og:url" content="https://guidance.mdo3d.com/dreams">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dream Interpreter | MDO3D Guidance">
+    <meta name="twitter:description" content="Decode your subconscious. AI-powered dream interpretation with comprehensive symbol database.">
+    <meta name="twitter:image" content="./og-image.jpg">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dream-bg"></div>
+    
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <h1>🌙 Dream Interpreter</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#symbols">Symbols</a>
+                <a href="#journal">Journal</a>
+                <a href="#pricing">Pricing</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h2 class="hero-title">What Do Your Dreams Mean?</h2>
+                <p class="hero-subtitle">Unlock the hidden messages in your subconscious</p>
+                
+                <!-- Dream Input -->
+                <div class="dream-input-section">
+                    <label for="dream-input">Describe Your Dream</label>
+                    <textarea 
+                        id="dream-input" 
+                        placeholder="I was flying over the ocean when I saw a white bird carrying a key..."
+                        rows="6"
+                        maxlength="1000"></textarea>
+                    <div class="input-footer">
+                        <p class="char-count"><span id="char-count">0</span>/1000</p>
+                        <p class="tip">💡 Tip: Include emotions, colors, and specific details</p>
+                    </div>
+                    
+                    <button class="btn-primary btn-interpret" id="interpret-btn">
+                        <span>Interpret My Dream</span>
+                    </button>
+                </div>
+
+                <!-- Quick Symbol Lookup -->
+                <div class="quick-lookup">
+                    <h3>Or look up a specific symbol</h3>
+                    <div class="symbol-search">
+                        <input 
+                            type="text" 
+                            id="symbol-search" 
+                            placeholder="Search symbols (e.g., snake, water, flying)..."
+                        >
+                        <button class="btn-secondary" id="search-btn">Search</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interpretation Results (Hidden initially) -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <div class="container">
+                <h3 class="section-title">Your Dream Interpretation</h3>
+                
+                <!-- Symbols Found -->
+                <div class="symbols-found" id="symbols-found">
+                    <h4>Symbols Detected in Your Dream</h4>
+                    <div class="symbol-grid" id="symbol-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Free Interpretation -->
+                <div class="free-interpretation" id="free-interpretation">
+                    <div class="interpretation-card">
+                        <h4>Basic Interpretation</h4>
+                        <div id="basic-meaning">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Upsell -->
+                <div class="premium-upsell" id="premium-upsell">
+                    <h4>Want Deeper Insights?</h4>
+                    <p>Unlock AI-powered personalized dream analysis</p>
+                    <ul class="premium-features">
+                        <li>✨ Personalized AI interpretation of your dream</li>
+                        <li>✨ Psychological & spiritual insights</li>
+                        <li>✨ Hidden symbol connections revealed</li>
+                        <li>✨ Actionable guidance for your life</li>
+                        <li>✨ Save to your dream journal</li>
+                    </ul>
+                    <button class="btn-premium" id="upgrade-btn" onclick="window.location.href='https://buy.stripe.com/8x26oG9xe1LP7Gkfwn8k806'">
+                        Get Premium Analysis - $4.99
+                    </button>
+                </div>
+
+                <!-- Share & Actions -->
+                <div class="dream-actions">
+                    <button class="btn-share" id="share-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Share Interpretation
+                    </button>
+                    <button class="btn-journal" id="save-journal-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        Save to Journal
+                    </button>
+                    <button class="btn-secondary" id="new-dream-btn">Interpret Another Dream</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Symbol Database Section -->
+        <section id="symbols" class="symbols-section">
+            <div class="container">
+                <h2>Dream Symbol Database</h2>
+                <p class="subtitle">Browse 40+ common dream symbols and their meanings</p>
+                
+                <div class="category-tabs">
+                    <button class="tab active" data-category="all">All Symbols</button>
+                    <button class="tab" data-category="people">People</button>
+                    <button class="tab" data-category="animals">Animals</button>
+                    <button class="tab" data-category="places">Places</button>
+                    <button class="tab" data-category="actions">Actions</button>
+                    <button class="tab" data-category="objects">Objects</button>
+                    <button class="tab" data-category="elements">Elements</button>
+                </div>
+
+                <div class="symbols-grid" id="symbols-database">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Dream Journal Section -->
+        <section id="journal" class="journal-section section-light">
+            <div class="container">
+                <h2>Your Dream Journal</h2>
+                <p class="subtitle">Track patterns and recurring themes in your dreams</p>
+                
+                <div class="journal-entries" id="journal-entries">
+                    <p class="empty-state">No dreams saved yet. Interpret your first dream to start your journal!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="section-light">
+            <div class="container">
+                <h2>How Dream Interpretation Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">📝</div>
+                        <h3>Describe Your Dream</h3>
+                        <p>Write down everything you remember - emotions, colors, symbols, people</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🔍</div>
+                        <h3>We Analyze Symbols</h3>
+                        <p>Our AI identifies key symbols and themes in your dream</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">✨</div>
+                        <h3>Receive Insights</h3>
+                        <p>Get personalized interpretation combining psychology and spirituality</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">📚</div>
+                        <h3>Track Patterns</h3>
+                        <p>Save to your journal and discover recurring themes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <h2>Pricing</h2>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">$0</div>
+                        <ul>
+                            <li>Basic dream interpretation</li>
+                            <li>Symbol database access</li>
+                            <li>Symbol search</li>
+                            <li>Unlimited dream entries</li>
+                        </ul>
+                        <button class="btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                            Start Free
+                        </button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="badge">Most Popular</div>
+                        <h3>Premium Analysis</h3>
+                        <div class="price">$4.99</div>
+                        <ul>
+                            <li>Everything in Free</li>
+                            <li>AI-powered personalized analysis</li>
+                            <li>Psychological insights</li>
+                            <li>Spiritual meanings</li>
+                            <li>Symbol connections</li>
+                            <li>Actionable guidance</li>
+                            <li>Dream journal storage</li>
+                        </ul>
+                        <button class="btn-premium" onclick="window.location.href='https://buy.stripe.com/8x26oG9xe1LP7Gkfwn8k806'">Get Premium Analysis</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Dream Interpreter. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
