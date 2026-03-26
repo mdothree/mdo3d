@@ -1,28 +1,29 @@
 /**
- * stripe-paywall.js — Embedded Stripe Elements paywall modal
- *
+ * stripe-paywall.js — Simplified Stripe Payment Links paywall modal
+ * 
+ * Uses Stripe Payment Links for checkout (no server-side code needed)
+ * 
  * Usage:
- *   import { initPaywall, isPremium, requirePremium } from '../stripe-paywall.js';
+ *   import { initPaywall, isPremium, requirePremium, PLANS, openBillingPortal } from '../stripe-paywall.js';
  *   await initPaywall();
  *   if (!requirePremium('Batch processing', 'pdf-merge')) return;
  */
 
 import { ENV } from './env.js';
-import { auth, db, initFirebase } from './firebase.js';
-import { getDoc, setDoc, doc, serverTimestamp }
-  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { initFirebase } from './firebase.js';
+import { getDoc, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-// ── Plans (priceIds come from ENV) ────────────────────────────────────────
+// ── Plans (Payment Links from ENV) ────────────────────────────────────────
 
 export const PLANS = {
   monthly: {
-    priceId: ENV.STRIPE_PRICE_MONTHLY,
+    paymentLink: ENV.STRIPE_PAYMENT_LINK_MONTHLY,
     label:   'Pro Monthly',
     price:   '$4.99',
     period:  'month',
   },
   yearly: {
-    priceId: ENV.STRIPE_PRICE_YEARLY,
+    paymentLink: ENV.STRIPE_PAYMENT_LINK_YEARLY,
     label:   'Pro Yearly',
     price:   '$39.99',
     period:  'year',
@@ -44,20 +45,26 @@ export const FREE_LIMITS = {
 // ── State ─────────────────────────────────────────────────────────────────
 
 let _premium = null;
-let _stripe  = null;
 let _user    = null;
+let _customerId = null;
 
 // ── Init ──────────────────────────────────────────────────────────────────
 
 export async function initPaywall() {
   try {
     _user = await initFirebase();
-    if (!_user || !db) { _premium = false; return false; }
+    if (!_user) { 
+      _premium = false; 
+      return false; 
+    }
+    
+    // Check Firestore for subscription status
     const snap = await getDoc(doc(db, 'subscriptions', _user.uid));
     if (snap.exists()) {
       const d   = snap.data();
       const exp = d.expiresAt?.toMillis?.() || 0;
-      _premium  = d.status === 'active' && exp > Date.now();
+      _premium = d.status === 'active' && exp > Date.now();
+      _customerId = d.stripeCustomerId || null;
     } else {
       _premium = false;
     }
@@ -70,11 +77,13 @@ export async function initPaywall() {
 }
 
 export function isPremium() { return _premium === true; }
+export function getUser() { return _user; }
+export function getCustomerId() { return _customerId; }
+
+// ── Gate a premium action ─────────────────────────────────────────────────
 
 /**
  * Gate a premium action. Returns true if allowed, false + shows modal if not.
- * @param {string} reason   Human-readable reason, shown in the modal
- * @param {string} feature  Short key for analytics (e.g. 'pdf-merge-count')
  */
 export function requirePremium(reason = 'This feature', feature = 'unknown') {
   if (isPremium()) return true;
@@ -82,24 +91,7 @@ export function requirePremium(reason = 'This feature', feature = 'unknown') {
   return false;
 }
 
-// ── Stripe lazy loader ────────────────────────────────────────────────────
-
-async function _loadStripe() {
-  if (_stripe) return _stripe;
-  if (!window.Stripe) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://js.stripe.com/v3/';
-      s.onload = res;
-      s.onerror = () => rej(new Error('Failed to load Stripe.js'));
-      document.head.appendChild(s);
-    });
-  }
-  _stripe = window.Stripe(ENV.STRIPE_PUBLISHABLE_KEY);
-  return _stripe;
-}
-
-// ── Modal ─────────────────────────────────────────────────────────────────
+// ── Payment Link modal ─────────────────────────────────────────────────────
 
 function _showModal(reason, feature) {
   _removeModal();
@@ -141,17 +133,10 @@ function _showModal(reason, feature) {
         <span class="pw-amount">$4.99</span><span class="pw-period"> / month</span>
       </div>
 
-      <div id="pw-payment" style="display:none;">
-        <div id="pw-card-mount" class="pw-card-mount"></div>
-        <div id="pw-card-error" class="pw-card-error" role="alert"></div>
-        <p class="pw-secure">🔒 Payments secured by Stripe. Cancel anytime.</p>
-      </div>
-
       <button class="pw-cta" id="pw-cta">
         <span id="pw-cta-label">Start 7-Day Free Trial →</span>
-        <span id="pw-cta-spin" class="pw-spin" style="display:none;"></span>
       </button>
-      <p class="pw-fine">No charge for 7 days. Cancel before trial ends.</p>
+      <p class="pw-fine">No charge for 7 days. Cancel anytime.</p>
 
       <div class="pw-trust">
         <span>🔒 SSL encrypted</span>
@@ -181,99 +166,88 @@ function _showModal(reason, feature) {
     });
   });
 
-  // CTA flow
-  let step = 'cta';  // 'cta' | 'payment' | 'processing'
-  let cardElement = null;
-
-  document.getElementById('pw-cta').addEventListener('click', async () => {
-    if (step === 'cta') {
-      step = 'payment';
-      document.getElementById('pw-cta-label').textContent = 'Pay & Activate';
-      document.getElementById('pw-payment').style.display = 'block';
-      try {
-        const stripe    = await _loadStripe();
-        const elements  = stripe.elements({
-          appearance: {
-            theme: 'night',
-            variables: {
-              colorPrimary:    '#10B981',
-              colorBackground: '#1E293B',
-              colorText:       '#E2E8F0',
-              colorDanger:     '#EF4444',
-              fontFamily:      'DM Mono, monospace',
-              borderRadius:    '8px',
-            },
-          },
-        });
-        cardElement = elements.create('card', {
-          style: {
-            base:    { iconColor: '#10B981', color: '#E2E8F0', fontSize: '15px', '::placeholder': { color: '#475569' } },
-            invalid: { iconColor: '#EF4444', color: '#FCA5A5' },
-          },
-        });
-        cardElement.mount('#pw-card-mount');
-        cardElement.on('change', e => {
-          document.getElementById('pw-card-error').textContent = e.error?.message || '';
-        });
-      } catch (err) {
-        document.getElementById('pw-card-error').textContent = 'Could not load payment form: ' + err.message;
-      }
-
-    } else if (step === 'payment') {
-      if (!cardElement || !_stripe) return;
-      step = 'processing';
-      document.getElementById('pw-cta-label').style.display = 'none';
-      document.getElementById('pw-cta-spin').style.display  = 'inline-block';
-      document.getElementById('pw-cta').disabled = true;
-
-      try {
-        const { paymentMethod, error } = await _stripe.createPaymentMethod({
-          type: 'card', card: cardElement,
-        });
-        if (error) throw new Error(error.message);
-
-        const res = await fetch(`${ENV.FIREBASE_FUNCTION_BASE_URL}/createSubscription`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({
-            paymentMethodId: paymentMethod.id,
-            priceId:         PLANS[selectedPlan].priceId,
-            uid:             _user?.uid,
-            feature,
-          }),
-        });
-        if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || 'Payment failed');
-        const result = await res.json();
-
-        if (result.requiresAction) {
-          const { error: ce } = await _stripe.confirmCardPayment(result.clientSecret);
-          if (ce) throw new Error(ce.message);
-        }
-
-        _premium = true;
-        _showSuccess();
-        setTimeout(_removeModal, 2500);
-      } catch (err) {
-        document.getElementById('pw-card-error').textContent = '❌ ' + err.message;
-        step = 'payment';
-        document.getElementById('pw-cta-label').style.display = 'inline';
-        document.getElementById('pw-cta-spin').style.display  = 'none';
-        document.getElementById('pw-cta').disabled = false;
-      }
+  // CTA - Redirect to Stripe Payment Link
+  document.getElementById('pw-cta').addEventListener('click', () => {
+    const paymentLink = PLANS[selectedPlan].paymentLink;
+    if (paymentLink) {
+      // Store return URL to verify payment after return
+      sessionStorage.setItem('paywall_return', window.location.href);
+      sessionStorage.setItem('paywall_feature', feature);
+      window.location.href = paymentLink;
+    } else {
+      alert('Payment link not configured. Please contact support.');
     }
   });
 }
 
-function _showSuccess() {
-  const m = document.getElementById('pw-modal');
-  if (!m) return;
-  m.innerHTML = `
-    <div style="text-align:center;padding:56px 24px;">
-      <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
-      <h2 style="font-family:'DM Mono',monospace;color:#10B981;font-size:1.4rem;margin-bottom:8px;">You're Pro!</h2>
-      <p style="color:#94A3B8;">All features unlocked. Enjoy!</p>
-    </div>`;
+// ── Verify payment after returning from Stripe ────────────────────────────
+
+export async function verifyPaymentReturn() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  
+  if (!sessionId) return false;
+  
+  try {
+    // Call our Vercel API to verify the session
+    const response = await fetch(`/api/verify-session?session_id=${sessionId}`);
+    if (!response.ok) return false;
+    
+    const session = await response.json();
+    
+    if (session.payment_status === 'paid') {
+      // Update Firestore with subscription status
+      if (_user) {
+        const expDate = new Date();
+        expDate.setDate(expDate.getDate() + (selectedPlan === 'yearly' ? 365 : 30));
+        
+        await setDoc(doc(db, 'subscriptions', _user.uid), {
+          status: 'active',
+          stripeSessionId: sessionId,
+          stripeCustomerId: session.customer_id,
+          subscriptionId: session.subscription_id,
+          expiresAt: expDate,
+          updatedAt: new Date(),
+        }, { merge: true });
+        
+        _premium = true;
+        _customerId = session.customer_id;
+      }
+      return true;
+    }
+  } catch (e) {
+    console.error('[Paywall] Payment verification failed:', e);
+  }
+  
+  return false;
 }
+
+// ── Open Stripe Customer Portal ──────────────────────────────────────────
+
+export async function openBillingPortal(returnUrl = window.location.href) {
+  if (!_user || !_customerId) {
+    alert('Please sign in to manage your subscription.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/customer-portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId: _customerId, returnUrl }),
+    });
+    
+    if (!response.ok) throw new Error('Failed to open billing portal');
+    
+    const { url } = await response.json();
+    window.location.href = url;
+  } catch (e) {
+    console.error('[Paywall] Billing portal error:', e);
+    alert('Failed to open billing portal. Please try again.');
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
 
 function _removeModal() {
   document.getElementById('pw-overlay')?.remove();
@@ -343,24 +317,12 @@ function _injectStyles() {
 .pw-amount{font-family:'DM Mono',monospace;font-size:2rem;font-weight:500;color:#10B981}
 .pw-period{font-size:.9rem;color:#64748B}
 
-.pw-card-mount{background:#1E293B;border:1px solid rgba(255,255,255,.1);border-radius:8px;
-  padding:14px 16px;margin-bottom:8px;transition:border-color 150ms}
-.pw-card-mount:focus-within{border-color:#10B981;box-shadow:0 0 0 3px rgba(16,185,129,.12)}
-.pw-card-error{font-family:'DM Mono',monospace;font-size:.8rem;color:#FCA5A5;
-  min-height:20px;margin-bottom:8px}
-.pw-secure{font-size:.75rem;color:#475569;text-align:center;margin-bottom:14px}
-
 .pw-cta{width:100%;padding:14px;background:#10B981;color:#020617;
   font-family:'DM Mono',monospace;font-size:.9rem;font-weight:500;
   border:none;border-radius:10px;cursor:pointer;transition:all 150ms;
   margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
 .pw-cta:hover:not(:disabled){background:#34D399;
   box-shadow:0 0 24px rgba(16,185,129,.3);transform:translateY(-1px)}
-.pw-cta:disabled{opacity:.6;cursor:not-allowed;transform:none}
-
-.pw-spin{width:18px;height:18px;border:2px solid rgba(2,6,23,.3);border-top-color:#020617;
-  border-radius:50%;animation:pw-spin .65s linear infinite}
-@keyframes pw-spin{to{transform:rotate(360deg)}}
 
 .pw-fine{text-align:center;font-size:.75rem;color:#475569;margin-bottom:16px}
 .pw-trust{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
@@ -372,23 +334,4 @@ function _injectStyles() {
   .pw-amount{font-size:1.6rem}
 }`;
   document.head.appendChild(style);
-}
-
-// ── Billing portal helper ─────────────────────────────────────────────────────
-
-/**
- * Redirect the current user to the Stripe Customer Portal.
- * Call from an account/billing page.
- */
-export async function openBillingPortal(returnUrl = window.location.href) {
-  if (!_user) throw new Error('Not authenticated');
-  const idToken = await _user.getIdToken();
-  const res = await fetch(`${ENV.FIREBASE_FUNCTION_BASE_URL}/createBillingPortalSession`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
-    body: JSON.stringify({ returnUrl }),
-  });
-  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Failed to open billing portal');
-  const { url } = await res.json();
-  window.location.href = url;
 }

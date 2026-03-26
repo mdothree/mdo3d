@@ -3,11 +3,11 @@
  *
  * How it works (no build step required):
  *   1. In development: values come from window.__ENV__ set by a <script> in index/layout HTML
- *   2. In Vercel production: inject via vercel.json `env` block or a _headers/_middleware file
+ *   2. In Vercel production: inject via vercel.json `env` block or meta tags
  *   3. Fallback: placeholder strings (app degrades gracefully without Firebase/Stripe)
  *
  * To use locally without a build step, create public/js/config/env.local.js:
- *   window.__ENV__ = { FIREBASE_API_KEY: "...", STRIPE_KEY: "..." };
+ *   window.__ENV__ = { FIREBASE_API_KEY: "...", STRIPE_PUBLISHABLE_KEY: "..." };
  * and add <script src="js/config/env.local.js"></script> to your HTML (gitignored).
  */
 
@@ -31,13 +31,12 @@ export const ENV = {
   FIREBASE_APP_ID:             getEnv('FIREBASE_APP_ID'),
   FIREBASE_MEASUREMENT_ID:     getEnv('FIREBASE_MEASUREMENT_ID'),
 
-  // ── Stripe ─────────────────────────────────────────────────
+  // ── Stripe Payment Links (no server needed!) ─────────────────
   STRIPE_PUBLISHABLE_KEY:      getEnv('STRIPE_PUBLISHABLE_KEY'),
-  STRIPE_PRICE_MONTHLY:        getEnv('STRIPE_PRICE_MONTHLY'),
-  STRIPE_PRICE_YEARLY:         getEnv('STRIPE_PRICE_YEARLY'),
+  STRIPE_PAYMENT_LINK_MONTHLY: getEnv('STRIPE_PAYMENT_LINK_MONTHLY'),
+  STRIPE_PAYMENT_LINK_YEARLY:  getEnv('STRIPE_PAYMENT_LINK_YEARLY'),
 
   // ── App ────────────────────────────────────────────────────
-  FIREBASE_FUNCTION_BASE_URL:  getEnv('FIREBASE_FUNCTION_BASE_URL'),
   APP_ENV:                     getEnv('APP_ENV', 'production'),
 };
 
