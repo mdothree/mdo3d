@@ -1,6 +1,7 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "outputDirectory": "public",
   "redirects": [
     {"source": "/pdf", "destination": "https://pdf.mdothree.com", "permanent": true},
     {"source": "/image", "destination": "https://image.mdothree.com", "permanent": true},
@@ -12,8 +13,11 @@
     {"source": "/timestamp", "destination": "https://timestamp.mdothree.com", "permanent": true},
     {"source": "/color", "destination": "https://color.mdothree.com", "permanent": true}
   ],
+  "routes": [
+    {"src": "/api/(.*)", "dest": "/api/$1"}
+  ],
   "functions": {
-    "api/*.js": {
+    "api/**/*.js": {
       "memory": 256,
       "maxDuration": 10
     }
