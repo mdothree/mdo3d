@@ -55,8 +55,8 @@ const firebaseConfig = JSON.stringify({
 
 const stripeConfig = JSON.stringify({
   publishableKey: process.env.STRIPE_PUBLISHABLE_KEY       || 'REPLACE_WITH_STRIPE_PUBLISHABLE_KEY',
-  priceIdMonthly: process.env.STRIPE_PRICE_ID_MONTHLY      || 'REPLACE_WITH_STRIPE_PRICE_ID_MONTHLY',
-  priceIdYearly:  process.env.STRIPE_PRICE_ID_YEARLY       || 'REPLACE_WITH_STRIPE_PRICE_ID_YEARLY',
+  paymentLinkMonthly: process.env.STRIPE_PAYMENT_LINK_MONTHLY || 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v',
+  paymentLinkYearly: process.env.STRIPE_PAYMENT_LINK_YEARLY || 'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w',
   portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || 'https://billing.stripe.com/p/login/REPLACE',
 });
 
