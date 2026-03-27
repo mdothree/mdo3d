@@ -12,9 +12,9 @@ function loadStripeConfig() {
     if (meta) { try { return JSON.parse(meta.content); } catch {} }
   }
   return {
-    publishableKey: 'REPLACE_WITH_STRIPE_PUBLISHABLE_KEY',
-    priceIdMonthly: 'REPLACE_WITH_STRIPE_PRICE_ID_MONTHLY',  // e.g. price_1ABC...
-    priceIdYearly:  'REPLACE_WITH_STRIPE_PRICE_ID_YEARLY',   // e.g. price_1XYZ...
+    publishableKey: 'pk_live_REPLACE_WITH_STRIPE_PUBLISHABLE_KEY',
+    paymentLinkMonthly: 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v',
+    paymentLinkYearly:  'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w',
     portalUrl:      'https://billing.stripe.com/p/login/REPLACE', // customer portal link
   };
 }

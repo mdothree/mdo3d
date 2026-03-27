@@ -118,84 +118,29 @@ import { STRIPE_CONFIG } from '../config/config.js';
     async function mountPayment() {
       const submitBtn   = document.getElementById('checkout-submit');
       const submitLabel = document.getElementById('checkout-submit-label');
-      const errorEl     = document.getElementById('payment-error');
       const mountEl     = document.getElementById('payment-element');
 
+      // Use Stripe Payment Links for simple checkout (no server needed)
+      const paymentLinkUrl = selectedBilling === 'yearly'
+        ? 'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w'
+        : 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v';
+
       submitBtn.disabled = true;
-      submitLabel.textContent = 'Loading…';
-      mountEl.className = 'loading';
-      mountEl.innerHTML = '';
+      submitLabel.textContent = 'Redirecting to secure checkout…';
+      mountEl.innerHTML = `
+        <div style="text-align:center;padding:40px 20px;">
+          <p style="color:#64748B;font-size:0.9rem;margin-bottom:16px">You'll be redirected to Stripe's secure checkout.</p>
+          <a href="${paymentLinkUrl}" target="_blank" rel="noopener" 
+             style="display:inline-block;background:#10B981;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:0.95rem;">
+            Continue to Payment →
+          </a>
+        </div>
+      `;
 
-      // Load Stripe.js
-      if (!window.Stripe) {
-        await new Promise((res, rej) => {
-          const s = document.createElement('script');
-          s.src = 'https://js.stripe.com/v3/';
-          s.onload = res; s.onerror = rej;
-          document.head.appendChild(s);
-        });
-      }
-      _stripe = window.Stripe(STRIPE_CONFIG.publishableKey);
-
-      const user = getFirebaseAuth().currentUser;
-      let idToken = '';
-      try { if (user) idToken = await user.getIdToken(); } catch { /* anon */ }
-
-      let clientSecret;
-      try {
-        const resp = await fetch('/api/stripe/create-setup-intent', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(idToken ? { 'Authorization': `Bearer ${idToken}` } : {}),
-          },
-          body: JSON.stringify({ uid: user?.uid, plan: selectedBilling }),
-        });
-        const data = await resp.json();
-        if (!data.clientSecret) throw new Error(data.error || 'No client secret returned');
-        clientSecret = data.clientSecret;
-      } catch (e) {
-        mountEl.className = '';
-        mountEl.innerHTML = '<p style="color:#EF4444;font-size:0.85rem;padding:8px 0">Could not load payment form. Please refresh and try again.</p>';
-        return;
-      }
-
-      const appearance = {
-        theme: 'stripe',
-        variables: {
-          colorPrimary: '#10B981', colorBackground: '#ffffff',
-          colorText: '#0F172A', colorDanger: '#EF4444',
-          fontFamily: '"DM Sans", system-ui, sans-serif', borderRadius: '8px',
-        },
-        rules: {
-          '.Input': { border: '1.5px solid #CBD5E1', boxShadow: 'none' },
-          '.Input:focus': { border: '1.5px solid #10B981', boxShadow: '0 0 0 3px rgba(16,185,129,0.12)' },
-          '.Label': { fontWeight: '600', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em' },
-        },
-      };
-
-      _elements = _stripe.elements({ clientSecret, appearance });
-      const paymentEl = _elements.create('payment', { layout: 'tabs' });
-      mountEl.className = '';
-      paymentEl.mount(mountEl);
-
-      submitBtn.disabled = false;
-      submitLabel.textContent = selectedBilling === 'yearly' ? 'Subscribe — $36/year' : 'Subscribe — $4/month';
-
-      submitBtn.onclick = async () => {
-        submitBtn.disabled = true;
-        submitLabel.textContent = 'Processing…';
-        errorEl.textContent = '';
-        const { error } = await _stripe.confirmPayment({
-          elements: _elements,
-          confirmParams: { return_url: window.location.href + '?stripe_success=1' },
-        });
-        if (error) {
-          errorEl.textContent = error.message;
-          submitBtn.disabled = false;
-          submitLabel.textContent = selectedBilling === 'yearly' ? 'Subscribe — $36/year' : 'Subscribe — $4/month';
-        }
-      };
+      // Auto-redirect after short delay
+      setTimeout(() => {
+        window.open(paymentLinkUrl, '_blank');
+      }, 1500);
     }
 
     // Billing portal link
