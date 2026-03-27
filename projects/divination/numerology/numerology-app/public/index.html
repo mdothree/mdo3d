@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Numerology - Discover Your Life Path | MDO3D</title>
+  <meta name="description" content="Calculate your Life Path, Expression, and Soul Urge numbers. Free numerology readings with AI-powered insights.">
+  <meta property="og:title" content="Numerology - Discover Your Life Path">
+  <meta property="og:description" content="Calculate your core numerology numbers and discover your life purpose.">
+  <meta property="og:image" content="/og-image.jpg">
+  <meta property="og:url" content="https://numerology.mdo3d.com">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Numerology</h1>
+      <p class="subtitle">Discover the hidden meaning of your numbers</p>
+    </header>
+
+    <main>
+      <!-- Input Section -->
+      <section class="input-section">
+        <div class="form-group">
+          <label for="name-input">Your Full Birth Name</label>
+          <input type="text" id="name-input" placeholder="Enter your full name as it appears on your birth certificate">
+        </div>
+
+        <div class="form-group">
+          <label for="birth-date">Your Birth Date</label>
+          <input type="date" id="birth-date">
+        </div>
+
+        <div class="btn-group">
+          <button id="calculate-btn" class="btn btn-primary">Calculate My Numbers</button>
+          <button id="reset-btn" class="btn btn-secondary" style="display: none;">New Reading</button>
+        </div>
+      </section>
+
+      <!-- Numbers Display -->
+      <section id="numbers-display">
+        <div id="numbers-result"></div>
+      </section>
+
+      <!-- Reading Section -->
+      <section id="reading-section">
+        <div id="number-meanings"></div>
+
+        <div class="btn-group" style="margin-top: 2rem;">
+          <button id="share-btn" class="btn btn-secondary">Share Reading</button>
+          <button id="upgrade-btn" class="btn btn-primary">Get Full Reading</button>
+        </div>
+      </section>
+
+      <!-- Number Reference -->
+      <section class="number-reference" style="margin-top: 3rem;">
+        <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--text-muted);">Life Path Numbers</h2>
+        <div class="numbers-grid">
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">1</div>
+            <div class="number-title">The Leader</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">2</div>
+            <div class="number-title">The Peacemaker</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">3</div>
+            <div class="number-title">The Creative</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">4</div>
+            <div class="number-title">The Builder</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">5</div>
+            <div class="number-title">The Freedom Seeker</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">6</div>
+            <div class="number-title">The Nurturer</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">7</div>
+            <div class="number-title">The Seeker</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">8</div>
+            <div class="number-title">The Achiever</div>
+          </div>
+          <div class="number-card" style="cursor: default;">
+            <div class="number-value">9</div>
+            <div class="number-title">The Humanitarian</div>
+          </div>
+          <div class="number-card" style="cursor: default; background: linear-gradient(135deg, #6366f1, #a855f7);">
+            <div class="number-value">11</div>
+            <div class="number-title">Master Number</div>
+          </div>
+          <div class="number-card" style="cursor: default; background: linear-gradient(135deg, #6366f1, #a855f7);">
+            <div class="number-value">22</div>
+            <div class="number-title">Master Number</div>
+          </div>
+          <div class="number-card" style="cursor: default; background: linear-gradient(135deg, #6366f1, #a855f7);">
+            <div class="number-value">33</div>
+            <div class="number-title">Master Number</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Premium Modal -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="premium-modal" class="modal">
+      <div class="modal-header">
+        <h3>Unlock Premium Numerology</h3>
+        <button id="modal-close" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Get a comprehensive AI-powered numerology reading including:</p>
+        <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+          <li>Deep Life Path analysis</li>
+          <li>Expression Number insights</li>
+          <li>Soul Urge revelation</li>
+          <li>Personal Year cycles</li>
+          <li>Lucky numbers, days & colors</li>
+          <li>Personalized guidance</li>
+        </ul>
+        <div style="text-align: center;">
+          <button class="premium-btn" style="width: 100%;">Get Premium Reading - $4.99</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-skip" class="btn btn-secondary">Maybe Later</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>Part of the <a href="https://mdo3d.com">MDO3D Divination</a> suite</p>
+      <p style="margin-top: 0.5rem;">&copy; 2026 BlackLabb Technologies</p>
+    </footer>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,296 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="stripe-config" content='{"publishableKey":"pk_live_51KQiakCRLa19N9qBQllqnch36FtfVn3zDk63OzCrubLJEkyyP6nRBqE6QiDEYqobmh6Ed9PnghAocLEWsqDoq80v00Qlheh6vT","paymentLinkMonthly":"https://buy.stripe.com/00wcN49xe8add0E2JB8k80b","paymentLinkYearly":"https://buy.stripe.com/cNi5kCfVCbmp8Kodof8k80c"}'>
-  <meta name="firebase-config" content='{"apiKey":"REPLACE_WITH_API_KEY","authDomain":"REPLACE.firebaseapp.com","projectId":"REPLACE_WITH_PROJECT_ID","storageBucket":"REPLACE.appspot.com","messagingSenderId":"REPLACE","appId":"REPLACE_WITH_APP_ID"}'>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free online utilities for everyone — hash, password, color, and timestamp tools. No sign-up required." />
-  <link rel="canonical" href="https://mdothree.com/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="mdothree — Free Online Tools" />
-  <meta property="og:description" content="Free online utilities for everyone — hash, password, color, and timestamp tools. No sign-up required." />
-  <meta property="og:url" content="https://mdothree.com/" />
-  <meta property="og:image" content="./og-image.jpg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="mdothree — Free Online Tools" />
-  <meta name="twitter:description" content="Free online utilities for everyone — hash, password, color, and timestamp tools. No sign-up required." />
-  <title>mdothree — Free Online Utilities</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#10B981" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" />
-  <link rel="preconnect" href="https://js.stripe.com" />
-  <link rel="preconnect" href="https://hooks.stripe.com" />
-  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/dark-mode.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDOThree - Utility & Productivity Tools</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+        .tagline {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+        .tool-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: #ccc;
+        }
+        .tool-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .tool-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .tool-card p { color: #888; font-size: 0.8rem; }
+        .status {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .status-soon { background: #fef3c7; color: #d97706; }
+        .category {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 2rem;
+        }
+        .category h2 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            color: #999;
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        footer a { color: #666; text-decoration: none; }
+    </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="logo" href="/">m<span class="dot">.</span>3</a>
-      <nav class="main-nav">
-        <a href="#pdf">PDF</a>
-        <a href="#image">Image</a>
-        <a href="#developer">Dev</a>
-        <a href="#security">Security</a>
-        <a href="#time">Time</a>
-        <a href="/pro" class="pro-nav-link" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:99px;padding:5px 14px;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;text-decoration:none">★ Go Pro</a>
-      </nav>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-        <span class="sun">☀︎</span>
-        <span class="moon">☽</span>
-      </button>
-    </div>
-  </header>
-
-  <section class="hero">
-    <div class="hero-inner">
-      <p class="hero-eyebrow">mdothree.com</p>
-      <h1 class="hero-headline">Free online tools<br /><em>for everyone.</em></h1>
-      <p class="hero-sub">No sign-up. No tracking. Everything runs in your browser.</p>
-      <div class="hero-search">
-        <input type="text" id="toolSearch" placeholder="Search tools…" autocomplete="off" />
-      </div>
-    </div>
-    <div class="hero-grid-bg" aria-hidden="true"></div>
-  </section>
-
-  <main class="tools-main">
-
-    <!-- PDF Tools -->
-    <section class="tool-category" id="pdf">
-      <div class="category-header">
-        <span class="category-icon">📄</span>
-        <h2>PDF Tools</h2>
-      </div>
-      <div class="tool-grid">
-        <a class="tool-card" href="https://pdf.mdothree.com/merge">
-          <div class="tool-icon">⊞</div>
-          <div class="tool-info">
-            <h3>Merge PDF</h3>
-            <p>Combine multiple PDFs into one file</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://pdf.mdothree.com/split">
-          <div class="tool-icon">⊟</div>
-          <div class="tool-info">
-            <h3>Split PDF</h3>
-            <p>Extract pages or split by range</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://pdf.mdothree.com/compress">
-          <div class="tool-icon">⊙</div>
-          <div class="tool-info">
-            <h3>Compress PDF</h3>
-            <p>Reduce file size without quality loss</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://pdf.mdothree.com/convert">
-          <div class="tool-icon">⇄</div>
-          <div class="tool-info">
-            <h3>Convert PDF</h3>
-            <p>PDF to Word, Excel, images and more</p>
-          </div>
-        </a>
-      </div>
+    <section class="hero">
+        <h1>MDOThree</h1>
+        <p class="tagline">Simple tools for everyday tasks</p>
+        
+        <div class="category">
+            <h2>Document Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">&#128462;</div>
+                    <h3>PDF Merge</h3>
+                    <p>Combine multiple PDFs</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#9986;</div>
+                    <h3>PDF Split</h3>
+                    <p>Extract pages from PDF</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#128230;</div>
+                    <h3>PDF Compress</h3>
+                    <p>Reduce file size</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category">
+            <h2>Image Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">&#128247;</div>
+                    <h3>Image Resize</h3>
+                    <p>Resize images instantly</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#128260;</div>
+                    <h3>Image Convert</h3>
+                    <p>Convert between formats</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#127912;</div>
+                    <h3>Image Compress</h3>
+                    <p>Optimize for web</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category">
+            <h2>Developer Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">{ }</div>
+                    <h3>JSON Formatter</h3>
+                    <p>Beautify & validate JSON</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#128273;</div>
+                    <h3>Hash Generator</h3>
+                    <p>MD5, SHA-1, SHA-256</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#9635;</div>
+                    <h3>QR Generator</h3>
+                    <p>Create QR codes</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category">
+            <h2>Text Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">&#128221;</div>
+                    <h3>Word Counter</h3>
+                    <p>Count words & characters</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">Aa</div>
+                    <h3>Case Converter</h3>
+                    <p>Change text case</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">&#8596;</div>
+                    <h3>Text Diff</h3>
+                    <p>Compare text differences</p>
+                    <span class="status status-soon">Coming Soon</span>
+                </div>
+            </div>
+        </div>
     </section>
-
-    <!-- Image Tools -->
-    <section class="tool-category" id="image">
-      <div class="category-header">
-        <span class="category-icon">🖼</span>
-        <h2>Image Tools</h2>
-      </div>
-      <div class="tool-grid">
-        <a class="tool-card" href="https://image.mdothree.com/resize">
-          <div class="tool-icon">⤡</div>
-          <div class="tool-info">
-            <h3>Resize Image</h3>
-            <p>Scale images to any dimension</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://image.mdothree.com/convert">
-          <div class="tool-icon">⇄</div>
-          <div class="tool-info">
-            <h3>Convert Image</h3>
-            <p>PNG, JPG, WebP, AVIF, SVG and more</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://image.mdothree.com/compress">
-          <div class="tool-icon">⊙</div>
-          <div class="tool-info">
-            <h3>Compress Image</h3>
-            <p>Reduce image file size for web</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://image.mdothree.com/crop">
-          <div class="tool-icon">⊡</div>
-          <div class="tool-info">
-            <h3>Crop Image</h3>
-            <p>Free crop, aspect ratio, or custom</p>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <!-- Developer Tools -->
-    <section class="tool-category" id="developer">
-      <div class="category-header">
-        <span class="category-icon">⌨︎</span>
-        <h2>Developer Tools</h2>
-      </div>
-      <div class="tool-grid">
-        <a class="tool-card" href="https://hash.mdothree.com">
-          <div class="tool-icon">#</div>
-          <div class="tool-info">
-            <h3>Hash Generator</h3>
-            <p>MD5, SHA-256, SHA-512, bcrypt and more</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://hash.mdothree.com/uuid">
-          <div class="tool-icon">⊛</div>
-          <div class="tool-info">
-            <h3>UUID Generator</h3>
-            <p>Generate v1, v4, v5 UUIDs in bulk</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://hash.mdothree.com/encode">
-          <div class="tool-icon">{}
-          </div>
-          <div class="tool-info">
-            <h3>Encode / Decode</h3>
-            <p>Base64, Base32, Hex encoding</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://color.mdothree.com">
-          <div class="tool-icon">◑</div>
-          <div class="tool-info">
-            <h3>Color Tools</h3>
-            <p>Pick, convert, mix and generate palettes</p>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <!-- Security Tools -->
-    <section class="tool-category" id="security">
-      <div class="category-header">
-        <span class="category-icon">🔐</span>
-        <h2>Security</h2>
-      </div>
-      <div class="tool-grid">
-        <a class="tool-card" href="https://password.mdothree.com">
-          <div class="tool-icon">★</div>
-          <div class="tool-info">
-            <h3>Password Generator</h3>
-            <p>Secure, customizable password creation</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://password.mdothree.com/strength">
-          <div class="tool-icon">▲</div>
-          <div class="tool-info">
-            <h3>Password Strength</h3>
-            <p>Test your password's security score</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://password.mdothree.com/breach">
-          <div class="tool-icon">⚠</div>
-          <div class="tool-info">
-            <h3>Breach Checker</h3>
-            <p>Check if password appears in data breaches</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://hash.mdothree.com/hmac">
-          <div class="tool-icon">⚿</div>
-          <div class="tool-info">
-            <h3>HMAC Generator</h3>
-            <p>Hash-based message authentication codes</p>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <!-- Time Tools -->
-    <section class="tool-category" id="time">
-      <div class="category-header">
-        <span class="category-icon">⏱</span>
-        <h2>Time Tools</h2>
-      </div>
-      <div class="tool-grid">
-        <a class="tool-card" href="https://timestamp.mdothree.com">
-          <div class="tool-icon">⌚</div>
-          <div class="tool-info">
-            <h3>Timestamp Converter</h3>
-            <p>Unix timestamps ↔ human-readable dates</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://timestamp.mdothree.com/timezone">
-          <div class="tool-icon">⊕</div>
-          <div class="tool-info">
-            <h3>Timezone Converter</h3>
-            <p>Convert times across any timezone</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://timestamp.mdothree.com/cron">
-          <div class="tool-icon">↻</div>
-          <div class="tool-info">
-            <h3>Cron Parser</h3>
-            <p>Explain and preview cron expressions</p>
-          </div>
-        </a>
-        <a class="tool-card" href="https://timestamp.mdothree.com/countdown">
-          <div class="tool-icon">◴</div>
-          <div class="tool-info">
-            <h3>Countdown</h3>
-            <p>Live countdown to any date or event</p>
-          </div>
-        </a>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo">m<span class="dot">.</span>3</span>
-        <p>Free, private, browser-based utilities.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Tools</h4>
-        <a href="https://pdf.mdothree.com">PDF Tools</a>
-        <a href="https://image.mdothree.com">Image Tools</a>
-        <a href="https://hash.mdothree.com">Hash Tools</a>
-        <a href="https://password.mdothree.com">Password Tools</a>
-        <a href="https://timestamp.mdothree.com">Time Tools</a>
-        <a href="https://color.mdothree.com">Color Tools</a>
-      </div>
-      <div class="footer-links">
-        <h4>Info</h4>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/terms">Terms of Use</a>
-        <a href="/about">About</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2024 mdothree.com — No data is sent to our servers. All processing happens in your browser.</p>
-    </div>
-  </footer>
-
-  <script src="js/app.js" type="module"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
-      });
-    }
-  </script>
+    
+    <footer>
+        <p>A <a href="https://latarence.com">Lamar</a> Platform</p>
+    </footer>
 </body>
 </html>

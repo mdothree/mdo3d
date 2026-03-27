@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - BlackLabb Oracle</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .success-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .success-message {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .success-details {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #667eea;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 2px solid #fff;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255,0,0,0.2);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container" id="successContainer">
+        <div class="success-icon">✨</div>
+        <h1 class="success-title">Payment Successful!</h1>
+        <p class="success-message">Thank you for upgrading to premium. Your payment has been processed successfully.</p>
+        
+        <div class="success-details" id="paymentDetails" style="display: none;">
+            <div class="detail-row">
+                <span>Order ID:</span>
+                <span id="orderId">-</span>
+            </div>
+            <div class="detail-row">
+                <span>Amount Paid:</span>
+                <span id="amount">-</span>
+            </div>
+            <div class="detail-row">
+                <span>Status:</span>
+                <span id="status">Verified ✓</span>
+            </div>
+        </div>
+
+        <div id="loadingState">
+            <div class="loading"></div>
+            <p style="color: #fff; margin-top: 20px;">Verifying your payment...</p>
+        </div>
+
+        <div id="errorState" style="display: none;">
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <div id="actionButtons" style="display: none;">
+            <a href="/" class="btn-primary">Get Your Premium Reading</a>
+            <a href="/" class="btn-primary btn-secondary">Back to Home</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { apiClient } from './js/config/api.js';
+
+        async function verifyPayment() {
+            try {
+                // Get session ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const sessionId = urlParams.get('session_id');
+
+                if (!sessionId) {
+                    showError('No payment session found. Please try again.');
+                    return;
+                }
+
+                // Verify payment with backend
+                const result = await apiClient.verifyPayment(sessionId);
+
+                if (result.success && result.paid) {
+                    // Payment verified successfully
+                    showSuccess(result);
+                    
+                    // Store premium status in localStorage
+                    localStorage.setItem('premiumAccess', 'true');
+                    localStorage.setItem('premiumExpiry', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString());
+                    localStorage.setItem('lastPaymentId', sessionId);
+                    
+                } else {
+                    showError('Payment verification failed. Please contact support.');
+                }
+
+            } catch (error) {
+                console.error('Verification error:', error);
+                showError('Unable to verify payment. Please contact support with your order number.');
+            }
+        }
+
+        function showSuccess(result) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('paymentDetails').style.display = 'block';
+            document.getElementById('actionButtons').style.display = 'block';
+
+            // Populate details
+            document.getElementById('orderId').textContent = result.metadata?.timestamp || 'N/A';
+            document.getElementById('amount').textContent = `$${result.amount?.toFixed(2) || 'N/A'}`;
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('actionButtons').style.display = 'block';
+        }
+
+        // Verify payment when page loads
+        document.addEventListener('DOMContentLoaded', verifyPayment);
+    </script>
+</body>
+</html>

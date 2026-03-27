@@ -1,17 +1,17 @@
 {
-  "name": "mdothree",
-  "short_name": "m.3",
-  "description": "Free online utilities \u2014 mdothree",
+  "name": "MDOThree",
+  "short_name": "MDOThree",
+  "description": "Utility & Productivity Tools",
+  "theme_color": "#fafafa",
+  "background_color": "#fafafa",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0F172A",
-  "theme_color": "#10B981",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }

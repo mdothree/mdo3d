@@ -1,0 +1,37 @@
+Persona,Platform,Email,Username,Password,Phone,Bio,Profile Image Description,Location,Website,Birth Date,Display Name
+,,,,SOC2025!@#MaLn,,,,,,,
+Marty,Twitter,my.social.media.email.for2025@gmail.com,@MartyAllenDev,SOC2025!@#MaTw,(470) 781-6443,"""Building and writing about bootstrapped experiments, productivity systems that actually work, and lessons learned along the way. Curiosity drives everything.""","33-year-old male, casual flannel shirt, holding coffee mug, city skyline background, short brown hair, friendly but focused expression","Seattle, WA",slowcomputing.blog,1990-03-15,Marty Allen Shelton
+Marty,Reddit,mysocialmediaemailfor2025+marty@gmail.com,MartyAllenDev,SOC2025!@#MaRe,(470) 781-6443,"""Documenting the space between idea and execution: design decisions, creative workflows, bootstrap lessons. Fueled by curiosity and early mornings.""",Same as Twitter,"Seattle, WA",slowcomputing.blog,1990-03-15,Marty Shelton
+Marty,Mastodon,mysocialmediaemailfor2025+marty.masto@gmail.com,@martyallendev@mastodon.social,,,,,,,,
+Roman,Twitter,my.social.media.email.for2025@gmail.com,@RomanSystemsNat,SOC2025!@#RoTw,(470) 781-6443,"""Systems thinker exploring patterns across forests, rivers, and networks. Remembering that the map is never the territory.""","Weathered 45-year-old male outdoors, mountain background, rugged features, salt-and-pepper beard, flannel and vest, thoughtful distant gaze","Bozeman, MT",fieldnotes.systems,1978-06-21,Roman Everett Callahan
+Roman,Reddit,mysocialmediaemailfor2025+roman@gmail.com,RomanECallahan,SOC2025!@#RoRe,(470) 781-6443,"""Learning from landscapes. Writing about what ecosystems teach us about building balanced technology.""",Same as Twitter,"Bozeman, MT",fieldnotes.systems,1978-06-21,Roman Callahan
+Roman,Mastodon,mysocialmediaemailfor2025+roman.masto@gmail.com,@romansystemsnat@mastodon.social,,,,,,,,
+Nathaniel,Twitter,my.social.media.email.for2025@gmail.com,@NathanielDHwSw,SOC2025!@#NaTw,(470) 781-6443,"""Building where hardware meets software. Testing every idea against real-world conditions.""","39-year-old mixed-race male in workshop setting, rolled sleeves, callused hands, safety glasses on head, industrial tools in background","Portland, OR",,1984-11-03,Nathaniel DeWitt
+Nathaniel,Reddit,mysocialmediaemailfor2025+nathaniel@gmail.com,NatDeWittHW,SOC2025!@#NaRe,(470) 781-6443,"""Systems experimenter exploring where code meets machines. Seeing how theory survives the shop floor.""",Same as Twitter,"Portland, OR",,1984-11-03,Nathaniel DeWitt
+Nathaniel,Mastodon,mysocialmediaemailfor2025+nathaniel.masto@gmail.com,@natdewitthw@mastodon.social,,,,,,,,
+Adaora,Twitter,my.social.media.email.for2025@gmail.com,@AdaoraOko,SOC2025!@#AdTw,(470) 781-6443,"""Jazz saxophonist weaving patterns in sound and code. Curious about AI, fairness, and the spaces between.""","37-year-old Black woman, confident smile, colorful scarf subtle in frame, modern office or home background, natural hair, glasses, approachable vibe","Austin, TX",patternweaver.ai,1987-04-08,Adaora Okonkwo
+Adaora,Reddit,mysocialmediaemailfor2025+adaora@gmail.com,AdaoraOkonkwo,SOC2025!@#AdRe,(470) 781-6443,"""Writing about technology's impact on community. Exploring fairness, design, and the art of improvisation.""",Same as Twitter,"Austin, TX",patternweaver.ai,1987-04-08,Adaora Okonkwo
+Adaora,Mastodon,mysocialmediaemailfor2025+adaora.masto@gmail.com,@adaoraoko@mastodon.social,,,,,,,,
+Kristyna,Twitter,my.social.media.email.for2025@gmail.com,@KristynQuantum,SOC2025!@#KrTw,(470) 781-6443,"""Quantum explorer fascinated by strange overlaps: physics, mathematics, and why mountains make everything clearer.""","41-year-old woman with Central European features, mountain or lab-like background, athletic build, ponytail, technical wear, focused expression","Boulder, CO",quantum-bridges.net,1983-02-14,Kristýna Šírová
+Kristyna,Reddit,mysocialmediaemailfor2025+kristyna@gmail.com,KristynaSirova,SOC2025!@#KrRe,(470) 781-6443,"""Thinking through quantum puzzles and complexity theory. Writing from mountain tops and quiet valleys.""",Same as Twitter,"Boulder, CO",quantum-bridges.net,1983-02-14,Kristyna Sirova
+Kristyna,Mastodon,mysocialmediaemailfor2025+kristyna.masto@gmail.com,@kristynquantum@mastodon.social,SOC2025!@#KrMa,,,,,,,
+,,,,,,,,,,,
+reddit,https://developers.reddit.com/apps/sandboxmarty,sandboxmarty,,npm create devvit@latest Ch56clhScDFjMDlZMUhsajlqc0V3c1Y5NmRpaDc5MkESDHNhbmRib3htYXJ0eRoHdGhyZWVqcw==,,,,,,,
+reddit,https://developers.reddit.com/apps/sandboxMUT,sandboxMUT,,npm create devvit@latest Ch5pczJpNzR4T3N1ejVKMV9JVkRkQWtlRXRNd2NEbGcSCnNhbmRib3htdXQaCWhlbGxvLXdlYg==,,,,,,,
+Mastodon,https://mastodon.social/settings/applications/7538516,sandboxkristyna,urn:ietf:wg:oauth:2.0:oob,Client key,UqltE3BjpFuLZdOd8p3u6b1Gswie3oP9D3N6Z3_x1mA,Client secret,2AnuXDRQg6r9X-Nnv-efPcDjjb9brEyGehNEybHE2m0,Your access token,NkgK2e_Ky84RF-3WN92KtbH8XIWKMzi216Q37sHCuUw,,
+reddit,,sandboxmart,npm create devvit@latest Ch5Jc1FBd0NnQk5CUTgwSkVkSWhmbHRweVRUdHkwbGcSC3NhbmRib3htYXJ0GgloZWxsby13ZWI=,,,,,,,,
+reddit,https://www.reddit.com/prefs/apps?solution=aa8e3b68c77796ffaa8e3b68c77796ff&js_challenge=1&token=54dba411ecc9fd270bca6277dc2a43619b9872f51a4304d2f33cdb5c84fcbd95,martyallen-devbot,0sqf2wN_YR6SfNPHfRXY6A,NyKLvymhOvoB4ieLLkhDuLHkSPvDmQ,,,,,,,
+google,AIzaSyCqJ7kdIeWxiPLgKvZ-oI6_lS5_Bukj1r8,,,,,,,,,,
+,AIzaSyAE25LpJxCOFE-HYLWmEfuDHX0x3bUEAHg,,,,,,,,,,
+,,,,,,,,,,,
+Youtube,MindMachine,mindmachineone,,,,,,,,,
+Blacklab Group,,,,,,,,,,,
+teamblacklaboratory@gmail.com,MethodMatters2!,,,,,,,,,,
+BlacklabB@BlacklabGroup3 subscribers,,,,,,,,,,,
+WikiSummarize@WikiSummarize-ci6ky2 subscribers,,,,,,,,,,,
+Voices & Verses@VoicesVerses-rq1dx2 subscribers,,,,,,,,,,,
+Currency Events@CurrencyEvents-zd4pr2 subscribers,,,,,,,,,,,
+HowTube@HowTube-uh6gu2 subscribers,,,,,,,,,,,
+Cool Facts@CoolFacts-mm3qt2 subscribers,,,,,,,,,,,
+,,,,,,,,,,,
+proton vpn,eI$aXa6w29]PrM:*,,,,,,,,,,

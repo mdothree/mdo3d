@@ -1,0 +1,22 @@
+{
+  "name": "pastlives-api",
+  "version": "1.0.0",
+  "description": "Backend API for Past Life Insights platform",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": ["past-lives", "reincarnation", "api", "divination"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "firebase-admin": "^12.0.0",
+    "stripe": "^14.9.0"
+  }
+}

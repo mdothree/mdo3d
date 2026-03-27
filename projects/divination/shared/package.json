@@ -1,0 +1,9 @@
+{
+  "name": "divination-shared",
+  "version": "1.0.0",
+  "description": "Shared services for divination backends",
+  "type": "module",
+  "dependencies": {
+    "stripe": "^14.9.0"
+  }
+}

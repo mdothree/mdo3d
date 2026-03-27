@@ -1,0 +1,11 @@
+{
+  "name": "numerology-app",
+  "version": "1.0.0",
+  "description": "Numerology calculator and readings frontend",
+  "scripts": {
+    "start": "npx http-server public -p 8080",
+    "dev": "npx http-server public -p 8080 -c-1"
+  },
+  "keywords": ["numerology", "divination", "calculator"],
+  "license": "MIT"
+}
