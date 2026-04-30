@@ -72,6 +72,43 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  --ink: #f8f8fc;
+  --ink-80: #1a1a24;
+  --ink-60: #2e2e3d;
+  --ink-40: #9090a8;
+  --ink-20: #5a5a72;
+  --ink-10: #c4c4d4;
+  --ink-5: #2e2e3d;
+  --paper: #0a0a0f;
+  --white: #131320;
+
+  --accent: #7c5ccf;
+  --accent-mid: #a78bfa;
+  --accent-soft: rgba(124,92,207,0.15);
+
+  --gold: #e0a83a;
+  --gold-soft: rgba(224,168,58,0.15);
+
+  --green: #2ea86d;
+  --green-soft: rgba(46,168,109,0.15);
+
+  --blue: #4a7fd4;
+  --blue-soft: rgba(74,127,212,0.15);
+
+  --rose: #d4506a;
+  --rose-soft: rgba(212,80,106,0.15);
+
+  --border: #1e1e30;
+  --border-strong: #2e2e3d;
+
+  --radius: 6px;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --cursor-outer: rgba(200,200,220,0.55);
+  --cursor-inner: rgba(255,255,255,1);
+}
+
+:root.light {
   --ink: #0a0a0f;
   --ink-80: #1a1a24;
   --ink-60: #2e2e3d;
@@ -82,8 +119,8 @@
   --paper: #f8f8fc;
   --white: #ffffff;
 
-  --accent: #2d1b69;
-  --accent-mid: #4c2fa0;
+  --accent: #4c2fa0;
+  --accent-mid: #7c5ccf;
   --accent-soft: #ede8ff;
 
   --gold: #c17f24;
@@ -101,8 +138,8 @@
   --border: #e2e2ec;
   --border-strong: #c8c8d8;
 
-  --radius: 6px;
-  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --cursor-outer: rgba(10,10,15,0.55);
+  --cursor-inner: rgba(10,10,15,1);
 }
 
 html { scroll-behavior: smooth; }
@@ -117,13 +154,14 @@ body {
 /* NAV */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(248,248,252,0.92);
+  background: rgba(10,10,15,0.92);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: 0 3rem;
   height: 60px;
   display: flex; align-items: center; justify-content: space-between;
 }
+:root.light nav { background: rgba(248,248,252,0.92); }
 .nav-logo {
   display: flex; align-items: center; gap: 0.6rem;
   text-decoration: none; color: var(--ink);
@@ -166,6 +204,15 @@ nav {
   transition: background var(--transition); font-family: 'DM Sans', sans-serif;
 }
 .btn-solid:hover { background: var(--accent-mid); }
+
+.theme-btn {
+  background: none; border: 1px solid var(--border);
+  width: 34px; height: 34px; border-radius: 999px;
+  color: var(--ink-40); display: inline-flex;
+  align-items: center; justify-content: center;
+  cursor: pointer; transition: color var(--transition), border-color var(--transition);
+}
+.theme-btn:hover { color: var(--accent-mid); border-color: var(--accent-mid); }
 
 /* HERO */
 .hero {
@@ -442,6 +489,38 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
 .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .fade-in.visible { opacity: 1; transform: none; }
 
+/* CURSOR TRACKER */
+.mouseCursor {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; border-radius: 50%;
+  transform: translateZ(0); visibility: visible; z-index: 100000;
+  mix-blend-mode: normal;
+}
+.cursor-outer {
+  margin-left: -16px; margin-top: -16px;
+  width: 32px; height: 32px;
+  border: 1.2px solid var(--cursor-outer);
+  box-sizing: border-box; opacity: 1;
+  transition: all 0.25s ease-out;
+}
+.cursor-outer.cursor-hover, .cursor-outer.cursor-big { opacity: 0; }
+.cursor-inner {
+  margin-left: -5px; margin-top: -5px;
+  width: 10px; height: 10px;
+  background-color: var(--cursor-inner); opacity: 1;
+  transition: width 0.25s ease-in-out, height 0.25s ease-in-out, margin 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+.cursor-inner.cursor-big { background-color: transparent; }
+.cursor-inner.cursor-hover {
+  margin-left: -15px; margin-top: -15px;
+  width: 30px; height: 30px; opacity: 0;
+}
+.cursor-inner.cursor-big {
+  width: 120px; height: 120px; margin-left: -60px; margin-top: -60px;
+  background: transparent; border: 1px solid var(--cursor-outer); opacity: 0.35;
+}
+@media (pointer: coarse) { .mouseCursor { display: none; } }
+
 /* RESPONSIVE */
 @media (max-width: 960px) {
   nav { padding: 0 1.5rem; }
@@ -482,13 +561,16 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
     <a href="#commerce" class="nav-link">Commerce</a>
   </div>
   <div class="nav-right">
+    <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle theme" aria-pressed="false">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
     <a href="#contact" class="btn-ghost">Contact</a>
     <a href="https://guidance.mdo3d.com" class="btn-solid">Explore Guidance →</a>
   </div>
 </nav>
 
 <!-- HERO -->
-<section style="background: white; border-bottom: 1px solid var(--border);">
+<section style="background: var(--white); border-bottom: 1px solid var(--border);">
   <div class="hero">
     <div class="hero-content fade-in">
       <div class="hero-eyebrow">
@@ -777,6 +859,54 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
 </footer>
 
 <script>
+// Theme toggle
+const themeToggleBtn = document.getElementById('themeToggle');
+const THEME_KEY = 'mdo3d-theme';
+const getPreferredTheme = () => {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === 'light' || stored === 'dark') return stored;
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+  return 'dark';
+};
+const applyTheme = (theme) => {
+  document.documentElement.classList.toggle('light', theme === 'light');
+  localStorage.setItem(THEME_KEY, theme);
+  if (themeToggleBtn) themeToggleBtn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+};
+try { applyTheme(getPreferredTheme()); } catch {}
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.classList.contains('light');
+    applyTheme(isLight ? 'dark' : 'light');
+  });
+}
+
+// Cursor tracker
+(() => {
+  if (!window.matchMedia) return;
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const outer = document.createElement('div');
+  outer.className = 'mouseCursor cursor-outer';
+  const inner = document.createElement('div');
+  inner.className = 'mouseCursor cursor-inner';
+  document.body.appendChild(outer);
+  document.body.appendChild(inner);
+  let x = 0; let y = 0;
+  const onMove = (e) => { x = e.clientX; y = e.clientY; const t = `translate(${x}px, ${y}px)`; outer.style.transform = t; inner.style.transform = t; };
+  window.addEventListener('mousemove', onMove, { passive: true });
+  const setHover = (on) => { outer.classList.toggle('cursor-hover', on); inner.classList.toggle('cursor-hover', on); };
+  const setBig = (on) => { outer.classList.toggle('cursor-big', on); inner.classList.toggle('cursor-big', on); };
+  document.querySelectorAll('a, button, .cat-card, .gp-item, .stack-card').forEach((el) => {
+    el.addEventListener('mouseenter', () => setHover(true));
+    el.addEventListener('mouseleave', () => setHover(false));
+  });
+  document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .hero-desc, .gs-desc, .cat-desc').forEach((el) => {
+    el.addEventListener('mouseenter', () => setBig(true));
+    el.addEventListener('mouseleave', () => setBig(false));
+  });
+})();
+
 // Platform data
 const platforms = [
   { icon:'🔮', name:'Oracle Cards', desc:'AI-powered divination & personalized readings', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/oracle' },
