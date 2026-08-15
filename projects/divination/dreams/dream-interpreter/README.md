@@ -1,4 +1,4 @@
-# BlackLabb Dreams - Dream Interpreter
+# MDO3D Dreams - Dream Interpreter
 
 AI-powered dream interpretation platform with comprehensive symbol database and dream journal.
 
@@ -89,7 +89,7 @@ vercel --prod
 ```
 dream-interpreter/
 ├── public/
-│   ├── index.html              # Main page with BlackLabb branding
+│   ├── index.html              # Main page
 │   ├── css/
 │   │   └── styles.css          # Dark dream-themed UI
 │   └── js/

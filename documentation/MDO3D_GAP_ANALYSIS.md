@@ -174,7 +174,7 @@ Location: `~/lamar/shared/`
 
 - **Vercel Token:** Lamar/MDO3 account
 - **Cloudflare:** MDO3 account (zone: 9a2b4e321742496097e74e2cf94f4ca3)
-- **GitHub:** MDO3 account (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)
+- **GitHub:** MDO3 account ([REDACTED 2026-08-15 — token was exposed here and remains in git history; ROTATE it])
 
 ---
 
