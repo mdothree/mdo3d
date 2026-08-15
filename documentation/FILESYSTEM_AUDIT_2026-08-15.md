@@ -151,3 +151,8 @@ Remaining unknown: which Vercel project the live domain(s) actually point to —
 
 - **2026-08-15** — Audit performed and documented. No operations executed yet.
 - **2026-08-15 (pass 2)** — All high-confidence items validated (diffs, checksums, Vercel configs). Landing-page fragmentation resolved to a canonical + 2-stale + 3-distinct map. Root `logo2.png` reclassified from "move" to "delete (duplicate)". New removals added: leads duplicate CSV, extra `__pycache__` dirs, runwae `__MACOSX/`. Still nothing executed.
+- **2026-08-15 (executed)** — All high-confidence operations completed:
+  - Disk: deleted jarvisbee `.next` (23MB), all `__pycache__`/`.pytest_cache`, runwae `__MACOSX/`, `plugins/chrome-tea/`, 18 `.DS_Store`, root `logo2.png` (dup), leads duplicate CSV; moved `logo1.png` → `logos/`. Repo ~106MB → ~82MB content.
+  - Commit `50d3e06`: removed 1,837 tracked node_modules files + stale `blacklab/{dreams,oracle,tarot}` copies; fixed `.gitignore` nested-repo paths.
+  - Commit `250fd91`: committed the stranded divination Stripe/Firebase integration work (62 files; secrets-scanned — all Stripe keys via env vars, Firebase keys are public client config).
+  - Remaining untracked: operational dirs (`review/`, `loops/`, `social/`, `comms/`, `Organization/`, `scripts/`, `STATUS.md`, `shared/` config dirs, `projects/leads/`, `projects/external/`) — tracking decision still open (low-confidence item 5). Three divination nested repos (`astrology`, `iching`, `runes`) have uncommitted changes *inside* them.
