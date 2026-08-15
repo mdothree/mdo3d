@@ -1,14 +1,16 @@
 # Nested git repos (independent projects managed separately)
 landing/mdo3d-compare
 landing/mdo3d-portfolio
-projects/blacklab/astrology/astrology
-projects/blacklab/fengshui/feng-shui-analyzer
-projects/blacklab/iching/iching
-projects/blacklab/pastlives/past-life-insights
 projects/blacklab/research/blacklab-neuro
 projects/blacklab/research/blacklab-quantum
 projects/blacklab/research/blacklab-space
-projects/blacklab/runes/runes
+projects/divination/astrology/astrology
+projects/divination/fengshui/feng-shui-analyzer
+projects/divination/iching/iching
+projects/divination/pastlives/past-life-insights
+projects/divination/runes/runes
+projects/external/dailyaitoll
+projects/external/runwae/runwae
 projects/jarvisbee/babynames/baby-name-oracle
 projects/jarvisbee/businessnames/business-name-generator
 projects/jarvisbee/career/career-horoscope
@@ -41,7 +43,6 @@ projects/ronnascanner/ronnascanner-contacts
 projects/ronnascanner/ronnascanner-emails
 projects/ronnascanner/ronnascanner-leads
 projects/ronnascanner/ronnascanner-prospects
-projects/runwae/runwae
 shared/trauma/api
 shared/trauma/frontend
 
@@ -65,6 +66,11 @@ credentials.json
 secrets.json
 keys.json
 tokens.json
+
+# Loops + central monitoring (SA/Stripe keys, minted tokens, aggregated snapshot)
+loops/secrets/
+review/data/monitoring.json
+**/*.zoho_token
 
 # ─────────────────────────────────────────
 # Setup Scripts with Hardcoded Keys
