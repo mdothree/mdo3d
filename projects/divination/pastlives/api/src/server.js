@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudePastLifeService } from './services/claudePastLifeService.js';
-import { StripeService } from '../../../shared/services/stripeService.js';
+import { StripeService } from './services/stripeService.js';
 
 dotenv.config();
 

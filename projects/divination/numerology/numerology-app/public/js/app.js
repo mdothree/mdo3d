@@ -1,10 +1,17 @@
 import {
+import { firebaseConfig } from './config/firebase.js';
   getAllNumbers,
   getLifePathMeaning,
   calculateLifePathNumber
 } from './services/database.js';
 
+// API Configuration
+const API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3010'
+  : 'https://numerology-api.vercel.app';
+
 let currentNumbers = null;
+let isPremium = false;
 
 const elements = {
   nameInput: document.getElementById('name-input'),

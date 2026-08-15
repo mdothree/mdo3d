@@ -1,7 +1,7 @@
 # Divination Services Implementation Status
 
 **Created:** 2026-03-26
-**Last Updated:** 2026-03-26
+**Last Updated:** 2026-03-27
 **Purpose:** Track implementation status of all MDO3D divination backends and frontends
 
 ---
@@ -12,25 +12,37 @@
 |--------|-------|
 | Total Services | 9 |
 | APIs Created | 6 (new) + 3 (existing) = 9 |
-| APIs Tested Locally | 1 (I Ching verified) |
+| APIs Deployed to Vercel | 6 ✅ |
+| APIs Health Check Passing | 6 ✅ |
 | Frontends Updated | 5 |
-| Ready for Deployment | 9 |
+| Ready for Production | 6 (need env vars) |
 
 ---
 
 ## Service Status Matrix
 
-| Service | API Port | API Status | Frontend Status | Claude AI | Stripe | Deploy Ready |
-|---------|----------|------------|-----------------|-----------|--------|--------------|
-| Oracle | 3002 | Existing | Existing | Yes | Yes | Yes |
-| Tarot | 3003 | Existing | Existing | Yes | Yes | Yes |
-| Dreams | 3004 | Existing | Existing | Yes | Yes | Yes |
-| I Ching | 3005 | Created | Updated | Yes | Yes | Yes |
-| Runes | 3006 | Created | Updated | Yes | Yes | Yes |
-| Astrology | 3007 | Created | Updated | Yes | Yes | Yes |
-| Feng Shui | 3008 | Created | Rebuilt (Next.js) | Yes | Yes | Yes |
-| Past Lives | 3009 | Created | Rebuilt (Next.js) | Yes | Yes | Yes |
-| Numerology | 3010 | Created | Created (new) | Yes | Yes | Yes |
+| Service | API Port | API Status | Frontend Status | Claude AI | Stripe | Deployed |
+|---------|----------|------------|-----------------|-----------|--------|----------|
+| Oracle | 3002 | Existing | Existing | Yes | Yes | Existing |
+| Tarot | 3003 | Existing | Existing | Yes | Yes | Existing |
+| Dreams | 3004 | Existing | Existing | Yes | Yes | Existing |
+| I Ching | 3005 | ✅ Deployed | Updated | Yes | Yes | ✅ Vercel |
+| Runes | 3006 | ✅ Deployed | Updated | Yes | Yes | ✅ Vercel |
+| Astrology | 3007 | ✅ Deployed | Updated | Yes | Yes | ✅ Vercel |
+| Feng Shui | 3008 | ✅ Deployed | Rebuilt (Next.js) | Yes | Yes | ✅ Vercel |
+| Past Lives | 3009 | ✅ Deployed | Rebuilt (Next.js) | Yes | Yes | ✅ Vercel |
+| Numerology | 3010 | ✅ Deployed | Created (new) | Yes | Yes | ✅ Vercel |
+
+## Deployed API URLs
+
+| Service | Vercel URL | Health Status |
+|---------|------------|---------------|
+| I Ching | https://iching-api.vercel.app | ✅ Healthy |
+| Runes | https://runes-api.vercel.app | ✅ Healthy |
+| Astrology | https://astrology-api-alpha.vercel.app | ✅ Healthy |
+| Feng Shui | https://fengshui-api-eosin.vercel.app | ✅ Healthy |
+| Past Lives | https://pastlives-api.vercel.app | ✅ Healthy |
+| Numerology | https://numerology-api.vercel.app | ✅ Healthy |
 
 ---
 
@@ -182,16 +194,16 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 - [ ] Test payment flow
 - [ ] Verify AI integration
 
-### Services to Deploy
+### Deployed Services
 
-| Service | API Domain | Frontend Domain | Priority |
-|---------|------------|-----------------|----------|
-| I Ching | iching-api.mdo3d.com | iching.mdo3d.com | High |
-| Runes | runes-api.mdo3d.com | runes.mdo3d.com | High |
-| Astrology | astrology-api.mdo3d.com | astrology.mdo3d.com | High |
-| Feng Shui | fengshui-api.mdo3d.com | fengshui.mdo3d.com | Medium |
-| Past Lives | pastlives-api.mdo3d.com | pastlife.mdo3d.com | Medium |
-| Numerology | numerology-api.mdo3d.com | numerology.mdo3d.com | Medium |
+| Service | Current API URL | Target Custom Domain | Status |
+|---------|-----------------|---------------------|--------|
+| I Ching | https://iching-api.vercel.app | iching-api.mdo3d.com | ✅ Live |
+| Runes | https://runes-api.vercel.app | runes-api.mdo3d.com | ✅ Live |
+| Astrology | https://astrology-api-alpha.vercel.app | astrology-api.mdo3d.com | ✅ Live |
+| Feng Shui | https://fengshui-api-eosin.vercel.app | fengshui-api.mdo3d.com | ✅ Live |
+| Past Lives | https://pastlives-api.vercel.app | pastlives-api.mdo3d.com | ✅ Live |
+| Numerology | https://numerology-api.vercel.app | numerology-api.mdo3d.com | ✅ Live |
 
 ---
 
@@ -271,11 +283,11 @@ divination/
 
 ## Next Steps
 
-1. **Immediate:** Create production `.env` files with real API keys
-2. **Deploy:** Deploy APIs to Railway or Vercel
-3. **DNS:** Configure subdomains for API endpoints
-4. **Test:** End-to-end testing of payment flows
-5. **Monitor:** Set up logging and error tracking
+1. **Environment Variables:** Set ANTHROPIC_API_KEY and STRIPE_SECRET_KEY in Vercel dashboard for each API
+2. **Custom Domains:** Configure custom subdomains (e.g., iching-api.mdo3d.com) in Vercel
+3. **Frontend Deployment:** Deploy updated frontends to Vercel
+4. **Test:** End-to-end testing of AI readings and payment flows
+5. **Monitor:** Set up logging and error tracking in Vercel
 
 ---
 
