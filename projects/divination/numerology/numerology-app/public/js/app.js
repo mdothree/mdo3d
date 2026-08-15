@@ -1,5 +1,5 @@
-import {
 import { firebaseConfig } from './config/firebase.js';
+import {
   getAllNumbers,
   getLifePathMeaning,
   calculateLifePathNumber

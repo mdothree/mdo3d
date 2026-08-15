@@ -3,7 +3,7 @@
  * Uses shared MDO3D Spiritual Firebase project (oracle-mdo3d)
  */
 
-const firebaseConfig = {
+const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBgZZYMrPdS8pkPgb4jAXupCzMzoKYO7ZE",
   authDomain: "oracle-mdo3d.firebaseapp.com",
   projectId: "oracle-mdo3d",
@@ -16,7 +16,7 @@ const APP_NAME = 'numerology';
 
 export class FirebaseConfig {
   constructor() {
-    this.config = firebaseConfig;
+    this.config = FIREBASE_CONFIG;
     this.app = null;
     this.auth = null;
     this.db = null;
