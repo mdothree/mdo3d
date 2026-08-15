@@ -31,7 +31,10 @@ const elements = {
   modalSkip: document.getElementById('modal-skip')
 };
 
-function init() {
+async function init() {
+  await firebaseConfig.initialize();
+  const status = await firebaseConfig.getPremiumStatus();
+  isPremium = status?.isPremium ?? false;
   setupEventListeners();
 }
 
