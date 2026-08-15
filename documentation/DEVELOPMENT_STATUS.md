@@ -1,3 +1,5 @@
+> **⚠️ SUPERSEDED (2026-08-15):** This snapshot predates the blacklab→divination reorganization and later work. For current state see [FEATURE_PARITY_AUDIT.md](FEATURE_PARITY_AUDIT.md) (functionality) and [FILESYSTEM_AUDIT_2026-08-15.md](FILESYSTEM_AUDIT_2026-08-15.md) (repo layout).
+
 # 🚀 Development Status - Complete Portfolio
 
 **Last Updated**: February 28, 2026  

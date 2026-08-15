@@ -1,3 +1,5 @@
+> **Note (2026-08-15):** Paths in this doc predate the blacklab→divination and projects/external reorganization; see [FILESYSTEM_AUDIT_2026-08-15.md](FILESYSTEM_AUDIT_2026-08-15.md) for the current layout.
+
 # Platform Naming Recommendations
 
 Strategic naming recommendations for all Lamar platforms to maximize SEO, brand recognition, and user trust.

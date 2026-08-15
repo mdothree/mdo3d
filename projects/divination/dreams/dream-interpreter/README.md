@@ -2,8 +2,8 @@
 
 AI-powered dream interpretation platform with comprehensive symbol database and dream journal.
 
-**Domain**: `blacklabb.com/dreams` (subdomain under BlackLabb)  
-**Brand**: BlackLabb Dreams - Decode Your Subconscious
+**Domain**: `dreams.mdo3d.com` (MDO3D divination platform)  
+**Brand**: MDO3D Dreams - Decode Your Subconscious
 
 ---
 
@@ -79,7 +79,7 @@ npm run dev  # http://localhost:8083
 ### Deployment
 ```bash
 vercel --prod
-# Configure custom domain: blacklabb.com/dreams
+# Configure custom domain: dreams.mdo3d.com
 ```
 
 ---
@@ -281,7 +281,7 @@ Follows Lamar platform architecture standards:
 ```bash
 cd platforms/dream-interpreter
 vercel --prod
-# Add custom domain: blacklabb.com/dreams
+# Add custom domain: dreams.mdo3d.com
 ```
 
 ### Railway (API - Future)
@@ -343,6 +343,6 @@ MIT
 ---
 
 **Status**: ✅ Production Ready (Frontend Complete)  
-**Domain**: blacklabb.com/dreams  
+**Domain**: dreams.mdo3d.com  
 **Port**: 8083 (development)  
 **Revenue**: $3,600/month potential
