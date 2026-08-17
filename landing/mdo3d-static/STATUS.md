@@ -1,7 +1,31 @@
 # MDO3D Landing Page - Status
 
-**Last Updated:** 2026-05-10
-**Last Commit:** `a99e5b5` - Add theme toggle and mouse cursor tracker to mdo3d landing
+**Last Updated:** 2026-08-17
+
+---
+
+## Deploy + fixes (2026-08-17) — now actually live on mdo3d.com
+
+**⚠️ Critical discovery:** mdo3d.com is served by the **`mdo3d-landing`** Vercel project,
+NOT `mdo3d-static` (this directory). Edits made here had never reached the live domain, so
+mdo3d.com was stale (still had 404ing `guidance.mdo3d.com/*` links, no theme toggle). This
+session deployed this source to `mdo3d-landing`, so everything below is now live.
+**Footgun:** two Vercel projects for one page. Consider consolidating (point mdo3d.com at
+`mdo3d-static`, or retire one) so edits don't silently miss the live site.
+
+- **Theme toggle (dark/light) now live** on mdo3d.com, with a pre-paint `<head>` guard so
+  light-mode users don't get a flash of dark on load.
+- **Removed the "Powered by" trust bar** (Next.js/React/TypeScript/Vercel badges).
+- **Fixed dark-mode bug:** the "Featured Subdomain" guidance section used `var(--ink)` as a
+  background (a text-color var that flips with theme), so it turned white in dark mode. Now a
+  fixed dark. Same fix applied to the white CTA button's text and the filter "active" button.
+- **Fixed divination links:** featured/showcase/footer links pointed at
+  `guidance.mdo3d.com/<tool>` paths that 404; repointed to real `<tool>.mdo3d.com` subdomains,
+  added iching/runes/names/pastlife, marked astrology/fengshui live.
+
+---
+
+## Earlier: theme toggle + cursor tracker added (2026-05-10) — but not deployed to prod until 08-17 (see above)
 
 ---
 
