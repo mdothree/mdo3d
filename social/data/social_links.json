@@ -1,0 +1,14 @@
+{
+  "_comment": "MDO3D brand social handles. Mirrors ~/ahl/distribution/data/social_links.json. The umbrella studio page is the primary account; per-product consumer channels (Instagram/Pinterest for divination) are added when warranted.",
+  "brands": {
+    "mdo3d": {
+      "display_name": "MDO3D",
+      "role": "umbrella / studio",
+      "site": "https://mdo3d.com",
+      "linkedin": "https://www.linkedin.com/company/mdo3",
+      "instagram": null,
+      "pinterest": null,
+      "status": "live (page created 2026-08-17), backfill pending"
+    }
+  }
+}
