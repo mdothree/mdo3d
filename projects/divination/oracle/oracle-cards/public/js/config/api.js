@@ -6,7 +6,7 @@ export const API_CONFIG = {
   baseURL: import.meta.env?.VITE_API_URL || 
            (window.location.hostname === 'localhost' 
              ? 'http://localhost:3002' 
-             : 'https://your-api-url.com'),
+             : 'https://oracle-cards-api.vercel.app'),
   
   endpoints: {
     generateReading: '/api/reading/generate',
@@ -30,7 +30,7 @@ export class ApiClient {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ cards, question, spreadType, premium })
+      body: JSON.stringify({ cards, question, spreadType, premium, sessionId: window.PremiumEntitlement?.activeSessionId() })
     });
 
     if (!response.ok) {

@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MDO3D — AI Platform Ecosystem</title>
+<script>
+  // Apply saved/preferred theme before paint to avoid a flash of the wrong theme.
+  (function () {
+    try {
+      var t = localStorage.getItem('mdo3d-theme');
+      if (t !== 'light' && t !== 'dark') {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+      }
+      if (t === 'light') document.documentElement.classList.add('light');
+    } catch (e) {}
+  })();
+</script>
 <meta name="description" content="MDO3D builds AI-powered platforms across spiritual guidance, professional development, productivity, and commerce.">
 
 <!-- Open Graph / Facebook -->
@@ -394,7 +406,7 @@ nav {
 .cat-arrow { display: inline-block; transition: transform var(--transition); }
 
 /* GUIDANCE SPOTLIGHT */
-.guidance-spotlight { padding: 5rem 3rem; background: var(--ink); }
+.guidance-spotlight { padding: 5rem 3rem; background: #0a0a0f; }
 .guidance-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
 .gs-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #9090a8; margin-bottom: 0.75rem; }
 .gs-h2 {
@@ -406,12 +418,12 @@ nav {
 .gs-h2 em { font-style: italic; color: #c4b5f4; }
 .gs-desc { font-size: 0.95rem; line-height: 1.75; color: #9090a8; margin-bottom: 2.5rem; font-weight: 300; }
 .btn-light {
-  background: white; color: var(--ink); padding: 0.75rem 1.8rem;
+  background: white; color: #0a0a0f; padding: 0.75rem 1.8rem;
   border-radius: 6px; font-size: 0.88rem; font-weight: 500;
   text-decoration: none; transition: all var(--transition); border: none;
   cursor: pointer; font-family: 'DM Sans', sans-serif; display: inline-block;
 }
-.btn-light:hover { background: var(--ink-5); transform: translateY(-1px); }
+.btn-light:hover { background: #eeeef4; transform: translateY(-1px); }
 .btn-outline-light {
   background: transparent; color: #9090a8; padding: 0.75rem 1.8rem;
   border-radius: 6px; font-size: 0.88rem; font-weight: 500;
@@ -442,7 +454,7 @@ nav {
   font-size: 0.78rem; font-weight: 500; cursor: pointer;
   transition: all var(--transition); font-family: 'DM Sans', sans-serif;
 }
-.filter-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+.filter-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .filter-btn:hover:not(.active) { border-color: var(--border-strong); color: var(--ink); }
 
 .ptable { width: 100%; border-collapse: collapse; }
@@ -724,7 +736,7 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
           <div class="stack-card-sub">Next-gen commerce platform</div>
           <div class="live-pill"><div class="live-dot"></div> Live</div>
         </div>
-        <div class="stack-card card-c4" style="background:var(--ink);">
+        <div class="stack-card card-c4" style="background:#0a0a0f;">
           <div style="font-size:1rem;margin-bottom:0.4rem;">✦</div>
           <div style="font-size:0.78rem;font-weight:600;color:white;margin-bottom:0.2rem;">guidance.mdo3d.com</div>
           <div style="font-size:0.7rem;color:#5a5a72;">Mystical AI experiences</div>
@@ -733,22 +745,6 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
     </div>
   </div>
 </section>
-
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="trust-inner">
-    <span class="trust-label">Powered by</span>
-    <div class="trust-badges">
-      <div class="trust-badge"><span class="trust-badge-icon">▲</span> Next.js</div>
-      <div class="trust-badge"><span class="trust-badge-icon">⚛</span> React</div>
-      <div class="trust-badge"><span class="trust-badge-icon">🤖</span> AI / ML</div>
-      <div class="trust-badge"><span class="trust-badge-icon">◆</span> TypeScript</div>
-      <div class="trust-badge"><span class="trust-badge-icon">⚡</span> Vercel Edge</div>
-      <div class="trust-badge"><span class="trust-badge-icon">🔒</span> Privacy First</div>
-    </div>
-    <span class="trust-label" style="text-align:right;">MDO3D</span>
-  </div>
-</div>
 
 <!-- CATEGORIES -->
 <section class="categories" id="categories">
@@ -766,7 +762,7 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
         <div class="cat-icon-wrap ic-guidance">🔮</div>
         <div class="cat-title">Spiritual Guidance</div>
         <div class="cat-desc">Oracle readings, dream interpretation, numerology, astrology, and more. AI meets ancient wisdom.</div>
-        <div class="cat-count">6 platforms · guidance.mdo3d.com</div>
+        <div class="cat-count">10 platforms · guidance.mdo3d.com</div>
         <div class="cat-footer">
           <span class="cat-link">guidance.mdo3d.com</span>
           <span class="cat-arrow">→</span>
@@ -841,39 +837,59 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
       <p class="gs-desc">guidance.mdo3d.com is our dedicated platform for AI-powered divination, dream interpretation, and mystical exploration. A distinct experience built for seekers, intuitives, and the spiritually curious.</p>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
         <a href="https://guidance.mdo3d.com" class="btn-light">Visit Guidance</a>
-        <a href="https://guidance.mdo3d.com/oracle" class="btn-outline-light">Try Oracle Cards →</a>
+        <a href="https://oracle.mdo3d.com" class="btn-outline-light">Try Oracle Cards →</a>
       </div>
     </div>
     <div class="guidance-platforms">
-      <a href="https://guidance.mdo3d.com/oracle" class="gp-item new">
+      <a href="https://oracle.mdo3d.com" class="gp-item new">
         <div class="gp-icon">🔮</div>
         <div class="gp-name">Oracle Cards</div>
         <div class="gp-tag">✦ Flagship</div>
       </a>
-      <a href="https://guidance.mdo3d.com/dreams" class="gp-item">
+      <a href="https://dreams.mdo3d.com" class="gp-item">
         <div class="gp-icon">🌙</div>
         <div class="gp-name">Dream Interpreter</div>
         <div class="gp-tag">Live</div>
       </a>
-      <a href="https://guidance.mdo3d.com/tarot" class="gp-item">
+      <a href="https://tarot.mdo3d.com" class="gp-item">
         <div class="gp-icon">🃏</div>
         <div class="gp-name">Tarot Readings</div>
         <div class="gp-tag">Live</div>
       </a>
-      <a href="https://guidance.mdo3d.com/numerology" class="gp-item">
+      <a href="https://numerology.mdo3d.com" class="gp-item">
         <div class="gp-icon">🔢</div>
         <div class="gp-name">Numerology</div>
         <div class="gp-tag">Live</div>
       </a>
-      <a href="https://guidance.mdo3d.com/astrology" class="gp-item">
+      <a href="https://astrology.mdo3d.com" class="gp-item">
         <div class="gp-icon">⭐</div>
         <div class="gp-name">Astrology</div>
-        <div class="gp-tag">Coming Soon</div>
+        <div class="gp-tag">Live</div>
       </a>
-      <a href="https://guidance.mdo3d.com/fengshui" class="gp-item">
+      <a href="https://fengshui.mdo3d.com" class="gp-item">
         <div class="gp-icon">☯️</div>
         <div class="gp-name">Feng Shui</div>
-        <div class="gp-tag">Coming Soon</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://iching.mdo3d.com" class="gp-item">
+        <div class="gp-icon">☰</div>
+        <div class="gp-name">I Ching</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://runes.mdo3d.com" class="gp-item">
+        <div class="gp-icon">ᚱ</div>
+        <div class="gp-name">Runes</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://names.mdo3d.com" class="gp-item">
+        <div class="gp-icon">👶</div>
+        <div class="gp-name">Baby Names</div>
+        <div class="gp-tag">Live</div>
+      </a>
+      <a href="https://pastlife.mdo3d.com" class="gp-item">
+        <div class="gp-icon">🕰️</div>
+        <div class="gp-name">Past Lives</div>
+        <div class="gp-tag">Live</div>
       </a>
     </div>
   </div>
@@ -1074,12 +1090,16 @@ if (themeToggleBtn) {
 
 // Platform data
 const platforms = [
-  { icon:'🔮', name:'Oracle Cards', desc:'AI-powered divination & personalized readings', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/oracle' },
-  { icon:'🌙', name:'Dream Interpreter', desc:'Decode subconscious symbols with AI analysis', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/dreams' },
-  { icon:'🃏', name:'Tarot Readings', desc:'Full spread tarot with AI interpretation', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/tarot' },
-  { icon:'🔢', name:'Numerology Lab', desc:'Life path numbers and numeric pattern discovery', cat:'spiritual', status:'live', href:'https://guidance.mdo3d.com/numerology' },
-  { icon:'⭐', name:'Astrology Charts', desc:'Natal charts and planetary transit readings', cat:'spiritual', status:'soon', href:'https://guidance.mdo3d.com/astrology' },
-  { icon:'☯️', name:'Feng Shui Advisor', desc:'Space harmony guidance powered by AI', cat:'spiritual', status:'soon', href:'https://guidance.mdo3d.com/fengshui' },
+  { icon:'🔮', name:'Oracle Cards', desc:'AI-powered divination & personalized readings', cat:'spiritual', status:'live', href:'https://oracle.mdo3d.com' },
+  { icon:'🌙', name:'Dream Interpreter', desc:'Decode subconscious symbols with AI analysis', cat:'spiritual', status:'live', href:'https://dreams.mdo3d.com' },
+  { icon:'🃏', name:'Tarot Readings', desc:'Full spread tarot with AI interpretation', cat:'spiritual', status:'live', href:'https://tarot.mdo3d.com' },
+  { icon:'🔢', name:'Numerology Lab', desc:'Life path numbers and numeric pattern discovery', cat:'spiritual', status:'live', href:'https://numerology.mdo3d.com' },
+  { icon:'⭐', name:'Astrology Charts', desc:'Natal charts and planetary transit readings', cat:'spiritual', status:'live', href:'https://astrology.mdo3d.com' },
+  { icon:'☯️', name:'Feng Shui Advisor', desc:'Space harmony guidance powered by AI', cat:'spiritual', status:'live', href:'https://fengshui.mdo3d.com' },
+  { icon:'☰', name:'I Ching', desc:'Hexagram castings with AI interpretation of changing lines', cat:'spiritual', status:'live', href:'https://iching.mdo3d.com' },
+  { icon:'ᚱ', name:'Rune Readings', desc:'Elder Futhark rune draws with AI-guided meaning', cat:'spiritual', status:'live', href:'https://runes.mdo3d.com' },
+  { icon:'👶', name:'Baby Name Oracle', desc:'Name meanings, origins, and numerology for new arrivals', cat:'spiritual', status:'live', href:'https://names.mdo3d.com' },
+  { icon:'🕰️', name:'Past Life Insights', desc:'Birth-data past life readings — era, place, and lessons', cat:'spiritual', status:'live', href:'https://pastlife.mdo3d.com' },
   { icon:'📄', name:'Resume Analyzer', desc:'AI resume optimization with job-specific gap analysis', cat:'professional', status:'live', href:'#' },
   { icon:'🎤', name:'Interview Coach', desc:'Real-time AI mock interviews and feedback', cat:'professional', status:'live', href:'#' },
   { icon:'📊', name:'Career Compass', desc:'Long-term career planning with labor market AI', cat:'professional', status:'soon', href:'#' },

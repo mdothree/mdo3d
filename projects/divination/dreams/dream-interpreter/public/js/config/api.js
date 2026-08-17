@@ -7,7 +7,7 @@ const API_CONFIG = {
     // Use environment variable in production, fallback to localhost for development
     baseURL: window.location.hostname === 'localhost' 
         ? 'http://localhost:3004'
-        : 'https://dream-interpreter-api.railway.app',
+        : 'https://dream-interpreter-api-delta.vercel.app',
     timeout: 30000
 };
 

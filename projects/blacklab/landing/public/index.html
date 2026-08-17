@@ -67,7 +67,6 @@
             border-radius: 20px;
             padding: 2.5rem;
             transition: all 0.4s;
-            cursor: pointer;
             text-decoration: none;
             color: inherit;
             position: relative;
@@ -145,6 +144,10 @@
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
         }
+        .status-badge.soon {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+        }
         .footer {
             text-align: center;
             padding: 3rem;
@@ -168,7 +171,7 @@
         <p class="tagline">Track the future of <em>transformative technologies</em>. We monitor quantum computing, space exploration, and brain-computer interfaces as they reshape our world.</p>
         
         <div class="trackers-grid">
-            <a href="https://quantum.blacklabb.com" class="tracker-card quantum">
+            <div class="tracker-card quantum">
                 <span class="tracker-icon">⚛️</span>
                 <h3>Quantum</h3>
                 <p>Track quantum computing breakthroughs, quantum communication networks, and foundational research from leading companies and institutions.</p>
@@ -176,10 +179,10 @@
                     <span>Quantum Computing</span>
                     <span>QKD & Communication</span>
                 </div>
-                <div class="status-badge">Live</div>
-            </a>
-            
-            <a href="https://space.blacklabb.com" class="tracker-card space">
+                <div class="status-badge soon">Coming Soon</div>
+            </div>
+
+            <div class="tracker-card space">
                 <span class="tracker-icon">🚀</span>
                 <h3>Space</h3>
                 <p>Monitor launches, missions, and developments across the commercial space industry—from SpaceX to NASA to emerging space agencies.</p>
@@ -187,10 +190,10 @@
                     <span>Launch Tracking</span>
                     <span>Mission Updates</span>
                 </div>
-                <div class="status-badge">Live</div>
-            </a>
-            
-            <a href="https://neuro.blacklabb.com" class="tracker-card neuro">
+                <div class="status-badge soon">Coming Soon</div>
+            </div>
+
+            <div class="tracker-card neuro">
                 <span class="tracker-icon">🧠</span>
                 <h3>Neuro</h3>
                 <p>Follow brain-computer interface developments, neural implant breakthroughs, and the evolving neurotechnology landscape.</p>
@@ -198,8 +201,8 @@
                     <span>BCI Technology</span>
                     <span>Neural Implants</span>
                 </div>
-                <div class="status-badge">Live</div>
-            </a>
+                <div class="status-badge soon">Coming Soon</div>
+            </div>
         </div>
     </section>
     

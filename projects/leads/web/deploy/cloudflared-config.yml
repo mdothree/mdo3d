@@ -1,0 +1,22 @@
+# Cloudflare Tunnel config for FL Sunbiz Leads
+# Place at ~/.cloudflared/config.yml on littlemini
+#
+# Setup (example):
+#   cloudflared tunnel create mdo3d-leads
+#   cloudflared tunnel route dns mdo3d-leads leads.mdo3d.com
+#   cloudflared tunnel route dns mdo3d-leads leadsapi.mdo3d.com
+
+tunnel: mdo3d-leads
+credentials-file: /home/latarencebutts/.cloudflared/mdo3d-leads.json
+
+ingress:
+  # Frontend (React app)
+  - hostname: leads.mdo3d.com
+    service: http://localhost:3050
+
+  # Backend API
+  - hostname: leadsapi.mdo3d.com
+    service: http://localhost:8050
+
+  # Catch-all
+  - service: http_status:404

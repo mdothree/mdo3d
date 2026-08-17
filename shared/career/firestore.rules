@@ -1,0 +1,38 @@
+// mdo3d-career — Firebase project for the rigor career tools (resume, cover,
+// linkedin, interview, salary, portfolio, networking). Docs are owner-scoped by a
+// `userId` field. Collection names are hyphenated to match what the apps write.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function ownsRead()   { return isSignedIn() && resource.data.userId == request.auth.uid; }
+    function ownsWrite()  { return isSignedIn() && request.resource.data.userId == request.auth.uid; }
+
+    // Per-user profile doc
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Rigor tool outputs (owner-scoped by userId)
+    match /cover-letters/{id}          { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+    match /interview-sessions/{id}     { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+    match /linkedin-optimizations/{id} { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+    match /networking-emails/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+    match /portfolio-reviews/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+    match /salary-strategies/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+
+    // Payment audit events (client-written, owner-scoped, immutable)
+    match /payment_events/{id} {
+      allow read:   if ownsRead();
+      allow create: if ownsWrite();
+      allow update, delete: if false;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

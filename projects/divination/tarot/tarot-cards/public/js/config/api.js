@@ -7,7 +7,7 @@ const API_CONFIG = {
     // Use environment variable in production, fallback to localhost for development
     baseURL: window.location.hostname === 'localhost' 
         ? 'http://localhost:3003'
-        : 'https://tarot-cards-api.railway.app',
+        : 'https://tarot-cards-api.vercel.app',
     timeout: 30000
 };
 

@@ -1,0 +1,5 @@
+# FL Sunbiz Lead Generator Crontab
+0 8 * * 1 cd /opt/ridgefield/tools/leads/src && /opt/ridgefield/.venv/bin/python /opt/ridgefield/tools/leads/src/runner.py --profile signals_institute >> /opt/ridgefield/tools/leads/logs/signals_institute.log 2>&1
+0 8 * * 1-5 cd /opt/ridgefield/tools/leads/src && /opt/ridgefield/.venv/bin/python /opt/ridgefield/tools/leads/src/runner.py --profile ridgefield >> /opt/ridgefield/tools/leads/logs/ridgefield.log 2>&1
+0 8 * * 3 cd /opt/ridgefield/tools/leads/src && /opt/ridgefield/.venv/bin/python /opt/ridgefield/tools/leads/src/runner.py --profile huntington_applied >> /opt/ridgefield/tools/leads/logs/huntington_applied.log 2>&1
+0 8 * * 1 cd /opt/ridgefield/tools/leads/src && /opt/ridgefield/.venv/bin/python /opt/ridgefield/tools/leads/src/runner.py --profile nonprofits_general >> /opt/ridgefield/tools/leads/logs/nonprofits_general.log 2>&1

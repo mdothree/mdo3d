@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Confirmed — Numerology</title>
+<meta name="robots" content="noindex">
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+         background:#0d0620; color:#f0eef8; text-align:center; }
+  .card { max-width:420px; padding:2.5rem; background:rgba(255,255,255,0.04);
+          border:1px solid rgba(255,255,255,0.1); border-radius:16px; }
+  .icon { font-size:3rem; margin-bottom:1rem; }
+  h1 { font-size:1.4rem; margin:0 0 0.75rem; }
+  p { color:#b8b0d8; line-height:1.6; margin:0 0 1.5rem; }
+  a.btn { display:inline-block; padding:0.8rem 2rem; border-radius:8px; text-decoration:none;
+          background:linear-gradient(135deg,#7c3aed,#ec4899); color:#fff; font-weight:600; }
+  .spinner { width:28px; height:28px; margin:0 auto 1rem; border:3px solid rgba(255,255,255,0.15);
+             border-top-color:#a78bfa; border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="verifying">
+    <div class="spinner"></div>
+    <h1>Confirming your payment…</h1>
+    <p>One moment while we verify with Stripe.</p>
+  </div>
+  <div id="confirmed" class="hidden">
+    <div class="icon">🔢</div>
+    <h1>Payment confirmed</h1>
+    <p>Your premium reading is unlocked. Return to the app and your credit will be applied automatically.</p>
+    <a class="btn" href="/">Continue to your reading →</a>
+  </div>
+  <div id="failed" class="hidden">
+    <div class="icon">⚠️</div>
+    <h1>We couldn't confirm this payment</h1>
+    <p id="fail-reason">If you were charged, your payment is safe — reply to your Stripe receipt email and we'll make it right.</p>
+    <a class="btn" href="/">Back to the app</a>
+  </div>
+</div>
+<script src="js/entitlement.js"></script>
+<script>
+(function(){
+  var API_URL = location.hostname === 'localhost' ? 'http://localhost:3010' : 'https://numerology-api.vercel.app';
+  var params = new URLSearchParams(location.search);
+  var sessionId = params.get('session_id');
+  function show(id){ ['verifying','confirmed','failed'].forEach(function(x){
+    document.getElementById(x).classList.toggle('hidden', x !== id); }); }
+  if (!sessionId) {
+    // Payment Link without session passthrough: record an unverified credit is NOT safe;
+    // show confirmation UI only (no entitlement) and let support handle receipts.
+    document.getElementById('fail-reason').textContent =
+      'This page was opened without a payment session. If you just paid, contact support with your receipt.';
+    show('failed');
+    return;
+  }
+  fetch(API_URL + '/api/payment/verify', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ sessionId: sessionId })
+  }).then(function(r){ return r.json(); }).then(function(data){
+    if (data.success && data.paid) {
+      window.PremiumEntitlement.grant({
+        readingType: (data.metadata && data.metadata.readingType) || 'premium',
+        sessionId: sessionId
+      });
+      show('confirmed');
+    } else { show('failed'); }
+  }).catch(function(){ show('failed'); });
+})();
+</script>
+</body>
+</html>

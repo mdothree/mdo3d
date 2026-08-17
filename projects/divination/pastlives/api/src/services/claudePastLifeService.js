@@ -17,7 +17,7 @@ export class ClaudePastLifeService {
       const prompt = this.buildReadingPrompt(birthData, userQuestion);
 
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 2500,
         messages: [{
           role: 'user',
@@ -105,9 +105,16 @@ Be evocative, specific, and compassionate. Create a narrative that feels real an
 
   parseReadingResponse(responseText) {
     try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '');
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        try {
+          return JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          // Newer models pretty-print with literal newlines inside string
+          // values (invalid JSON). Collapse them and retry before falling back.
+          return JSON.parse(jsonMatch[0].replace(/[\r\n]+/g, ' '));
+        }
       }
 
       return {
@@ -148,7 +155,7 @@ Be evocative, specific, and compassionate. Create a narrative that feels real an
   async generateQuickInsight(birthDate, question) {
     try {
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 400,
         messages: [{
           role: 'user',
@@ -166,7 +173,7 @@ Be evocative, specific, and compassionate. Create a narrative that feels real an
   async generateMultipleLives(birthData) {
     try {
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 2000,
         messages: [{
           role: 'user',

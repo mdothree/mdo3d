@@ -6,6 +6,47 @@
 
 ---
 
+## Portfolio status matrix (2026-08-15)
+
+All projects (excl. external/dailyaitoll and external/runwae by request). "Paid→unlocked" = does a paying customer automatically receive the product. Contact forms de-scoped per owner direction (2026-08-15) — payments-complete is the portfolio goal.
+
+**Paid→unlocked update (2026-08-16): LIVE for all 9.** Full pay→verify→unlock→deliver loop deployed for every divination service, including tarot/oracle/dreams (their APIs were deployed to Vercel — previously on dead Railway URLs). All 9 APIs create live `cs_live_` checkouts, all frontends use dynamic checkout (zero hardcoded Payment Links), premium AI readings generate real content (model migrated to `claude-sonnet-4-6`). **Divination payments COMPLETE — all 9 services deliver end-to-end** (2026-08-16): checkout + verify + entitlement + double-charge guard + premium AI reading delivery all live. Oracle/tarot/dreams/numerology delivery wired this session (fetch + render real AI reading, consume credit only on success); numerology also needed an API parser fix (`extractJson` brace-balancing — the model appended prose after the JSON). **Full record + runbook: [DIVINATION_PAYMENTS_DEPLOYMENT.md](DIVINATION_PAYMENTS_DEPLOYMENT.md).**
+
+| Project / surface | Live | Payments wired | Paid→unlocked | Email send | Share buttons | Contact form | Top gap / next action |
+|---|---|---|---|---|---|---|---|
+| **divination/oracle** | 🔴 page up, **app.js dead** (module 404 — fixed locally, needs deploy) | dynamic API (API URL is placeholder) | ❌ | ❌ | ✅ (after fix deploys) | ❌ | deploy module fix; deploy an API + fix URL |
+| **divination/tarot** | 🔴 same module 404 (fixed locally) | dynamic API (Railway) | ❌ | ❌ | ✅ (after fix) | ❌ | deploy module fix |
+| **divination/dreams** | 🔴 same module 404 (fixed locally) | dynamic API (Railway) | ❌ | ❌ | ✅ (after fix) | ❌ | deploy module fix |
+| **divination/iching** | ✅ | hardcoded Stripe link | ❌ | ❌ | ❌ | ❌ | build verify/unlock flow |
+| **divination/runes** | ✅ | hardcoded Stripe link | ❌ | ❌ | ❌ | ❌ | build verify/unlock flow |
+| **divination/astrology** | ✅ | hardcoded Stripe link | ❌ | ❌ | ❌ | ❌ | build verify/unlock flow |
+| **divination/fengshui** | ✅ | hardcoded Stripe link | ❌ | ❌ | ❌ | ❌ | build verify/unlock flow |
+| **divination/pastlives** | ✅ | hardcoded Stripe link | ❌ | ❌ | ❌ | ❌ | build verify/unlock flow |
+| **divination/numerology** | ✅ (but domain serves jarvisbee app) | ❌ button has no handler; API missing STRIPE_SECRET_KEY | ❌ | ❌ | ❌ | ❌ | set env var, wire button, fix domain conflict |
+| **mdothree** (9 tools) | ✅ all 9 | ✅ code correct; Group A backend 404s in prod, Group B env injection missing | ⚠️ webhook→Firestore works where backend is live | ❌ | ❌ | ❌ | fix Vercel env/deploy config; account page for 4 Group-A tools |
+| **rigor** (8 tools) | ✅ all 8 | ✅ full (checkout+webhook+portal) | ✅ | ❌ | ❌ (highest-value add: LinkedIn share of ATS score) | ❌ | add share; analytics |
+| **ronnascanner/resume-analyzer** | ✅ | ⚠️ stubs | ❌ | ❌ | ✅ (module fix applied locally) | ❌ | real PDF parsing; consolidate vs rigor/resume |
+| **ronnascanner** (5 prospecting tools) | ✅ frontends | ✅ payment endpoints | ⚠️ | ❌ | ❌ | ❌ | build 3 missing API endpoints; mock-data disclosure |
+| **leads** | 🔴 502 (host down) | backend code ✅; webhook secret unset | ⚠️ | ✅ SendGrid/Mailgun (pipeline) | ❌ | ❌ | restore littlemini; deploy w/ new lockfile |
+| **jarvisbee/babynames** | ✅ | Stripe link | ❌ **pays, gets nothing** | ❌ | Web Share API | ❌ | build fulfillment or pull the link |
+| **jarvisbee/businessnames** | ✅ (on numerology.mdo3d.com) | ❌ "coming soon" alert | ❌ | ❌ | Web Share API | ❌ | resolve domain conflict first |
+| **jarvisbee/career-horoscope** | ❌ never deployed | ❌ | — | ❌ | ❌ | ❌ | build or delete |
+| **blacklab landing** | ✅ | — | — | ❌ | ❌ | ❌ | honest "Coming Soon" shipped; deploy trackers or leave |
+| **blacklab trackers** (quantum/space/neuro) | ❌ domains don't resolve | — | — | ❌ | ❌ | ❌ | deploy + data pipeline, or archive |
+| **plugins/discord bot** | ❌ built, undeployed | Patreon role-gating (URL placeholder) | — | — | — | — | deploy (~95% done) |
+| **plugins/telegram bot** | ❌ built, undeployed | ✅ Telegram Stars implemented | ✅ (once live) | — | — | — | register w/ BotFather + deploy |
+| **plugins/chrome-divination-tab** | ❌ | ❌ planned | — | — | — | — | icons now exist; 3-card spread TODO; store submission |
+| **plugins/wordpress-blocks** | ❌ skeleton (~20%) | license stub | — | — | — | — | build block implementations or shelve |
+| **plugins/shopify-oracle-app** | ❌ crashes (missing cardDB) | billing endpoints only | — | — | — | — | build client+DB or shelve |
+| **landing/mdo3d-static** (mdo3d.com) | ✅ | — | — | ❌ | ❌ | ❌ | links fixed locally — deploy; contact form candidate |
+| **landing/mdo3d-portfolio / compare** | ✅ | — | — | ❌ | ❌ | ❌ | backport theme toggle |
+| **shared/trauma** | ❌ half-built | scaffold | — | ❌ | ❌ | ❌ | keep/kill decision |
+| **utilities/crypto-arbitrage** | — (local dry-run works) | — | — | — | — | — | Kraken trading unimplemented |
+
+**Cross-cutting absences:** contact form exists **nowhere**; transactional email exists **only** in leads; share buttons exist in 4 surfaces (oracle/tarot/dreams/resume-analyzer — all just repaired) with LinkedIn/Twitter/Facebook/WhatsApp/Email support via `shared/ui-components/SocialShare.js`.
+
+---
+
 ## Executive summary (after all deep-dives, 2026-08-15)
 
 **The #1 structural finding: revenue flows are broken at the last mile, everywhere.**
@@ -334,6 +375,69 @@ The "designed but never executed" layer of the repo:
 - `plugins/chrome-divination-tab/icons/`: icon16/32/48/128.png generated — extension now loadable.
 - Deleted 7 brace-expansion artifact dirs (`public/{css,js` etc.) in mdothree ×4, rigor ×2, leads.
 
+**Review pass (2026-08-15, post-implementation):** All 5 edited pages pass HTML structure validation; all 5 rigor app.js files pass syntax check. Verified sound: the 5 per-tool `firestoreService.js` copies are byte-identical and `saveDoc()` sets `createdAt` unconditionally, so removing the caller-side argument is safe and history ordering (`orderBy createdAt`) is unaffected; rigor landing's new links exactly match its vercel.json redirect table; the 2-column guidance grid and pill/fade JS handle the grown card set; index.html's JSON-LD is generic org markup with no stale URLs. Fixed during review:
+- Removed dead CSS orphaned by the markup changes: `.soon-*` block + media query in guidance.html, `.status-soon` in mdothree landing.
+- Removed `cursor: pointer` from blacklab's now non-clickable tracker cards.
+- Updated guidance.html copy ("some open immediately — others being woven") and all 3 meta descriptions to reflect the full 10-tool lineup.
+
+**Review pass 2 (2026-08-15):** Verified page-level consistency beyond the diff: no stale "Coming Soon" strings remain in first-party markup (only the generic statusMap label used by genuinely-soon entries); the "10 platforms" count claim matches the card grid; sitemaps contain no 404ing guidance-path URLs; `mdo3d.com/guidance` resolves live (200) so the sitemap route is valid; `guidance-og-image.svg` referenced by the metas exists. Fixed in this pass: sitemap `lastmod` bumped 2026-03-21 → 2026-08-15 in both sitemaps; added missing `meta description` tags to the rigor and mdothree landing pages (neither had one). All 5 pages re-validated clean, including stray-text-node check.
+
+**Share/module repair (2026-08-15):** Discovered **oracle, tarot, and dreams apps are entirely dead in production** — their `app.js` ES modules statically import `/src/<db>.js` and `/shared/ui-components/*.js`, which live outside the deployed `public/` root and 404 (verified live); one failed import kills the whole module, so no cards, no readings, no premium flow have worked on the "original 3." Fix (no code edits — imports URL-resolve to root-clamped paths): copied each database file to `public/src/` and `SocialShare.js`/`ShareImageGenerator.js` to `public/shared/ui-components/` in oracle-cards, tarot-cards, dream-interpreter, and resume-analyzer (same broken import). Also fixed a dispatch bug in `shared/ui-components/SocialShare.js`: the modal's Email button resolved to nonexistent `shareToEmail` (method was `shareViaEmail`) — added alias; copies propagated with the fix. LinkedIn/Twitter/Facebook/WhatsApp/Email share now functional on those 4 surfaces once deployed. All touched modules pass `node --check`.
+
+**Payment-loop build-out (2026-08-15):** Implemented the missing pay→unlocked receiving end for divination. Root finding: every API's `create-checkout` redirects to `FRONTEND_URL/success?session_id={CHECKOUT_SESSION_ID}`, but **no service had a success page** — paying customers landed on a 404 and verify was never called. Shipped:
+- `success.html` in all 7 vanilla services (iching, runes, astrology, numerology, tarot, oracle, dreams): reads `session_id`, POSTs `/api/payment/verify`, and on `paid:true` records an entitlement; clear confirmed/failed states.
+- `shared/ui-components/entitlement.js` (copied per service, loaded before app.js): localStorage entitlement records — idempotent per Stripe session, monthly plans expire at 30 days, single readings are one-shot credits.
+- Double-charge prevention: `handlePremiumPurchase` in iching/runes/astrology now delivers the premium reading directly when an unused entitlement exists.
+- **Numerology's dead premium button wired**: modal button now calls a new `handlePremiumPurchase` (create-checkout `core-numbers`), with entitlement short-circuit.
+All JS passes `node --check`; all success pages validate.
+
+**Payment completion, round 2 (2026-08-15):** All 9 divination services now have the full client-side loop.
+- Fengshui + pastlives (Next.js): `/success` routes upgraded from static "check your email" stubs (no email was ever sent) to real verify-and-record pages; `premium: false` in both generate calls replaced with entitlement-aware `premium` flag — peek before the call, consume the credit only after a successful premium response. Same localStorage contract as the vanilla services. All 4 TSX files pass esbuild.
+- Consume-ordering hardened in iching/runes/astrology: credit is now burned only after the premium reading arrives.
+- **`scripts/deploy-divination-payments.sh`** written: one command sets `STRIPE_SECRET_KEY` + `FRONTEND_URL` on all 6 API Vercel projects, deploys 6 APIs + 9 frontends, and smoke-tests create-checkout. Prereqs: `vercel login` + `export STRIPE_SECRET_KEY=...`.
+
+**🚀 DEPLOYED TO PRODUCTION (2026-08-16, owner-approved credentials from API_Tokens_Fillout.md):**
+- `STRIPE_SECRET_KEY` + `FRONTEND_URL` set on all 6 API Vercel projects; all 6 APIs redeployed.
+- All 9 frontends deployed: iching, runes, astrology, tarot, oracle, dreams, fengshui, pastlives to their mdo3d.com domains; numerology-app to numerology-app-phi.vercel.app (domain still on jarvisbee — see decision item).
+- Fixed during deploy: invalid `public` property removed from tarot/dreams vercel.json; `/success` routing added (route entry for legacy-routes apps, `cleanUrls` for configless iching/runes/astrology); numerology-app linked to Vercel (was never linked).
+- **Live smoke tests: all 6 APIs create real Stripe checkout sessions** (`cs_live_…` + checkoutUrl). Note: fengshui's param is `analysisType`, not `readingType` — its frontend uses the correct one.
+- **All 9 `/success` pages verified live (200)**; oracle/tarot/dreams module fix verified live (`/src/*.js` + `/shared/ui-components/*` now 200 — the apps execute in production for the first time).
+- **Divination "Paid→unlocked" is now LIVE end-to-end for the dynamic-checkout flow.**
+
+**✅ RESOLVED & LIVE (2026-08-16): divination payment loop is complete end-to-end for the 6 Vercel-hosted services.**
+Root cause of the earlier 500s was NOT the key — it was a **retired model ID**. The code requested `claude-3-5-sonnet-20241022`, which the annehuntingtonlaboratory Anthropic account (owner-provided funded key) returns `not_found` for; that account only has current-gen models. Fixed across all 9 services → `claude-sonnet-4-6`. What shipped:
+- **Funded `ANTHROPIC_API_KEY`** (AHL account, owner-provided) set on all 6 API projects.
+- **Model updated** to `claude-sonnet-4-6` in all 9 claude*Service.js files; 6 live APIs redeployed. **Premium AI readings now generate real content (verified 200 + clean prose).**
+- **JSON parse hardened** in all 7 services (strip ```` ```json ```` fences + newline-tolerant retry) — newer model pretty-prints, which broke the old `JSON.parse`.
+- **fengshui truncation fixed**: its 9-field JSON exceeded 2000 tokens → bumped premium generation to 4000 (now returns 7 recommendations, clean). Trade-off: ~76s generation latency (functional — platform default timeout accommodates it; candidate for a faster model or streaming later).
+- **Buttons rewired to dynamic checkout** (no more hardcoded Payment Links): iching/runes/astrology (`onclick→handlePremiumPurchase()`), fengshui/pastlives (Next.js `startCheckout` calling create-checkout), numerology (already wired). Verified live: 0 `buy.stripe.com` refs on all 6 sites; create-checkout returns live `cs_live_` sessions.
+- **Net effect: the Stripe dashboard Payment-Link redirect step is no longer needed** — every purchase now flows through dynamic checkout → `/success?session_id=` → verify → entitlement → premium reading. Full loop live.
+
+**Still open:**
+- **tarot/oracle/dreams**: APIs undeployed (Railway/undeployed all 404). They have deployable local `api/` with the same structure + the model fix already applied. Need the same 3-env-var + deploy pass, then button rewire. Their frontends use class-based `handleUpgrade()` (not the global handler), so wiring differs slightly.
+- **numerology.mdo3d.com**: still serves jarvisbee business-name-generator; finished numerology app live at numerology-app-phi.vercel.app. Domain repoint blocked by permission policy as a shared-infra change — needs explicit owner action: `vercel alias set numerology-iq8og31ka-mdothrees-projects.vercel.app numerology.mdo3d.com`.
+- **fengshui latency** (~76s premium) — consider `claude-haiku-4-5` or response streaming.
+
+<details><summary>Superseded: earlier "premium readings can't be delivered" blocker (kept for history)</summary>
+
+**🔴 CRITICAL BLOCKER found during final wiring (2026-08-16): premium readings can't be delivered.**
+The payment half is live and verified, but the **product half is broken**: `POST /api/reading/generate {premium:true}` returns **500 "Failed to generate reading"** on the deployed APIs. Root cause: the `ANTHROPIC_API_KEY` on the MDO3 Vercel projects is a **placeholder** (confirmed in API_Tokens_Fillout.md:406 — "Placeholder added to Vercel | NEEDS KEY"). Free/basic readings work (no AI); premium AI readings fail auth. **Consequence:** even with checkout+verify+unlock working, a paying customer would hit a 500 when the reading generates. The success/entitlement code handles this gracefully ("your purchase is confirmed… you will not be charged again"), but the deliverable does not arrive.
+- **Deliberately did NOT re-wire the live premium buttons to dynamic checkout yet.** Doing so would route customers into paying for a reading that currently errors. The button-wiring change is prepared and correct (route onclick → `handlePremiumPurchase()` for iching/runes/astrology; add a checkout handler for fengshui/pastlives Next.js), but it should ship in the same pass as a working Anthropic key.
+- **Unblock:** set a funded `ANTHROPIC_API_KEY` on the 6 API projects (iching/runes/astrology/numerology/fengshui/pastlives). The only funded key on record is in Latarence/dailyaitoll GitHub Actions secrets (API_Tokens_Fillout.md:405, ownership unconfirmed, prior key hit credit exhaustion 2026-07-03) — needs owner to designate/fund a key for the MDO3 account. Once set, one command re-tests generate + wires buttons + deploys.
+- **tarot/oracle/dreams also need their local `api/` deployed** (Railway/undeployed URLs all 404); they have deployable server.js with the same payment+reading routes. Blocked on the same Anthropic key.
+</details>
+
+**Remaining (2 items):**
+1. **Stripe dashboard (manual):** point each hardcoded Payment Link's after-payment redirect at `https://<service>.mdo3d.com/success?session_id={CHECKOUT_SESSION_ID}` so Payment-Link purchases also verify. Until then, those buttons still charge without unlocking — consider switching those buttons to the now-working dynamic checkout instead.
+2. **Owner decision — numerology.mdo3d.com:** domain still serves jarvisbee's business-name-generator (broken "coming soon" premium). The finished numerology-app with live payments is deployed and ready; repointing the domain was blocked as a product decision. To flip: `vercel alias set numerology-iq8og31ka-mdothrees-projects.vercel.app numerology.mdo3d.com`.
+
+**Config prerequisites (superseded by the deploy above, kept for history):**
+1. Set `STRIPE_SECRET_KEY` + `FRONTEND_URL` on each divination API Vercel project — live tests show iching-api and numerology-api both return Stripe "no API key" on create-checkout; assume all 6 need it.
+2. For the 6 services selling via hardcoded Payment Links: set each link's after-payment redirect to `https://<service>.mdo3d.com/success?session_id={CHECKOUT_SESSION_ID}` in the Stripe dashboard so those purchases also verify.
+3. Oracle's API is undeployed (frontend URL placeholder); its success.html points at `oracle-cards-api.vercel.app` — update both when the API is actually deployed. Tarot/dreams success pages point at their Railway API URLs.
+
+**Known debt accepted (right fix is structural, deferred):** the 10-tool list is now hand-maintained in 4 places (index gp-grid, index platforms array, guidance cards, guidance footer) and the rigor per-tool service-file copies are what allowed the serverTimestamp bug to ship 5× — both argue for a single shared data/module source when these pages are next reworked.
+
 **Blocked during implementation — new findings (all deploy/config, not code):**
 1. **numerology API has no `STRIPE_SECRET_KEY`** — live POST to create-checkout returns Stripe "no API key" error. Wiring the frontend button is pointless until the env var is set in that Vercel project.
 2. **mdothree Group A (color/hash/password/timestamp) backend is dark in prod:** `/api/stripe/create-setup-intent` and `/api/stripe/portal` both 404 on the live domains (no rewrites in vercel.json, functions live in mdothree-api, undeployed to those hosts). Its `STRIPE_CONFIG.portalUrl` is a literal `…/REPLACE` placeholder. So Group A's embedded checkout always falls back to payment links, and account-page backport is blocked until an API base exists.
@@ -341,4 +445,4 @@ The "designed but never executed" layer of the repo:
 
 ---
 
-*Related docs: [MDO3D_GAP_ANALYSIS.md](MDO3D_GAP_ANALYSIS.md) (2026-03, stale), [../projects/divination/IMPLEMENTATION_STATUS.md](../projects/divination/IMPLEMENTATION_STATUS.md) (2026-03), [../STATUS.md](../STATUS.md).*
+*Related docs: [DIVINATION_PAYMENTS_DEPLOYMENT.md](DIVINATION_PAYMENTS_DEPLOYMENT.md), [FIREBASE_BEST_PRACTICES.md](FIREBASE_BEST_PRACTICES.md), [MDO3D_GAP_ANALYSIS.md](MDO3D_GAP_ANALYSIS.md) (2026-03, stale), [../projects/divination/IMPLEMENTATION_STATUS.md](../projects/divination/IMPLEMENTATION_STATUS.md) (2026-03), [../STATUS.md](../STATUS.md).*

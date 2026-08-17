@@ -71,8 +71,7 @@ class TarotApp {
         shareBtn.addEventListener('click', () => this.shareReading());
 
         // Upgrade button
-        const upgradeBtn = document.getElementById('upgrade-btn');
-        upgradeBtn.addEventListener('click', () => this.handleUpgrade());
+        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.handleUpgrade()));
     }
 
     updateCharCount() {
@@ -237,11 +236,59 @@ class TarotApp {
         
         // Show reading section
         readingSection.style.display = 'block';
-        
-        // Show premium upsell for free tier
-        if (this.currentSpread === 'single') {
+
+        // Show premium upsell for free tier (hidden once a purchase is unlocked)
+        if (this.currentSpread === 'single' && !this.premiumUnlocked) {
             document.getElementById('premium-upsell').style.display = 'block';
         }
+
+        // Paid customers get the full AI interpretation delivered in place.
+        if (this.premiumUnlocked) {
+            this.deliverPremiumReading();
+        }
+    }
+
+    async deliverPremiumReading() {
+        const cardMeanings = document.getElementById('card-meanings');
+        if (!cardMeanings) return;
+        let block = document.getElementById('premium-interpretation');
+        if (!block) {
+            block = document.createElement('div');
+            block.id = 'premium-interpretation';
+            block.className = 'card-meaning premium';
+            cardMeanings.appendChild(block);
+        }
+        block.innerHTML = '<p>✨ Channeling your personalized AI reading...</p>';
+        try {
+            const data = await apiClient.generateReading({
+                cards: this.drawnCards,
+                question: this.question,
+                spreadType: this.currentSpread,
+                premium: true,
+                sessionId: window.PremiumEntitlement?.activeSessionId()
+            });
+            const text = data.interpretation || (data.reading && data.reading.interpretation);
+            if (!text) throw new Error('Empty reading');
+            // Real premium content delivered — consume the paid credit now.
+            window.PremiumEntitlement?.consume();
+            block.innerHTML = `<h4>✨ Your Personalized Reading</h4>${this.mdLite(text)}`;
+        } catch (e) {
+            console.error('Premium reading error:', e);
+            block.innerHTML = `<p>Your purchase is confirmed, but the reading service is momentarily
+                unavailable. Please try again shortly — you will not be charged again.</p>`;
+            // keep the entitlement so the reading can be retried
+        }
+    }
+
+    // Minimal, safe Markdown → HTML for AI reading text.
+    mdLite(s) {
+        const esc = String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+        return '<p>' + esc
+            .replace(/^\s*#{1,6}\s*(.+)$/gm, '</p><h4>$1</h4><p>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/^\s*[-*]\s+(.+)$/gm, '• $1')
+            .replace(/\n{2,}/g, '</p><p>')
+            .replace(/\n/g, '<br>') + '</p>';
     }
 
     async shareReading() {
@@ -294,6 +341,17 @@ class TarotApp {
 
     async handleUpgrade() {
         try {
+            // Already paid (verified by /success): unlock — never charge twice.
+            if (window.PremiumEntitlement?.has()) {
+                // Do not consume() yet — premium AI delivery isn't wired in this frontend.
+                // Keeping the credit prevents a re-charge on a second click. Restore
+                // consume-after-successful-render when delivery lands.
+                this.premiumUnlocked = true;
+                const upsell = document.getElementById('premium-upsell');
+                if (upsell) upsell.style.display = 'none';
+                this.displayReading();
+                return;
+            }
             const prices = {
                 'single': 2.99,
                 'three': 4.99,

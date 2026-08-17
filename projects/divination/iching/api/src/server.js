@@ -51,6 +51,20 @@ app.post('/api/reading/generate', async (req, res) => {
       });
     }
 
+    // Premium requires a verified, paid Stripe session — prevents anyone from
+    // getting a paid reading for free by sending premium:true.
+    const paidSession = req.body.sessionId;
+    if (!paidSession) {
+      return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
+    }
+    const pay = await stripeService.verifyPayment(paidSession);
+    if (!pay.success || !pay.paid) {
+      return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
+    }
+      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
+      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
+      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+
     // For premium, generate AI reading
     const reading = await claudeService.generateHexagramReading(
       hexagram,

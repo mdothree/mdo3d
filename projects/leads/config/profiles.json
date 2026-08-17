@@ -1,0 +1,169 @@
+{
+  "profiles": {
+    "signals_institute": {
+      "name": "The Signals Institute",
+      "active": true,
+      "email_lookup": false,
+      "date_range": "weekly",
+      "max_leads": 50,
+      "filing_types": ["DOMNP", "FORNP", "NPREG"],
+      "keywords": [
+        "workforce", "work force", "job training", "employment", "career",
+        "education", "educat", "school", "college", "university", "academy",
+        "skills", "certification", "apprentice", "internship", "job corps",
+        "community college", "vocational", "technical school", "GED",
+        "workforce development", "career center", "job center",
+        "economic development", "workforce solutions", "talent", "recruit"
+      ],
+      "exclude_keywords": ["church", "religious", "worship", "mosque", "synagogue", "temple"],
+      "target_counties": null,
+      "email_methods": {
+        "use_apollo": false,
+        "use_godaddy": true,
+        "verify_mx": false,
+        "verify_smtp": false,
+        "guess_email_variants": true,
+        "max_variant_attempts": 10,
+        "skip_domains": []
+      },
+      "delivery": {
+        "frequency": "weekly",
+        "day_of_week": "monday",
+        "recipient_email": "outreach@thesignalsinstitute.org",
+        "recipient_name": "The Signals Institute",
+        "format": "csv_attachment",
+        "subject": "Workforce Development Leads - Week of {date}"
+      },
+      "email_template": {
+        "body": "Hi {contact_name},\n\nAttached is your weekly lead report with {lead_count} new workforce development organizations from Florida business filings.\n\nEach entry includes business name, address, filing date, and registered agent information.\n\nPlease review the attached CSV for full details.\n\nBest,\n{sender_name}"
+      },
+      "sender": "leads@mdo3d.com"
+    },
+
+    "ridgefield": {
+      "name": "Ridgefield",
+      "active": true,
+      "email_lookup": true,
+      "date_range": "daily",
+      "max_leads": 30,
+      "filing_types": ["FLAL", "DOMP", "FORP"],
+      "keywords": [
+        "technology", "tech", "software", "cloud", "cyber", "security",
+        "data", "analytics", " ai", "machine learning", "digital", "devops",
+        "IT ", "consulting", "solutions", "systems", "web ", "app ",
+        "mobile", "SaaS", "platform", "innovation", "engineering",
+        "development", "automation", "robotics", "IoT", "network",
+        "infrastructure", "managed services", "IT services", "tech consulting"
+      ],
+      "exclude_keywords": ["church", "religious", "insurance", "real estate"],
+      "target_counties": ["DADE", "BROWARD", "PALM BEACH", "HILLSBOROUGH", "PINELLAS", "ORANGE"],
+      "email_methods": {
+        "use_apollo": true,
+        "use_godaddy": true,
+        "guess_email_variants": true,
+        "max_variant_attempts": 10,
+        "skip_domains": []
+      },
+      "delivery": {
+        "frequency": "daily",
+        "recipients": [
+          {"email": "contact@ridgefield.llc", "name": "Ridgefield"},
+          {"email": "contact@huntingtonapplied.com", "name": "Huntington Applied"},
+          {"email": "contact@thesignalsinstitute.com", "name": "Signals Institute"}
+        ],
+        "format": "csv_attachment",
+        "subject": "Daily Tech Leads - {date}"
+      },
+      "email_template": {
+        "body": "Hi {contact_name},\n\nAttached is your daily lead report with {lead_count} new technology businesses from Florida filings.\n\nEach entry includes business name, address, filing info, registered agent, and email addresses where found.\n\nReview the attached CSV for details.\n\nBest,\n{sender_name}"
+      },
+      "sender": "leads@mdo3d.com"
+    },
+
+    "huntington_applied": {
+      "name": "Huntington Applied (AHL)",
+      "active": true,
+      "email_lookup": true,
+      "date_range": "weekly",
+      "max_leads": 50,
+      "filing_types": ["FLAL", "DOMP", "FORP", "DOMNP", "FORNP"],
+      "keywords": [
+        "research", "R&D", "defense", "military", "aerospace", "aviation",
+        "simulation", "training", "engineering", "development", "technology",
+        "systems", "solutions", "consulting", "cyber", "security", "IT ",
+        "logistics", "supply chain", "procurement", "government", "contractor",
+        "lab", "laboratory", "institute", "innovation", "advanced",
+        "technical", "scientific", "analytics", " AI", "machine learning",
+        "robotics", "autonomous", "weapon", "munitions"
+      ],
+      "exclude_keywords": ["church", "religious", "real estate", "insurance"],
+      "target_counties": ["DADE", "BROWARD", "PALM BEACH", "HILLSBOROUGH", "ESCAMBIA"],
+      "email_methods": {
+        "use_apollo": true,
+        "use_godaddy": true,
+        "guess_email_variants": true,
+        "max_variant_attempts": 10,
+        "skip_domains": []
+      },
+      "delivery": {
+        "frequency": "weekly",
+        "day_of_week": "wednesday",
+        "recipient_email": "business@buttstech.com",
+        "recipient_name": "AHL Business Development",
+        "format": "csv_attachment",
+        "subject": "Defense/R&D Leads - Week of {date}"
+      },
+      "email_template": {
+        "body": "Hi {contact_name},\n\nAttached is your weekly lead report with {lead_count} new defense, R&D, and technology organizations from Florida business filings.\n\nEach entry includes business name, address, filing info, and email addresses where found.\n\nReview the attached CSV for details.\n\nBest,\n{sender_name}"
+      },
+      "sender": "leads@mdo3d.com"
+    },
+
+    "nonprofits_general": {
+      "name": "GrassRoots Consulting (Nonprofits)",
+      "active": true,
+      "email_lookup": false,
+      "date_range": "weekly",
+      "max_leads": 100,
+      "filing_types": ["DOMNP", "FORNP", "NPREG"],
+      "keywords": [],
+      "exclude_keywords": ["church", "religious", "worship", "mosque", "synagogue", "temple"],
+      "target_counties": null,
+      "email_methods": {
+        "use_apollo": false,
+        "use_godaddy": true,
+        "verify_mx": false,
+        "verify_smtp": false,
+        "guess_email_variants": true,
+        "max_variant_attempts": 10,
+        "skip_domains": []
+      },
+      "delivery": {
+        "frequency": "weekly",
+        "day_of_week": "monday",
+        "recipient_email": "contact@gcifl.com",
+        "recipient_name": "GrassRoots Consulting",
+        "format": "csv_attachment",
+        "subject": "Florida Nonprofit Leads - Week of {date}"
+      },
+      "email_template": {
+        "body": "Hi {contact_name},\n\nAttached is your weekly lead report with {lead_count} new nonprofit organizations from Florida business filings.\n\nEach entry includes business name, address, filing date, and registered agent information.\n\nReview the attached CSV for details.\n\nBest,\n{sender_name}"
+      },
+      "sender": "leads@mdo3d.com"
+    }
+  },
+
+  "defaults": {
+    "max_emails_per_run": 30,
+    "dedupe_days": 7,
+    "email_methods": {
+      "use_apollo": false,
+      "use_godaddy": true,
+      "verify_mx": false,
+      "verify_smtp": false,
+      "guess_email_variants": true,
+      "max_variant_attempts": 10,
+      "skip_domains": []
+    }
+  }
+}

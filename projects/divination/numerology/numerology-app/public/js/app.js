@@ -48,6 +48,7 @@ function setupEventListeners() {
   elements.modalOverlay?.addEventListener('click', hidePremiumModal);
   elements.modalClose?.addEventListener('click', hidePremiumModal);
   elements.modalSkip?.addEventListener('click', hidePremiumModal);
+  document.querySelector('#premium-modal .premium-btn')?.addEventListener('click', handlePremiumPurchase);
 
   // Enter key support
   elements.nameInput?.addEventListener('keypress', (e) => {
@@ -56,6 +57,83 @@ function setupEventListeners() {
   elements.birthDateInput?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') calculateNumbers();
   });
+}
+
+async function handlePremiumPurchase() {
+  // A verified purchase (recorded by success.html) unlocks — no second charge.
+  if (window.PremiumEntitlement?.has()) {
+    isPremium = true;
+    hidePremiumModal();
+    await deliverPremiumReading();
+    return;
+  }
+  const email = prompt('Enter your email to receive your premium reading:');
+  if (!email) return;
+  try {
+    const response = await fetch(`${API_URL}/api/payment/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ readingType: 'core-numbers', email })
+    });
+    const data = await response.json();
+    if (data.success && data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+    } else {
+      alert('Unable to process payment. Please try again.');
+    }
+  } catch (error) {
+    console.error('Payment error:', error);
+    alert('Payment error. Please try again.');
+  }
+}
+
+async function deliverPremiumReading() {
+  const target = document.getElementById('number-meanings');
+  if (!target || !currentNumbers) return;
+  const esc = (s) => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const banner = document.createElement('div');
+  banner.className = 'premium-reading-block';
+  banner.innerHTML = '<p>🔢 Channeling your full AI numerology reading...</p>';
+  target.prepend(banner);
+  try {
+    const res = await fetch(`${API_URL}/api/reading/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: currentNumbers.name,
+        birthDate: currentNumbers.birthDate,
+        question: 'What do my numbers reveal about my life purpose and potential?',
+        premium: true,
+        sessionId: window.PremiumEntitlement?.activeSessionId()
+      })
+    });
+    const data = await res.json();
+    const r = data.reading || data;
+    if (!r || !r.lifePathAnalysis) throw new Error('Empty reading');
+    window.PremiumEntitlement?.consume();
+
+    const section = (title, body) => body ? `<div class="reading-section"><h3>${title}</h3>${body}</div>` : '';
+    const list = (arr) => Array.isArray(arr) && arr.length ? `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+    const numBlock = (label, o) => {
+      if (!o || typeof o !== 'object') return '';
+      return section(`${esc(label)}${o.number != null ? ' — ' + esc(o.number) : ''}${o.title ? ': ' + esc(o.title) : ''}`,
+        `${o.meaning ? `<p>${esc(o.meaning)}</p>` : ''}${list(o.strengths || o.talents)}${o.lifePurpose ? `<p><strong>Life Purpose:</strong> ${esc(o.lifePurpose)}</p>` : ''}`);
+    };
+    banner.innerHTML = `
+      <div class="premium-badge">✨ Your Personalized AI Reading</div>
+      ${numBlock('Life Path', r.lifePathAnalysis)}
+      ${numBlock('Expression Number', r.expressionNumber)}
+      ${numBlock('Soul Urge', r.soulUrge)}
+      ${numBlock('Personality', r.personalityNumber)}
+      ${section('Synthesis', r.synthesis ? `<p>${esc(r.synthesis)}</p>` : '')}
+      ${section('Current Cycle', r.currentCycle ? `<p>${esc(r.currentCycle)}</p>` : '')}
+      ${section('Guidance', list(r.guidance))}
+    `;
+  } catch (e) {
+    console.error('Premium reading error:', e);
+    banner.innerHTML = '<p>Your purchase is confirmed, but the reading service is momentarily unavailable. Please try again shortly — you will not be charged again.</p>';
+    // keep the entitlement so the reading can be retried
+  }
 }
 
 function showPremiumModal() {

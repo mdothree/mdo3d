@@ -1,0 +1,115 @@
+// mdo3d-utilities — shared by all mdothree tools (hash, password, color, timestamp,
+// json, pdf, qr, text, image) plus per-user docs.
+// This is the COMPLETE ruleset for the project; keep the mdothree-specific
+// collections in sync with projects/mdothree/mdothree-api/firestore.rules.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function ownsWrite()  { return isSignedIn() && request.resource.data.uid == request.auth.uid; }
+
+    // Per-user profile doc
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Generic tool-usage history (owner-scoped)
+    match /history/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite();
+    }
+
+    // ── mdothree-hash ──
+    match /hash_history/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite()
+                    && request.resource.data.keys().hasAll(['uid','input','algo','hash','createdAt'])
+                    && request.resource.data.input is string
+                    && request.resource.data.algo  is string
+                    && request.resource.data.hash  is string;
+      allow delete: if isOwner(resource.data.uid);
+      allow update: if false;
+    }
+    match /hash_favourites/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite()
+                    && request.resource.data.keys().hasAll(['uid','algo','hash','createdAt'])
+                    && request.resource.data.algo is string
+                    && request.resource.data.hash is string;
+      allow delete: if isOwner(resource.data.uid);
+      allow update: if isOwner(resource.data.uid);
+    }
+
+    // ── mdothree-password ──
+    match /password_history/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite()
+                    && request.resource.data.keys().hasAll(['uid','password','length','createdAt'])
+                    && request.resource.data.password is string
+                    && request.resource.data.password.size() <= 512
+                    && request.resource.data.length is int;
+      allow delete: if isOwner(resource.data.uid);
+      allow update: if false;
+    }
+
+    // ── mdothree-color ──
+    match /color_palettes/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite()
+                    && request.resource.data.keys().hasAll(['uid','name','colors','createdAt'])
+                    && request.resource.data.name   is string
+                    && request.resource.data.colors is list
+                    && request.resource.data.colors.size() <= 20;
+      allow delete: if isOwner(resource.data.uid);
+      allow update: if isOwner(resource.data.uid)
+                    && request.resource.data.uid == resource.data.uid;
+    }
+    match /color_recents/{uid} {
+      allow read:  if isSignedIn() && request.auth.uid == uid;
+      allow write: if isSignedIn() && request.auth.uid == uid
+                   && request.resource.data.colors is list
+                   && request.resource.data.colors.size() <= 20;
+    }
+
+    // ── mdothree-timestamp ──
+    match /timestamp_conversions/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite()
+                    && request.resource.data.keys().hasAll(['uid','type','input','createdAt'])
+                    && request.resource.data.type in ['unix', 'date']
+                    && request.resource.data.input is string;
+      allow delete: if isOwner(resource.data.uid);
+      allow update: if false;
+    }
+    match /timestamp_presets/{docId} {
+      allow read:   if isOwner(resource.data.uid);
+      allow create: if ownsWrite()
+                    && request.resource.data.keys().hasAll(['uid','fromTz','toTz','createdAt'])
+                    && request.resource.data.fromTz is string
+                    && request.resource.data.toTz   is string;
+      allow delete: if isOwner(resource.data.uid);
+      allow update: if isOwner(resource.data.uid);
+    }
+
+    // ── Stripe subscriptions (webhook/admin SDK writes only; owner reads) ──
+    match /subscriptions/{uid} {
+      allow read:  if isSignedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+    match /portal_sessions/{sessionId} {
+      allow read, write: if false;
+    }
+
+    // ── Analytics (admin SDK only) ──
+    match /analytics_events/{docId} { allow read, write: if false; }
+    match /analytics_daily/{docId}  { allow read, write: if false; }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

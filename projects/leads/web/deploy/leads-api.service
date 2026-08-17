@@ -1,0 +1,16 @@
+[Unit]
+Description=FL Sunbiz Leads API
+After=network.target
+
+[Service]
+Type=simple
+User=latarencebutts
+WorkingDirectory=/home/latarencebutts/ridgefield/tools/leads
+Environment="PATH=/home/latarencebutts/ridgefield/tools/leads/.venv/bin"
+EnvironmentFile=/home/latarencebutts/ridgefield/tools/leads/.env
+ExecStart=/home/latarencebutts/ridgefield/tools/leads/.venv/bin/python -m uvicorn web.backend.api:app --host 127.0.0.1 --port 5050
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

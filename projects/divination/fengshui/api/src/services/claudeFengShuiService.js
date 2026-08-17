@@ -17,8 +17,8 @@ export class ClaudeFengShuiService {
       const prompt = this.buildAnalysisPrompt(spaceData, userGoals);
 
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 2000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 4000,
         messages: [{
           role: 'user',
           content: prompt
@@ -140,9 +140,16 @@ Be practical, specific, and culturally respectful. Make recommendations that are
 
   parseReadingResponse(responseText) {
     try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '');
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        try {
+          return JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          // Newer models pretty-print with literal newlines inside string
+          // values (invalid JSON). Collapse them and retry before falling back.
+          return JSON.parse(jsonMatch[0].replace(/[\r\n]+/g, ' '));
+        }
       }
 
       return {
@@ -175,7 +182,7 @@ Be practical, specific, and culturally respectful. Make recommendations that are
   async generateQuickTip(spaceType, issue) {
     try {
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 300,
         messages: [{
           role: 'user',

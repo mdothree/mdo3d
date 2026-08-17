@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeReadingService } from './services/claudeReadingService.js';
-import { StripeService } from '../../../shared/services/stripeService.js';
+import { StripeService } from './services/stripeService.js';
 
 dotenv.config();
 
@@ -53,6 +53,17 @@ app.post('/api/reading/generate', async (req, res) => {
     }
 
     // Generate reading
+    // Premium requires a verified, paid Stripe session — prevents a free reading via premium:true.
+    if (premium) {
+      const paidSession = req.body.sessionId;
+      if (!paidSession) return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
+      const pay = await stripeService.verifyPayment(paidSession);
+      if (!pay.success || !pay.paid) return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
+      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
+      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
+      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+    }
+
     const reading = await claudeService.generateReading({
       cards,
       question,

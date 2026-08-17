@@ -85,8 +85,7 @@ class DreamInterpreterApp {
         newDreamBtn.addEventListener('click', () => this.resetDream());
 
         // Upgrade button
-        const upgradeBtn = document.getElementById('upgrade-btn');
-        upgradeBtn.addEventListener('click', () => this.handleUpgrade());
+        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.handleUpgrade()));
     }
 
     updateCharCount() {
@@ -120,6 +119,42 @@ class DreamInterpreterApp {
             behavior: 'smooth',
             block: 'start'
         });
+    }
+
+    async deliverPremiumInterpretation() {
+        const basicMeaning = document.getElementById('basic-meaning');
+        if (!basicMeaning) return;
+        basicMeaning.innerHTML = '<p class="interpretation-text">🌙 Channeling your personalized AI dream analysis...</p>';
+        try {
+            const data = await apiClient.interpretDream({
+                dreamText: this.currentDream,
+                detectedSymbols: this.detectedSymbols.map(s => s.symbol),
+                premium: true,
+                sessionId: window.PremiumEntitlement?.activeSessionId()
+            });
+            const text = data.interpretation || (data.reading && data.reading.interpretation);
+            if (!text) throw new Error('Empty interpretation');
+            // Real premium content delivered — consume the paid credit now.
+            window.PremiumEntitlement?.consume();
+            basicMeaning.innerHTML = `<div class="interpretation-text premium">${this.mdLite(text)}</div>`;
+        } catch (e) {
+            console.error('Premium interpretation error:', e);
+            basicMeaning.innerHTML = `
+                <p class="interpretation-text">Your purchase is confirmed, but the AI analysis service is
+                momentarily unavailable. Please try again shortly — you will not be charged again.</p>`;
+            // keep the entitlement so the reading can be retried
+        }
+    }
+
+    // Minimal, safe Markdown → HTML for AI reading text.
+    mdLite(s) {
+        const esc = String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+        return '<p>' + esc
+            .replace(/^\s*#{1,6}\s*(.+)$/gm, '</p><h4>$1</h4><p>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/^\s*[-*]\s+(.+)$/gm, '• $1')
+            .replace(/\n{2,}/g, '</p><p>')
+            .replace(/\n/g, '<br>') + '</p>';
     }
 
     detectSymbols(dreamText) {
@@ -167,7 +202,12 @@ class DreamInterpreterApp {
             <p class="interpretation-text">${interpretation}</p>
             <p class="disclaimer">This is a basic interpretation based on common symbol meanings. Upgrade for personalized AI analysis.</p>
         `;
-        
+
+        // Paid customers get the full AI interpretation delivered in place.
+        if (this.premiumUnlocked) {
+            this.deliverPremiumInterpretation();
+        }
+
         // Show results section
         resultsSection.style.display = 'block';
     }
@@ -419,6 +459,16 @@ class DreamInterpreterApp {
 
     async handleUpgrade() {
         try {
+            // Already paid (verified by /success): unlock — never charge twice.
+            if (window.PremiumEntitlement?.has()) {
+                // Do not consume() yet — premium AI delivery isn't wired in this frontend.
+                // Keeping the credit prevents a re-charge on a second click. Restore
+                // consume-after-successful-render when delivery lands.
+                this.premiumUnlocked = true;
+                if (typeof this.interpretDream === 'function') this.interpretDream();
+                return;
+            }
+
             // Get user email
             const email = this.getUserEmail();
             if (!email) {

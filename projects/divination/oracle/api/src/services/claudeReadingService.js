@@ -17,7 +17,7 @@ export class ClaudeReadingService {
       const prompt = this.buildReadingPrompt(cards, userQuestion, spreadType);
 
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1500,
         messages: [{
           role: 'user',
@@ -35,13 +35,15 @@ export class ClaudeReadingService {
   buildReadingPrompt(cards, userQuestion, spreadType) {
     const cardDescriptions = cards.map((card, index) => {
       const position = this.getPosition(index, spreadType);
+      const keywords = Array.isArray(card.keywords) ? card.keywords.join(', ') : (card.keywords || '');
+      const upright = card.upright || {};
       return `
-${position}: ${card.name}
-Element: ${card.element}
-Theme: ${card.theme}
-Keywords: ${card.keywords.join(', ')}
-Upright Meaning: ${card.upright.meaning}
-Guidance: ${card.upright.guidance}
+${position}: ${card.name || 'Unknown Card'}
+Element: ${card.element || '—'}
+Theme: ${card.theme || '—'}
+Keywords: ${keywords}
+Upright Meaning: ${upright.meaning || card.meaning || ''}
+Guidance: ${upright.guidance || ''}
 `;
     }).join('\n');
 
@@ -105,9 +107,16 @@ Be mystical yet grounded, spiritual yet practical. Make the reading feel persona
   parseReadingResponse(responseText) {
     try {
       // Try to extract JSON from response
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '');
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        try {
+          return JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          // Newer models pretty-print with literal newlines inside string
+          // values (invalid JSON). Collapse them and retry before falling back.
+          return JSON.parse(jsonMatch[0].replace(/[\r\n]+/g, ' '));
+        }
       }
 
       // Fallback: return raw text structured
@@ -133,7 +142,7 @@ Be mystical yet grounded, spiritual yet practical. Make the reading feel persona
   async generateQuickInsight(card, userQuestion) {
     try {
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 300,
         messages: [{
           role: 'user',

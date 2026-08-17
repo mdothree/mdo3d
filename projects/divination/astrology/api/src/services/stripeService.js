@@ -82,6 +82,12 @@ export class StripeService {
     }
   }
 
+  // Best-effort per-session use counter stored in Stripe metadata (merge — other
+  // keys preserved). Used to cap premium generations per payment (anti-abuse).
+  async recordUse(sessionId, uses) {
+    await this.stripe.checkout.sessions.update(sessionId, { metadata: { uses: String(uses) } });
+  }
+
   async handleWebhook(rawBody, signature) {
     try {
       const event = this.stripe.webhooks.constructEvent(

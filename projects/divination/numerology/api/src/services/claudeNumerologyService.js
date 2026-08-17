@@ -17,8 +17,8 @@ export class ClaudeNumerologyService {
       const prompt = this.buildReadingPrompt(numerologyData, userQuestion);
 
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 2000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 4000,
         messages: [{
           role: 'user',
           content: prompt
@@ -120,11 +120,45 @@ Be insightful, empowering, and specific. Make the reading feel like a personaliz
     return '';
   }
 
+  // Extract the JSON object from a model response that may wrap it in a ```json
+  // fence and/or append trailing prose. Prefers the fenced block; otherwise
+  // brace-balances from the first '{' (string/escape aware) so trailing text
+  // with stray braces can't corrupt the match.
+  extractJson(responseText) {
+    // Search within the ```json fence if present (models sometimes add prose after
+    // the fence), otherwise the whole text. Then brace-balance from the first '{'
+    // to return the FIRST complete object — models often append narrative (and even
+    // a stray '}') after the JSON, so greedy first-to-last matching corrupts it.
+    const fence = responseText.match(/```json\s*([\s\S]*?)```/i) || responseText.match(/```\s*([\s\S]*?)```/);
+    const src = (fence && fence[1].includes('{')) ? fence[1] : responseText;
+
+    const start = src.indexOf('{');
+    if (start === -1) return null;
+    let depth = 0, inStr = false, esc = false;
+    for (let i = start; i < src.length; i++) {
+      const c = src[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (c === '\\') esc = true;
+        else if (c === '"') inStr = false;
+      } else if (c === '"') inStr = true;
+      else if (c === '{') depth++;
+      else if (c === '}') { depth--; if (depth === 0) return src.slice(start, i + 1); }
+    }
+    return null;
+  }
+
   parseReadingResponse(responseText) {
     try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+      const jsonStr = this.extractJson(responseText);
+      if (jsonStr) {
+        try {
+          return JSON.parse(jsonStr);
+        } catch (e) {
+          // Newer models pretty-print with literal newlines inside string
+          // values (invalid JSON). Collapse them and retry before falling back.
+          return JSON.parse(jsonStr.replace(/[\r\n]+/g, ' '));
+        }
       }
 
       return {
@@ -155,7 +189,7 @@ Be insightful, empowering, and specific. Make the reading feel like a personaliz
   async generateQuickInsight(lifePathNumber, question) {
     try {
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 300,
         messages: [{
           role: 'user',

@@ -1,211 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Successful - BlackLabb Dreams</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .success-container {
-            max-width: 600px;
-            margin: 100px auto;
-            padding: 40px;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .success-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: scaleIn 0.5s ease-out;
-        }
-
-        @keyframes scaleIn {
-            from {
-                transform: scale(0);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .success-title {
-            font-size: 32px;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .success-message {
-            font-size: 18px;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .success-details {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .btn-primary {
-            background: #fff;
-            color: #667eea;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 10px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-            border: 2px solid #fff;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            background: rgba(255,0,0,0.2);
-            color: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Confirmed — Dream Interpreter</title>
+<meta name="robots" content="noindex">
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+         background:#0d0620; color:#f0eef8; text-align:center; }
+  .card { max-width:420px; padding:2.5rem; background:rgba(255,255,255,0.04);
+          border:1px solid rgba(255,255,255,0.1); border-radius:16px; }
+  .icon { font-size:3rem; margin-bottom:1rem; }
+  h1 { font-size:1.4rem; margin:0 0 0.75rem; }
+  p { color:#b8b0d8; line-height:1.6; margin:0 0 1.5rem; }
+  a.btn { display:inline-block; padding:0.8rem 2rem; border-radius:8px; text-decoration:none;
+          background:linear-gradient(135deg,#7c3aed,#ec4899); color:#fff; font-weight:600; }
+  .spinner { width:28px; height:28px; margin:0 auto 1rem; border:3px solid rgba(255,255,255,0.15);
+             border-top-color:#a78bfa; border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .hidden { display:none; }
+</style>
 </head>
 <body>
-    <div class="success-container" id="successContainer">
-        <div class="success-icon">✨</div>
-        <h1 class="success-title">Payment Successful!</h1>
-        <p class="success-message">Thank you for upgrading to premium. Your payment has been processed successfully.</p>
-        
-        <div class="success-details" id="paymentDetails" style="display: none;">
-            <div class="detail-row">
-                <span>Order ID:</span>
-                <span id="orderId">-</span>
-            </div>
-            <div class="detail-row">
-                <span>Amount Paid:</span>
-                <span id="amount">-</span>
-            </div>
-            <div class="detail-row">
-                <span>Status:</span>
-                <span id="status">Verified ✓</span>
-            </div>
-        </div>
-
-        <div id="loadingState">
-            <div class="loading"></div>
-            <p style="color: #fff; margin-top: 20px;">Verifying your payment...</p>
-        </div>
-
-        <div id="errorState" style="display: none;">
-            <div class="error-message" id="errorMessage"></div>
-        </div>
-
-        <div id="actionButtons" style="display: none;">
-            <a href="/" class="btn-primary">Get Your Premium Reading</a>
-            <a href="/" class="btn-primary btn-secondary">Back to Home</a>
-        </div>
-    </div>
-
-    <script type="module">
-        import { apiClient } from './js/config/api.js';
-
-        async function verifyPayment() {
-            try {
-                // Get session ID from URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const sessionId = urlParams.get('session_id');
-
-                if (!sessionId) {
-                    showError('No payment session found. Please try again.');
-                    return;
-                }
-
-                // Verify payment with backend
-                const result = await apiClient.verifyPayment(sessionId);
-
-                if (result.success && result.paid) {
-                    // Payment verified successfully
-                    showSuccess(result);
-                    
-                    // Store premium status in localStorage
-                    localStorage.setItem('premiumAccess', 'true');
-                    localStorage.setItem('premiumExpiry', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString());
-                    localStorage.setItem('lastPaymentId', sessionId);
-                    
-                } else {
-                    showError('Payment verification failed. Please contact support.');
-                }
-
-            } catch (error) {
-                console.error('Verification error:', error);
-                showError('Unable to verify payment. Please contact support with your order number.');
-            }
-        }
-
-        function showSuccess(result) {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('paymentDetails').style.display = 'block';
-            document.getElementById('actionButtons').style.display = 'block';
-
-            // Populate details
-            document.getElementById('orderId').textContent = result.metadata?.timestamp || 'N/A';
-            document.getElementById('amount').textContent = `$${result.amount?.toFixed(2) || 'N/A'}`;
-        }
-
-        function showError(message) {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
-            document.getElementById('errorMessage').textContent = message;
-            document.getElementById('actionButtons').style.display = 'block';
-        }
-
-        // Verify payment when page loads
-        document.addEventListener('DOMContentLoaded', verifyPayment);
-    </script>
+<div class="card">
+  <div id="verifying">
+    <div class="spinner"></div>
+    <h1>Confirming your payment…</h1>
+    <p>One moment while we verify with Stripe.</p>
+  </div>
+  <div id="confirmed" class="hidden">
+    <div class="icon">🌙</div>
+    <h1>Payment confirmed</h1>
+    <p>Your premium reading is unlocked. Return to the app and your credit will be applied automatically.</p>
+    <a class="btn" href="/">Continue to your reading →</a>
+  </div>
+  <div id="failed" class="hidden">
+    <div class="icon">⚠️</div>
+    <h1>We couldn't confirm this payment</h1>
+    <p id="fail-reason">If you were charged, your payment is safe — reply to your Stripe receipt email and we'll make it right.</p>
+    <a class="btn" href="/">Back to the app</a>
+  </div>
+</div>
+<script src="js/entitlement.js"></script>
+<script>
+(function(){
+  var API_URL = location.hostname === 'localhost' ? 'http://localhost:3004' : 'https://dream-interpreter-api.railway.app';
+  var params = new URLSearchParams(location.search);
+  var sessionId = params.get('session_id');
+  function show(id){ ['verifying','confirmed','failed'].forEach(function(x){
+    document.getElementById(x).classList.toggle('hidden', x !== id); }); }
+  if (!sessionId) {
+    // Payment Link without session passthrough: record an unverified credit is NOT safe;
+    // show confirmation UI only (no entitlement) and let support handle receipts.
+    document.getElementById('fail-reason').textContent =
+      'This page was opened without a payment session. If you just paid, contact support with your receipt.';
+    show('failed');
+    return;
+  }
+  fetch(API_URL + '/api/payment/verify', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ sessionId: sessionId })
+  }).then(function(r){ return r.json(); }).then(function(data){
+    if (data.success && data.paid) {
+      window.PremiumEntitlement.grant({
+        readingType: (data.metadata && data.metadata.readingType) || 'premium',
+        sessionId: sessionId
+      });
+      show('confirmed');
+    } else { show('failed'); }
+  }).catch(function(){ show('failed'); });
+})();
+</script>
 </body>
 </html>

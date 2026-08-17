@@ -17,7 +17,7 @@ export class ClaudeRunesService {
       const prompt = this.buildReadingPrompt(runes, userQuestion, spreadType);
 
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1500,
         messages: [{
           role: 'user',
@@ -98,9 +98,16 @@ Be mystical yet grounded, ancient yet practical. Make the reading feel like guid
 
   parseReadingResponse(responseText) {
     try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      const cleaned = responseText.replace(/```json/gi, '').replace(/```/g, '');
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        try {
+          return JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          // Newer models pretty-print with literal newlines inside string
+          // values (invalid JSON). Collapse them and retry before falling back.
+          return JSON.parse(jsonMatch[0].replace(/[\r\n]+/g, ' '));
+        }
       }
 
       return {
@@ -125,7 +132,7 @@ Be mystical yet grounded, ancient yet practical. Make the reading feel like guid
   async generateQuickInsight(rune, userQuestion) {
     try {
       const message = await this.client.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 300,
         messages: [{
           role: 'user',

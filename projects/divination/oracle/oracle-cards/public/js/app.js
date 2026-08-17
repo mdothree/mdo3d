@@ -98,9 +98,7 @@ class OracleCardsApp {
             this.resetReading();
         });
 
-        document.getElementById('upgrade-btn')?.addEventListener('click', () => {
-            this.upgradeToPremium();
-        });
+        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.upgradeToPremium()));
     }
 
     showCardSection() {
@@ -285,44 +283,70 @@ class OracleCardsApp {
         `;
     }
 
-    displayPremiumReading() {
-        // Mock premium reading - will be replaced with Claude API response
+    async displayPremiumReading() {
         const readingContent = document.getElementById('reading-content');
+        readingContent.innerHTML = '<div class="loading">✨ Channeling your personalized reading...</div>';
+
+        const esc = (s) => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+        let reading;
+        try {
+            const data = await apiClient.generateReading(this.drawnCards, this.userQuestion, this.selectedSpread, true);
+            reading = data.reading || data;
+            if (!reading || !reading.interpretation) throw new Error('Empty reading');
+        } catch (e) {
+            console.error('Premium reading error:', e);
+            readingContent.innerHTML = `
+                <div class="reading-section">
+                    <h3>✨ Your Premium Reading</h3>
+                    <p>Your purchase is confirmed, but the reading service is momentarily unavailable.
+                    Please try again in a few moments — you will not be charged again.</p>
+                </div>`;
+            return; // keep the entitlement so the reading can be retried
+        }
+
+        // Real AI reading delivered — now consume the paid credit.
+        window.PremiumEntitlement?.consume();
+
+        const insights = Array.isArray(reading.insights) ? reading.insights : [];
+        const actionSteps = Array.isArray(reading.actionSteps) ? reading.actionSteps : [];
 
         readingContent.innerHTML = `
             <div class="reading-section">
                 <h3>✨ Personalized Interpretation</h3>
-                <p>Based on your question: "${this.userQuestion || 'General guidance'}"</p>
-                <p>The cards speak directly to your current situation. The energies present suggest a time of transformation and inner wisdom. Trust the journey you're on - every step is leading you exactly where you need to be.</p>
+                ${reading.opening ? `<p>${esc(reading.opening)}</p>` : ''}
+                <p>${esc(reading.interpretation)}</p>
             </div>
 
+            ${insights.length ? `
             <div class="reading-section">
                 <h3>💫 Deep Insights</h3>
-                <p>The universe is asking you to pause and listen to your inner voice. There's wisdom within you that's trying to emerge. This is not a time for rushing or forcing outcomes. Instead, allow things to unfold naturally while staying aligned with your highest truth.</p>
-            </div>
+                <ul style="line-height: 2;">
+                    ${insights.map(i => `<li>${esc(i)}</li>`).join('')}
+                </ul>
+            </div>` : ''}
 
+            ${actionSteps.length ? `
             <div class="reading-section">
                 <h3>🔮 Action Steps</h3>
                 <ul style="line-height: 2;">
-                    <li>Spend 10 minutes in quiet reflection each morning</li>
-                    <li>Journal your thoughts and feelings about this situation</li>
-                    <li>Notice synchronicities and signs appearing in your life</li>
-                    <li>Trust your first instinct when making decisions</li>
+                    ${actionSteps.map(s => `<li>${esc(s)}</li>`).join('')}
                 </ul>
-            </div>
+            </div>` : ''}
 
+            ${reading.affirmation ? `
             <div class="reading-section">
                 <h3>🌟 Affirmation</h3>
                 <p style="font-size: 1.25rem; font-style: italic; text-align: center; padding: 1.5rem; background: #F3E8FF; border-radius: 12px;">
-                    "I trust my inner wisdom and follow my heart's guidance."
+                    "${esc(reading.affirmation)}"
                 </p>
-            </div>
+            </div>` : ''}
         `;
     }
 
     isPremiumUser() {
-        // TODO: Check actual premium status from Firebase
-        return false;
+        // Unlocked this session, or an unconsumed verified purchase exists.
+        return this.premiumUnlocked === true || window.PremiumEntitlement?.has() === true;
     }
 
     showPremiumPrompt(spreadType) {
@@ -388,6 +412,16 @@ class OracleCardsApp {
 
     async upgradeToPremium() {
         try {
+            // Already paid (verified by /success): unlock and deliver — never charge twice.
+            if (window.PremiumEntitlement?.has()) {
+                // NOTE: do not consume() yet — premium AI delivery is not wired in this
+                // frontend (renders mock). Keeping the credit prevents a re-charge on a
+                // second click. Restore consume-after-successful-render when delivery lands.
+                this.premiumUnlocked = true;
+                this.showReading();
+                return;
+            }
+
             // Get user email (from auth or prompt)
             const email = this.getUserEmail();
             if (!email) {
