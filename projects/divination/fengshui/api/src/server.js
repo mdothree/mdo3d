@@ -36,12 +36,29 @@ app.post('/api/analysis/generate', async (req, res) => {
 
     // For free tier, return basic analysis
     if (!premium) {
+      // Deterministic basic energy score from the space inputs so the free
+      // loop shows a real number instead of N/A. Mirrors the balance logic in
+      // the static client (base 50, element-coverage + direction-match bonus).
+      const elementDirection = {
+        North: 'Water', Northeast: 'Earth', East: 'Wood', Southeast: 'Wood',
+        South: 'Fire', Southwest: 'Earth', West: 'Metal', Northwest: 'Metal'
+      };
+      const picked = Array.isArray(spaceData.elements) ? spaceData.elements : [];
+      let overallScore = 50;
+      if (picked.length >= 3) overallScore += 20;
+      else if (picked.length === 2) overallScore += 10;
+      else if (picked.length === 1) overallScore += 5;
+      const dirElem = elementDirection[spaceData.direction];
+      if (dirElem && picked.includes(dirElem)) overallScore += 15;
+      overallScore = Math.max(40, Math.min(95, overallScore));
+
       return res.json({
         success: true,
         analysis: {
           type: 'basic',
           spaceType: spaceData.spaceType,
           roomType: spaceData.roomType,
+          overallScore,
           basicTips: [
             'Ensure clear pathways for energy flow',
             'Remove clutter from corners',
