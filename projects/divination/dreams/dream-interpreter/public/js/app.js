@@ -34,9 +34,11 @@ class DreamInterpreterApp {
         this.updateCharCount();
         this.loadSymbolDatabase();
         this.displayJournal();
-        
-        // Check API health
-        this.checkApiHealth();
+
+        // DIV-HEALTH-CORS: the diagnostic /health ping is cross-origin to the
+        // Vercel API and fails CORS with no functional effect on the free loop.
+        // Stop calling it on init; premium verifies via its own request path.
+        // this.checkApiHealth();
     }
 
     async checkApiHealth() {
