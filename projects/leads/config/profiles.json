@@ -29,7 +29,7 @@
       "delivery": {
         "frequency": "weekly",
         "day_of_week": "monday",
-        "recipient_email": "outreach@thesignalsinstitute.org",
+        "recipient_email": "outreach@thesignalsinstitute.com",
         "recipient_name": "The Signals Institute",
         "format": "csv_attachment",
         "subject": "Workforce Development Leads - Week of {date}"
