@@ -1,6 +1,7 @@
 // Page controller: base64.html
 import { formatJSON } from '../services/jsonFormatter.js';
 import { saveToHistory } from '../config/firebase.js';
+import { showAlert, copyWithFeedback } from '../utils/dom.js';
 
     let currentMode = 'encode';
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -14,7 +15,7 @@ import { saveToHistory } from '../config/firebase.js';
       });
     });
 
-    document.getElementById('encodeBtn').addEventListener('click', () => {
+    document.getElementById('encodeBtn').addEventListener('click', async () => {
       const alertArea = document.getElementById('alertArea');
       alertArea.innerHTML = '';
       try {
@@ -28,7 +29,7 @@ import { saveToHistory } from '../config/firebase.js';
         document.getElementById('encodeOutput').style.display = 'block';
         await saveToHistory('json-base64', { action: 'encode' });
       } catch (e) {
-        alertArea.innerHTML = `<div class="alert alert-error">❌ Invalid JSON: ${e.message}</div>`;
+        showAlert(alertArea, 'error', `❌ Invalid JSON: ${e.message}`);
       }
     });
 
@@ -41,23 +42,19 @@ import { saveToHistory } from '../config/firebase.js';
         b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
         while (b64.length % 4) b64 += '=';
         const decoded = decodeURIComponent(escape(atob(b64)));
-        const parsed = JSON.parse(decoded);
-        const formatted = formatJSON(JSON.stringify(parsed), 2);
+        // Format the decoded source directly (lossless) instead of a parse/stringify round trip.
+        const formatted = formatJSON(decoded, 2);
         document.getElementById('jsonOutput').textContent = formatted;
         document.getElementById('decodeOutput').style.display = 'block';
       } catch (e) {
-        alertArea.innerHTML = `<div class="alert alert-error">❌ Decode failed: ${e.message}</div>`;
+        showAlert(alertArea, 'error', `❌ Decode failed: ${e.message}`);
       }
     });
 
     document.getElementById('copyEncoded').addEventListener('click', async () => {
-      await navigator.clipboard.writeText(document.getElementById('base64Output').textContent);
-      document.getElementById('copyEncoded').textContent = '✅ Copied!';
-      setTimeout(() => { document.getElementById('copyEncoded').textContent = 'Copy'; }, 2000);
+      await copyWithFeedback(document.getElementById('copyEncoded'), document.getElementById('base64Output').textContent, 'Copy');
     });
 
     document.getElementById('copyDecoded').addEventListener('click', async () => {
-      await navigator.clipboard.writeText(document.getElementById('jsonOutput').textContent);
-      document.getElementById('copyDecoded').textContent = '✅ Copied!';
-      setTimeout(() => { document.getElementById('copyDecoded').textContent = 'Copy'; }, 2000);
+      await copyWithFeedback(document.getElementById('copyDecoded'), document.getElementById('jsonOutput').textContent, 'Copy');
     });

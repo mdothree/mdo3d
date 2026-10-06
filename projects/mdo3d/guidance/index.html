@@ -7,7 +7,7 @@
 <meta name="description" content="AI-powered oracle readings, dream interpretation, tarot, numerology, astrology, and feng shui. Ancient wisdom, modern intelligence.">
 <meta property="og:title" content="Guidance — MDO3D · AI-Powered Spiritual Insight" />
 <meta property="og:description" content="AI-powered oracle readings, dream interpretation, tarot, numerology, astrology, and feng shui. Ancient wisdom, modern intelligence." />
-<meta property="og:image" content="./og-image.jpg" />
+<meta property="og:image" content="https://guidance.mdo3d.com/og-image.jpg" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@
 
   --pearl: #f0eef8;
   --fog: #b8b0d8;
-  --shadow: #5a5080;
+  --shadow: #8b82b5;
 
   --border-dim: rgba(255,255,255,0.06);
   --border-mid: rgba(255,255,255,0.1);
@@ -258,7 +258,7 @@ section { position: relative; z-index: 10; }
 .reading-card:hover { transform: translateY(-4px); border-color: var(--border-glow); box-shadow: 0 20px 60px rgba(107,47,160,0.15); }
 .reading-card:hover::before { opacity: 1; }
 
-.reading-card.flagship { grid-column: span 2; background: linear-gradient(135deg, rgba(107,47,160,0.12), rgba(147,51,234,0.06)); border-color: rgba(147,51,234,0.2); }
+.reading-card.flagship { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, rgba(107,47,160,0.12), rgba(147,51,234,0.06)); border-color: rgba(147,51,234,0.2); }
 .reading-card.flagship:hover { border-color: rgba(147,51,234,0.4); box-shadow: 0 24px 80px rgba(107,47,160,0.2); }
 
 .card-glyph { font-size: 2.2rem; margin-bottom: 1.25rem; line-height: 1; }
@@ -314,7 +314,7 @@ section { position: relative; z-index: 10; }
 .step { text-align: center; padding: 2rem; }
 .step-num {
   font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.3em;
-  color: var(--border-mid); margin-bottom: 1.5rem; text-transform: uppercase;
+  color: var(--shadow); margin-bottom: 1.5rem; text-transform: uppercase;
 }
 .step-icon {
   width: 64px; height: 64px; margin: 0 auto 1.5rem;
@@ -376,7 +376,7 @@ footer {
 .footer-col a { font-size: 0.82rem; color: var(--shadow); text-decoration: none; transition: color var(--t); }
 .footer-col a:hover { color: var(--pearl); }
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border-dim); flex-wrap: wrap; gap: 1rem; }
-.footer-copy { font-size: 0.72rem; color: #2e2860; }
+.footer-copy { font-size: 0.72rem; color: var(--shadow); }
 .footer-back { font-size: 0.72rem; color: var(--shadow); text-decoration: none; transition: color var(--t); }
 .footer-back:hover { color: var(--pearl); }
 
@@ -388,7 +388,7 @@ footer {
 @media (max-width: 900px) {
   nav { padding: 1rem 1.5rem; }
   .readings-grid { grid-template-columns: 1fr; }
-  .reading-card.flagship { grid-column: span 1; }
+  .reading-card.flagship { grid-column: span 1; grid-row: auto; }
   .soon-grid { grid-template-columns: 1fr; }
   .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
   .testimonials-grid { grid-template-columns: 1fr; }
@@ -439,7 +439,7 @@ footer {
 
   <div class="hero-ctas">
     <a href="#readings" class="cta-primary">Begin a Reading</a>
-    <a href="#readings" class="cta-ghost">Explore Tools</a>
+    <a href="#how" class="cta-ghost">How It Works</a>
   </div>
 
   <div class="platform-nav">
@@ -449,6 +449,9 @@ footer {
     <a href="#numerology" class="platform-pill">🔢 Numbers</a>
     <a href="#astrology" class="platform-pill">⭐ Astro</a>
     <a href="#fengshui" class="platform-pill">☯️ Feng Shui</a>
+    <a href="#pastlife" class="platform-pill">👁️ Past Life</a>
+    <a href="#runes" class="platform-pill">ᚱ Runes</a>
+    <a href="#iching" class="platform-pill">☰ I Ching</a>
   </div>
 </section>
 
@@ -461,7 +464,7 @@ footer {
     <div class="readings-header fade">
       <div class="section-kicker">The Sanctum</div>
       <h2 class="section-title">Choose Your <em>Path of Inquiry</em></h2>
-      <p class="section-body">Each platform is a doorway. Some open immediately — others are being woven into being.</p>
+      <p class="section-body">Each platform is a doorway. Choose the one that fits your question.</p>
     </div>
 
     <div class="readings-grid fade">
@@ -503,26 +506,52 @@ footer {
         <div class="card-action">Find Your Numbers</div>
       </a>
 
-    </div>
 
-    <!-- COMING SOON -->
-    <div class="soon-grid fade">
-      <div class="soon-card" id="astrology">
-        <div class="soon-icon">⭐</div>
-        <div>
-          <div class="soon-title">Astrology Charts</div>
-          <div class="soon-desc">Natal charts, transit readings, and synastry analysis powered by AI.</div>
-        </div>
-        <div class="soon-badge">Arriving Soon</div>
-      </div>
-      <div class="soon-card" id="fengshui">
-        <div class="soon-icon">☯️</div>
-        <div>
-          <div class="soon-title">Feng Shui Advisor</div>
-          <div class="soon-desc">AI-guided space harmony and environmental energy mapping.</div>
-        </div>
-        <div class="soon-badge">Arriving Soon</div>
-      </div>
+      <!-- ASTROLOGY CHARTS -->
+      <a href="https://astrology.mdo3d.com" class="reading-card" id="astrology">
+        <div class="card-glyph">⭐</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Astrology Charts</div>
+        <div class="card-body">Get your free birth chart. Calculate your Sun, Moon, and Rising signs from your birth data.</div>
+        <div class="card-action">Calculate Your Chart</div>
+      </a>
+
+      <!-- FENG SHUI ANALYZER -->
+      <a href="https://fengshui.mdo3d.com" class="reading-card" id="fengshui">
+        <div class="card-glyph">☯️</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Feng Shui Analyzer</div>
+        <div class="card-body">Analyze the energy of your space with Feng Shui principles and get recommendations to harmonize your home or office.</div>
+        <div class="card-action">Analyze Your Space</div>
+      </a>
+
+      <!-- PAST LIFE INSIGHTS -->
+      <a href="https://pastlife.mdo3d.com" class="reading-card" id="pastlife">
+        <div class="card-glyph">👁️</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Past Life Insights</div>
+        <div class="card-body">Explore past life connections and the karmic patterns that may be echoing into your present.</div>
+        <div class="card-action">Reveal a Past Life</div>
+      </a>
+
+      <!-- RUNES -->
+      <a href="https://runes.mdo3d.com" class="reading-card" id="runes">
+        <div class="card-glyph">ᚱ</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">Runes</div>
+        <div class="card-body">Cast the Elder Futhark runes and receive guidance drawn from ancient Norse wisdom.</div>
+        <div class="card-action">Cast the Runes</div>
+      </a>
+
+      <!-- I CHING -->
+      <a href="https://iching.mdo3d.com" class="reading-card" id="iching">
+        <div class="card-glyph">☰</div>
+        <div class="card-status cs-live"><div class="cs-live-dot"></div> Ready to Explore</div>
+        <div class="card-title">I Ching</div>
+        <div class="card-body">Cast the coins and receive counsel from the ancient Book of Changes.</div>
+        <div class="card-action">Cast the Coins</div>
+      </a>
+
     </div>
   </div>
 </section>
@@ -531,7 +560,7 @@ footer {
 <div class="rune-divider"><span class="rune-glyph">◈</span></div>
 
 <!-- HOW IT WORKS -->
-<section class="how-section">
+<section class="how-section" id="how">
   <div class="how-inner">
     <div class="readings-header fade">
       <div class="section-kicker">The Process</div>
@@ -619,8 +648,11 @@ footer {
           <li><a href="https://dreams.mdo3d.com">Dream Interpreter</a></li>
           <li><a href="https://tarot.mdo3d.com">Tarot Readings</a></li>
           <li><a href="https://numerology.mdo3d.com">Numerology Lab</a></li>
-          <li><a href="/astrology">Astrology (Soon)</a></li>
-          <li><a href="/fengshui">Feng Shui (Soon)</a></li>
+          <li><a href="https://astrology.mdo3d.com">Astrology Charts</a></li>
+          <li><a href="https://fengshui.mdo3d.com">Feng Shui Analyzer</a></li>
+          <li><a href="https://pastlife.mdo3d.com">Past Life Insights</a></li>
+          <li><a href="https://runes.mdo3d.com">Runes</a></li>
+          <li><a href="https://iching.mdo3d.com">I Ching</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -635,15 +667,12 @@ footer {
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="https://mdo3d.com/#contact">Contact</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Guidance · MDO3D · Butts Technologies, LLC</span>
+      <span class="footer-copy">© 2026 Guidance · MDO3D · Butts Technologies, LLC</span>
       <a href="https://mdo3d.com" class="footer-back">← Back to mdo3d.com</a>
     </div>
   </div>

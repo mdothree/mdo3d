@@ -9,19 +9,19 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Dream Interpreter">
     <meta property="og:description" content="Decode your subconscious. AI-powered dream interpretation with comprehensive symbol database.">
-    <meta property="og:image" content="./og-image.jpg">
+    <meta property="og:image" content="https://dreams.mdo3d.com/og-image.jpg">
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234c2fa0'/><text x='16' y='23' font-size='18' text-anchor='middle' fill='%23c4b5f4'>🌙</text></svg>">
-    <meta property="og:url" content="https://guidance.mdo3d.com/dreams">
+    <meta property="og:url" content="https://dreams.mdo3d.com/">
     <meta property="og:type" content="website">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Dream Interpreter">
     <meta name="twitter:description" content="Decode your subconscious. AI-powered dream interpretation with comprehensive symbol database.">
-    <meta name="twitter:image" content="./og-image.jpg">
+    <meta name="twitter:image" content="https://dreams.mdo3d.com/og-image.jpg">
     
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -36,8 +36,8 @@
             <div class="nav-links">
                 <a href="#how-it-works">How It Works</a>
                 <a href="#symbols">Symbols</a>
-                <a href="#journal">Journal</a>
                 <a href="#pricing">Pricing</a>
+                <a href="#journal">Journal</a>
             </div>
         </nav>
     </header>
@@ -65,19 +65,6 @@
                     <button class="btn-primary btn-interpret" id="interpret-btn">
                         <span>Interpret My Dream</span>
                     </button>
-                </div>
-
-                <!-- Quick Symbol Lookup -->
-                <div class="quick-lookup">
-                    <h3>Or look up a specific symbol</h3>
-                    <div class="symbol-search">
-                        <input 
-                            type="text" 
-                            id="symbol-search" 
-                            placeholder="Search symbols (e.g., snake, water, flying)..."
-                        >
-                        <button class="btn-secondary" id="search-btn">Search</button>
-                    </div>
                 </div>
             </div>
         </section>
@@ -146,40 +133,6 @@
             </div>
         </section>
 
-        <!-- Symbol Database Section -->
-        <section id="symbols" class="symbols-section">
-            <div class="container">
-                <h2>Dream Symbol Database</h2>
-                <p class="subtitle">Browse 40+ common dream symbols and their meanings</p>
-                
-                <div class="category-tabs">
-                    <button class="tab active" data-category="all">All Symbols</button>
-                    <button class="tab" data-category="people">People</button>
-                    <button class="tab" data-category="animals">Animals</button>
-                    <button class="tab" data-category="places">Places</button>
-                    <button class="tab" data-category="actions">Actions</button>
-                    <button class="tab" data-category="objects">Objects</button>
-                    <button class="tab" data-category="elements">Elements</button>
-                </div>
-
-                <div class="symbols-grid" id="symbols-database">
-                    <!-- Populated by JavaScript -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Dream Journal Section -->
-        <section id="journal" class="journal-section section-light">
-            <div class="container">
-                <h2>Your Dream Journal</h2>
-                <p class="subtitle">Track patterns and recurring themes in your dreams</p>
-                
-                <div class="journal-entries" id="journal-entries">
-                    <p class="empty-state">No dreams saved yet. Interpret your first dream to start your journal!</p>
-                </div>
-            </div>
-        </section>
-
         <!-- How It Works -->
         <section id="how-it-works" class="section-light">
             <div class="container">
@@ -205,6 +158,50 @@
                         <h3>Track Patterns</h3>
                         <p>Save to your journal and discover recurring themes</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Symbol Database Section -->
+        <section id="symbols" class="symbols-section">
+            <div class="container">
+                <h2>Dream Symbol Database</h2>
+                <p class="subtitle">Popular dream symbols and their meanings &mdash; search or filter to explore all of them</p>
+
+                <!-- Symbol Lookup -->
+                <div class="quick-lookup">
+                    <h3>Look up a specific symbol</h3>
+                    <div class="symbol-search">
+                        <input 
+                            type="text" 
+                            id="symbol-search" 
+                            aria-label="Search dream symbols"
+                            placeholder="Search symbols (e.g., snake, water, flying)…"
+                        >
+                        <button class="btn-secondary" id="search-btn">Search</button>
+                    </div>
+                </div>
+                
+                <div class="category-tabs">
+                    <button class="tab active" data-category="all">All Symbols</button>
+                    <button class="tab" data-category="people">People</button>
+                    <button class="tab" data-category="animals">Animals</button>
+                    <button class="tab" data-category="places">Places</button>
+                    <button class="tab" data-category="actions">Actions</button>
+                    <button class="tab" data-category="objects">Objects</button>
+                    <button class="tab" data-category="elements">Elements</button>
+                    <button class="tab" data-category="colors">Colors</button>
+                    <button class="tab" data-category="numbers">Numbers</button>
+                    <button class="tab" data-category="weather">Weather</button>
+                    <button class="tab" data-category="food">Food</button>
+                </div>
+
+                <div class="symbols-grid" id="symbols-database">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <div class="browse-all">
+                    <button class="btn-secondary" id="browse-all-btn" type="button">Browse all symbols</button>
                 </div>
             </div>
         </section>
@@ -245,16 +242,31 @@
                 </div>
             </div>
         </section>
+
+        <!-- Dream Journal Section -->
+        <section id="journal" class="journal-section section-light">
+            <div class="container">
+                <h2>Your Dream Journal</h2>
+                <p class="subtitle">Track patterns and recurring themes in your dreams</p>
+                
+                <div class="journal-entries" id="journal-entries">
+                    <p class="empty-state">No dreams saved yet. Interpret your first dream to start your journal!</p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 Dream Interpreter. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Contact</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#symbols">Symbols</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#journal">Journal</a>
+                <a href="https://guidance.mdo3d.com/">More Readings</a>
+                <a href="https://mdo3d.com/">MDO3D</a>
             </div>
+            <p class="footer-copy">&copy; 2026 Dream Interpreter. For reflection and entertainment.</p>
         </div>
     </footer>
 

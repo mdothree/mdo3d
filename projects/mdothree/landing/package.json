@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node scripts/inject-config.js && npx serve public",
     "build": "node scripts/inject-config.js",
-    "start": "npx serve public"
+    "start": "npx serve public",
+    "check": "node scripts/check-imports.mjs public/js"
   },
   "devDependencies": {
     "serve": "^14.0.0"

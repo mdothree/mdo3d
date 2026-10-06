@@ -1,4 +1,10 @@
-import { dreamSymbols, searchSymbols, getSymbolsByCategory, categories } from '../../src/dreamSymbols.js';
+import { dreamSymbols, searchSymbols, getSymbolsByCategory, categories, matchSymbolsInText } from '../../src/dreamSymbols.js';
+
+// Escape user-supplied text before it goes into innerHTML.
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Number of symbol cards shown before "Browse all" in the database section.
+const POPULAR_SYMBOL_COUNT = 9;
 import { SocialShare } from '../../../shared/ui-components/SocialShare.js';
 import { ShareImageGenerator } from '../../../shared/ui-components/ShareImageGenerator.js';
 import { apiClient } from './config/api.js';
@@ -13,6 +19,7 @@ class DreamInterpreterApp {
         this.detectedSymbols = [];
         this.currentInterpretation = null;
         this.dreamJournal = this.loadJournal();
+        this.showAllSymbols = false;
         
         // Initialize social sharing
         this.socialShare = new SocialShare({
@@ -74,6 +81,15 @@ class DreamInterpreterApp {
             tab.addEventListener('click', () => this.filterByCategory(tab.dataset.category));
         });
 
+        // Browse all symbols toggle
+        const browseAllBtn = document.getElementById('browse-all-btn');
+        if (browseAllBtn) {
+            browseAllBtn.addEventListener('click', () => {
+                this.showAllSymbols = !this.showAllSymbols;
+                this.filterByCategory('all');
+            });
+        }
+
         // Share button
         const shareBtn = document.getElementById('share-btn');
         shareBtn.addEventListener('click', () => this.shareInterpretation());
@@ -87,7 +103,7 @@ class DreamInterpreterApp {
         newDreamBtn.addEventListener('click', () => this.resetDream());
 
         // Upgrade button
-        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.handleUpgrade()));
+        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', (e) => this.handleUpgrade(e.currentTarget)));
     }
 
     updateCharCount() {
@@ -100,8 +116,9 @@ class DreamInterpreterApp {
         const dreamInput = document.getElementById('dream-input');
         this.currentDream = dreamInput.value.trim();
         
-        if (!this.currentDream || this.currentDream.length < 10) {
-            alert('Please describe your dream in more detail (at least 10 characters).');
+        // 20 chars matches the API's minimum, so a premium reading never 400s.
+        if (!this.currentDream || this.currentDream.length < 20) {
+            alert('Please describe your dream in more detail (at least 20 characters).');
             return;
         }
         
@@ -113,14 +130,24 @@ class DreamInterpreterApp {
             return;
         }
         
-        // Display results
-        this.displayResults();
-        
-        // Scroll to results
-        document.getElementById('results-section').scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-        });
+        // Loading state: show the results section with a placeholder, bring it
+        // into view, then render the interpretation.
+        const interpretBtn = document.getElementById('interpret-btn');
+        const resultsSection = document.getElementById('results-section');
+        const btnLabel = interpretBtn ? interpretBtn.querySelector('span') : null;
+        if (interpretBtn) interpretBtn.disabled = true;
+        if (btnLabel) btnLabel.textContent = 'Interpreting…';
+        document.getElementById('symbol-grid').innerHTML = '';
+        document.getElementById('basic-meaning').innerHTML =
+            '<p class="interpretation-text loading-text">🌙 Reading the symbols in your dream…</p>';
+        resultsSection.style.display = 'block';
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        setTimeout(() => {
+            this.displayResults();
+            if (interpretBtn) interpretBtn.disabled = false;
+            if (btnLabel) btnLabel.textContent = 'Interpret My Dream';
+        }, 450);
     }
 
     async deliverPremiumInterpretation() {
@@ -160,21 +187,9 @@ class DreamInterpreterApp {
     }
 
     detectSymbols(dreamText) {
-        const text = dreamText.toLowerCase();
-        const found = [];
-        
-        dreamSymbols.forEach(symbol => {
-            // Check if any keyword appears in the dream text
-            const matched = symbol.keywords.some(keyword => 
-                text.includes(keyword.toLowerCase())
-            );
-            
-            if (matched) {
-                found.push(symbol);
-            }
-        });
-        
-        return found;
+        // Whole-word keyword + alias matching (no "scared" -> car/red substring
+        // hits; "fell"/"flew" map to Falling/Flying).
+        return matchSymbolsInText(dreamText);
     }
 
     displayResults() {
@@ -280,17 +295,21 @@ class DreamInterpreterApp {
         const query = searchInput.value.trim();
         
         if (!query) {
-            this.loadSymbolDatabase();
+            this.filterByCategory('all');
             return;
         }
         
         const results = searchSymbols(query);
-        this.displaySymbolDatabase(results);
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        this.displaySymbolDatabase(results, { limit: false });
         
         if (results.length === 0) {
             const database = document.getElementById('symbols-database');
             database.innerHTML = '<p class="empty-state">No symbols found. Try a different search term.</p>';
         }
+
+        // Bring the results into view.
+        document.getElementById('symbols-database').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     filterByCategory(category) {
@@ -302,34 +321,57 @@ class DreamInterpreterApp {
             }
         });
         
-        // Filter symbols
+        // Filter symbols ("All" shows popular symbols until "Browse all" is clicked)
         if (category === 'all') {
-            this.displaySymbolDatabase(dreamSymbols);
+            this.displaySymbolDatabase(dreamSymbols, { limit: !this.showAllSymbols });
         } else {
             const filtered = getSymbolsByCategory(category);
-            this.displaySymbolDatabase(filtered);
+            this.displaySymbolDatabase(filtered, { limit: false });
         }
     }
 
     loadSymbolDatabase() {
-        this.displaySymbolDatabase(dreamSymbols);
+        this.displaySymbolDatabase(dreamSymbols, { limit: !this.showAllSymbols });
     }
 
-    displaySymbolDatabase(symbols) {
+    // Preview text: truncate on a word boundary with a single ellipsis
+    // (avoids "matters...." when the sentence already ends in a period).
+    previewText(text, max = 100) {
+        const t = String(text || '').trim();
+        if (t.length <= max) return t;
+        const cut = t.slice(0, max).replace(/\s+\S*$/, '').replace(/[\s.,;:!?-]+$/, '');
+        return cut + '…';
+    }
+
+    displaySymbolDatabase(symbols, { limit = false } = {}) {
         const database = document.getElementById('symbols-database');
         database.innerHTML = '';
+
+        const total = symbols.length;
+        const shown = limit ? symbols.slice(0, POPULAR_SYMBOL_COUNT) : symbols;
         
-        symbols.forEach(symbol => {
+        shown.forEach(symbol => {
             const card = document.createElement('div');
             card.className = 'symbol-card';
             card.innerHTML = `
                 <h4>${symbol.symbol}</h4>
                 <p class="category-badge">${symbol.category}</p>
-                <p class="symbol-preview">${symbol.meanings.general.substring(0, 100)}...</p>
+                <p class="symbol-preview">${this.previewText(symbol.meanings.general)}</p>
             `;
             card.addEventListener('click', () => this.showSymbolDetail(symbol));
             database.appendChild(card);
         });
+
+        // "Browse all" toggle only applies to the unfiltered All view.
+        const browseAllBtn = document.getElementById('browse-all-btn');
+        if (browseAllBtn) {
+            const allActive = document.querySelector('.tab.active')?.dataset.category === 'all';
+            const canToggle = allActive && symbols === dreamSymbols && total > POPULAR_SYMBOL_COUNT;
+            browseAllBtn.style.display = canToggle ? '' : 'none';
+            browseAllBtn.textContent = this.showAllSymbols
+                ? 'Show popular symbols only'
+                : `Browse all ${total} symbols`;
+        }
     }
 
     async shareInterpretation() {
@@ -431,11 +473,11 @@ class DreamInterpreterApp {
             entryEl.innerHTML = `
                 <div class="entry-header">
                     <h4>${date}</h4>
-                    <button class="delete-entry" data-id="${entry.id}">Delete</button>
+                    <button class="delete-entry" data-id="${escapeHtml(entry.id)}">Delete</button>
                 </div>
-                <p class="entry-dream">${entry.dream.substring(0, 150)}${entry.dream.length > 150 ? '...' : ''}</p>
+                <p class="entry-dream">${escapeHtml(entry.dream.substring(0, 150))}${entry.dream.length > 150 ? '…' : ''}</p>
                 <div class="entry-symbols">
-                    ${entry.symbols.map(s => `<span class="symbol-tag">${s}</span>`).join('')}
+                    ${entry.symbols.map(s => `<span class="symbol-tag">${escapeHtml(s)}</span>`).join('')}
                 </div>
             `;
             
@@ -459,7 +501,9 @@ class DreamInterpreterApp {
         }
     }
 
-    async handleUpgrade() {
+    async handleUpgrade(clickedBtn) {
+        const upgradeBtn = clickedBtn || null;
+        const originalLabel = upgradeBtn ? upgradeBtn.textContent : '';
         try {
             // Already paid (verified by /success): unlock — never charge twice.
             if (window.PremiumEntitlement?.has()) {
@@ -478,8 +522,7 @@ class DreamInterpreterApp {
                 return;
             }
 
-            // Show loading state
-            const upgradeBtn = document.querySelector('.upgrade-btn');
+            // Show loading state on the button that was clicked
             if (upgradeBtn) {
                 upgradeBtn.textContent = 'Redirecting to checkout...';
                 upgradeBtn.disabled = true;
@@ -504,9 +547,8 @@ class DreamInterpreterApp {
             alert('Sorry, there was an error processing your payment. Please try again.');
             
             // Reset button state
-            const upgradeBtn = document.querySelector('.upgrade-btn');
             if (upgradeBtn) {
-                upgradeBtn.textContent = 'Upgrade for $4.99';
+                upgradeBtn.textContent = originalLabel;
                 upgradeBtn.disabled = false;
             }
         }

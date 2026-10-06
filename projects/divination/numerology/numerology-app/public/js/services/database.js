@@ -173,10 +173,13 @@ export function calculatePersonalityNumber(name) {
 }
 
 export function calculateBirthdayNumber(birthDate) {
-  const day = parseInt(birthDate.split('-')[2]);
-  if (day <= 9) return day;
-  if (day === 11 || day === 22) return day;
-  return day.toString().split('').reduce((a, b) => a + parseInt(b), 0);
+  let day = parseInt(birthDate.split('-')[2], 10);
+  // Reduce to a single digit, keeping master numbers 11 and 22 (29 -> 11 is kept).
+  // A single pass left 19 and 28 at 10; they must reduce again to 1.
+  while (day > 9 && day !== 11 && day !== 22) {
+    day = day.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+  }
+  return day;
 }
 
 export function getAllNumbers(name, birthDate) {

@@ -110,7 +110,7 @@ function AppContent() {
           {page === 'dashboard' && <DashboardPage setPage={setPage} userPrefs={userPrefs} profileId={activeProfileId} />}
           {page === 'leads' && <LeadsPage setPage={setPage} setSelectedLead={setSelectedLead} profileId={activeProfileId} />}
           {page === 'lead-detail' && <LeadDetailPage lead={selectedLead} setPage={setPage} />}
-          {page === 'pipeline' && <PipelinePage />}
+          {page === 'pipeline' && <PipelinePage profileId={activeProfileId} />}
           {page === 'billing' && <BillingPage userPrefs={userPrefs} setPage={setPage} />}
           {page === 'settings' && <SettingsPage userPrefs={userPrefs} setUserPrefs={setUserPrefs} />}
         </div>

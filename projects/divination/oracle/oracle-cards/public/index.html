@@ -38,7 +38,7 @@
                 <a href="#how-it-works">How It Works</a>
                 <a href="#spreads">Card Spreads</a>
                 <a href="#pricing">Pricing</a>
-                <a href="#" id="sign-in-btn">Sign In</a>
+                <!-- UI-REVIEW: removed dead "Sign In" (href="#", no handler, no auth UI) -->
             </div>
         </nav>
     </header>
@@ -243,7 +243,7 @@
                             <li>44 oracle cards</li>
                             <li>Card meanings</li>
                         </ul>
-                        <button class="btn-secondary">Try Free</button>
+                        <button class="btn-secondary" id="try-free-btn">Try Free</button>
                     </div>
                     <div class="pricing-card featured">
                         <div class="badge">Popular</div>
@@ -279,9 +279,8 @@
         <div class="container">
             <p>&copy; 2024 Oracle Cards. For entertainment and reflection purposes.</p>
             <div class="footer-links">
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-                <a href="#">Contact</a>
+                <!-- UI-REVIEW: Privacy/Terms were dead href="#" links (no pages exist yet; see NEEDS DECISION) -->
+                <a href="mailto:hello@mdo3d.com">Contact</a>
             </div>
         </div>
     </footer>

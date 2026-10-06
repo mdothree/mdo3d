@@ -505,13 +505,67 @@ export const dreamSymbols = [
   }
 ];
 
+// Extra word forms (irregular verbs, tenses, plurals the keyword list misses).
+// Matched as whole words, like keywords. Keyed by symbol name.
+export const symbolAliases = {
+  Mother: ["mum", "mommy", "mama", "mothers"],
+  Father: ["daddy", "papa", "fathers"],
+  Baby: ["babies"],
+  Dog: ["puppies"],
+  Fruit: ["apples", "berries"],
+  Flying: ["fly", "flies", "flew", "flown", "float", "floated", "soar", "soared", "levitate", "levitating"],
+  Falling: ["fall", "falls", "fell", "fallen", "drop", "dropped", "plummet", "plummeted"],
+  Running: ["run", "runs", "ran", "chase", "chased", "pursue", "pursuing", "pursuit"],
+  Death: ["die", "dies", "died", "deaths"],
+  "Teeth Falling Out": ["tooth fell out", "teeth fell out"],
+  Key: ["unlocked", "unlocking"],
+  Car: ["drive", "driving", "drove"],
+  Fire: ["flame", "burn", "burned", "burnt", "burns"],
+  Rain: ["rained", "raining", "rainy"],
+  Storm: ["stormy", "thunderstorm"],
+  Sun: ["sunlight"],
+  Food: ["eat", "eats", "ate", "eaten"]
+};
+
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Whole-word match; allows a simple plural (-s / -es) on the term.
+// Prevents substring hits like "scared" -> car/red.
+const termRegexCache = new Map();
+const termRegex = (term) => {
+  const key = term.toLowerCase();
+  if (!termRegexCache.has(key)) {
+    const body = escapeRegExp(key).replace(/\s+/g, '\\s+');
+    termRegexCache.set(key, new RegExp(`(^|[^a-z0-9])${body}(?:s|es)?(?=$|[^a-z0-9])`, 'i'));
+  }
+  return termRegexCache.get(key);
+};
+
+export const symbolTerms = (symbol) => [
+  ...symbol.keywords,
+  ...(symbolAliases[symbol.symbol] || [])
+];
+
+// Detect symbols in free text using whole-word keyword/alias matching.
+export const matchSymbolsInText = (text) => {
+  const t = String(text || '').toLowerCase();
+  return dreamSymbols.filter(symbol =>
+    symbolTerms(symbol).some(term => termRegex(term).test(t))
+  );
+};
+
 // Helper functions
+// Search box: prefix/substring on names and keywords (so "sna" finds Snake),
+// plus whole-word alias matching (so "flew" finds Flying).
 export const searchSymbols = (query) => {
-  const lowerQuery = query.toLowerCase();
-  return dreamSymbols.filter(symbol => 
+  const lowerQuery = query.toLowerCase().trim();
+  if (!lowerQuery) return [];
+  const direct = dreamSymbols.filter(symbol =>
     symbol.symbol.toLowerCase().includes(lowerQuery) ||
     symbol.keywords.some(keyword => keyword.includes(lowerQuery))
   );
+  const viaAliases = matchSymbolsInText(lowerQuery).filter(s => !direct.includes(s));
+  return [...direct, ...viaAliases];
 };
 
 export const getSymbolsByCategory = (category) => {

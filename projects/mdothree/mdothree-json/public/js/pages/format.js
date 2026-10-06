@@ -1,5 +1,6 @@
 // Page controller: format.html
 import { formatJSON, minifyJSON, syntaxHighlight } from '../services/jsonFormatter.js';
+import { showAlert, copyText } from '../utils/dom.js';
 const _copyTimers = new Map();
 function _flashBtn(btn, msg, restore, ms = 2000) {
   clearTimeout(_copyTimers.get(btn));
@@ -25,7 +26,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
       tags: null
     });
 
-    function runFormat(minify = false) {
+    async function runFormat(minify = false) {
       const text = inputJson.value.trim();
       if (!text) return;
       const sizeKB = new Blob([text]).size / 1024;
@@ -43,7 +44,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
         await saveToHistory('json-format', { action: minify ? 'minify' : 'format', sizeBytes: bytes });
         document.getElementById('downloadBtn').style.display = 'inline-flex';
       } catch (e) {
-        alertArea.innerHTML = `<div class="alert alert-error">❌ ${e.message}</div>`;
+        showAlert(alertArea, 'error', `❌ ${e.message}`);
         jsonOutput.innerHTML = '';
       }
     }
@@ -58,8 +59,8 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
 
     document.getElementById('copyBtn').addEventListener('click', async () => {
       if (!lastFormatted) return;
-      await navigator.clipboard.writeText(lastFormatted);
-      _flashBtn(document.getElementById('copyBtn'), '✅ Copied!', 'Copy');
+      const ok = await copyText(lastFormatted);
+      _flashBtn(document.getElementById('copyBtn'), ok ? '✅ Copied!' : '⚠️ Copy failed', 'Copy');
     });
 
     document.getElementById('downloadBtn').addEventListener('click', () => {

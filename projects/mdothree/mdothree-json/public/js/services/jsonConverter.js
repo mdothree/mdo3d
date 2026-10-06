@@ -9,8 +9,8 @@ export function jsonToYAML(obj, indent = 0) {
   if (typeof obj === 'boolean') return String(obj);
   if (typeof obj === 'number')  return String(obj);
   if (typeof obj === 'string') {
-    if (needsQuotes(obj)) return `"${obj.replace(/"/g, '\\"')}"`;
-    return obj;
+    // JSON string syntax is valid YAML double-quoted syntax (escapes \\, \", \n, \uXXXX).
+    return needsQuotes(obj) ? JSON.stringify(obj) : obj;
   }
 
   if (Array.isArray(obj)) {
@@ -29,7 +29,7 @@ export function jsonToYAML(obj, indent = 0) {
     if (keys.length === 0) return '{}';
     return keys.map(key => {
       const val = obj[key];
-      const safeKey = /[:#\[\]{}&*?|<>=!%@`]/.test(key) ? `"${key}"` : key;
+      const safeKey = needsQuotes(key) ? JSON.stringify(key) : key;
       if (val === null || typeof val !== 'object') {
         return `${pad}${safeKey}: ${jsonToYAML(val, indent + 1)}`;
       }
@@ -46,10 +46,17 @@ export function jsonToYAML(obj, indent = 0) {
   return String(obj);
 }
 
+// Quote anything YAML could read as non-string or that isn't a safe plain scalar.
+// Over-quoting is always valid; under-quoting changes meaning ("" -> null,
+// "Yes" -> true, "- dash" -> sequence).
+const YAML_SPECIAL_WORDS = /^(?:true|false|yes|no|on|off|y|n|null|~)$/i;
 function needsQuotes(str) {
-  return /[:#{}\[\],&*?|<>=!%@`\n\r]/.test(str) ||
-    /^(true|false|null|yes|no|on|off|\d)/.test(str) ||
-    str.trim() !== str;
+  return str === '' ||
+    str.trim() !== str ||
+    YAML_SPECIAL_WORDS.test(str) ||
+    /^[-?:,\[\]{}#&*!|>'"%@`+.\d]/.test(str) ||        // indicator / number-like start
+    /[:#{}\[\],&*?|<>=!%@`'"\\]/.test(str) ||          // structural or escape-worthy chars
+    /[\u0000-\u001f\u007f\u0085\u2028\u2029]/.test(str); // control chars / line breaks
 }
 
 // ─── JSON → CSV ─────────────────────────────────────────────────────────────
@@ -66,8 +73,11 @@ export function jsonToCSV(data, delimiter = ',') {
 
   const escape = (val) => {
     if (val === null || val === undefined) return '';
-    const str = typeof val === 'object' ? JSON.stringify(val) : String(val);
-    if (str.includes(delimiter) || str.includes('"') || str.includes('\n')) {
+    let str = typeof val === 'object' ? JSON.stringify(val) : String(val);
+    // CSV/formula-injection guard: a text cell starting with = + - @ (or tab/CR)
+    // is executed as a formula by Excel/Sheets. Prefix with ' so it stays text.
+    if (typeof val === 'string' && /^[=+\-@\t\r]/.test(str)) str = "'" + str;
+    if (str.includes(delimiter) || /["\n\r]/.test(str)) {
       return `"${str.replace(/"/g, '""')}"`;
     }
     return str;
@@ -104,12 +114,14 @@ function toXMLNode(val, tag, indent) {
   }
 
   if (Array.isArray(val)) {
-    return val.map(item => toXMLNode(item, safeTag, indent)).join('\n');
+    return val.map(item => toXMLNode(item, safeTag, indent)).filter(Boolean).join('\n');
   }
 
   const children = Object.entries(val)
     .map(([k, v]) => toXMLNode(v, k, indent + 1))
+    .filter(Boolean)
     .join('\n');
+  if (!children) return `${pad}<${safeTag} />`;
   return `${pad}<${safeTag}>\n${children}\n${pad}</${safeTag}>`;
 }
 
@@ -133,53 +145,91 @@ function escapeXML(str) {
 export function jsonToTypeScript(obj, rootName = 'Root', options = {}) {
   const { useInterface = true, optionalFields = false } = options;
   const interfaces = new Map();
-  inferType(obj, rootName, interfaces);
+  const rootType = inferMany([obj], typeName(rootName), interfaces);
 
   const lines = [];
-  // Emit in reverse order so root comes last (more natural reading)
+  const keyword = useInterface ? 'interface' : 'type';
+  const sep = useInterface ? '' : ' =';
+  // Emit in reverse insertion order so the root interface comes first
   const entries = [...interfaces.entries()].reverse();
   for (const [name, fields] of entries) {
-    const keyword = useInterface ? 'interface' : 'type';
-    const sep = useInterface ? '' : ' =';
     lines.push(`${keyword} ${name}${sep} {`);
-    for (const [fieldName, fieldType] of Object.entries(fields)) {
-      const opt = optionalFields ? '?' : '';
-      lines.push(`  ${fieldName}${opt}: ${fieldType};`);
+    for (const [fieldName, f] of Object.entries(fields)) {
+      const opt = optionalFields || f.optional ? '?' : '';
+      lines.push(`  ${tsKey(fieldName)}${opt}: ${f.type};`);
     }
     lines.push('}');
     lines.push('');
   }
+  // Root that isn't an object (e.g. a primitive or array of primitives)
+  if (!interfaces.has(rootType)) lines.unshift(`type ${typeName(rootName)} = ${rootType};`, '');
   return lines.join('\n').trimEnd();
 }
 
-let _counter = 0;
-function inferType(val, name, interfaces) {
-  if (val === null)              return 'null';
-  if (val === undefined)         return 'undefined';
-  if (typeof val === 'boolean')  return 'boolean';
-  if (typeof val === 'number')   return 'number';
-  if (typeof val === 'string')   return 'string';
+const TS_IDENT = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+// Keys like "user-name" or "2fa" must be quoted to be valid TypeScript.
+function tsKey(k) { return TS_IDENT.test(k) ? k : JSON.stringify(k); }
 
-  if (Array.isArray(val)) {
-    if (val.length === 0) return 'unknown[]';
-    const itemType = inferType(val[0], name + 'Item', interfaces);
-    return `${itemType}[]`;
-  }
+// Turn any key into a PascalCase identifier usable as an interface name.
+function typeName(str) {
+  let n = String(str)
+    .replace(/['’]/g, '')
+    .split(/[^A-Za-z0-9_$]+/)
+    .filter(Boolean)
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+    .join('');
+  if (!n) n = 'Item';
+  if (/^\d/.test(n)) n = '_' + n;
+  return n;
+}
 
-  if (typeof val === 'object') {
-    const interfaceName = capitalize(name);
-    const fields = {};
-    for (const [k, v] of Object.entries(val)) {
-      const childName = interfaceName + capitalize(k);
-      fields[k] = inferType(v, childName, interfaces);
-    }
-    interfaces.set(interfaceName, fields);
-    return interfaceName;
-  }
+const isPlainObject = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 
+function primitiveType(v) {
+  if (v === null) return 'null';
+  if (v === undefined) return 'undefined';
+  if (typeof v === 'boolean') return 'boolean';
+  if (typeof v === 'number') return 'number';
+  if (typeof v === 'string') return 'string';
   return 'unknown';
 }
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+// Infer one type covering ALL sample values (array items are no longer typed from item [0] only).
+function inferMany(values, name, interfaces) {
+  const types = new Set();
+  const objs = values.filter(isPlainObject);
+  const arrs = values.filter(Array.isArray);
+  if (objs.length) types.add(inferObject(objs, name, interfaces));
+  if (arrs.length) {
+    const items = arrs.flat();
+    if (!items.length) types.add('unknown[]');
+    else {
+      const t = inferMany(items, name + 'Item', interfaces);
+      types.add(t.includes(' | ') ? `(${t})[]` : `${t}[]`);
+    }
+  }
+  for (const v of values) if (!isPlainObject(v) && !Array.isArray(v)) types.add(primitiveType(v));
+  return [...types].join(' | ');
+}
+
+// Merge several sample objects into one interface; keys missing from some samples become optional.
+function inferObject(objs, name, interfaces) {
+  const base = typeName(name);
+  const byKey = new Map();
+  for (const o of objs) {
+    for (const [k, v] of Object.entries(o)) {
+      if (!byKey.has(k)) byKey.set(k, []);
+      byKey.get(k).push(v);
+    }
+  }
+  const fields = {};
+  for (const [k, vals] of byKey) {
+    fields[k] = { type: inferMany(vals, base + typeName(k), interfaces), optional: vals.length < objs.length };
+  }
+  // Avoid silently overwriting a different interface that got the same name
+  const sig = JSON.stringify(fields);
+  let iname = base, i = 2;
+  while (interfaces.has(iname) && JSON.stringify(interfaces.get(iname)) !== sig) iname = base + i++;
+  interfaces.set(iname, fields);
+  return iname;
 }

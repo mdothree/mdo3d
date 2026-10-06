@@ -33,12 +33,20 @@
             color: #666;
             margin-bottom: 3rem;
         }
+        /* Flex + fixed card basis: every card is the same width in every category,
+           and short rows (3 or 2 cards) are centred instead of leaving an orphan. */
         .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 1rem;
             max-width: 900px;
             padding: 0 2rem;
+        }
+        .tools-grid > .tool-card { flex: 0 1 190px; }
+        @media (max-width: 520px) {
+            .tools-grid { padding: 0 1rem; }
+            .tools-grid > .tool-card { flex-basis: calc(50% - 0.5rem); padding: 1.25rem 0.75rem; }
         }
         .tool-card {
             background: #fff;
@@ -58,7 +66,7 @@
         }
         .tool-icon { font-size: 2rem; margin-bottom: 0.75rem; }
         .tool-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
-        .tool-card p { color: #888; font-size: 0.8rem; }
+        .tool-card p { color: #666; font-size: 0.8rem; }
         .status {
             display: inline-block;
             margin-top: 0.75rem;
@@ -67,7 +75,7 @@
             font-size: 0.7rem;
             font-weight: 500;
         }
-        .status-live { background: #dcfce7; color: #16a34a; }
+        .status-live { background: #dcfce7; color: #15803d; }
         .category {
             width: 100%;
             max-width: 900px;
@@ -77,16 +85,18 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.1rem;
-            color: #999;
+            color: #666;
             margin-bottom: 1rem;
-            padding-left: 2rem;
         }
         footer {
             text-align: center;
-            padding: 3rem;
-            color: #999;
+            padding: 3rem 1rem;
+            color: #666;
         }
-        footer a { color: #666; text-decoration: none; }
+        footer a { color: #333; text-decoration: none; }
+        footer a:hover, footer a:focus-visible { text-decoration: underline; }
+        .footer-links { margin-bottom: 0.75rem; }
+        .footer-links a { margin: 0 0.5rem; }
     </style>
 </head>
 <body>
@@ -94,7 +104,7 @@
         <h1>MDOThree</h1>
         <p class="tagline">Simple tools for everyday tasks</p>
         
-        <div class="category">
+        <div class="category" id="pdf">
             <h2>Files & Media</h2>
             <div class="tools-grid">
                 <a href="https://pdf.mdothree.com" class="tool-card">
@@ -118,7 +128,7 @@
             </div>
         </div>
 
-        <div class="category">
+        <div class="category" id="developer">
             <h2>Developer Tools</h2>
             <div class="tools-grid">
                 <a href="https://json.mdothree.com" class="tool-card">
@@ -148,7 +158,7 @@
             </div>
         </div>
 
-        <div class="category">
+        <div class="category" id="security">
             <h2>Text & Security</h2>
             <div class="tools-grid">
                 <a href="https://text.mdothree.com" class="tool-card">
@@ -168,6 +178,12 @@
     </section>
     
     <footer>
+        <p class="footer-links">
+            <a href="/pro.html">Pro</a> ·
+            <a href="/terms.html">Terms</a> ·
+            <a href="/privacy.html">Privacy</a> ·
+            <a href="mailto:hello@mdothree.com">Contact</a>
+        </p>
         <p>A <a href="https://latarence.com">Lamar</a> Platform</p>
     </footer>
 </body>

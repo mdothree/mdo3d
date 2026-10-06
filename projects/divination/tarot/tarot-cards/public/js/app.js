@@ -72,8 +72,8 @@ class TarotApp {
         const shareBtn = document.getElementById('share-btn');
         shareBtn.addEventListener('click', () => this.shareReading());
 
-        // Upgrade button
-        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.handleUpgrade()));
+        // Upgrade button(s) — pass the clicked button so it gets the loading state
+        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.handleUpgrade(b)));
     }
 
     updateCharCount() {
@@ -94,9 +94,10 @@ class TarotApp {
         // Update current spread
         this.currentSpread = option.dataset.spread;
         
-        // Update premium price
+        // Update premium price (must match the API's checkout price per spread;
+        // the single-card premium upgrade is $2.99, not $0)
         const prices = {
-            'single': '0',
+            'single': '2.99',
             'three': '4.99',
             'celtic': '9.99'
         };
@@ -306,17 +307,19 @@ class TarotApp {
                 : `I drew: ${cardNames}. Get your free tarot reading!`;
             
             // Generate share image
-            const imageBlob = await ShareImageGenerator.generateGenericImage({
+            // generateGenericImage is an instance method (calling it statically threw)
+            const imageUrl = await new ShareImageGenerator().generateGenericImage({
                 title: 'Tarot Reading',
                 subtitle: this.drawnCards.map(c => c.name).join(' • '),
-                brandColor: '#6b46c1'
+                gradient: ['#6b46c1', '#ec4899'],
+                icon: '🃏'
             });
             
             // Share
             await this.socialShare.share({
                 text: shareText,
                 url: window.location.origin,
-                image: imageBlob
+                imageUrl
             });
             
             this.trackShare();
@@ -341,7 +344,10 @@ class TarotApp {
         // TODO: Add Firebase Analytics tracking
     }
 
-    async handleUpgrade() {
+    async handleUpgrade(upgradeBtn = null) {
+        // Prevent a double-click from creating two checkout sessions.
+        if (this.checkoutInFlight) return;
+        const originalLabel = upgradeBtn ? upgradeBtn.innerHTML : null;
         try {
             // Already paid (verified by /success): unlock — never charge twice.
             if (window.PremiumEntitlement?.has()) {
@@ -368,8 +374,8 @@ class TarotApp {
                 return;
             }
 
-            // Show loading state
-            const upgradeBtn = document.querySelector('.upgrade-btn');
+            // Show loading state on the button that was clicked
+            this.checkoutInFlight = true;
             if (upgradeBtn) {
                 upgradeBtn.textContent = 'Redirecting to checkout...';
                 upgradeBtn.disabled = true;
@@ -394,9 +400,9 @@ class TarotApp {
             alert('Sorry, there was an error processing your payment. Please try again.');
             
             // Reset button state
-            const upgradeBtn = document.querySelector('.upgrade-btn');
+            this.checkoutInFlight = false;
             if (upgradeBtn) {
-                upgradeBtn.textContent = `Upgrade for $${prices[this.currentSpread]}`;
+                upgradeBtn.innerHTML = originalLabel;
                 upgradeBtn.disabled = false;
             }
         }

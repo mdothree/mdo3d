@@ -102,3 +102,52 @@ class FirebaseService {
 }
 
 export const firebaseConfig = new FirebaseService();
+
+// ── Named-export API used by the page controllers ─────────────────────────
+// pages/*.js import { saveToHistory } and account.js imports
+// { initFirebase, getHistory, auth } from this module. Without these exports
+// every tool page failed at module-link time ("does not provide an export
+// named 'saveToHistory'") and no button worked. These wrap the compat-SDK
+// service above and are graceful no-ops when the SDK isn't loaded on the page.
+
+export async function initFirebase() {
+  const ok = await firebaseConfig.initialize();
+  return ok ? firebaseConfig.getCurrentUser() : null;
+}
+
+export async function saveToHistory(toolName, metadata = {}) {
+  const db = firebaseConfig.getFirestore();
+  const user = firebaseConfig.getCurrentUser();
+  if (!db || !user || typeof firebase === 'undefined') return null;
+  try {
+    const ref = await db.collection('history').add({
+      uid: user.uid,
+      tool: toolName,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      ...metadata,
+    });
+    return ref.id;
+  } catch (e) {
+    console.warn('[Firebase] saveToHistory failed:', e.message);
+    return null;
+  }
+}
+
+export async function getHistory(toolName = null, maxItems = 20) {
+  const db = firebaseConfig.getFirestore();
+  const user = firebaseConfig.getCurrentUser();
+  if (!db || !user) return [];
+  try {
+    let q = db.collection('history').where('uid', '==', user.uid);
+    if (toolName) q = q.where('tool', '==', toolName);
+    const snap = await q.orderBy('timestamp', 'desc').limit(maxItems).get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    console.warn('[Firebase] getHistory failed:', e.message);
+    return [];
+  }
+}
+
+export const auth = {
+  get currentUser() { return firebaseConfig.getCurrentUser(); },
+};

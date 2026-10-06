@@ -7,6 +7,10 @@
 :root {
     --primary: #7c3aed;
     --primary-dark: #6d28d9;
+    /* Readable purple for text on the dark background (~7:1 vs #7c3aed's ~3.3:1) */
+    --primary-text: #a78bfa;
+    /* Shared widths: grids use the container, single-column blocks use content */
+    --content-width: 800px;
     --secondary: #ec4899;
     --accent: #f59e0b;
     --bg-dark: #0f0a1a;
@@ -44,9 +48,17 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1040px;
     margin: 0 auto;
     padding: 0 20px;
+}
+
+/* Sticky header offset for in-page anchors / scrollIntoView */
+main section {
+    scroll-margin-top: 80px;
+}
+#symbols-database {
+    scroll-margin-top: 90px;
 }
 
 /* Header */
@@ -68,7 +80,7 @@ nav {
 
 .logo h1 {
     font-size: 1.5rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    background: linear-gradient(135deg, var(--primary-text) 0%, var(--secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -98,7 +110,7 @@ nav {
 .hero-title {
     font-size: 3rem;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    background: linear-gradient(135deg, var(--primary-text) 0%, var(--secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -111,7 +123,7 @@ nav {
 
 /* Dream Input Section */
 .dream-input-section {
-    max-width: 700px;
+    max-width: var(--content-width);
     margin: 0 auto 3rem;
 }
 
@@ -197,7 +209,7 @@ nav {
 
 .btn-secondary {
     background: transparent;
-    color: var(--primary);
+    color: var(--primary-text);
     border: 2px solid var(--primary);
 }
 
@@ -220,7 +232,7 @@ nav {
 .btn-share,
 .btn-journal {
     background: rgba(124, 58, 237, 0.2);
-    color: var(--primary);
+    color: var(--primary-text);
     border: 1px solid var(--primary);
     margin-top: 1rem;
 }
@@ -232,8 +244,8 @@ nav {
 
 /* Quick Lookup */
 .quick-lookup {
-    max-width: 700px;
-    margin: 3rem auto;
+    max-width: var(--content-width);
+    margin: 0 auto 2rem;
     padding: 2rem;
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -278,7 +290,8 @@ nav {
 }
 
 .symbols-found {
-    margin-bottom: 3rem;
+    max-width: var(--content-width);
+    margin: 0 auto 3rem;
 }
 
 .symbols-found h4 {
@@ -287,10 +300,15 @@ nav {
 }
 
 .symbol-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
     margin-bottom: 2rem;
+}
+
+.symbol-grid .symbol-card-mini {
+    flex: 0 1 150px;
 }
 
 .symbol-card-mini {
@@ -311,7 +329,7 @@ nav {
 
 .symbol-card-mini h5 {
     margin-bottom: 0.5rem;
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 .symbol-card-mini .category {
@@ -322,7 +340,7 @@ nav {
 
 /* Free Interpretation */
 .free-interpretation {
-    max-width: 800px;
+    max-width: var(--content-width);
     margin: 0 auto 3rem;
 }
 
@@ -335,7 +353,7 @@ nav {
 
 .interpretation-card h4 {
     margin-bottom: 1.5rem;
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 .interpretation-text {
@@ -354,7 +372,7 @@ nav {
 
 /* Premium Upsell */
 .premium-upsell {
-    max-width: 800px;
+    max-width: var(--content-width);
     margin: 0 auto 3rem;
     background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
     border: 2px solid var(--border);
@@ -392,8 +410,43 @@ nav {
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    max-width: 800px;
+    max-width: var(--content-width);
     margin: 0 auto;
+}
+
+/* Buttons in the action row share one height/alignment */
+.dream-actions .btn-share,
+.dream-actions .btn-journal,
+.dream-actions .btn-secondary {
+    margin-top: 0;
+    min-height: 3.5rem;
+}
+
+/* Upsell CTA centered under the feature list */
+.premium-upsell .btn-premium {
+    display: flex;
+    margin: 0 auto;
+}
+.premium-features {
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.loading-text {
+    color: var(--text-muted);
+    font-style: italic;
+    animation: dreamPulse 1.2s ease-in-out infinite;
+}
+@keyframes dreamPulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+}
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: wait;
+    transform: none;
 }
 
 /* Symbol Modal */
@@ -436,13 +489,13 @@ nav {
 }
 
 .close-modal:hover {
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 .category-badge {
     display: inline-block;
     background: rgba(124, 58, 237, 0.3);
-    color: var(--primary);
+    color: var(--primary-text);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
@@ -458,7 +511,7 @@ nav {
 }
 
 .meaning-section h4 {
-    color: var(--primary);
+    color: var(--primary-text);
     margin-bottom: 0.75rem;
 }
 
@@ -502,8 +555,8 @@ nav {
 }
 
 .tab:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+    border-color: var(--primary-text);
+    color: var(--primary-text);
 }
 
 .tab.active {
@@ -513,9 +566,18 @@ nav {
 }
 
 .symbols-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* partial last rows stay centered */
     gap: 2rem;
+}
+
+.symbols-grid .symbol-card {
+    flex: 0 1 300px;
+}
+
+.symbols-grid .empty-state {
+    flex: 1 1 100%;
 }
 
 .symbol-card {
@@ -535,12 +597,17 @@ nav {
 
 .symbol-card h4 {
     margin-bottom: 0.5rem;
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 .symbol-preview {
     color: var(--text-muted);
     line-height: 1.6;
+}
+
+.browse-all {
+    text-align: center;
+    margin-top: 2.5rem;
 }
 
 /* Journal Section */
@@ -553,7 +620,7 @@ nav {
 }
 
 .journal-entries {
-    max-width: 800px;
+    max-width: var(--content-width);
     margin: 0 auto;
 }
 
@@ -580,7 +647,7 @@ nav {
 }
 
 .entry-header h4 {
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 .delete-entry {
@@ -612,17 +679,29 @@ nav {
 
 .symbol-tag {
     background: rgba(124, 58, 237, 0.3);
-    color: var(--primary);
+    color: var(--primary-text);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
 }
 
+/* How It Works */
+#how-it-works {
+    padding: 4rem 0;
+}
+
+#how-it-works h2,
+.journal-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
 /* Steps */
 .steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
     margin-top: 3rem;
 }
 
@@ -659,7 +738,7 @@ nav {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    max-width: 800px;
+    max-width: var(--content-width);
     margin: 0 auto;
 }
 
@@ -699,7 +778,7 @@ nav {
 .pricing-card .price {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--primary-text);
     margin-bottom: 2rem;
 }
 
@@ -727,10 +806,16 @@ footer {
 }
 
 .footer-links {
-    margin-top: 1rem;
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+}
+
+.footer-copy {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
 }
 
 .footer-links a {
@@ -740,7 +825,7 @@ footer {
 }
 
 .footer-links a:hover {
-    color: var(--primary);
+    color: var(--primary-text);
 }
 
 /* Responsive */
@@ -749,12 +834,12 @@ footer {
         font-size: 2rem;
     }
     
-    .symbol-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    .symbol-grid .symbol-card-mini {
+        flex: 0 1 130px;
     }
     
-    .symbols-grid {
-        grid-template-columns: 1fr;
+    .symbols-grid .symbol-card {
+        flex: 1 1 100%;
     }
     
     .nav-links {
@@ -767,6 +852,16 @@ footer {
     }
     
     .dream-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .symbol-search {
         flex-direction: column;
     }
     

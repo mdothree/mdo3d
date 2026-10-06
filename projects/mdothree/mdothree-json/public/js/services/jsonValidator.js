@@ -5,20 +5,106 @@ export function validateJSON(text) {
     const parsed = JSON.parse(text);
     return { valid: true, parsed };
   } catch (e) {
-    // Try to extract line number from error message
-    const lineMatch = e.message.match(/line (\d+)/i) ||
-                      e.message.match(/position (\d+)/i);
-    let line = null;
-    if (lineMatch) {
-      if (e.message.toLowerCase().includes('line')) {
-        line = parseInt(lineMatch[1]);
-      } else {
-        // Calculate line from character position
-        const pos = parseInt(lineMatch[1]);
-        line = text.slice(0, pos).split('\n').length;
+    // Engine messages differ (V8 "Unexpected token" and Safari give no position),
+    // so locate the error ourselves for a consistent line/column everywhere.
+    let pos = locateJSONError(text);
+    if (pos < 0) {
+      const m = e.message.match(/position (\d+)/i);
+      pos = m ? parseInt(m[1], 10) : -1;
+    }
+    let line = null, column = null, hint = '';
+    if (pos >= 0) {
+      const before = text.slice(0, pos);
+      line = before.split('\n').length;
+      column = pos - before.lastIndexOf('\n');
+      hint = hintFor(text, pos);
+    }
+    return { valid: false, error: e.message, line, column, hint };
+  }
+}
+
+function hintFor(text, pos) {
+  const ch = text[pos];
+  const prev = text.slice(0, pos).replace(/\s+$/, '').slice(-1);
+  if ((ch === '}' || ch === ']') && prev === ',') return `Trailing comma before "${ch}" is not allowed in JSON.`;
+  if (ch === "'") return 'JSON strings and keys must use double quotes (").';
+  if (pos >= text.length) return 'Unexpected end of input — check for a missing closing bracket or quote.';
+  if (/[A-Za-z_$]/.test(ch || '') && (prev === '{' || prev === ',')) return 'Object keys must be wrapped in double quotes.';
+  return '';
+}
+
+/**
+ * Offset of the first syntax error in `src`, or -1 if none / unknown.
+ * Minimal RFC 8259 recogniser (no values are built).
+ */
+export function locateJSONError(src) {
+  const n = src.length;
+  const NUM = /-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/y;
+  let i = 0;
+  const fail = () => { throw { pos: i }; };
+  const ws = () => { while (i < n && (src[i] === ' ' || src[i] === '\t' || src[i] === '\n' || src[i] === '\r')) i++; };
+  function string() {
+    i++;
+    while (i < n) {
+      const c = src[i];
+      if (c === '"') { i++; return; }
+      if (c === '\\') {
+        const e = src[i + 1];
+        if (e !== undefined && '"\\/bfnrt'.includes(e)) { i += 2; continue; }
+        if (e === 'u' && /^[0-9a-fA-F]{4}$/.test(src.slice(i + 2, i + 6))) { i += 6; continue; }
+        fail();
+      }
+      if (c < ' ') fail();
+      i++;
+    }
+    fail();
+  }
+  function value() {
+    ws();
+    const c = src[i];
+    if (c === '{') {
+      i++; ws();
+      if (src[i] === '}') { i++; return; }
+      for (;;) {
+        ws();
+        if (src[i] !== '"') fail();
+        string(); ws();
+        if (src[i] !== ':') fail();
+        i++; value(); ws();
+        if (src[i] === ',') { i++; continue; }
+        if (src[i] === '}') { i++; return; }
+        fail();
       }
     }
-    return { valid: false, error: e.message, line };
+    if (c === '[') {
+      i++; ws();
+      if (src[i] === ']') { i++; return; }
+      for (;;) {
+        value(); ws();
+        if (src[i] === ',') { i++; continue; }
+        if (src[i] === ']') { i++; return; }
+        fail();
+      }
+    }
+    if (c === '"') return string();
+    if (c === '-' || (c >= '0' && c <= '9')) {
+      NUM.lastIndex = i;
+      const m = NUM.exec(src);
+      if (!m) fail();
+      i += m[0].length;
+      return;
+    }
+    for (const lit of ['true', 'false', 'null']) {
+      if (src.startsWith(lit, i)) { i += lit.length; return; }
+    }
+    fail();
+  }
+  try {
+    value(); ws();
+    if (i < n) fail();
+    return -1;
+  } catch (e) {
+    return e && typeof e.pos === 'number' ? Math.min(e.pos, n) : -1;
   }
 }
 

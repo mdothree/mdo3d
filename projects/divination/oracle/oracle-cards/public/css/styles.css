@@ -6,6 +6,8 @@
 
 :root {
     --primary: #8B5CF6;
+    /* UI-REVIEW: AA text tint (#8B5CF6 is 4.2:1 on white, fails for 16px text) */
+    --primary-text: #7C3AED;
     --secondary: #EC4899;
     --accent: #F59E0B;
     --dark: #1F2937;
@@ -164,7 +166,7 @@ nav {
 
 .btn-secondary {
     background: white;
-    color: var(--primary);
+    color: var(--primary-text);
     border: 2px solid var(--primary);
 }
 
@@ -368,6 +370,7 @@ nav {
 
 .cards-drawn {
     display: flex;
+    flex-wrap: wrap; /* UI-REVIEW: 10-card Celtic Cross overflowed horizontally */
     justify-content: center;
     gap: 2rem;
     margin-bottom: 3rem;
@@ -460,7 +463,10 @@ nav {
     background: white;
 }
 
-.section-light h2 {
+.section-light h2,
+.spreads-section h2,
+.pricing-section h2 {
+    /* UI-REVIEW: Card Spreads + Pricing h2 had no rule (left-aligned, default size) */
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 3rem;
@@ -617,5 +623,9 @@ footer {
     .cards-drawn {
         flex-direction: column;
         align-items: center;
+    }
+
+    .pricing-card.featured {
+        transform: none; /* UI-REVIEW: scale(1.05) overflowed single-column layout */
     }
 }

@@ -31,11 +31,40 @@ const elements = {
   modalSkip: document.getElementById('modal-skip')
 };
 
+const PENDING_KEY = 'numerology_pending_reading';
+
 async function init() {
-  await firebaseConfig.initialize();
-  const status = await firebaseConfig.getPremiumStatus();
-  isPremium = status?.isPremium ?? false;
+  // Attach handlers first so the form works immediately; Firebase sign-in and the
+  // Firestore read used to block every button until both network calls finished.
   setupEventListeners();
+  restorePendingReading();
+  try {
+    await firebaseConfig.initialize();
+    const status = await firebaseConfig.getPremiumStatus();
+    isPremium = status?.isPremium ?? false;
+  } catch (e) {
+    console.warn('[Firebase] init skipped:', e);
+  }
+}
+
+// After a Stripe redirect the page reloads and the numbers are lost. Name and date
+// are saved before checkout; if a verified credit exists on return, restore and deliver.
+function savePendingReading() {
+  if (!currentNumbers) return;
+  try {
+    sessionStorage.setItem(PENDING_KEY, JSON.stringify({ name: currentNumbers.name, birthDate: currentNumbers.birthDate }));
+  } catch (e) { /* storage unavailable — user can re-enter */ }
+}
+
+function restorePendingReading() {
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem(PENDING_KEY)); } catch (e) { saved = null; }
+  if (!saved || !saved.name || !saved.birthDate || !window.PremiumEntitlement?.has()) return;
+  try { sessionStorage.removeItem(PENDING_KEY); } catch (e) {}
+  elements.nameInput.value = saved.name;
+  elements.birthDateInput.value = saved.birthDate;
+  calculateNumbers();
+  handlePremiumPurchase();
 }
 
 function setupEventListeners() {
@@ -64,6 +93,11 @@ async function handlePremiumPurchase() {
   if (window.PremiumEntitlement?.has()) {
     isPremium = true;
     hidePremiumModal();
+    if (!currentNumbers) {
+      alert('Your premium credit is ready. Enter your name and birth date and calculate your numbers first, then choose "Get Premium Reading" to use it.');
+      elements.nameInput?.focus();
+      return;
+    }
     await deliverPremiumReading();
     return;
   }
@@ -77,6 +111,7 @@ async function handlePremiumPurchase() {
     });
     const data = await response.json();
     if (data.success && data.checkoutUrl) {
+      savePendingReading();
       window.location.href = data.checkoutUrl;
     } else {
       alert('Unable to process payment. Please try again.');
@@ -114,6 +149,12 @@ async function deliverPremiumReading() {
 
     const section = (title, body) => body ? `<div class="reading-section"><h3>${title}</h3>${body}</div>` : '';
     const list = (arr) => Array.isArray(arr) && arr.length ? `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+    // The API returns luckyElements {numbers, days, colors}; it was sold but never rendered.
+    const luckyBlock = (l) => {
+      if (!l || typeof l !== 'object') return '';
+      const row = (label, arr) => Array.isArray(arr) && arr.length ? `<p><strong>${label}:</strong> ${arr.map(esc).join(', ')}</p>` : '';
+      return section('Lucky Numbers, Days &amp; Colors', row('Numbers', l.numbers) + row('Days', l.days) + row('Colors', l.colors));
+    };
     const numBlock = (label, o) => {
       if (!o || typeof o !== 'object') return '';
       return section(`${esc(label)}${o.number != null ? ' — ' + esc(o.number) : ''}${o.title ? ': ' + esc(o.title) : ''}`,
@@ -128,7 +169,12 @@ async function deliverPremiumReading() {
       ${section('Synthesis', r.synthesis ? `<p>${esc(r.synthesis)}</p>` : '')}
       ${section('Current Cycle', r.currentCycle ? `<p>${esc(r.currentCycle)}</p>` : '')}
       ${section('Guidance', list(r.guidance))}
+      ${luckyBlock(r.luckyElements)}
     `;
+    // The reading has been delivered — don't keep selling it.
+    target.querySelectorAll('.premium-upsell').forEach(el => { el.style.display = 'none'; });
+    if (elements.upgradeBtn) elements.upgradeBtn.style.display = 'none';
+    banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (e) {
     console.error('Premium reading error:', e);
     banner.innerHTML = '<p>Your purchase is confirmed, but the reading service is momentarily unavailable. Please try again shortly — you will not be charged again.</p>';
@@ -139,6 +185,7 @@ async function deliverPremiumReading() {
 function showPremiumModal() {
   if (elements.premiumModal) {
     elements.premiumModal.classList.add('active');
+    elements.modalOverlay?.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
 }
@@ -146,6 +193,7 @@ function showPremiumModal() {
 function hidePremiumModal() {
   if (elements.premiumModal) {
     elements.premiumModal.classList.remove('active');
+    elements.modalOverlay?.classList.remove('active');
     document.body.style.overflow = '';
   }
 }
@@ -205,6 +253,7 @@ function showNumbers() {
   `;
 
   elements.numbersDisplay.style.display = 'block';
+  if (elements.upgradeBtn) elements.upgradeBtn.style.display = '';
 
   showReading();
 

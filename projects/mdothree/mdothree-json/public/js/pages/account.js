@@ -39,7 +39,10 @@ function formatExpiry(millis) {
 }
 
 function showAlert(type, msg) {
-  alertArea.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  div.textContent = msg;
+  alertArea.replaceChildren(div);
   setTimeout(() => { alertArea.innerHTML = ''; }, 5000);
 }
 

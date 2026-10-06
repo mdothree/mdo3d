@@ -1,5 +1,7 @@
 // Page controller: to-yaml.html
 import { jsonToYAML } from '../services/jsonConverter.js';
+import { showAlert, copyText, copyWithFeedback } from '../utils/dom.js';
+import { lossyNumberWarning } from '../services/jsonFormatter.js';
 const _copyTimers = new Map();
 function _flashBtn(btn, msg, restore, ms = 2000) {
   clearTimeout(_copyTimers.get(btn));
@@ -10,17 +12,20 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
 import { saveToHistory } from '../config/firebase.js';
     let lastResult = '';
 
-    document.getElementById('convertBtn').addEventListener('click', () => {
+    document.getElementById('convertBtn').addEventListener('click', async () => {
       const alertArea = document.getElementById('alertArea');
       alertArea.innerHTML = '';
       try {
-        const parsed = JSON.parse(document.getElementById('inputJson').value);
+        const raw = document.getElementById('inputJson').value;
+        const parsed = JSON.parse(raw);
         lastResult = jsonToYAML(parsed);
         document.getElementById('output').textContent = lastResult;
         document.getElementById('dlBtn').style.display = 'inline-flex';
+        const lossy = lossyNumberWarning(raw);
+        if (lossy) showAlert(alertArea, 'warning', lossy);
         await saveToHistory('json-to-yaml', {});
       } catch (e) {
-        alertArea.innerHTML = `<div class="alert alert-error">❌ ${e.message}</div>`;
+        showAlert(alertArea, 'error', `❌ ${e.message}`);
       }
     });
 
@@ -28,8 +33,8 @@ import { saveToHistory } from '../config/firebase.js';
 
     document.getElementById('copyBtn').addEventListener('click', async () => {
       if (!lastResult) return;
-      await navigator.clipboard.writeText(lastResult);
-      _flashBtn(document.getElementById('copyBtn'), '✅ Copied!', 'Copy');
+      const ok = await copyText(lastResult);
+      _flashBtn(document.getElementById('copyBtn'), ok ? '✅ Copied!' : '⚠️ Copy failed', 'Copy');
     });
 
     document.getElementById('dlBtn').addEventListener('click', () => {

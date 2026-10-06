@@ -4,7 +4,7 @@ import Btn from '../components/Btn.jsx';
 import Field from '../components/Field.jsx';
 import TagInput from '../components/TagInput.jsx';
 import { PLANS, ENTITY_TYPES, CADENCE_OPTS } from '../constants/plans.js';
-import { createProfile, startCheckout, updateProfile } from '../lib/api.js';
+import { createProfile, getProfile, startCheckout, updateProfile } from '../lib/api.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 
 const STEPS = ['Account', 'Plan', 'Payment', 'Preferences'];
@@ -18,6 +18,7 @@ export default function OnboardingPage({ onComplete, profileId: existingProfileI
   const [payDone,   setPayDone]   = useState(!!existingProfileId);
   const [profileId, setProfileId] = useState(existingProfileId || null);
   const [error,     setError]     = useState(null);
+  const [saving,    setSaving]    = useState(false);
   const [cadence,   setCadence]   = useState('weekly');
   const [keywords,  setKeywords]  = useState([]);
   const [entities,  setEntities]  = useState(['Government Agencies', 'Defense Contractors', 'Commercial Companies']);
@@ -278,44 +279,74 @@ export default function OnboardingPage({ onComplete, profileId: existingProfileI
               </div>
             </div>
 
+            {error && (
+              <div style={{ padding: '10px 14px', background: 'var(--red-bg)', border: '1px solid var(--red-border)', color: 'var(--red)', fontSize: 11, marginBottom: 16 }}>
+                {error}
+              </div>
+            )}
             <div style={{ display: 'flex', gap: 10 }}>
               <Btn variant="ghost" size="md" onClick={() => setStep(2)}>← Back</Btn>
-              <Btn variant="ink" size="lg" className="btn-full" onClick={async () => {
+              <Btn variant="ink" size="lg" className="btn-full" disabled={saving} onClick={async () => {
                 // Map cadence to delivery frequency
                 const freqMap = { realtime: 'daily', daily: 'daily', twice: 'biweekly', weekly: 'weekly', monthly: 'monthly' };
+                const frequency = freqMap[cadence] || 'weekly';
 
-                // Update profile with preferences
+                // Update profile with preferences.
+                // After the Stripe redirect this page remounts with an empty `acct`
+                // and the default plan, so rebuilding settings from local state would
+                // overwrite the saved recipient email / name / plan limits with blanks.
+                // Start from the settings saved at checkout and only change the
+                // preference fields chosen on this step.
                 if (profileId) {
+                  setSaving(true);
+                  setError(null);
                   try {
+                    let base = null;
+                    try {
+                      base = (await getProfile(profileId))?.settings || null;
+                    } catch (err) {
+                      console.error('Failed to load profile:', err);
+                    }
+                    if (!base && !acct.email) {
+                      throw new Error('Could not load your saved profile. Please try again.');
+                    }
+                    const fallback = {
+                      name: acct.org || `${acct.firstName}'s Leads`,
+                      email_lookup: true,
+                      max_leads: sel?.id === 'starter' ? 100 : sel?.id === 'pro' ? 2000 : 10000,
+                      filing_types: ['FLAL', 'DOMP', 'FORP'],
+                      exclude_keywords: [],
+                      target_counties: null,
+                      delivery: {
+                        day_of_week: 'monday',
+                        recipient_email: acct.email,
+                        recipient_name: `${acct.firstName} ${acct.lastName}`.trim(),
+                        format: 'csv_attachment',
+                        subject: 'Lead Report - {date}',
+                      },
+                      sender: 'leads@mdo3d.com',
+                    };
+                    const current = base || fallback;
                     await updateProfile(profileId, {
                       settings: {
-                        name: acct.org || `${acct.firstName}'s Leads`,
-                        email_lookup: true,
-                        date_range: freqMap[cadence] === 'daily' ? 'daily' : freqMap[cadence] === 'weekly' ? 'weekly' : 'monthly',
-                        max_leads: sel?.id === 'starter' ? 100 : sel?.id === 'pro' ? 2000 : 10000,
-                        filing_types: ['FLAL', 'DOMP', 'FORP'],
+                        ...current,
+                        date_range: frequency === 'daily' ? 'daily' : frequency === 'weekly' ? 'weekly' : 'monthly',
                         keywords: keywords,
-                        exclude_keywords: [],
-                        target_counties: null,
-                        delivery: {
-                          frequency: freqMap[cadence] || 'weekly',
-                          day_of_week: 'monday',
-                          recipient_email: acct.email,
-                          recipient_name: `${acct.firstName} ${acct.lastName}`.trim(),
-                          format: 'csv_attachment',
-                          subject: 'Lead Report - {date}',
-                        },
-                        sender: 'leads@mdo3d.com',
+                        delivery: { ...(current.delivery || fallback.delivery), frequency },
                       },
                       active: true,
                     });
                   } catch (err) {
                     console.error('Failed to update profile:', err);
+                    setError(err.message || 'Failed to save preferences');
+                    setSaving(false);
+                    return;
                   }
+                  setSaving(false);
                 }
                 onComplete({ acct, plan, cadence, keywords, entities, profileId });
               }}>
-                Launch Dashboard →
+                {saving ? 'Saving…' : 'Launch Dashboard →'}
               </Btn>
             </div>
           </div>

@@ -1,5 +1,7 @@
 // Page controller: to-typescript.html
 import { jsonToTypeScript } from '../services/jsonConverter.js';
+import { showAlert, copyText, copyWithFeedback } from '../utils/dom.js';
+import { lossyNumberWarning } from '../services/jsonFormatter.js';
 const _copyTimers = new Map();
 function _flashBtn(btn, msg, restore, ms = 2000) {
   clearTimeout(_copyTimers.get(btn));
@@ -10,28 +12,31 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
 import { saveToHistory } from '../config/firebase.js';
     let lastResult = '';
 
-    document.getElementById('convertBtn').addEventListener('click', () => {
+    document.getElementById('convertBtn').addEventListener('click', async () => {
       const alertArea = document.getElementById('alertArea');
       alertArea.innerHTML = '';
       try {
-        const parsed = JSON.parse(document.getElementById('inputJson').value);
+        const raw = document.getElementById('inputJson').value;
+        const parsed = JSON.parse(raw);
         const rootName = document.getElementById('rootName').value.trim() || 'Root';
         const useInterface = document.getElementById('useInterface').checked;
         const optionalFields = document.getElementById('optionalFields').checked;
         lastResult = jsonToTypeScript(parsed, rootName, { useInterface, optionalFields });
         document.getElementById('output').textContent = lastResult;
         document.getElementById('dlBtn').style.display = 'inline-flex';
+        const lossy = lossyNumberWarning(raw);
+        if (lossy) showAlert(alertArea, 'warning', lossy);
         await saveToHistory('json-to-typescript', { useInterface, optionalFields });
       } catch (e) {
-        alertArea.innerHTML = `<div class="alert alert-error">❌ ${e.message}</div>`;
+        showAlert(alertArea, 'error', `❌ ${e.message}`);
       }
     });
 
     document.getElementById('inputJson').addEventListener('paste', () => setTimeout(() => document.getElementById('convertBtn').click(), 10));
 
     document.getElementById('copyBtn').addEventListener('click', async () => {
-      await navigator.clipboard.writeText(lastResult);
-      _flashBtn(document.getElementById('copyBtn'), '✅ Copied!', 'Copy');
+      const ok = await copyText(lastResult);
+      _flashBtn(document.getElementById('copyBtn'), ok ? '✅ Copied!' : '⚠️ Copy failed', 'Copy');
     });
 
     document.getElementById('dlBtn').addEventListener('click', () => {

@@ -52,6 +52,11 @@ class OracleCardsApp {
             this.showCardSection();
         });
 
+        // Pricing "Try Free" had no handler — start the free reading flow
+        document.getElementById('try-free-btn')?.addEventListener('click', () => {
+            this.showCardSection();
+        });
+
         // Question input character count
         const questionInput = document.getElementById('user-question');
         questionInput?.addEventListener('input', (e) => {
@@ -98,7 +103,8 @@ class OracleCardsApp {
             this.resetReading();
         });
 
-        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.upgradeToPremium()));
+        // Pass the clicked button so it gets the loading state
+        document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.upgradeToPremium(b)));
     }
 
     showCardSection() {
@@ -145,7 +151,7 @@ class OracleCardsApp {
 
         // Initialize Three.js renderer
         this.cardRenderer = new CardRenderer3D(canvas3D);
-        this.cardRenderer.createCardDeck(cardCount);
+        this.cardRenderer.createCardDeck(cardCount, this.drawnCards.map(c => c.name));
 
         // Listen for card reveal events
         canvas3D.addEventListener('cardRevealed', (e) => {
@@ -361,7 +367,8 @@ class OracleCardsApp {
     saveReading() {
         // TODO: Save to Firebase
         console.log('Saving reading...');
-        alert('Reading saved! (Feature coming soon)');
+        // Saving isn't implemented yet — don't claim it succeeded.
+        alert('Saving readings is coming soon. For now, use Share to keep a copy.');
     }
 
     async shareReading() {
@@ -410,7 +417,10 @@ class OracleCardsApp {
         document.getElementById('card-section').scrollIntoView({ behavior: 'smooth' });
     }
 
-    async upgradeToPremium() {
+    async upgradeToPremium(upgradeBtn = null) {
+        // Prevent a double-click from creating two checkout sessions.
+        if (this.checkoutInFlight) return;
+        const originalLabel = upgradeBtn ? upgradeBtn.innerHTML : null;
         try {
             // Already paid (verified by /success): unlock and deliver — never charge twice.
             if (window.PremiumEntitlement?.has()) {
@@ -418,6 +428,13 @@ class OracleCardsApp {
                 // frontend (renders mock). Keeping the credit prevents a re-charge on a
                 // second click. Restore consume-after-successful-render when delivery lands.
                 this.premiumUnlocked = true;
+                // No cards drawn yet (e.g. clicked a pricing button from the hero):
+                // open the setup so the paid reading is delivered after the draw,
+                // instead of rendering an empty reading in a hidden section.
+                if (!this.drawnCards.length) {
+                    this.showCardSection();
+                    return;
+                }
                 this.showReading();
                 return;
             }
@@ -430,10 +447,11 @@ class OracleCardsApp {
             }
 
             // Determine reading type based on current spread
-            const readingType = this.spreadType === 'single' ? 'single-premium' : this.spreadType;
+            // (was this.spreadType, which is never defined -> readingType undefined -> API 400)
+            const readingType = this.selectedSpread === 'single' ? 'single-premium' : this.selectedSpread;
 
-            // Show loading state
-            const upgradeBtn = document.querySelector('.upgrade-btn');
+            // Show loading state on the button that was clicked
+            this.checkoutInFlight = true;
             if (upgradeBtn) {
                 upgradeBtn.textContent = 'Redirecting to checkout...';
                 upgradeBtn.disabled = true;
@@ -458,9 +476,9 @@ class OracleCardsApp {
             alert('Sorry, there was an error processing your payment. Please try again.');
             
             // Reset button state
-            const upgradeBtn = document.querySelector('.upgrade-btn');
+            this.checkoutInFlight = false;
             if (upgradeBtn) {
-                upgradeBtn.textContent = 'Upgrade to Premium';
+                upgradeBtn.innerHTML = originalLabel;
                 upgradeBtn.disabled = false;
             }
         }

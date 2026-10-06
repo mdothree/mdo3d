@@ -45,7 +45,7 @@
 <script src="js/entitlement.js"></script>
 <script>
 (function(){
-  var API_URL = location.hostname === 'localhost' ? 'http://localhost:3003' : 'https://tarot-cards-api.railway.app';
+  var API_URL = location.hostname === 'localhost' ? 'http://localhost:3003' : 'https://tarot-cards-api.vercel.app';
   var params = new URLSearchParams(location.search);
   var sessionId = params.get('session_id');
   function show(id){ ['verifying','confirmed','failed'].forEach(function(x){

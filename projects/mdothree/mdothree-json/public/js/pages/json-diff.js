@@ -1,6 +1,7 @@
 // Page controller: json-diff.html
 import { diffJSON } from '../services/jsonDiff.js';
 import { initPaywall, isPremium, requirePremium, FREE_LIMITS } from '../stripe-paywall.js';
+import { showAlert } from '../utils/dom.js';
 initPaywall();
 
     document.getElementById('diffBtn').addEventListener('click', () => {
@@ -25,6 +26,6 @@ initPaywall();
         document.getElementById('changedCount').textContent = changed;
         document.getElementById('resultPanel').style.display = 'block';
       } catch (e) {
-        alertArea.innerHTML = `<div class="alert alert-error">❌ ${e.message}</div>`;
+        showAlert(alertArea, 'error', `❌ ${e.message}`);
       }
     });

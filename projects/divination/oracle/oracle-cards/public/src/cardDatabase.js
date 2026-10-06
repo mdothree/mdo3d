@@ -765,7 +765,12 @@ export const getCardById = (id) => {
 };
 
 export const drawCards = (count = 1) => {
-  const shuffled = [...oracleCards].sort(() => Math.random() - 0.5);
+  // Unbiased Fisher-Yates shuffle (sort(() => Math.random() - 0.5) is biased)
+  const shuffled = [...oracleCards];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   return shuffled.slice(0, count);
 };
 

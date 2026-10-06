@@ -1,23 +1,25 @@
 // Page controller: validate.html
 import { validateJSON, summarizeJSON } from '../services/jsonValidator.js';
+import { lossyNumberWarning } from '../services/jsonFormatter.js';
 
     const inputJson = document.getElementById('inputJson');
 
     // Live validation indicator
     inputJson.addEventListener('input', () => {
-      const text = inputJson.value.trim();
-      if (!text) return;
+      const text = inputJson.value;
+      if (!text.trim()) return;
       try { JSON.parse(text); inputJson.style.borderColor = 'var(--emerald)'; }
       catch { inputJson.style.borderColor = 'var(--danger)'; }
     });
 
     document.getElementById('validateBtn').addEventListener('click', () => {
-      const text = inputJson.value.trim();
+      // Validate the untrimmed text so reported line numbers match the textarea.
+      const text = inputJson.value;
       document.getElementById('validResult').classList.add('hidden');
       document.getElementById('invalidResult').classList.add('hidden');
       document.getElementById('emptyState').style.display = 'none';
 
-      if (!text) {
+      if (!text.trim()) {
         document.getElementById('emptyState').style.display = 'flex';
         return;
       }
@@ -25,12 +27,27 @@ import { validateJSON, summarizeJSON } from '../services/jsonValidator.js';
       const result = validateJSON(text);
       if (result.valid) {
         const summary = summarizeJSON(result.parsed);
-        document.getElementById('structSummary').innerHTML = summary.map(s =>
-          `<div style="display:flex;justify-content:space-between;"><span style="color:var(--slate-400);">${s.key}</span><span style="color:var(--emerald);">${s.value}</span></div>`
-        ).join('');
+        // Keys come from the user's JSON: build nodes with textContent.
+        const rows = summary.map(s => {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;justify-content:space-between;';
+          const k = document.createElement('span'); k.style.color = 'var(--slate-400)'; k.textContent = s.key;
+          const v = document.createElement('span'); v.style.color = 'var(--emerald)'; v.textContent = s.value;
+          row.append(k, v);
+          return row;
+        });
+        document.getElementById('structSummary').replaceChildren(...rows);
+        const lossy = lossyNumberWarning(text);
+        if (lossy) {
+          const w = document.createElement('div');
+          w.style.cssText = 'color:var(--warning);margin-top:8px;white-space:normal;';
+          w.textContent = lossy.replace('in this output', 'by JavaScript parsers');
+          document.getElementById('structSummary').appendChild(w);
+        }
         document.getElementById('validResult').classList.remove('hidden');
       } else {
-        document.getElementById('errorMsg').textContent = result.error;
+        const where = result.line ? ` (line ${result.line}, column ${result.column})` : '';
+        document.getElementById('errorMsg').textContent = result.error + where + (result.hint ? ' — ' + result.hint : '');
         // Show error context with line highlighting
         const lines = text.split('\n');
         const errorLine = result.line ? result.line - 1 : null;

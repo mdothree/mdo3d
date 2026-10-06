@@ -90,7 +90,7 @@ export class CardRenderer3D {
     this.particles = particlesMesh;
   }
 
-  createCardDeck(cardCount = 7) {
+  createCardDeck(cardCount = 7, labels = []) {
     // Clear existing cards
     this.cards.forEach(card => this.scene.remove(card.mesh));
     this.cards = [];
@@ -102,7 +102,7 @@ export class CardRenderer3D {
     const startX = -totalWidth / 2 + cardWidth / 2;
 
     for (let i = 0; i < cardCount; i++) {
-      const card = this.createCard(cardWidth, cardHeight);
+      const card = this.createCard(cardWidth, cardHeight, labels[i]);
       
       card.mesh.position.x = startX + i * (cardWidth + spacing);
       card.mesh.position.y = 0;
@@ -121,25 +121,66 @@ export class CardRenderer3D {
     }
   }
 
-  createCard(width, height) {
+  // Draw the card name onto a canvas so the revealed face isn't blank.
+  createFaceTexture(label) {
+    if (!label) return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 404;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#8B5CF6';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '72px system-ui, sans-serif';
+    ctx.fillText('✨', canvas.width / 2, 140);
+    ctx.fillStyle = '#4C1D95';
+    ctx.font = 'bold 26px system-ui, sans-serif';
+    // simple word wrap
+    const words = String(label).split(/\s+/);
+    const lines = [];
+    let line = '';
+    words.forEach(w => {
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > canvas.width - 48 && line) { lines.push(line); line = w; }
+      else { line = test; }
+    });
+    if (line) lines.push(line);
+    lines.forEach((l, i) => ctx.fillText(l, canvas.width / 2, 250 + i * 34));
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }
+
+  createCard(width, height, label) {
     const geometry = new THREE.BoxGeometry(width, height, 0.05);
     
-    // Create materials for front and back
+    // BoxGeometry material order is +x, -x, +y, -y, +z, -z. The camera sits on
+    // +Z, so the card BACK must be on +Z (index 4) and the FACE on -Z (index 5);
+    // the reveal flip (rotation.y += PI) then turns the face toward the viewer.
+    // (Previously these were swapped: the blank face showed first and the
+    // reveal flipped to the purple back.)
+    const faceTexture = this.createFaceTexture(label);
     const materials = [
       new THREE.MeshPhongMaterial({ color: 0x8B5CF6 }), // Right
       new THREE.MeshPhongMaterial({ color: 0x8B5CF6 }), // Left
       new THREE.MeshPhongMaterial({ color: 0x8B5CF6 }), // Top
       new THREE.MeshPhongMaterial({ color: 0x8B5CF6 }), // Bottom
       new THREE.MeshPhongMaterial({ 
-        color: 0xffffff,
-        emissive: 0x8B5CF6,
-        emissiveIntensity: 0.2
-      }), // Front (card face)
-      new THREE.MeshPhongMaterial({ 
         color: 0x8B5CF6,
         emissive: 0xEC4899,
         emissiveIntensity: 0.3
-      })  // Back
+      }), // Back (+Z, faces camera before reveal)
+      new THREE.MeshPhongMaterial({ 
+        color: 0xffffff,
+        map: faceTexture,
+        emissive: 0x8B5CF6,
+        emissiveIntensity: 0.2
+      })  // Front / card face (-Z, shown after reveal flip)
     ];
 
     const mesh = new THREE.Mesh(geometry, materials);
@@ -244,7 +285,7 @@ export class CardRenderer3D {
 
       // Add glow effect when revealed
       if (progress > 0.5) {
-        card.materials[4].emissiveIntensity = 0.5 * (1 - (progress - 0.5) * 2);
+        card.materials[5].emissiveIntensity = 0.5 * (1 - (progress - 0.5) * 2);
       }
 
       if (progress < 1) {
@@ -294,7 +335,7 @@ export class CardRenderer3D {
     this.cards.forEach(card => {
       this.scene.remove(card.mesh);
       card.geometry.dispose();
-      card.materials.forEach(mat => mat.dispose());
+      card.materials.forEach(mat => { if (mat.map) mat.map.dispose(); mat.dispose(); });
     });
     this.cards = [];
   }

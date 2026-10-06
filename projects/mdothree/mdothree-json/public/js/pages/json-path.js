@@ -2,6 +2,7 @@
 import { queryJSONPath, formatResults } from '../services/jsonPath.js';
 import { initPaywall, isPremium, requirePremium } from '../stripe-paywall.js';
 import { saveToHistory } from '../config/firebase.js';
+import { copyWithFeedback } from '../utils/dom.js';
 
 const jsonInput    = document.getElementById('jsonInput');
 const pathInput    = document.getElementById('pathInput');
@@ -135,9 +136,7 @@ pathInput.addEventListener('keydown', e => { if (e.key === 'Enter') runQuery(); 
 
 copyBtn.addEventListener('click', async () => {
   if (!lastResults) return;
-  await navigator.clipboard.writeText(formatResults(lastResults));
-  copyBtn.textContent = '✅ Copied!';
-  setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+  await copyWithFeedback(copyBtn, formatResults(lastResults), 'Copy');
 });
 
 // ── History ───────────────────────────────────────────────────────────────────
@@ -148,7 +147,9 @@ function renderHistory() {
   queryHistory.forEach(p => {
     const el = document.createElement('div');
     el.className = 'history-item';
-    el.innerHTML = `<span>${p}</span>`;
+    const span = document.createElement('span');
+    span.textContent = p; // user-typed path: never parse as HTML
+    el.appendChild(span);
     el.addEventListener('click', () => {
       pathInput.value = p;
       runQuery();

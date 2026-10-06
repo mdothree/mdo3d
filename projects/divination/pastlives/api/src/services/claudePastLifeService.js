@@ -159,7 +159,7 @@ Be evocative, specific, and compassionate. Create a narrative that feels real an
         max_tokens: 400,
         messages: [{
           role: 'user',
-          content: `As a past life reader, provide a brief (3-4 sentences) glimpse into a past life for someone born on ${birthDate} who asks: "${question || 'What past life energy am I carrying?'}". Be evocative, specific, and meaningful.`
+          content: `As a past life reader, provide a brief (3-4 sentences) glimpse into a past life for someone born on ${birthDate} who asks: "${question || 'What past life energy am I carrying?'}". Be evocative, specific, and meaningful. Reply in plain prose paragraphs only — no Markdown (no headings, bold, italics, bullet points or horizontal rules).`
         }]
       });
 

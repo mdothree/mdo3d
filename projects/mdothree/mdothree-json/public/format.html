@@ -6,12 +6,12 @@
   <title>Format JSON</title>
   <meta name="description" content="Beautify or minify JSON with syntax highlighting. Adjustable indentation. Download as .json." />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://mdothree.com/format" />
+  <link rel="canonical" href="https://json.mdothree.com/format" />
   <!-- Open Graph -->
   <meta property="og:type"        content="website" />
   <meta property="og:title"       content="Format JSON" />
   <meta property="og:description" content="Beautify or minify JSON with syntax highlighting. Adjustable indentation. Download as .json." />
-  <meta property="og:url"         content="https://mdothree.com/format" />
+  <meta property="og:url"         content="https://json.mdothree.com/format" />
   <meta property="og:site_name"   content="mdothree" />
   <!-- Twitter Card -->
   <meta name="twitter:card"        content="summary" />
@@ -40,17 +40,17 @@
   <a href="#main-content" class="skip-link">Skip to main content</a>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-600);margin-left:8px;font-size:0.7rem;">/ json</span></a>
+      <a href="index.html" class="nav-logo">m<span class="dot">.</span>three <span style="color:var(--slate-500);margin-left:8px;font-size:0.7rem;">/ json</span></a>
       <ul class="nav-links">
         <li><a href="format.html" class="active">Format</a></li>
         <li><a href="validate.html">Validate</a></li>
         <li><a href="to-yaml.html">→ YAML</a></li>
         <li><a href="to-csv.html">→ CSV</a></li>
-        <li><a href="json-diff.html">Diff</a></li>
         <li><a href="to-xml.html">→ XML</a></li>
         <li><a href="to-typescript.html">→ TS</a></li>
+        <li><a href="json-diff.html">Diff</a></li>
         <li><a href="base64.html">Base64</a></li>
-        <li><a href="json-path.html">JSONPath ✨</a></li>
+        <li><a href="json-path.html" title="Pro feature">JSONPath ✨</a></li>
         <li style="margin-left:auto;"><a href="pricing.html">Pricing</a></li>
         <li><a href="account.html">Account</a></li>
       </ul>
@@ -67,9 +67,9 @@
       </div>
 
       <div class="alert alert-info animate-fade-up" id="freeBanner" style="margin-bottom:20px;">
-        ℹ️ <strong>Free plan:</strong> Format JSON up to 50KB. <a href="#" onclick="requirePremium('Large JSON formatting','json-format');return false;" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade to Pro →</a>
+        ℹ️ <strong>Free plan:</strong> Format JSON up to 50KB. <a href="pricing.html" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade to Pro →</a>
       </div>
-      <div class="tool-layout" class="animate-fade-up-2">
+      <div class="tool-layout animate-fade-up-2">
         <div class="panel">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div class="panel-title" style="border:none;margin:0;padding:0;">Input JSON</div>
@@ -91,6 +91,8 @@
               </select>
             </div>
           </div>
+          <!-- Errors sit directly under the input/action buttons (was below the 460px output panel, off-screen on mobile) -->
+          <div id="alertArea" class="mt-12" role="alert" aria-live="polite"></div>
         </div>
 
         <div>
@@ -100,12 +102,11 @@
               <div class="btn-group">
                 <span class="text-xs text-muted text-mono" id="sizeInfo"></span>
                 <button class="btn btn-ghost" id="downloadBtn" style="padding:6px 12px;font-size:0.78rem;display:none;">⬇️ .json</button>
+                <button class="btn btn-ghost" id="copyBtn" style="padding:6px 12px;font-size:0.78rem;">Copy</button>
               </div>
             </div>
-            <button class="copy-btn" id="copyBtn">Copy</button>
             <div id="jsonOutput" class="code-output" style="min-height:380px;"></div>
           </div>
-          <div id="alertArea" class="mt-12"></div>
         </div>
       </div>
     </div>

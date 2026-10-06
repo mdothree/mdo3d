@@ -38,7 +38,7 @@ export default function NavBar({ page, setPage, onLogout, user }) {
             </li>
           )}
         </ul>
-        <button className="nav-hamburger" onClick={() => setOpen(o => !o)}>
+        <button className="nav-hamburger" onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open}>
           <span /><span /><span />
         </button>
       </nav>
@@ -52,6 +52,11 @@ export default function NavBar({ page, setPage, onLogout, user }) {
             {l.label}
           </button>
         ))}
+        {onLogout && (
+          <button className="nav-link" onClick={() => { setOpen(false); onLogout(); }}>
+            Logout
+          </button>
+        )}
       </div>
     </>
   );
