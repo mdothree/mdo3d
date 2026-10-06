@@ -1,3 +1,7 @@
+> **Moved (2026-10-06):** the MDO3D landing source of truth is now `projects/mdo3d/landing/`
+> (repo `mdothree/mdo3d-landing`, Vercel project `mdo3d-landing`, serves mdo3d.com).
+> This folder is a frozen duplicate — edit there, not here.
+
 # MDO3D Landing Page - Status
 
 **Last Updated:** 2026-08-17
