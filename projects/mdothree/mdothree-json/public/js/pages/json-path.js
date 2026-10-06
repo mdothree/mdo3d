@@ -125,8 +125,8 @@ function runQuery() {
     renderHistory();
   }
 
-  // Firebase history
-  saveToHistory('json-path', { path, matches: n });
+  // Usage metadata only: the user-typed path is never uploaded (local list above).
+  saveToHistory('json-path', { matches: n });
 }
 
 queryBtn.addEventListener('click', runQuery);

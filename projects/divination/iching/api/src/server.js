@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeIChingService } from './services/claudeIChingService.js';
 import { StripeService } from './services/stripeService.js';
+import { checkoutLimiter, tooLong, checkPaidSession } from './security.js';
 
 dotenv.config();
 
@@ -51,19 +52,21 @@ app.post('/api/reading/generate', async (req, res) => {
       });
     }
 
-    // Premium requires a verified, paid Stripe session — prevents anyone from
-    // getting a paid reading for free by sending premium:true.
-    const paidSession = req.body.sessionId;
-    if (!paidSession) {
-      return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
+    const lengthError = tooLong({ Question: [question, 1000], Hexagram: [hexagram, 5000], 'Changing lines': [changingLines, 200] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
     }
-    const pay = await stripeService.verifyPayment(paidSession);
-    if (!pay.success || !pay.paid) {
-      return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
+
+    // Premium requires a verified, paid Stripe session from this service — prevents
+    // anyone from getting a paid reading for free by sending premium:true.
+    // Any I Ching product covers this reading: the app only sells single-premium
+    // and that reading already includes the changing lines.
+    const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+      allowedTypes: ['single-premium', 'changing-lines', 'monthly']
+    });
+    if (denied) {
+      return res.status(denied.status).json({ success: false, error: denied.error });
     }
-      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
-      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
-      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
 
     // For premium, generate AI reading
     const reading = await claudeService.generateHexagramReading(
@@ -89,39 +92,14 @@ app.post('/api/reading/generate', async (req, res) => {
   }
 });
 
-/**
- * POST /api/reading/quick-insight
- * Generate quick AI insight for a hexagram
- */
-app.post('/api/reading/quick-insight', async (req, res) => {
-  try {
-    const { hexagram, question } = req.body;
-
-    if (!hexagram) {
-      return res.status(400).json({ error: 'Hexagram required' });
-    }
-
-    const insight = await claudeService.generateQuickInsight(hexagram, question);
-
-    res.json({
-      success: true,
-      insight
-    });
-
-  } catch (error) {
-    console.error('Quick insight error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate insight'
-    });
-  }
-});
+// POST /api/reading/quick-insight was removed: it made unauthenticated Claude
+// calls and no frontend used it. ClaudeIChingService.generateQuickInsight remains.
 
 /**
  * POST /api/payment/create-checkout
  * Create Stripe checkout for premium reading
  */
-app.post('/api/payment/create-checkout', async (req, res) => {
+app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
   try {
     const { readingType, email, userId } = req.body;
 

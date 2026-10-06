@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeAstrologyService } from './services/claudeAstrologyService.js';
 import { StripeService } from './services/stripeService.js';
+import { checkoutLimiter, tooLong, checkPaidSession } from './security.js';
 
 dotenv.config();
 
@@ -59,16 +60,19 @@ app.post('/api/chart/interpret', async (req, res) => {
       });
     }
 
+    const lengthError = tooLong({ Question: [question, 1000], Chart: [chart, 10000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
+    }
+
     // For premium, generate AI reading
-    // Premium requires a verified, paid Stripe session — prevents a free reading via premium:true.
+    // Premium requires a verified, paid Stripe session from this service, bought
+    // for a birth-chart reading (or monthly) — prevents a free reading via premium:true.
     {
-      const paidSession = req.body.sessionId;
-      if (!paidSession) return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
-      const pay = await stripeService.verifyPayment(paidSession);
-      if (!pay.success || !pay.paid) return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
-      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
-      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
-      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: ['birth-chart', 'monthly']
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const reading = await claudeService.generateChartReading(chart, question);
@@ -90,33 +94,8 @@ app.post('/api/chart/interpret', async (req, res) => {
   }
 });
 
-/**
- * POST /api/chart/quick-insight
- * Generate quick AI insight for a chart
- */
-app.post('/api/chart/quick-insight', async (req, res) => {
-  try {
-    const { chart, question } = req.body;
-
-    if (!chart) {
-      return res.status(400).json({ error: 'Chart data required' });
-    }
-
-    const insight = await claudeService.generateQuickInsight(chart, question);
-
-    res.json({
-      success: true,
-      insight
-    });
-
-  } catch (error) {
-    console.error('Quick insight error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate insight'
-    });
-  }
-});
+// POST /api/chart/quick-insight was removed: it made unauthenticated Claude
+// calls and no frontend used it. ClaudeAstrologyService.generateQuickInsight remains.
 
 /**
  * POST /api/chart/compatibility
@@ -135,6 +114,20 @@ app.post('/api/chart/compatibility', async (req, res) => {
         success: false,
         error: 'Compatibility readings require premium access'
       });
+    }
+
+    const lengthError = tooLong({ 'First chart': [chart1, 10000], 'Second chart': [chart2, 10000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
+    }
+
+    // `premium: true` alone must not unlock a paid reading: require a verified
+    // session bought for compatibility (or monthly).
+    {
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: ['compatibility', 'monthly']
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const reading = await claudeService.generateCompatibilityReading(chart1, chart2);
@@ -160,7 +153,7 @@ app.post('/api/chart/compatibility', async (req, res) => {
  * POST /api/payment/create-checkout
  * Create Stripe checkout for premium features
  */
-app.post('/api/payment/create-checkout', async (req, res) => {
+app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
   try {
     const { readingType, email, userId } = req.body;
 

@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeReadingService } from './services/claudeReadingService.js';
 import { StripeService } from './services/stripeService.js';
+import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession } from './security.js';
 
 dotenv.config();
 
@@ -20,13 +21,20 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Checkout readingTypes that may redeem a premium reading of each spread.
+const SPREAD_ENTITLEMENTS = {
+  single: ['single', 'three', 'celtic'],
+  three: ['three', 'celtic'],
+  celtic: ['celtic']
+};
+
 // Routes
 
 /**
  * POST /api/reading/generate
  * Generate personalized tarot reading
  */
-app.post('/api/reading/generate', async (req, res) => {
+app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
   try {
     const { cards, question, spreadType, premium } = req.body;
 
@@ -52,16 +60,19 @@ app.post('/api/reading/generate', async (req, res) => {
       });
     }
 
+    const lengthError = tooLong({ Question: [question, 1000], Cards: [cards, 20000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
+    }
+
     // Generate reading
-    // Premium requires a verified, paid Stripe session — prevents a free reading via premium:true.
+    // Premium requires a verified, paid Stripe session from this service, bought
+    // for this spread or a larger one (a $2.99 single session can't unlock Celtic Cross).
     if (premium) {
-      const paidSession = req.body.sessionId;
-      if (!paidSession) return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
-      const pay = await stripeService.verifyPayment(paidSession);
-      if (!pay.success || !pay.paid) return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
-      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
-      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
-      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: SPREAD_ENTITLEMENTS[spreadType]
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const reading = await claudeService.generateReading({
@@ -89,46 +100,14 @@ app.post('/api/reading/generate', async (req, res) => {
   }
 });
 
-/**
- * POST /api/card/meaning
- * Get quick meaning for a single card
- */
-app.post('/api/card/meaning', async (req, res) => {
-  try {
-    const { cardName, reversed } = req.body;
-
-    if (!cardName) {
-      return res.status(400).json({
-        success: false,
-        error: 'Card name is required'
-      });
-    }
-
-    const meaning = await claudeService.getCardMeaning(cardName, reversed);
-
-    if (meaning.success) {
-      res.json(meaning);
-    } else {
-      res.status(500).json({
-        success: false,
-        error: meaning.error || 'Failed to get card meaning'
-      });
-    }
-
-  } catch (error) {
-    console.error('Card meaning error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get card meaning'
-    });
-  }
-});
+// POST /api/card/meaning was removed: it made unauthenticated Claude calls and
+// no frontend used it. ClaudeReadingService.getCardMeaning remains.
 
 /**
  * POST /api/payment/create-checkout
  * Create Stripe checkout for premium reading
  */
-app.post('/api/payment/create-checkout', async (req, res) => {
+app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
   try {
     const { readingType, email, userId } = req.body;
 

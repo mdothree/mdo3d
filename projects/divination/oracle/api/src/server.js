@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeReadingService } from './services/claudeReadingService.js';
 import { StripeService } from './services/stripeService.js';
+import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession } from './security.js';
 
 dotenv.config();
 
@@ -20,6 +21,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Checkout readingTypes that may redeem a premium reading of each spread size.
+const SPREAD_ORDER = ['single', 'three', 'celtic'];
+const SPREAD_ENTITLEMENTS = {
+  single: ['single-premium', 'three', 'celtic', 'monthly'],
+  three: ['three', 'celtic', 'monthly'],
+  celtic: ['celtic', 'monthly']
+};
+
 // Routes
 
 /**
@@ -30,8 +39,11 @@ app.post('/api/reading/generate', async (req, res) => {
   try {
     const { cards, question, spreadType, premium } = req.body;
 
-    if (!cards || cards.length === 0) {
+    if (!Array.isArray(cards) || cards.length === 0) {
       return res.status(400).json({ error: 'Cards required' });
+    }
+    if (cards.length > 10) {
+      return res.status(400).json({ error: 'Too many cards' });
     }
 
     // For free tier, return basic reading
@@ -49,16 +61,21 @@ app.post('/api/reading/generate', async (req, res) => {
       });
     }
 
+    const lengthError = tooLong({ Question: [question, 1000], Cards: [cards, 20000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
+    }
+
     // For premium, generate AI reading
-    // Premium requires a verified, paid Stripe session — prevents a free reading via premium:true.
+    // Premium requires a verified, paid Stripe session from this service, bought
+    // for this spread size or larger (a $2.99 single session can't unlock Celtic Cross).
     {
-      const paidSession = req.body.sessionId;
-      if (!paidSession) return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
-      const pay = await stripeService.verifyPayment(paidSession);
-      if (!pay.success || !pay.paid) return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
-      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
-      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
-      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+      let tier = cards.length > 3 ? 'celtic' : cards.length > 1 ? 'three' : 'single';
+      if (SPREAD_ORDER.indexOf(spreadType) > SPREAD_ORDER.indexOf(tier)) tier = spreadType;
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: SPREAD_ENTITLEMENTS[tier]
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const reading = await claudeService.generatePersonalizedReading(
@@ -88,12 +105,17 @@ app.post('/api/reading/generate', async (req, res) => {
  * POST /api/reading/quick-insight
  * Generate quick AI insight for a single card
  */
-app.post('/api/reading/quick-insight', async (req, res) => {
+app.post('/api/reading/quick-insight', freeAiLimiter, async (req, res) => {
   try {
     const { card, question } = req.body;
 
     if (!card) {
       return res.status(400).json({ error: 'Card required' });
+    }
+
+    const lengthError = tooLong({ Question: [question, 1000], Card: [card, 4000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
     }
 
     const insight = await claudeService.generateQuickInsight(card, question);
@@ -116,7 +138,7 @@ app.post('/api/reading/quick-insight', async (req, res) => {
  * POST /api/payment/create-checkout
  * Create Stripe checkout for premium reading
  */
-app.post('/api/payment/create-checkout', async (req, res) => {
+app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
   try {
     const { readingType, email, userId } = req.body;
 

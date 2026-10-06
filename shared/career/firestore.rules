@@ -16,12 +16,31 @@ service cloud.firestore {
     }
 
     // Rigor tool outputs (owner-scoped by userId)
+    match /resume-analyses/{id}        { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
     match /cover-letters/{id}          { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
     match /interview-sessions/{id}     { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
     match /linkedin-optimizations/{id} { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
     match /networking-emails/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
     match /portfolio-reviews/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
     match /salary-strategies/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+
+    // Subscription state: written ONLY by the Stripe webhook (Admin SDK bypasses
+    // rules). Doc ID is the Firebase uid (api/payment/webhook.js). Owner may read.
+    // A doc ID check (not resource.data) so a missing doc reads as "not found"
+    // instead of permission-denied (paymentService.getSubscription / onSnapshot).
+    match /subscriptions/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // Monthly usage counters: doc ID is `${uid}_${YYYY-MM}`. Incremented ONLY by the
+    // API (Admin SDK: api/analyze, api/cover-letter). Clients read their own docs
+    // for the paywall gate / usage meter; client writes are denied so a user
+    // cannot reset their own quota.
+    match /usage/{docId} {
+      allow read: if isSignedIn() && docId.matches(request.auth.uid + '_[0-9]{4}-[0-9]{2}');
+      allow write: if false;
+    }
 
     // Payment audit events (client-written, owner-scoped, immutable)
     match /payment_events/{id} {

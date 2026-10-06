@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeNumerologyService } from './services/claudeNumerologyService.js';
 import { StripeService } from './services/stripeService.js';
+import { checkoutLimiter, tooLong, checkPaidSession } from './security.js';
 
 dotenv.config();
 
@@ -70,6 +71,11 @@ app.post('/api/reading/generate', async (req, res) => {
       return res.status(400).json({ error: 'Name and birth date required' });
     }
 
+    const lengthError = tooLong({ Name: [name, 100], 'Birth date': [birthDate, 40], Question: [question, 1000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
+    }
+
     // Calculate numbers
     const numerologyData = {
       name,
@@ -94,15 +100,13 @@ app.post('/api/reading/generate', async (req, res) => {
     }
 
     // For premium, generate AI reading
-    // Premium requires a verified, paid Stripe session — prevents a free reading via premium:true.
+    // Premium requires a verified, paid Stripe session from this service, bought
+    // for a numbers reading (compatibility sessions have no reading here yet).
     {
-      const paidSession = req.body.sessionId;
-      if (!paidSession) return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
-      const pay = await stripeService.verifyPayment(paidSession);
-      if (!pay.success || !pay.paid) return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
-      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
-      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
-      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: ['core-numbers', 'full-chart', 'monthly']
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const reading = await claudeService.generateNumerologyReading(numerologyData, question);
@@ -125,41 +129,14 @@ app.post('/api/reading/generate', async (req, res) => {
   }
 });
 
-/**
- * POST /api/reading/quick-insight
- * Generate quick numerology insight
- */
-app.post('/api/reading/quick-insight', async (req, res) => {
-  try {
-    const { birthDate, question } = req.body;
-
-    if (!birthDate) {
-      return res.status(400).json({ error: 'Birth date required' });
-    }
-
-    const lifePathNumber = ClaudeNumerologyService.calculateLifePathNumber(birthDate);
-    const insight = await claudeService.generateQuickInsight(lifePathNumber, question);
-
-    res.json({
-      success: true,
-      lifePathNumber,
-      insight
-    });
-
-  } catch (error) {
-    console.error('Quick insight error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate insight'
-    });
-  }
-});
+// POST /api/reading/quick-insight was removed: it made unauthenticated Claude
+// calls and no frontend used it. ClaudeNumerologyService.generateQuickInsight remains.
 
 /**
  * POST /api/payment/create-checkout
  * Create Stripe checkout for premium reading
  */
-app.post('/api/payment/create-checkout', async (req, res) => {
+app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
   try {
     const { readingType, email, userId } = req.body;
 

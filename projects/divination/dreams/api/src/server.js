@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeDreamService } from './services/claudeDreamService.js';
 import { StripeService } from './services/stripeService.js';
+import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession } from './security.js';
 
 dotenv.config();
 
@@ -26,12 +27,12 @@ app.use(express.json());
  * POST /api/dream/interpret
  * Generate dream interpretation
  */
-app.post('/api/dream/interpret', async (req, res) => {
+app.post('/api/dream/interpret', freeAiLimiter, async (req, res) => {
   try {
     const { dreamText, detectedSymbols, premium } = req.body;
 
     // Validation
-    if (!dreamText || dreamText.trim().length === 0) {
+    if (!dreamText || typeof dreamText !== 'string' || dreamText.trim().length === 0) {
       return res.status(400).json({
         success: false,
         error: 'Dream text is required'
@@ -45,16 +46,16 @@ app.post('/api/dream/interpret', async (req, res) => {
       });
     }
 
+    const lengthError = tooLong({ 'Dream text': [dreamText, 5000], 'Detected symbols': [detectedSymbols, 2000] });
+    if (lengthError) {
+      return res.status(413).json({ success: false, error: lengthError });
+    }
+
     // Generate interpretation
-    // Premium requires a verified, paid Stripe session — prevents a free reading via premium:true.
+    // Premium requires a verified, paid Stripe session from this service — prevents a free reading via premium:true.
     if (premium) {
-      const paidSession = req.body.sessionId;
-      if (!paidSession) return res.status(402).json({ success: false, error: 'Payment required for premium readings.' });
-      const pay = await stripeService.verifyPayment(paidSession);
-      if (!pay.success || !pay.paid) return res.status(402).json({ success: false, error: 'Payment could not be verified.' });
-      const _uses = parseInt((pay.metadata && pay.metadata.uses) || '0', 10);
-      if (_uses >= 3) return res.status(402).json({ success: false, error: 'This reading has already been redeemed.' });
-      try { await stripeService.recordUse(paidSession, _uses + 1); } catch (e) { /* best-effort, fail-open */ }
+      const denied = await checkPaidSession(stripeService, req.body.sessionId);
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const interpretation = await dreamService.interpretDream({
@@ -81,81 +82,15 @@ app.post('/api/dream/interpret', async (req, res) => {
   }
 });
 
-/**
- * POST /api/symbol/meaning
- * Get meaning for a specific symbol
- */
-app.post('/api/symbol/meaning', async (req, res) => {
-  try {
-    const { symbolName } = req.body;
-
-    if (!symbolName) {
-      return res.status(400).json({
-        success: false,
-        error: 'Symbol name is required'
-      });
-    }
-
-    const meaning = await dreamService.getSymbolMeaning(symbolName);
-
-    if (meaning.success) {
-      res.json(meaning);
-    } else {
-      res.status(500).json({
-        success: false,
-        error: meaning.error || 'Failed to get symbol meaning'
-      });
-    }
-
-  } catch (error) {
-    console.error('Symbol meaning error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get symbol meaning'
-    });
-  }
-});
-
-/**
- * POST /api/dream/patterns
- * Analyze patterns across multiple dreams
- */
-app.post('/api/dream/patterns', async (req, res) => {
-  try {
-    const { dreams } = req.body;
-
-    if (!dreams || !Array.isArray(dreams) || dreams.length < 2) {
-      return res.status(400).json({
-        success: false,
-        error: 'At least 2 dreams are required for pattern analysis'
-      });
-    }
-
-    const analysis = await dreamService.analyzeDreamPatterns(dreams);
-
-    if (analysis.success) {
-      res.json(analysis);
-    } else {
-      res.status(500).json({
-        success: false,
-        error: analysis.error || 'Failed to analyze patterns'
-      });
-    }
-
-  } catch (error) {
-    console.error('Pattern analysis error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to analyze patterns'
-    });
-  }
-});
+// POST /api/symbol/meaning and POST /api/dream/patterns were removed: they made
+// unauthenticated Claude calls and no frontend used them. The service methods
+// (getSymbolMeaning, analyzeDreamPatterns) remain if a gated version is needed.
 
 /**
  * POST /api/payment/create-checkout
  * Create Stripe checkout for premium dream analysis
  */
-app.post('/api/payment/create-checkout', async (req, res) => {
+app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
   try {
     const { readingType, email, userId } = req.body;
 
