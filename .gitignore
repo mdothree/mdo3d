@@ -115,3 +115,7 @@ dist/
 build/
 .vercel/
 .next/
+
+# standalone repos (own GitHub remotes)
+projects/mdo3d/layoffleads/
+projects/mdo3d/promptsforbusiness/
