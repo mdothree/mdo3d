@@ -45,6 +45,11 @@ export class StripeService {
           serviceName: this.serviceName,
           userId: userId || 'anonymous',
           ...metadata
+        },
+        // Copy serviceName onto the PaymentIntent so payment_intent.* events can be
+        // routed by the stripe-hub too (session metadata is not inherited by the PI).
+        payment_intent_data: {
+          metadata: { serviceName: this.serviceName }
         }
       });
 
@@ -88,6 +93,71 @@ export class StripeService {
     await this.stripe.checkout.sessions.update(sessionId, { metadata: { uses: String(uses) } });
   }
 
+  // ── Webhook handling ─────────────────────────────────────────────────────
+  // Two entry points share handleEvent():
+  //   handleWebhook(rawBody, signature)  direct Stripe delivery (/api/webhook/stripe)
+  //   retrieveEvent(eventId)             stripe-hub forward (/api/webhook/stripe-forwarded);
+  //                                      the event is re-fetched from Stripe with this
+  //                                      service's own key, so the forwarded body is untrusted.
+  // handleEvent() skips event ids it has already processed. The Set lives in this
+  // instance's memory: it dedupes the direct + forwarded paths and quick retries on a
+  // warm instance, not across cold starts or parallel instances. The handling below
+  // only logs, so a duplicate after a cold start is harmless.
+
+  async retrieveEvent(eventId) {
+    return this.stripe.events.retrieve(eventId);
+  }
+
+  async handleEvent(event) {
+    if (!this.processedEvents) this.processedEvents = new Set();
+    if (this.processedEvents.has(event.id)) {
+      return { success: true, duplicate: true, event: event.type, data: {} };
+    }
+    const result = this.processEvent(event);
+    this.processedEvents.add(event.id);
+    if (this.processedEvents.size > 1000) {
+      this.processedEvents.delete(this.processedEvents.values().next().value);
+    }
+    return result;
+  }
+
+  processEvent(event) {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        console.log(`Payment completed for ${session.customer_email}`);
+        return {
+          success: true,
+          event: 'payment_completed',
+          data: {
+            email: session.customer_email,
+            metadata: session.metadata,
+            amount: session.amount_total / 100
+          }
+        };
+      }
+
+      case 'payment_intent.payment_failed': {
+        const failedPayment = event.data.object;
+        console.log(`Payment failed: ${failedPayment.last_payment_error?.message}`);
+        return {
+          success: true,
+          event: 'payment_failed',
+          data: {
+            error: failedPayment.last_payment_error?.message
+          }
+        };
+      }
+
+      default:
+        return {
+          success: true,
+          event: event.type,
+          data: {}
+        };
+    }
+  }
+
   async handleWebhook(rawBody, signature) {
     try {
       const event = this.stripe.webhooks.constructEvent(
@@ -95,39 +165,7 @@ export class StripeService {
         signature,
         this.webhookSecret
       );
-
-      switch (event.type) {
-        case 'checkout.session.completed':
-          const session = event.data.object;
-          console.log(`Payment completed for ${session.customer_email}`);
-          return {
-            success: true,
-            event: 'payment_completed',
-            data: {
-              email: session.customer_email,
-              metadata: session.metadata,
-              amount: session.amount_total / 100
-            }
-          };
-
-        case 'payment_intent.payment_failed':
-          const failedPayment = event.data.object;
-          console.log(`Payment failed: ${failedPayment.last_payment_error?.message}`);
-          return {
-            success: true,
-            event: 'payment_failed',
-            data: {
-              error: failedPayment.last_payment_error?.message
-            }
-          };
-
-        default:
-          return {
-            success: true,
-            event: event.type,
-            data: {}
-          };
-      }
+      return await this.handleEvent(event);
     } catch (error) {
       console.error('Webhook error:', error);
       return {

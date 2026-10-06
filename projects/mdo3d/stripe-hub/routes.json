@@ -1,0 +1,90 @@
+{
+  "_readme": "serviceName -> forward target(s). A service matches when an event's serviceName equals its key or one of its aliases (case-insensitive), or when client_reference_id starts with '<key>:'. Entries with enabled:false are documentation only and never receive traffic. Optional 'accounts' restricts a service to events arriving on those /api/stripe/webhook/:account paths.",
+  "services": {
+    "tarot": {
+      "enabled": true,
+      "aliases": ["JarvisBee Tarot"],
+      "targets": ["https://tarot-cards-api.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/tarot/api/src/server.js new StripeService('JarvisBee Tarot'); host from tarot-cards/public/js/config/api.js"
+    },
+    "oracle": {
+      "enabled": true,
+      "aliases": ["BlackLabb Oracle"],
+      "targets": ["https://oracle-cards-api.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/oracle/api/src/server.js; host from oracle-cards/public/js/config/api.js"
+    },
+    "dreams": {
+      "enabled": true,
+      "aliases": ["BlackLabb Dreams"],
+      "targets": ["https://dream-interpreter-api-delta.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/dreams/api/src/server.js; host from dream-interpreter/public/js/config/api.js"
+    },
+    "iching": {
+      "enabled": true,
+      "aliases": ["I Ching Oracle"],
+      "targets": ["https://iching-api.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/iching/api/src/server.js; host from iching/public/success.html"
+    },
+    "runes": {
+      "enabled": true,
+      "aliases": ["Runes Oracle"],
+      "targets": ["https://runes-api.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/runes/api/src/server.js; host from runes/public/success.html"
+    },
+    "astrology": {
+      "enabled": true,
+      "aliases": ["Astrology Chart"],
+      "targets": ["https://astrology-api-alpha.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/astrology/api/src/server.js; host from astrology/public/success.html"
+    },
+    "numerology": {
+      "enabled": true,
+      "aliases": ["Numerology Insights"],
+      "targets": ["https://numerology-api.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/numerology/api/src/server.js; host from numerology-app/public/success.html"
+    },
+    "fengshui": {
+      "enabled": true,
+      "aliases": ["Feng Shui Analyzer"],
+      "targets": ["https://fengshui-api-eosin.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/fengshui/api/src/server.js; host from feng-shui-analyzer/app/success/page.tsx"
+    },
+    "pastlives": {
+      "enabled": true,
+      "aliases": ["Past Life Insights"],
+      "targets": ["https://pastlives-api.vercel.app/api/webhook/stripe-forwarded"],
+      "source": "projects/divination/pastlives/api/src/server.js; host from past-life-insights/app/success/page.tsx"
+    },
+    "rigor": {
+      "enabled": true,
+      "aliases": [],
+      "targets": ["https://api.rigor.design/api/payment/webhook-forwarded"],
+      "source": "projects/rigor/api. serviceName='rigor' is now set on checkout session + subscription metadata. Subscriptions created before that change carry no serviceName: map their price ids to 'rigor' in ROUTE_PRICE_MAP (same values as rigor's STRIPE_PRO_PRICE_IDS / STRIPE_TEAM_PRICE_IDS)."
+    },
+
+    "dailyaitoll": {
+      "enabled": false,
+      "aliases": [],
+      "targets": [],
+      "note": "DISABLED. projects/external/dailyaitoll/web/api/stripe-webhook.js (https://dailyaitoll.com/api/stripe-webhook) verifies signatures itself and has no forwarded receiver. Sessions carry metadata.kind/tier, no serviceName. Keep its own Stripe endpoint until it gets a receiver + serviceName."
+    },
+    "leads": {
+      "enabled": false,
+      "aliases": [],
+      "targets": [],
+      "note": "DISABLED. projects/leads/web/backend/api.py POST /stripe-webhook (https://leadsapi.mdo3d.com/stripe-webhook), FastAPI. Sessions carry metadata.firebase_uid / profile_id, no serviceName. Keep its own endpoint."
+    },
+    "mdothree": {
+      "enabled": false,
+      "aliases": [],
+      "targets": [],
+      "note": "DISABLED. projects/mdothree/mdothree-api/functions/stripe/webhook.js (Firebase Functions Express sub-app, POST <stripe fn>/webhook). Subscriptions carry metadata.firebaseUID, no serviceName. Keep its own endpoint."
+    },
+    "ronnascanner": {
+      "enabled": false,
+      "aliases": [],
+      "targets": [],
+      "note": "DISABLED. Two consumers: projects/ronnascanner/ronnascanner-api/api/payment/webhook.js (Vercel fn, POST /api/payment/webhook, sessions carry metadata.userId only) and projects/ronnascanner/api/src/server.js POST /api/webhook/stripe (Express, StripeService). Neither has a forwarded receiver. Keep their own endpoints."
+    }
+  }
+}

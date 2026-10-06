@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeDreamService } from './services/claudeDreamService.js';
 import { StripeService } from './services/stripeService.js';
-import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession } from './security.js';
+import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 
 dotenv.config();
 
@@ -208,6 +208,50 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
   } catch (error) {
     console.error('Webhook error:', error);
     res.status(400).json({ error: error.message });
+  }
+});
+
+// stripe-hub forwards {eventId} here (one Stripe endpoint per account instead of
+// one per app). Generous limit: the hub calls from a small set of Vercel IPs.
+const forwardedWebhookLimiter = rateLimit({ max: 300 });
+
+/**
+ * POST /api/webhook/stripe-forwarded
+ * Event forwarded by projects/mdo3d/stripe-hub. The body is NOT trusted: the event
+ * is re-fetched from Stripe with this service's key, and only events whose
+ * metadata.serviceName is this service are handled (same logic as the direct route).
+ */
+app.post('/api/webhook/stripe-forwarded', forwardedWebhookLimiter, async (req, res) => {
+  const eventId = req.body && req.body.eventId;
+  if (typeof eventId !== 'string' || !/^evt_[A-Za-z0-9_]{1,250}$/.test(eventId)) {
+    return res.status(400).json({ error: 'eventId is required' });
+  }
+
+  let event;
+  try {
+    event = await stripeService.retrieveEvent(eventId);
+  } catch (error) {
+    // Unknown id (wrong Stripe account / forged): final. Anything else: let the hub retry.
+    const status = error.statusCode === 404 || error.statusCode === 400 ? 404 : 502;
+    console.error('Forwarded webhook retrieve error:', error.message);
+    return res.status(status).json({ error: 'Could not retrieve event' });
+  }
+
+  const serviceName = event?.data?.object?.metadata?.serviceName;
+  if (serviceName !== stripeService.serviceName) {
+    return res.json({ received: true, ignored: true });
+  }
+
+  try {
+    const result = await stripeService.handleEvent(event);
+    if (result.success) {
+      res.json({ received: true, duplicate: Boolean(result.duplicate) });
+    } else {
+      res.status(500).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error('Forwarded webhook error:', error);
+    res.status(500).json({ error: 'Webhook handling failed' });
   }
 });
 
