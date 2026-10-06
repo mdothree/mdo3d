@@ -19,7 +19,15 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:8083',
   credentials: true
 }));
-app.use(express.json());
+// Parse JSON for every route EXCEPT the Stripe webhook: Stripe signature
+// verification (stripe.webhooks.constructEvent) needs the exact raw bytes, which
+// the route-level express.raw() below provides. If express.json() ran first it
+// would consume the stream and express.raw() would be skipped.
+const jsonParser = express.json();
+app.use((req, res, next) => {
+  if (req.path === '/api/webhook/stripe') return next();
+  return jsonParser(req, res, next);
+});
 
 // Routes
 
