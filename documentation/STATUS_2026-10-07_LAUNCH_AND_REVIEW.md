@@ -48,3 +48,14 @@ Public: rigor.design and mdothree.com footers say "A Lamar Platform" (→ latare
 
 ## Reports
 - `reports/Paywall lessons for MDO3D apps.md` (research) + `research_notes/Paywall lessons for MDO3D apps/`
+
+## Domain → Vercel project map (verified 2026-10-07)
+Deploy each domain from the folder linked to the project that actually serves it:
+- mdo3d.com → `mdo3d-landing` (source: `projects/mdo3d/landing`, repo mdothree/mdo3d-landing)
+- mdothree.com → `mdothree-landing` (source: `projects/mdothree/landing`; folder relinked 2026-10-07 — it was linked to an unused project `landing`)
+- guidance.mdo3d.com → `guidance-mdo3d` (repo mdothree/guidance-mdo3d; last deployed 2026-03-20 — the guidance fixes in `projects/mdo3d/guidance/index.html` have NOT reached it)
+- rigor.design → `rigor-landing` (`projects/rigor/landing`; static root index.html — do not add a `public/` dir, Vercel will serve it instead → 404)
+- subdomains map 1:1 to their app projects (e.g. tarot.mdo3d.com → tarot-cards, dreams.mdo3d.com → dream-interpreter, color.mdothree.com → mdothree-color, resume.rigor.design → rigor-resume).
+
+## Branding
+- 2026-10-07: rigor.design + mdothree.com footers now "Part of MDO3D" (were "A Lamar Platform"); live.
