@@ -59,3 +59,4 @@ Deploy each domain from the folder linked to the project that actually serves it
 
 ## Branding
 - 2026-10-07: rigor.design + mdothree.com footers now "Part of MDO3D" (were "A Lamar Platform"); live.
+- 2026-10-07: "Lamar" retired internally. `~/latarence/secrets/sega_credentials.env` gained `*_MDO3` aliases (old `*_LAMAR` kept; backup `.bak-2026-10-07`). Token docs' naming table/note updated (backups alongside). Local skills/agents (builder, outreach, analyst, curator, sentinel) now say MDO3D; `orgs/lamar.yaml` → `orgs/mdo3d.yaml` (backup `~/.claude/skills-agents-backup-2026-10-07.tgz`). Kept machine IDs: SEGA `--entity lamar`, `lamar-prod-0x` servers, `lamar_*` job names. Synced claude.ai skills (account-control, credential-acquisition, deployment-credentials, site-health, etc.) still mention Lamar — edit on claude.ai.
