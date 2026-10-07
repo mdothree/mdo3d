@@ -1,6 +1,24 @@
 /**
- * Firebase Configuration for Oracle Cards
- * Uses shared MDO3D Spiritual Firebase project (oracle-mdo3d)
+ * Firebase (optional) for Oracle Cards
+ * Shared MDO3D Spiritual Firebase project: oracle-mdo3d
+ *
+ * Firebase is NOT required for this app. Readings, payments and premium content
+ * do not depend on it: premium access is granted only after the API verifies the
+ * Stripe session server-side (see entitlement.js / success.html / api verify).
+ * Nothing here is a source of truth for paid status.
+ *
+ * Pattern (same in all 9 divination apps):
+ *  - Off by default (FIREBASE_ENABLED = false). While off, nothing is downloaded,
+ *    no anonymous user is created, no Firestore reads happen, and every method
+ *    resolves to a harmless empty value with no console noise.
+ *  - When on, the modular v10 SDK is lazy-loaded from gstatic on first use, with a
+ *    single initializeApp (reuses an existing app if present).
+ *  - App Check (reCAPTCHA v3) starts only when APP_CHECK_SITE_KEY is set.
+ *  - Data lives in `${APP_NAME}_readings`, owner-scoped by uid
+ *    (rules: shared/spiritual/firestore.rules).
+ *
+ * The web apiKey below is a public identifier, not a secret. Restrict it in
+ * Google Cloud Console > Credentials (HTTP referrers) to this app's domains.
  */
 
 const FIREBASE_CONFIG = {
@@ -14,128 +32,125 @@ const FIREBASE_CONFIG = {
 
 const APP_NAME = 'oracle';
 
+// Feature flags. Flip FIREBASE_ENABLED only when a feature (e.g. saved reading
+// history) actually calls saveReading/getReadingHistory.
+const FIREBASE_ENABLED = false;
+// reCAPTCHA v3 site key registered in Firebase Console > App Check. Empty = off.
+const APP_CHECK_SITE_KEY = '';
+
+const SDK_VERSION = '10.7.1';
+const SDK_BASE = `https://www.gstatic.com/firebasejs/${SDK_VERSION}`;
+
 class FirebaseService {
   constructor() {
     this.config = FIREBASE_CONFIG;
+    this.enabled = FIREBASE_ENABLED;
     this.app = null;
     this.auth = null;
     this.db = null;
     this.initialized = false;
+    this._sdk = null;
+    this._initPromise = null;
   }
 
-  async initialize() {
-    if (this.initialized) return true;
-
-    // Check for Firebase SDK (loaded via CDN in HTML)
-    if (typeof firebase === 'undefined') {
-      console.warn('[Firebase] SDK not loaded. Include Firebase CDN scripts in HTML.');
-      return false;
+  /** Lazy, idempotent. Resolves true when Firebase is ready, false when disabled or unavailable. */
+  initialize() {
+    if (!this.enabled) return Promise.resolve(false);
+    if (!this._initPromise) {
+      this._initPromise = this._load().catch((error) => {
+        console.warn('[Firebase] unavailable:', error?.message || error);
+        this._initPromise = null; // allow a later retry
+        return false;
+      });
     }
+    return this._initPromise;
+  }
 
-    try {
-      // Check if already initialized
-      if (firebase.apps.length === 0) {
-        this.app = firebase.initializeApp(this.config);
-      } else {
-        this.app = firebase.apps[0];
+  async _load() {
+    const [appMod, authMod, fsMod] = await Promise.all([
+      import(`${SDK_BASE}/firebase-app.js`),
+      import(`${SDK_BASE}/firebase-auth.js`),
+      import(`${SDK_BASE}/firebase-firestore.js`)
+    ]);
+    this._sdk = { ...appMod, ...authMod, ...fsMod };
+    const { getApps, getApp, initializeApp, getAuth, getFirestore } = this._sdk;
+    this.app = getApps().length ? getApp() : initializeApp(this.config);
+
+    if (APP_CHECK_SITE_KEY) {
+      try {
+        const { initializeAppCheck, ReCaptchaV3Provider } = await import(`${SDK_BASE}/firebase-app-check.js`);
+        initializeAppCheck(this.app, {
+          provider: new ReCaptchaV3Provider(APP_CHECK_SITE_KEY),
+          isTokenAutoRefreshEnabled: true
+        });
+      } catch (error) {
+        console.warn('[Firebase] App Check not started:', error?.message || error);
       }
-
-      this.auth = firebase.auth();
-      this.db = firebase.firestore();
-      this.initialized = true;
-
-      // Auto sign-in anonymously
-      await this.signInAnonymously();
-
-      console.log('[Firebase] Initialized successfully');
-      return true;
-    } catch (error) {
-      console.error('[Firebase] Initialization error:', error);
-      return false;
     }
+
+    this.auth = getAuth(this.app);
+    this.db = getFirestore(this.app);
+    this.initialized = true;
+    return true;
   }
 
+  /** Anonymous sign-in on demand only (never on page load). */
   async signInAnonymously() {
-    if (!this.auth) return null;
-
+    if (!(await this.initialize())) return null;
     try {
-      // Check if already signed in
-      if (this.auth.currentUser) {
-        return this.auth.currentUser;
-      }
-
-      const result = await this.auth.signInAnonymously();
-      console.log('[Firebase] Signed in anonymously');
+      if (this.auth.currentUser) return this.auth.currentUser;
+      const result = await this._sdk.signInAnonymously(this.auth);
       return result.user;
     } catch (error) {
-      console.warn('[Firebase] Anonymous sign-in failed:', error.message);
+      console.warn('[Firebase] Anonymous sign-in failed:', error?.message || error);
       return null;
     }
   }
 
-  getAuth() {
-    return this.auth;
-  }
+  getAuth() { return this.auth; }
+  getFirestore() { return this.db; }
+  getCurrentUser() { return this.auth?.currentUser || null; }
 
-  getFirestore() {
-    return this.db;
-  }
-
-  getCurrentUser() {
-    return this.auth?.currentUser || null;
-  }
-
-  // Save reading to Firestore
   async saveReading(readingData) {
-    if (!this.db || !this.auth?.currentUser) return null;
-
+    const user = await this.signInAnonymously();
+    if (!user) return null;
     try {
-      const ref = await this.db.collection(`${APP_NAME}_readings`).add({
-        uid: this.auth.currentUser.uid,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        ...readingData
+      const { collection, addDoc, serverTimestamp } = this._sdk;
+      const ref = await addDoc(collection(this.db, `${APP_NAME}_readings`), {
+        ...readingData,
+        uid: user.uid,
+        timestamp: serverTimestamp()
       });
       return ref.id;
     } catch (error) {
-      console.warn('[Firebase] saveReading failed:', error.message);
+      console.warn('[Firebase] saveReading failed:', error?.message || error);
       return null;
     }
   }
 
-  // Get reading history
   async getReadingHistory(maxItems = 20) {
-    if (!this.db || !this.auth?.currentUser) return [];
-
+    const user = await this.signInAnonymously();
+    if (!user) return [];
     try {
-      const snapshot = await this.db.collection(`${APP_NAME}_readings`)
-        .where('uid', '==', this.auth.currentUser.uid)
-        .orderBy('timestamp', 'desc')
-        .limit(maxItems)
-        .get();
-
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const { collection, query, where, orderBy, limit, getDocs } = this._sdk;
+      const q = query(
+        collection(this.db, `${APP_NAME}_readings`),
+        where('uid', '==', user.uid),
+        orderBy('timestamp', 'desc'),
+        limit(maxItems)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch (error) {
-      console.warn('[Firebase] getReadingHistory failed:', error.message);
+      console.warn('[Firebase] getReadingHistory failed:', error?.message || error);
       return [];
     }
   }
 
-  // Check premium status
-  async getPremiumStatus() {
-    if (!this.db || !this.auth?.currentUser) return { isPremium: false };
-
-    try {
-      const doc = await this.db.collection('users').doc(this.auth.currentUser.uid).get();
-      if (doc.exists) {
-        return doc.data();
-      }
-      return { isPremium: false };
-    } catch (error) {
-      console.warn('[Firebase] getPremiumStatus failed:', error.message);
-      return { isPremium: false };
-    }
-  }
+  // getPremiumStatus() was removed on purpose: it read a client-writable
+  // `users/{uid}` doc on every page view. Paid status comes only from the API's
+  // Stripe verification (window.PremiumEntitlement + server-side verifyPayment).
 }
 
-// Export as firebaseConfig to match app.js import
+export { FirebaseService, FirebaseService as FirebaseConfig };
 export const firebaseConfig = new FirebaseService();

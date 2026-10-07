@@ -25,8 +25,8 @@ class OracleCardsApp {
     }
 
     async initialize() {
-        // Initialize Firebase and Auth
-        await firebaseConfig.initialize();
+        // Firebase is optional (off by default) — never block the UI on it.
+        firebaseConfig.initialize();
         await this.auth.initialize();
         
         // Initialize event listeners

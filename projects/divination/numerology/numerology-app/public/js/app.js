@@ -38,13 +38,10 @@ async function init() {
   // Firestore read used to block every button until both network calls finished.
   setupEventListeners();
   restorePendingReading();
-  try {
-    await firebaseConfig.initialize();
-    const status = await firebaseConfig.getPremiumStatus();
-    isPremium = status?.isPremium ?? false;
-  } catch (e) {
-    console.warn('[Firebase] init skipped:', e);
-  }
+  // Firebase is optional (off by default). Premium status never comes from a
+  // client-readable Firestore doc: it is granted only by window.PremiumEntitlement
+  // after the API verifies the Stripe session, and the API re-verifies on use.
+  firebaseConfig.initialize();
 }
 
 // After a Stripe redirect the page reloads and the numbers are lost. Name and date
