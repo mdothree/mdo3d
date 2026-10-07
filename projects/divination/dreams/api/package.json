@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["dreams", "interpretation", "ai", "claude", "spiritual", "subconscious"],
-  "author": "Lamar Development Team",
+  "author": "MDO3D",
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",

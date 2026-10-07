@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["tarot", "divination", "ai", "claude", "spiritual"],
-  "author": "Lamar Development Team",
+  "author": "MDO3D",
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",
