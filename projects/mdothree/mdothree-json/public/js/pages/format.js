@@ -22,7 +22,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
       name: "mdothree",
       version: "1.0.0",
       tools: ["format", "validate", "convert"],
-      meta: { author: "m.three", free: true, count: 42 },
+      meta: { author: "mdothree", free: true, count: 42 },
       tags: null
     });
 

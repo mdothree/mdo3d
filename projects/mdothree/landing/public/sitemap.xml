@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Only URLs that exist on mdothree.com. Each tool subdomain (hash., color., …) serves its own sitemap.xml. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://mdothree.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
-    <loc>https://mdothree.com/pro.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://mdothree.com/pro</loc>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
-    <loc>https://mdothree.com/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://mdothree.com/privacy</loc>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
-    <loc>https://mdothree.com/privacy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://mdothree.com/terms</loc>
+    <lastmod>2026-10-07</lastmod>
   </url>
 </urlset>

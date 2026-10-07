@@ -13,7 +13,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'mdothree-v2';
+const CACHE_NAME = 'mdothree-v3';
 
 // Assets to pre-cache on install
 const PRECACHE = [
@@ -24,7 +24,7 @@ const PRECACHE = [
   '/js/nav-toggle.js',
   '/js/stripe-paywall.js',
   '/js/config/firebase.js',
-  '/manifest.json',
+  '/site.webmanifest',
   '/favicon.svg',
   '/404.html',
 ];
