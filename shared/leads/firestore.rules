@@ -1,53 +1,101 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // NOTE: the mdo3d-leads Firebase project is shared by two apps —
-    //   • ronnascanner leads/CRM tools (owner-scoped: users, leads, contacts, companies)
-    //   • resume-analyzer (anonymous capture: leads email, analytics events)
-    // These rules union both so neither breaks.
+    // mdo3d-leads is shared by:
+    //   • ronnascanner tools (leads, contacts, companies, emails, prospects) —
+    //     services/firestoreService.js saveDoc: {userId, ...fields, createdAt, updatedAt}
+    //   • resume-analyzer (anonymous capture: leads email, analytics share events)
+    //   • projects/leads (FastAPI) uses this project for Firebase Auth only.
+    // Keep byte-identical with projects/ronnascanner/resume-analyzer/firestore.rules.
 
-    // Users collection - users can only read/write their own document
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    function isSignedIn() { return request.auth != null; }
+    function ownsRead()   { return isSignedIn() && resource.data.userId == request.auth.uid; }
+    function validNew(fields) {
+      let d = request.resource.data;
+      return isSignedIn()
+        && d.userId == request.auth.uid
+        && d.keys().hasOnly(fields.concat(['userId', 'createdAt', 'updatedAt']))
+        && d.createdAt == request.time
+        && d.updatedAt == request.time;
     }
 
-    // leads: anonymous email capture (resume-analyzer) OR owner CRM record (ronnascanner)
+    // Users: owner may read; no client writes (nothing writes it; prevents
+    // self-assigned plan/role fields).
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // leads: anonymous email capture (resume-analyzer) OR owner CRM record (uid field)
     match /leads/{leadId} {
       allow create: if (request.resource.data.keys().hasOnly(['email','score','timestamp','source'])
                         && request.resource.data.email is string
-                        && request.resource.data.email.size() < 254)
+                        && request.resource.data.email.size() < 254
+                        && (!('score' in request.resource.data) || request.resource.data.score is number)
+                        && (!('source' in request.resource.data) || (request.resource.data.source is string && request.resource.data.source.size() <= 40)))
                     || (request.auth != null && request.resource.data.uid == request.auth.uid);
       allow read, update, delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
-    // analytics: anonymous, write-only telemetry (resume-analyzer)
+    // analytics: write-only share events from resume-analyzer, exact shape only
+    // (was `create: if true`, which accepted any document from anyone).
     match /analytics/{docId} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasOnly(['event','score','timestamp','platform'])
+                    && request.resource.data.event in ['share']
+                    && request.resource.data.platform == 'resume_analyzer'
+                    && (!('score' in request.resource.data) || request.resource.data.score is number)
+                    && request.resource.data.timestamp is timestamp;
       allow read, update, delete: if false;
     }
 
-    // Contacts collection (owner-scoped CRM)
+    // Legacy CRM collections (owner-scoped by uid)
     match /contacts/{contactId} {
       allow read: if request.auth != null && resource.data.uid == request.auth.uid;
       allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
       allow update, delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
-
-    // Companies collection (owner-scoped CRM)
     match /companies/{companyId} {
       allow read: if request.auth != null && resource.data.uid == request.auth.uid;
       allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
       allow update, delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
-    // Analyses + payments (resume-analyzer: owner-scoped / server-only)
-    match /analyses/{analysisId} {
-      allow create: if request.auth != null;
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    // ronnascanner saved results (owner-scoped by userId, immutable once created).
+    // These were missing, so the default deny blocked every save/history call.
+    match /lead-lists/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['name', 'count', 'leads', 'query'])
+                    && (!('leads' in request.resource.data) || (request.resource.data.leads is list && request.resource.data.leads.size() <= 100));
+      allow update: if false;
     }
+    match /email-results/{id}     { allow read, delete: if ownsRead(); allow create: if validNew(['results', 'count']);   allow update: if false; }
+    match /saved-contacts/{id}    { allow read, delete: if ownsRead(); allow create: if validNew(['contacts', 'company']); allow update: if false; }
+    match /company-profiles/{id}  { allow read, delete: if ownsRead(); allow create: if validNew(['profile', 'name']);     allow update: if false; }
+    match /prospect-profiles/{id} { allow read, delete: if ownsRead(); allow create: if validNew(['profile', 'company']);  allow update: if false; }
+
+    // Analyses (resume-analyzer): owner-scoped by userId on create too.
+    match /analyses/{analysisId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, delete: if ownsRead();
+      allow update: if false;
+    }
+
+    // Server-only entitlement / billing / usage docs (Admin SDK). Owners may read.
     match /payments/{paymentId} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow create: if false; // backend only
+      allow read: if ownsRead();
+      allow write: if false;
+    }
+    match /payment_events/{id} {
+      allow read: if ownsRead();
+      allow write: if false;
+    }
+    match /subscriptions/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+    match /usage/{docId} {
+      allow read: if isSignedIn() && docId.matches(request.auth.uid + '_[0-9]{4}-[0-9]{2}');
+      allow write: if false;
     }
 
     // Default deny — anything not matched above is inaccessible.

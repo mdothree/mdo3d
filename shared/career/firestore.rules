@@ -1,6 +1,12 @@
 // mdo3d-career — Firebase project for the rigor career tools (resume, cover,
 // linkedin, interview, salary, portfolio, networking). Docs are owner-scoped by a
-// `userId` field. Collection names are hyphenated to match what the apps write.
+// `userId` field. Collection names are hyphenated to match what the apps write
+// (services/firestoreService.js saveDoc: {userId, ...fields, createdAt, updatedAt}
+// with serverTimestamp() for both timestamps).
+//
+// Server-only (Admin SDK in projects/rigor/api bypasses rules): subscriptions,
+// usage, payment_events. Clients can never write entitlement / usage docs.
+// Tests: shared/career/rules-tests (see README there).
 
 rules_version = '2';
 service cloud.firestore {
@@ -8,45 +14,112 @@ service cloud.firestore {
 
     function isSignedIn() { return request.auth != null; }
     function ownsRead()   { return isSignedIn() && resource.data.userId == request.auth.uid; }
-    function ownsWrite()  { return isSignedIn() && request.resource.data.userId == request.auth.uid; }
 
-    // Per-user profile doc
-    match /users/{userId} {
-      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    // A new tool-output doc: owned by the caller, only the expected keys,
+    // server timestamps, bounded string fields.
+    function validNew(fields) {
+      let d = request.resource.data;
+      return isSignedIn()
+        && d.userId == request.auth.uid
+        && d.keys().hasOnly(fields.concat(['userId', 'createdAt', 'updatedAt']))
+        && d.createdAt == request.time
+        && d.updatedAt == request.time;
+    }
+    function optStr(f, max) {
+      let d = request.resource.data;
+      return !(f in d) || (d[f] is string && d[f].size() <= max);
+    }
+    function optNum(f) {
+      let d = request.resource.data;
+      return !(f in d) || d[f] == null || d[f] is number;
+    }
+    function optMap(f) {
+      let d = request.resource.data;
+      return !(f in d) || d[f] is map;
+    }
+    function optList(f, max) {
+      let d = request.resource.data;
+      return !(f in d) || (d[f] is list && d[f].size() <= max);
     }
 
-    // Rigor tool outputs (owner-scoped by userId)
-    match /resume-analyses/{id}        { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
-    match /cover-letters/{id}          { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
-    match /interview-sessions/{id}     { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
-    match /linkedin-optimizations/{id} { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
-    match /networking-emails/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
-    match /portfolio-reviews/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
-    match /salary-strategies/{id}      { allow read, delete: if ownsRead(); allow create: if ownsWrite(); }
+    // Per-user profile doc. No client writes it today; read-only for the owner so
+    // nobody can self-assign plan/role/credit fields here.
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
 
-    // Subscription state: written ONLY by the Stripe webhook (Admin SDK bypasses
-    // rules). Doc ID is the Firebase uid (api/payment/webhook.js). Owner may read.
-    // A doc ID check (not resource.data) so a missing doc reads as "not found"
-    // instead of permission-denied (paymentService.getSubscription / onSnapshot).
+    // ── Rigor tool outputs (owner-scoped, immutable once created) ──
+    match /resume-analyses/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['score', 'jobSnippet', 'resumeSnippet'])
+                    && optNum('score') && optStr('jobSnippet', 200) && optStr('resumeSnippet', 200);
+      allow update: if false;
+    }
+    match /cover-letters/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['content', 'jobSnippet'])
+                    && optStr('content', 20000) && optStr('jobSnippet', 200);
+      allow update: if false;
+    }
+    match /interview-sessions/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['role', 'type', 'questions', 'scores', 'skipped', 'avgScore'])
+                    && optStr('role', 300) && optStr('type', 60)
+                    && optList('questions', 30) && optList('scores', 30)
+                    && optNum('skipped') && optNum('avgScore');
+      allow update: if false;
+    }
+    match /linkedin-optimizations/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['targetRole', 'optimized'])
+                    && optStr('targetRole', 300) && optMap('optimized');
+      allow update: if false;
+    }
+    match /networking-emails/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['type', 'recipientName', 'subject', 'body'])
+                    && optStr('type', 60) && optStr('recipientName', 300)
+                    && optStr('subject', 1000) && optStr('body', 20000);
+      allow update: if false;
+    }
+    match /portfolio-reviews/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['portfolioUrl', 'targetRole', 'review'])
+                    && optStr('portfolioUrl', 600) && optStr('targetRole', 300) && optMap('review');
+      allow update: if false;
+    }
+    match /salary-strategies/{id} {
+      allow read, delete: if ownsRead();
+      allow create: if validNew(['jobTitle', 'offeredSalary', 'strategy'])
+                    && optStr('jobTitle', 300) && optStr('offeredSalary', 60) && optMap('strategy');
+      allow update: if false;
+    }
+
+    // Subscription state: written ONLY by the Stripe webhook (Admin SDK). Doc ID is
+    // the Firebase uid (api/lib/stripeEvents.js). Owner may read. A doc ID check
+    // (not resource.data) so a missing doc reads as "not found" instead of
+    // permission-denied (paymentService.getSubscription / onSnapshot).
     match /subscriptions/{userId} {
       allow read: if isSignedIn() && request.auth.uid == userId;
       allow write: if false;
     }
 
-    // Monthly usage counters: doc ID is `${uid}_${YYYY-MM}`. Incremented ONLY by the
-    // API (Admin SDK: api/analyze, api/cover-letter). Clients read their own docs
-    // for the paywall gate / usage meter; client writes are denied so a user
-    // cannot reset their own quota.
+    // Monthly usage counters: doc ID is `${uid}_${YYYY-MM}`. Reserved/incremented
+    // ONLY by the API (Admin SDK, api/lib/quota.js). Clients read their own docs for
+    // the paywall gate / usage meter; client writes are denied so a user cannot
+    // reset their own quota.
     match /usage/{docId} {
       allow read: if isSignedIn() && docId.matches(request.auth.uid + '_[0-9]{4}-[0-9]{2}');
       allow write: if false;
     }
 
-    // Payment audit events (client-written, owner-scoped, immutable)
+    // Payment audit events: written only by the webhook (keyed by Stripe event id).
+    // The client-side logPaymentEvent() is unused; a client-written audit row would
+    // be untrustworthy anyway.
     match /payment_events/{id} {
-      allow read:   if ownsRead();
-      allow create: if ownsWrite();
-      allow update, delete: if false;
+      allow read: if ownsRead();
+      allow write: if false;
     }
 
     // Default deny

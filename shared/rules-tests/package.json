@@ -1,0 +1,13 @@
+{
+  "name": "mdo3d-firestore-rules-tests",
+  "private": true,
+  "type": "module",
+  "description": "Emulator tests for shared/{career,utilities,leads}/firestore.rules",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore --project demo-rules \"node --test --test-concurrency=1 career.test.mjs utilities.test.mjs leads.test.mjs\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase": "^11.10.0"
+  }
+}

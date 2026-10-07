@@ -12,8 +12,10 @@ Endpoints:
 Auth: Firebase token verification + API key fallback
 """
 
+import hmac
 import os
 import subprocess
+from urllib.parse import urlparse
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -27,10 +29,20 @@ import stripe
 from . import db
 
 # Configuration
-API_KEY = os.environ.get("LEADS_API_KEY", "dev-key-change-me")
+# No default: an unset LEADS_API_KEY disables the API-key routes instead of
+# accepting a well-known placeholder.
+API_KEY = os.environ.get("LEADS_API_KEY", "")
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 FIREBASE_PROJECT_ID = os.environ.get("FIREBASE_PROJECT_ID", "")
+FIREBASE_CREDENTIALS_PATH = os.environ.get(
+    "FIREBASE_CREDENTIALS_PATH", "/etc/secrets/firebase-credentials.json"
+)
+# Optional allowlist (comma-separated) of Stripe price IDs this API may sell.
+# Set it in production: the Stripe account sells other products too.
+ALLOWED_PRICE_IDS = {
+    p.strip() for p in os.environ.get("LEADS_STRIPE_PRICE_IDS", "").split(",") if p.strip()
+}
 
 TOOLS_DIR = Path(__file__).parent.parent.parent
 PROFILES_PATH = TOOLS_DIR / "config" / "profiles.json"
@@ -41,15 +53,17 @@ stripe.api_key = STRIPE_SECRET_KEY
 app = FastAPI(title="FL Sunbiz Leads API", version="1.0.0")
 
 # CORS for frontend
+CORS_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",  # Vite dev
+    "https://tools.ridgefield.llc",
+    "https://leads.ridgefield.llc",
+    "https://leads.mdo3d.com",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",  # Vite dev
-        "https://tools.ridgefield.llc",
-        "https://leads.ridgefield.llc",
-        "https://leads.mdo3d.com",
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -123,9 +137,31 @@ class RedeemCodeRequest(BaseModel):
 
 async def verify_api_key(x_api_key: str = Header(None)) -> bool:
     """Verify API key for internal/admin requests."""
-    if not x_api_key or x_api_key != API_KEY:
+    if not API_KEY or not x_api_key or not hmac.compare_digest(x_api_key, API_KEY):
         raise HTTPException(status_code=401, detail="Invalid API key")
     return True
+
+
+_firebase_app = None
+
+
+def _get_firebase_app():
+    """Initialise firebase-admin exactly once (service account file, else ADC)."""
+    global _firebase_app
+    if _firebase_app is not None:
+        return _firebase_app
+    import firebase_admin
+    from firebase_admin import credentials
+
+    if firebase_admin._apps:
+        _firebase_app = firebase_admin.get_app()
+        return _firebase_app
+    if os.path.exists(FIREBASE_CREDENTIALS_PATH):
+        cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+    else:
+        cred = credentials.ApplicationDefault()
+    _firebase_app = firebase_admin.initialize_app(cred, {"projectId": FIREBASE_PROJECT_ID})
+    return _firebase_app
 
 
 async def verify_firebase_token(authorization: str = Header(None)) -> dict:
@@ -133,30 +169,25 @@ async def verify_firebase_token(authorization: str = Header(None)) -> dict:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing authorization header")
 
-    token = authorization.split(" ")[1]
+    token = authorization.split(" ", 1)[1].strip()
 
     try:
-        import firebase_admin
-        from firebase_admin import auth, credentials
+        from firebase_admin import auth
 
-        # Initialize Firebase if not already done
-        if not firebase_admin._apps:
-            if os.path.exists("/etc/secrets/firebase-credentials.json"):
-                cred = credentials.Certificate("/etc/secrets/firebase-credentials.json")
-            else:
-                # Use application default credentials
-                cred = credentials.ApplicationDefault()
-            firebase_admin.initialize_app(cred, {
-                'projectId': FIREBASE_PROJECT_ID
-            })
+        decoded = auth.verify_id_token(token, app=_get_firebase_app())
+    except Exception:
+        # Don't echo verification internals back to the caller.
+        raise HTTPException(status_code=401, detail="Invalid token")
 
-        decoded = auth.verify_id_token(token)
-        return {
-            "uid": decoded["uid"],
-            "email": decoded.get("email", ""),
-        }
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+    # mdo3d-leads also hosts resume-analyzer, which uses anonymous auth; an
+    # anonymous token must not be able to create a leads account.
+    if decoded.get("firebase", {}).get("sign_in_provider") == "anonymous":
+        raise HTTPException(status_code=401, detail="Sign in with email or Google")
+
+    return {
+        "uid": decoded["uid"],
+        "email": decoded.get("email", ""),
+    }
 
 
 async def get_or_create_user(user_info: dict = Depends(verify_firebase_token)) -> db.User:
@@ -417,6 +448,13 @@ async def create_checkout_session(
     if profile.paid:
         raise HTTPException(status_code=400, detail="Profile already paid")
 
+    if ALLOWED_PRICE_IDS and request.price_id not in ALLOWED_PRICE_IDS:
+        raise HTTPException(status_code=400, detail="Unknown price")
+    for url in (request.success_url, request.cancel_url):
+        u = urlparse(url)
+        if f"{u.scheme}://{u.netloc}" not in CORS_ORIGINS:
+            raise HTTPException(status_code=400, detail="Redirect URL not allowed")
+
     try:
         # Create or get Stripe customer
         if not user.stripe_customer_id:
@@ -582,7 +620,9 @@ async def stripe_webhook(request: Request):
         session = event["data"]["object"]
         profile_id = session.get("metadata", {}).get("profile_id")
 
-        if profile_id:
+        # complete_payment() is idempotent (keyed by the session id we stored at
+        # checkout, so a redelivered event re-applies the same state).
+        if profile_id and session.get("payment_status") in ("paid", "no_payment_required"):
             # Mark payment complete and activate profile
             db.complete_payment(
                 stripe_session_id=session["id"],

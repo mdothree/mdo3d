@@ -13,7 +13,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'mdothree-v3';
+const CACHE_NAME = 'mdothree-v4';
 
 // Assets to pre-cache on install
 const PRECACHE = [

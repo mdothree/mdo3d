@@ -26,6 +26,19 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 
+// App Check (OFF by default): set VITE_FIREBASE_APPCHECK_ENABLED=true and
+// VITE_FIREBASE_APPCHECK_SITE_KEY=<reCAPTCHA Enterprise site key> at build time after
+// registering the key in Firebase console > App Check (mdo3d-leads). Keep enforcement
+// off until the console shows verified traffic.
+if (import.meta.env.VITE_FIREBASE_APPCHECK_ENABLED === 'true' && import.meta.env.VITE_FIREBASE_APPCHECK_SITE_KEY) {
+  import('firebase/app-check')
+    .then(({ initializeAppCheck, ReCaptchaEnterpriseProvider }) => initializeAppCheck(app, {
+      provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_FIREBASE_APPCHECK_SITE_KEY),
+      isTokenAutoRefreshEnabled: true,
+    }))
+    .catch((e) => console.warn('[AppCheck] init failed:', e?.message));
+}
+
 export { auth };
 
 /**
