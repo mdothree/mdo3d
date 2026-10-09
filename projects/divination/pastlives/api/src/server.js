@@ -52,7 +52,8 @@ app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
     if (!premium) {
       const quickInsight = await claudeService.generateQuickInsight(
         birthData.birthDate,
-        question
+        question,
+        birthData
       );
 
       return res.json({

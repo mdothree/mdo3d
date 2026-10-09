@@ -28,7 +28,12 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
 
     async function runFormat(minify = false) {
       const text = inputJson.value.trim();
-      if (!text) return;
+      if (!text) {
+        showAlert(alertArea, 'warning', 'Paste or type some JSON first, then click ' + (minify ? 'Minify' : 'Beautify') + '.');
+        jsonOutput.innerHTML = ''; sizeInfo.textContent = ''; lastFormatted = '';
+        inputJson.focus();
+        return;
+      }
       const sizeKB = new Blob([text]).size / 1024;
       if (sizeKB > FREE_LIMITS.jsonFileSizeKB && !isPremium()) {
         requirePremium('Formatting JSON files over 50KB requires Pro', 'json-format-size');

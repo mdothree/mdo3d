@@ -886,10 +886,17 @@ input[type="color"] {
 @media (max-width: 768px) {
   .nav-hamburger { display: flex; align-items: center; justify-content: center; }
 
+  /* Most pages put the hamburger after .nav-inner (outside it); without this
+     it wrapped onto its own row, flush left, under the logo. Keep one row. */
+  .nav { display: flex; align-items: center; padding-right: 24px; }
+  .nav-inner { flex: 1; min-width: 0; }
+  .nav-inner > .nav-hamburger { margin-left: auto; }
+  .nav > .nav-hamburger { flex-shrink: 0; }
+
   .nav-links {
     display: none;
-    position: fixed;
-    top: 57px;
+    position: absolute;
+    top: 100%;
     left: 0; right: 0;
     background: var(--slate-950);
     border-bottom: 1px solid rgba(255,255,255,0.08);

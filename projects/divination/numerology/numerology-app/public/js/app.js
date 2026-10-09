@@ -83,6 +83,24 @@ function setupEventListeners() {
   elements.birthDateInput?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') calculateNumbers();
   });
+
+  // NUMEROLOGY-NO-RECALC: once a reading is on screen, editing the name or
+  // date recalculates it so the numbers never sit stale beside new inputs.
+  let recalcTimer = null;
+  const recalcIfShowing = () => {
+    clearTimeout(recalcTimer);
+    recalcTimer = setTimeout(() => {
+      if (!currentNumbers) return;
+      const name = elements.nameInput?.value.trim();
+      const birthDate = elements.birthDateInput?.value;
+      if (!name || !birthDate) return; // wait until both are valid again
+      if (name === currentNumbers.name && birthDate === currentNumbers.birthDate) return;
+      calculateNumbers({ scroll: false });
+    }, 300);
+  };
+  elements.nameInput?.addEventListener('input', recalcIfShowing);
+  elements.birthDateInput?.addEventListener('input', recalcIfShowing);
+  elements.birthDateInput?.addEventListener('change', recalcIfShowing);
 }
 
 async function handlePremiumPurchase() {
@@ -195,7 +213,7 @@ function hidePremiumModal() {
   }
 }
 
-function calculateNumbers() {
+function calculateNumbers(opts = {}) {
   const name = elements.nameInput?.value.trim();
   const birthDate = elements.birthDateInput?.value;
 
@@ -213,10 +231,10 @@ function calculateNumbers() {
   currentNumbers.name = name;
   currentNumbers.birthDate = birthDate;
 
-  showNumbers();
+  showNumbers(opts.scroll !== false);
 }
 
-function showNumbers() {
+function showNumbers(scroll = true) {
   const lifePath = getLifePathMeaning(currentNumbers.lifePathNumber);
 
   elements.numbersResult.innerHTML = `
@@ -257,7 +275,7 @@ function showNumbers() {
   elements.resetBtn.style.display = 'inline-block';
   elements.calculateBtn.style.display = 'none';
 
-  elements.numbersDisplay.scrollIntoView({ behavior: 'smooth' });
+  if (scroll) elements.numbersDisplay.scrollIntoView({ behavior: 'smooth' });
 }
 
 function showReading() {

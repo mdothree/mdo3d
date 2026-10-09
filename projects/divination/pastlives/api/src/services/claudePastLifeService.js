@@ -152,20 +152,34 @@ Be evocative, specific, and compassionate. Create a narrative that feels real an
     }
   }
 
-  async generateQuickInsight(birthDate, question) {
+  async generateQuickInsight(birthDate, question, birthData = {}) {
+    // PASTLIFE-INTEREST-IGNORED: the free glimpse now uses the interests the
+    // visitor typed (it used to read only the birth date and question).
+    const clip = (v) => (typeof v === 'string' ? v.trim().slice(0, 200) : '');
+    const interests = clip(birthData.interests);
+    const talents = clip(birthData.talents);
+    const fears = clip(birthData.fears);
+    const extras = [
+      interests && `Strong interests/passions: ${interests}`,
+      talents && `Natural talents: ${talents}`,
+      fears && `Unexplained fears: ${fears}`,
+    ].filter(Boolean).join('\n');
     try {
       const message = await this.client.messages.create({
         model: 'claude-sonnet-4-6',
         max_tokens: 400,
         messages: [{
           role: 'user',
-          content: `As a past life reader, provide a brief (3-4 sentences) glimpse into a past life for someone born on ${birthDate} who asks: "${question || 'What past life energy am I carrying?'}". Be evocative, specific, and meaningful. Reply in plain prose paragraphs only — no Markdown (no headings, bold, italics, bullet points or horizontal rules).`
+          content: `As a past life reader, provide a brief (3-4 sentences) glimpse into a past life for someone born on ${birthDate} who asks: "${question || 'What past life energy am I carrying?'}".${extras ? `\nThey shared:\n${extras}\nWeave these details (especially their interests) into the glimpse explicitly.` : ''} Be evocative, specific, and meaningful. Reply in plain prose paragraphs only — no Markdown (no headings, bold, italics, bullet points or horizontal rules).`
         }]
       });
 
       return message.content[0].text.trim();
     } catch (error) {
       console.error('Claude API error:', error);
+      if (interests) {
+        return `Your soul carries memories of many lifetimes. Your pull toward ${interests} is the kind of passion past-life readers treat as an echo of something once lived, not merely learned. A full reading can follow that thread to the life where it began.`;
+      }
       return 'Your soul carries memories of many lifetimes. A deeper reading can reveal the stories waiting to be remembered.';
     }
   }
