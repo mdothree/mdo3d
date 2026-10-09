@@ -72,6 +72,22 @@
 
 **Held for Principal (dev will not guess):** RONNA-COPY-HONESTY, RONNA-SIGNIN-LATARENCE, RONNA-LANDING-DEAD-CTAS (targets), TAROT-PAID-SPREAD-DEMO, GUIDANCE-PROJECT-SPLIT, LEGAL-SUBSITES-MISSING, LEGAL-DATE-2025, MDO3D-FOOTER-GITHUB-404 (org).
 
+## Intake-found (no HQ ID)
+
+Candidates from HQ intake (source: `~/latarence/coordination/dispatch/2026-10-08_MDO3D_hq_cycle5_fix_queue.md` "Screenshot evidence + intake-found candidates"; screenshots per ID in `hq_intake/ASSURANCE.md` + `hq_intake/LBL_MDO_EVIDENCE.md`). Not HQ IDs — do not remint.
+
+| Candidate | Sev | Surface | Note |
+|---|---|---|---|
+| RONNA-LEADS-ICON-404 | P3 | leads.ronnascanner.com | |
+| MDOTHREE-TRIAL-PATH-UNVERIFIED | P2 | json/text/pdf/image/qr 7-day trial | likely dead with empty env |
+| DIV-CHECKOUT-UNVERIFIED | P2 | 9 divination `*-api.vercel.app/api/payment/create-checkout` | mode/health unknown |
+| POSTPAY-DELIVERY-NEVER-CLOSED | P1-class | fleet, all paid MDO products (incl. MDO-001 names) | names $2.99 escalated to Bridge — do NOT touch names' payment path |
+| LEGAL-REAL-PAGES-NO-GOVERNING-LAW | P3 | mdo3d, mdothree, layoffleads, prompts, runwae | held on jurisdiction |
+| FIREBASE-DUAL-SDK | P3 | not named | needs source read |
+| CONTACT-MISSING | P3 | rigor, ronna, guidance, most divination, dailyaitoll | + dailyaitoll no MX |
+| JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED | P3 | json.mdothree | |
+| Mobile WARN bundle | P3 | tap targets <40px on mdo3d/mdothree/runwae; tool-nav sideways scroller color/timestamp/password; rigor header wrap; <12px text on layoffleads | |
+
 ## Dev log (SHA + deploy per ID)
 
 ### 2026-10-08 — Builder·MDO3D
@@ -90,4 +106,12 @@
 ## Cycle 5
 
 Cluster status lines (append-only; one line per item: `ID · state · sha · cluster`).
-
+- RONNA-ENV-SYNTAX · pushed, needs-deploy · companies 774120d, contacts c2d534f, emails 8aa0fbe, leads 7465d67, prospects fa74c93 · ronna-other (live md5 still 2f8cc1e5; subs don't auto-deploy; deploy from clean HEAD checkout, working trees hold a broken uncommitted firebase.js)
+- SOFT-200-EMPTY (ronna 5 subs) · pushed, needs-deploy · 7e9b1d7/0615b30/a7d3167/f03a159/e08429f · ronna-other (catch-all now 404.html with status 404; rigor half belongs to the rigor cluster)
+- RONNA-LEADS-ICON-404 (intake) · pushed, needs-deploy · 0a18cbe/3b467d3/e320280/fdc06cd/116ee94 · ronna-other (manifest icons/icon-{192,512}.png on all 5; leads favicon link)
+- RONNA-MOBILE-NAV-HIDDEN · LIVE (auto-deployed) · ronnascanner-landing 8c19188 · ronna-other (menu toggle ≤768px; Sign In/Get Started targets unchanged, HELD)
+- RONNA-MOBILE-CARD-OVERFLOW · LIVE (auto-deployed) · ronnascanner-landing 8c19188 · ronna-other (cards 16–359 @375, scrollWidth 375)
+- LAYOFFLEADS-MOBILE-TABLE (+ <12px text) · LIVE (auto-deployed) · layoffleads 82223f9 · ronna-other (swipe hint, 620px scroll table, rows 165→95px, 0 nodes <12px; check.mjs passes)
+- DAILYAITOLL-FAVICON-404 (+ sitemap) · LIVE (auto-deployed) · dailyaitoll ee58f67 · ronna-other (/favicon-32.png 200; generator writes sitemap.xml)
+- MDO3D-HERO-CARDS · LIVE (auto-deployed) · mdo3d-landing 45e8081 · ronna-other (4 hero cards are links to oracle/resume.rigor.design/runwae/guidance)
+- HELD · RONNA-COPY-HONESTY, RONNA-SIGNIN-LATARENCE, RONNA-LANDING-DEAD-CTAS (targets), MDO3D-FOOTER-GITHUB-404, LEGAL-* · ronna-other
