@@ -59,11 +59,13 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
   Rollback rules: redeploy {"rules":{".read":false,".write":false}} (the locked state) — never the old auth!=null rules.
 EOF
 }
-g_ronna() {  # P0 RONNA-ENV-SYNTAX + SOFT-200-EMPTY (ronna), RONNA-LEADS-ICON-404
+g_ronna() {  # P0 RONNA-ENV-SYNTAX + P0 RONNA-MOCK-FALLBACK + SOFT-200-EMPTY (ronna), RONNA-LEADS-ICON-404 — ships env.js + mock removal together (HEAD)
   for s in companies contacts emails leads prospects; do deploy projects/ronnascanner/ronnascanner-$s; done
   for s in companies contacts emails leads prospects; do
     check "$s env.js fixed" "curl -s https://$s.ronnascanner.com/js/config/env.js | sed -n 8p | grep -c 'typeof import'" "0"
-    check "$s unknown → 404" "curl -s -o /dev/null -w '%{http_code}' https://$s.ronnascanner.com/zz-nope" "404"; done
+    check "$s unknown → 404" "curl -s -o /dev/null -w '%{http_code}' https://$s.ronnascanner.com/zz-nope" "404"
+    check "$s no mock data (RONNA-MOCK-FALLBACK)" "curl -s https://$s.ronnascanner.com/js/app.js | grep -ciE 'generateMock|mockCompanyData|mockContacts|mockEmailResults|mockProfile'" "0"
+    check "$s no fake provider claims" "curl -s https://$s.ronnascanner.com/ https://$s.ronnascanner.com/js/app.js | grep -ciE 'Apollo|Clearbit|Hunter\\.io'" "0"; done
 }
 g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MDOTHREE-STRAY-FAVICON, -SIGNED-IN-BADGE, JSON-BEAUTIFY-EMPTY-SILENT, HASH-MOBILE-NAV-OVERFLOW, MDOTHREE-TRIAL-PATH-UNVERIFIED
   for t in json text pdf qr hash color password timestamp; do deploy projects/mdothree/mdothree-$t; done   # image already live
