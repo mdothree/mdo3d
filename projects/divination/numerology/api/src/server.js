@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { ClaudeNumerologyService } from './services/claudeNumerologyService.js';
 import { StripeService } from './services/stripeService.js';
 import { checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
+import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
 
 dotenv.config();
 
@@ -370,14 +371,10 @@ function getBasicLifePathMeaning(number) {
   return meanings[number] || { title: 'Unknown', brief: 'Calculate your full reading for insights.' };
 }
 
-// Error handling
-app.use((error, req, res, next) => {
-  console.error('Server error:', error);
-  res.status(500).json({
-    success: false,
-    error: error.message || 'Internal server error'
-  });
-});
+// JSON 404/405 for unmatched routes, then JSON error mapping (malformed JSON
+// -> 400, oversized body -> 413, everything else -> generic 500). Must stay last.
+app.use(notFoundOrMethodNotAllowed(app));
+app.use(jsonErrorHandler);
 
 // Start server
 app.listen(PORT, () => {

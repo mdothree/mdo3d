@@ -52,7 +52,7 @@ class APIClient {
     // Health check
     async checkHealth() {
         try {
-            return await this.request('/health');
+            return await this.request('/api/health');
         } catch (error) {
             return { status: 'offline', error: error.message };
         }
