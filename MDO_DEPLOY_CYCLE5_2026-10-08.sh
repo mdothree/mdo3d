@@ -1,7 +1,7 @@
 #!/bin/bash
 # MDO lane — cycle 5 consolidated operator deploy (Principal GO required).
 # Usage:  bash ~/mdo3d/MDO_DEPLOY_CYCLE5_2026-10-08.sh <group...>
-#   groups: rigor | runwae | ronna | mdothree | div | all
+#   groups: rigor | runwae | ronna | mdothree | div | all  (+ c8qw: cycle-8 QW3/QW4, not in all)
 # Every project deploys from a clean `git archive HEAD` export (never a working tree — several hold
 # unrelated uncommitted work). Uses the MDO3 Vercel token from ~/latarence/secrets/sega_credentials.env.
 # ~25 deploys total (Vercel Hobby cap is 100/day). No Stripe charges; PRO_CHECKOUT_ENABLED stays false.
@@ -68,10 +68,12 @@ g_ronna() {  # P0 RONNA-ENV-SYNTAX + P0 RONNA-MOCK-FALLBACK + SOFT-200-EMPTY (ro
     check "$s no fake provider claims" "curl -s https://$s.ronnascanner.com/ https://$s.ronnascanner.com/js/app.js | grep -ciE 'Apollo|Clearbit|Hunter\\.io'" "0"; done
 }
 g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MDOTHREE-STRAY-FAVICON, -SIGNED-IN-BADGE, JSON-BEAUTIFY-EMPTY-SILENT, HASH-MOBILE-NAV-OVERFLOW, MDOTHREE-TRIAL-PATH-UNVERIFIED
-  for t in json text pdf qr hash color password timestamp; do deploy projects/mdothree/mdothree-$t; done   # image already live
+  for t in json text pdf qr hash color password timestamp image; do deploy projects/mdothree/mdothree-$t; done   # image: cycle-8 QW1 footer (0663366)
   check "pdf stray favicon gone" "curl -s https://pdf.mdothree.com/ | grep -c '📄\" />'" "0"
   check "qr no 7-day trial" "curl -s https://qr.mdothree.com/pricing | grep -c '7-Day'" "0"
   check "color badge anon-safe" "curl -s https://color.mdothree.com/js/app.js | grep -q isAnonymous && echo yes" "yes"
+  for t in json text pdf qr hash color password timestamp image; do   # cycle-8 QW1 C7-009
+    check "$t footer Terms/Privacy/Contact (C7-009)" "curl -s https://$t.mdothree.com/ | grep -o 'mdothree.com/terms\|mdothree.com/privacy\|mailto:hello@mdothree.com' | sort -u | wc -l | tr -d ' '" "3"; done
 }
 g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching already live)
   deploy projects/divination/numerology/numerology-app
@@ -79,12 +81,24 @@ g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching 
   check "numerology recalc" "curl -s https://numerology.mdo3d.com/js/app.js | grep -q NUMEROLOGY-NO-RECALC && echo yes" "yes"
   check "pastlives api health" "curl -s -o /dev/null -w '%{http_code}' https://pastlives-api.vercel.app/api/health" "200"
 }
+g_c8qw() {  # cycle-8 QW3 C7-010 entertainment disclaimer + QW4 C7-002/003/016/017 API JSON errors (QW1 ships in g_mdothree)
+  for d in divination/tarot/tarot-cards divination/numerology/numerology-app divination/dreams/dream-interpreter divination/astrology/astrology divination/iching/iching divination/runes/runes divination/fengshui/feng-shui-analyzer divination/pastlives/past-life-insights jarvisbee/babynames/baby-name-oracle; do deploy projects/$d; done
+  for a in astrology dreams fengshui iching numerology oracle pastlives runes tarot; do deploy projects/divination/$a/api; done
+  for h in tarot numerology astrology iching runes fengshui pastlife names; do
+    check "$h disclaimer (C7-010)" "curl -s https://$h.mdo3d.com/ | grep -c 'For entertainment and reflection purposes'" "1"; done
+  check "tarot health ping /api/health (C7-016)" "curl -s https://tarot.mdo3d.com/js/config/api.js | grep -c \"request('/api/health')\"" "1"
+  for u in tarot-cards-api.vercel.app dream-interpreter-api-delta.vercel.app oracle-cards-api.vercel.app pastlives-api.vercel.app; do
+    check "$u bad JSON -> 400 JSON (C7-002)" "curl -s -w ' %{http_code}' -X POST -H 'content-type: application/json' --data '{\"x\":' https://$u/api/payment/verify" "Malformed JSON in request body\"} 400"
+    check "$u 200KB -> 413 JSON (C7-003)" "printf '{\"sessionId\":\"%204800s\"}' '' | curl -s -w ' %{http_code}' -X POST -H 'content-type: application/json' --data-binary @- https://$u/api/payment/verify" "Request body too large\"} 413"
+    check "$u unknown -> 404 JSON (C7-017)" "curl -s -w ' %{http_code}' https://$u/api/zz-nope" "Not found\"} 404"
+    check "$u wrong method -> 405 JSON (C7-017)" "curl -s -w ' %{http_code}' https://$u/api/payment/verify" "not allowed\"} 405"; done
+}
 
 [ $# -eq 0 ] && { sed -n 2,8p "$0"; exit 1; }
 for g in "$@"; do
   case $g in
-    all) g_rigor; g_runwae; g_ronna; g_mdothree; g_div;;
-    rigor|runwae|ronna|mdothree|div) "g_$g";;
+    all) g_rigor; g_runwae; g_ronna; g_mdothree; g_div;;   # c8qw is separate: run it explicitly
+    rigor|runwae|ronna|mdothree|div|c8qw) "g_$g";;
     *) echo "unknown group $g";;
   esac
 done
