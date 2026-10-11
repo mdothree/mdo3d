@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ClaudeReadingService } from './services/claudeReadingService.js';
 import { StripeService } from './services/stripeService.js';
+import { attributionMetadata } from './attribution.js';
 import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 
 dotenv.config();
@@ -184,6 +185,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         readingType: readingType,
         timestamp: new Date().toISOString()
       },
+      // UTM first-touch -> Stripe metadata (whitelisted + sanitized; no PII)
+      attribution: attributionMetadata(req.body && req.body.attribution, 'oracle'),
       successPath: '/success',
       cancelPath: '/'
     });

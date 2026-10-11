@@ -73,7 +73,8 @@ class APIClient {
             body: JSON.stringify({
                 readingType,
                 email,
-                userId
+                userId,
+                attribution: window.MdoAttribution?.get()
             })
         });
     }

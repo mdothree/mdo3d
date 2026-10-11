@@ -78,7 +78,7 @@ export class ApiClient {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ readingType, email, userId })
+      body: JSON.stringify({ readingType, email, userId, attribution: window.MdoAttribution?.get() })
     });
 
     if (!response.ok) {

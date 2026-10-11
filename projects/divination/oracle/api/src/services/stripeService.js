@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { buildCheckoutSessionParams } from './checkoutParams.js';
 
 /**
  * Stripe Payment Service for I Ching
@@ -18,40 +19,26 @@ export class StripeService {
     email,
     userId,
     metadata = {},
+    attribution = {},
     successPath = '/success',
     cancelPath = '/'
   }) {
     try {
-      const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: `${this.serviceName} - ${productName}`,
-                description: description
-              },
-              unit_amount: Math.round(priceUSD * 100)
-            },
-            quantity: 1
-          }
-        ],
-        mode: 'payment',
-        customer_email: email,
-        success_url: `${process.env.FRONTEND_URL}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}${cancelPath}`,
-        metadata: {
+      const session = await this.stripe.checkout.sessions.create(
+        buildCheckoutSessionParams({
           serviceName: this.serviceName,
-          userId: userId || 'anonymous',
-          ...metadata
-        },
-        // Copy serviceName onto the PaymentIntent so payment_intent.* events can be
-        // routed by the stripe-hub too (session metadata is not inherited by the PI).
-        payment_intent_data: {
-          metadata: { serviceName: this.serviceName }
-        }
-      });
+          frontendUrl: process.env.FRONTEND_URL,
+          productName,
+          description,
+          priceUSD,
+          email,
+          userId,
+          metadata,
+          attribution,
+          successPath,
+          cancelPath
+        })
+      );
 
       return {
         success: true,

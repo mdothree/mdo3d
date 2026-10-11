@@ -122,7 +122,7 @@ async function handlePremiumPurchase() {
     const response = await fetch(`${API_URL}/api/payment/create-checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ readingType: 'core-numbers', email })
+      body: JSON.stringify({ readingType: 'core-numbers', email, attribution: window.MdoAttribution?.get() })
     });
     const data = await response.json();
     if (data.success && data.checkoutUrl) {
