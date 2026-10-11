@@ -41,11 +41,16 @@ g_rigor() {  # P0 RIGOR-PAY-BEFORE-API + RIGOR-SUCCESS-CANCEL-404, -HEADER-SIGNI
   check "resume /success" "curl -s -o /dev/null -w '%{http_code}' https://resume.rigor.design/success" "200"
   check "resume unknown → 404" "curl -s -o /dev/null -w '%{http_code}' https://resume.rigor.design/zz-nope" "404"
   check "resume CSP" "curl -sI https://resume.rigor.design/ | grep -qi content-security-policy && echo yes" "yes"
+  for t in resume cover interview linkedin networking portfolio salary; do   # cycle-8 P1 RIGOR-HEADER-SIGNIN-DEAD-REST (fixed at HEAD; live after this deploy)
+    check "$t header #signin/#signup anchors" "n=\$(curl -sL https://$t.rigor.design/ | grep -oE 'href=\"#sign(in|up)\" id=\"nav-(login|signup)\"' | wc -l); [ \"\$n\" -ge 2 ] && echo yes" "yes"; done
 }
 g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-ZOOM, SEO, UI, ASSETS, STATS, DEAD-HEADER-LINKS
   deploy projects/external/runwae/runwae
   for p in error_log database-debug.log ui-debug.log firebase.json database.rules.json vercel.json deployment/inject-config.js deployment/prune-public.js README.md STATUS.md marketerLedger.txt; do
     check "runwae /$p → 404" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/$p" "404"; done
+  for p in package.json email.php docs/javascript-obfuscation.md .vscode/settings.json .vercel/project.json og/build.sh js/config.template.js deployment/build-dist.js; do   # cycle-8 P1 RUNWAE-OUTPUTDIR-ROOT (dist/ allowlist, e6902e9)
+    check "runwae /$p → 404 (dist allowlist)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/$p" "404"; done
+  check "runwae /welcome → 200 (dist)" "curl -sL -o /dev/null -w '%{http_code}' https://runwae.com/welcome" "200"
   for pg in welcome welcome-v2 account blog; do check "runwae /$pg no zoom block" "curl -sL https://runwae.com/$pg | grep -c user-scalable" "0"; done
   check "runwae / still serves" "curl -sL -o /dev/null -w '%{http_code}' https://runwae.com/" "200"
   check "runwae sitemap" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/sitemap.xml" "200"
@@ -66,12 +71,18 @@ g_ronna() {  # P0 RONNA-ENV-SYNTAX + P0 RONNA-MOCK-FALLBACK + SOFT-200-EMPTY (ro
     check "$s unknown → 404" "curl -s -o /dev/null -w '%{http_code}' https://$s.ronnascanner.com/zz-nope" "404"
     check "$s no mock data (RONNA-MOCK-FALLBACK)" "curl -s https://$s.ronnascanner.com/js/app.js | grep -ciE 'generateMock|mockCompanyData|mockContacts|mockEmailResults|mockProfile'" "0"
     check "$s no fake provider claims" "curl -s https://$s.ronnascanner.com/ https://$s.ronnascanner.com/js/app.js | grep -ciE 'Apollo|Clearbit|Hunter\\.io'" "0"; done
+  for s in companies contacts emails leads prospects; do   # cycle-8 P1 RONNA-APIFETCH-DOUBLE-JSON (callers use apiFetch's parsed body; IDs wired to markup)
+    check "$s no double .json() (RONNA-APIFETCH-DOUBLE-JSON)" "curl -s https://$s.ronnascanner.com/js/app.js | grep -q 'res\\.json()' && echo FOUND || echo none" "none"; done
+  check "leads imports showSkeleton" "curl -s https://leads.ronnascanner.com/js/app.js | grep -q 'import { showSkeleton }' && echo yes" "yes"
+  for s in companies contacts prospects; do check "$s reads #filter-company" "curl -s https://$s.ronnascanner.com/js/app.js | grep -q 'getElementById(\"filter-company\")' && echo yes" "yes"; done
 }
 g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MDOTHREE-STRAY-FAVICON, -SIGNED-IN-BADGE, JSON-BEAUTIFY-EMPTY-SILENT, HASH-MOBILE-NAV-OVERFLOW, MDOTHREE-TRIAL-PATH-UNVERIFIED
   for t in json text pdf qr hash color password timestamp image; do deploy projects/mdothree/mdothree-$t; done   # image: cycle-8 QW1 footer (0663366)
   check "pdf stray favicon gone" "curl -s https://pdf.mdothree.com/ | grep -c '📄\" />'" "0"
   check "qr no 7-day trial" "curl -s https://qr.mdothree.com/pricing | grep -c '7-Day'" "0"
   check "color badge anon-safe" "curl -s https://color.mdothree.com/js/app.js | grep -q isAnonymous && echo yes" "yes"
+  for t in color hash password timestamp; do   # cycle-8 P1 HID-001 + PROD-013 (Firebase lazy; tool works with gstatic blocked)
+    check "$t firebase lazy (HID-001)" "c=\$(curl -s https://$t.mdothree.com/js/config/config.js); echo \"\$c\" | grep -q 'export function loadFirebase' && ! echo \"\$c\" | grep -q '^import .*gstatic' && echo yes" "yes"; done
   for t in json text pdf qr hash color password timestamp image; do   # cycle-8 QW1 C7-009
     check "$t footer Terms/Privacy/Contact (C7-009)" "curl -s https://$t.mdothree.com/ | grep -o 'mdothree.com/terms\|mdothree.com/privacy\|mailto:hello@mdothree.com' | sort -u | wc -l | tr -d ' '" "3"; done
 }
