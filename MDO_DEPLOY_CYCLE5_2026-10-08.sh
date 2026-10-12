@@ -71,10 +71,28 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
   check "runwae / redirect hops (SEO-003)" "echo n=\$(curl -sL -o /dev/null -w '%{num_redirects}' https://runwae.com/)." "n=1."
   check "runwae og:url absolute (SEO-003)" "curl -s https://runwae.com/welcome | grep -c 'og:url\" content=\"https://runwae.com/welcome\"'" "1"
   check "runwae welcome no fontawesome-all (PERF-001)" "curl -s https://runwae.com/welcome | grep -c 'src=\"fonts/fontawesome-all'" "0"
-  check "runwae welcome deferred scripts (PERF-001)" "n=\$(curl -s https://runwae.com/welcome | grep -c '<script defer'); [ \"\$n\" -ge 45 ] && echo yes" "yes"
+  check "runwae welcome deferred scripts (PERF-001; fd07868 trimmed 45 → 19)" "n=\$(curl -s https://runwae.com/welcome | grep -c '<script defer'); [ \"\$n\" -ge 15 ] && echo yes" "yes"
   check "runwae welcome email inputs labelled (A11Y-001)" "curl -s https://runwae.com/welcome | grep -o 'for=\"\(marketerGuide\|influencerGuide\|subscribe\)EmailInput\"' | wc -l | tr -d ' '" "3"
   check "runwae Bootstrap/dist served (.gitignore 'dist' also matches Bootstrap/dist)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/Bootstrap/dist/js/bootstrap.bundle.js" "200"
-  echo "  MANUAL: xps Lighthouse runwae.com/welcome (expect perf ≥70, LCP <4s; local dist was 75 / 2.4s) + axe label 0" | tee -a "$LOG"
+  # cycle-8 P2/P3 (fd07868): PERF-001 TBT · SURF-003 · A11Y-003/004/005/007/009/012/014/015 · C7-011 · C7-014 · SEO-007 · MOBILE-GENERAL-TEXT-SIZE · IMG-RUNWAE-LOGO-ALT-LAZY
+  check "runwae welcome no base-init.js / plugin bundle (PERF-001 TBT)" "echo n=\$(curl -s https://runwae.com/welcome | grep -cE 'js/(base-init|fullcalendar|Chart|moment|daterangepicker|svg-loader)\\.js')." "n=0."
+  check "runwae welcome-init.js served (PERF-001 TBT)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/js/welcome-init.js" "200"
+  check "runwae welcome lottie lazy (data-src ×10, PERF-001)" "curl -s https://runwae.com/welcome | grep -c '<lottie-player data-src='" "10"
+  check "runwae welcome no ionicons runtime (PERF-001)" "echo n=\$(curl -s https://runwae.com/welcome | grep -c 'unpkg.com/ionicons')." "n=0."
+  check "runwae no lottie @latest (SURF-003)" "echo n=\$(curl -s https://runwae.com/welcome | grep -c 'lottie-player@latest')." "n=0."
+  check "runwae CDN scripts with SRI (SURF-003)" "curl -s https://runwae.com/welcome | grep -c 'integrity=\"sha384-'" "2"
+  check "runwae main.css old purple gone (A11Y-003)" "echo n=\$(curl -s https://runwae.com/css/main.css | grep -ci '#9389ff')." "n=0."
+  check "runwae bootstrap.css old purple gone (A11Y-003)" "echo n=\$(curl -s https://runwae.com/Bootstrap/dist/css/bootstrap.css | grep -ci '#9389ff')." "n=0."
+  for p in welcome login faqs privacy terms blog blog/PabloTheDon; do
+    check "runwae /$p <main> + skip link (A11Y-004/015)" "echo n=\$(curl -sL https://runwae.com/$p | grep -cE '<main id=\"main\">|class=\"skip-link\"')." "n=2."; done
+  check "runwae social links named (A11Y-007)" "curl -s https://runwae.com/welcome | grep -c 'aria-label=\"Runwae on '" "4"
+  check "runwae no 'Olympus' alt (IMG-RUNWAE-LOGO-ALT-LAZY)" "echo n=\$(curl -sL https://runwae.com/welcome https://runwae.com/faqs https://runwae.com/blog | grep -c 'alt=\"Olympus\"')." "n=0."
+  check "runwae 68px logo served (IMG-RUNWAE-LOGO-ALT-LAZY)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/img/logo-colored-68.png" "200"
+  check "runwae login fields autocomplete (C7-011)" "curl -sL https://runwae.com/login | grep -cE 'autocomplete=\"(name|username|email|new-password|current-password)\"'" "7"
+  check "runwae main.css dead image urls gone (C7-014)" "echo n=\$(curl -s https://runwae.com/css/main.css | grep -cE 'url\\(\"?\\.\\./img/(landing-bg|bg-section1|top-header3)')." "n=0."
+  check "runwae unknown path → 404 status (SEO-007)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/zz-nope" "404"
+  check "runwae unknown path → branded page (SEO-007)" "curl -s https://runwae.com/zz-nope | grep -c '<title>Page not found — Runwae</title>'" "1"
+  echo "  MANUAL: xps Lighthouse runwae.com/welcome (expect perf ≥70, LCP <4s; TBT well below the 1243764 build — local interleaved median 2322→1004ms, main-thread 21.2→6.5s) + axe 0 violations on /welcome at 1280 and 375" | tee -a "$LOG"
   cat <<'EOF' | tee -a "$LOG"
   NEXT (operator, after the checks above pass):
    3) firebase database:set /admins/<OWNER_UID> --data true --project runwaedesign --account mdo3group@gmail.com
