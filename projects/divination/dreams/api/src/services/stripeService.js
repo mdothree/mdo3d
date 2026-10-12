@@ -14,13 +14,18 @@ export class StripeService {
   async createCheckoutSession({
     productName,
     description,
-    priceUSD,
+    amountCents,
     email,
     userId,
     metadata = {},
     successPath = '/success',
     cancelPath = '/'
   }) {
+    // Integer cents from the API's pricing.json (JARVIS #63); never a float
+    // dollar amount and never a default.
+    if (!Number.isInteger(amountCents) || amountCents <= 0) {
+      return { success: false, error: 'Invalid price configuration' };
+    }
     try {
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -32,12 +37,15 @@ export class StripeService {
                 name: `${this.serviceName} - ${productName}`,
                 description: description
               },
-              unit_amount: Math.round(priceUSD * 100)
+              unit_amount: amountCents
             },
             quantity: 1
           }
         ],
         mode: 'payment',
+        // Promotion codes for early access (JARVIS #94). The codes themselves
+        // are created in Stripe separately; this only shows the entry field.
+        allow_promotion_codes: true,
         customer_email: email,
         success_url: `${process.env.FRONTEND_URL}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}${cancelPath}`,

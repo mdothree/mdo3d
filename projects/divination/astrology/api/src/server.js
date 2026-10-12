@@ -5,6 +5,7 @@ import { ClaudeAstrologyService } from './services/claudeAstrologyService.js';
 import { StripeService } from './services/stripeService.js';
 import { checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -173,15 +174,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const pricingConfig = {
-      'birth-chart': { price: 4.99, name: 'Premium Birth Chart Reading', desc: 'Detailed AI-powered natal chart interpretation' },
-      'compatibility': { price: 7.99, name: 'Compatibility Reading', desc: 'In-depth synastry analysis for two charts' },
-      'transit': { price: 5.99, name: 'Transit Reading', desc: 'Current planetary influences on your chart' },
-      'monthly': { price: 12.99, name: 'Monthly Subscription', desc: 'Unlimited premium readings for 30 days' }
-    };
-
-    const config = pricingConfig[readingType];
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63). Unknown type -> 400 below, never a default.
+    const config = priceFor(readingType);
     if (!config) {
       return res.status(400).json({
         success: false,
@@ -190,9 +185,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
     }
 
     const result = await stripeService.createCheckoutSession({
-      productName: config.name,
-      description: config.desc,
-      priceUSD: config.price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
@@ -208,7 +203,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: config.price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -374,9 +370,14 @@ app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Astrology API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Astrology API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };

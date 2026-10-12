@@ -1,0 +1,12 @@
+{
+  "_comment": "Per-API cases for templates/api-pricing.test.js (sync-pricing.mjs writes <api>/test/pricing.test.js). readings: every reading endpoint must answer 402 without a paid session (JARVIS #94).",
+  "astrology": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "birth-chart", "readings": [] },
+  "dreams": { "typeField": "readingType", "metadataKey": "analysisType", "singleType": "dream-analysis", "readings": [] },
+  "fengshui": { "typeField": "analysisType", "metadataKey": "analysisType", "singleType": "single-room", "readings": [] },
+  "iching": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [] },
+  "numerology": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "core-numbers", "readings": [] },
+  "oracle": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [] },
+  "pastlives": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-life", "readings": [] },
+  "runes": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [] },
+  "tarot": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single", "readings": [] }
+}

@@ -5,6 +5,7 @@ import { ClaudeDreamService } from './services/claudeDreamService.js';
 import { StripeService } from './services/stripeService.js';
 import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -110,18 +111,27 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const price = parseFloat(process.env.DREAM_ANALYSIS_PRICE) || 4.99;
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63); the old DREAM_ANALYSIS_PRICE env
+    // override is gone so the shown price can't drift from the charged one.
+    // Unknown (or missing) readingType -> 400, never a default.
+    const config = priceFor(readingType);
+    if (!config) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid reading type'
+      });
+    }
 
     // Create Stripe checkout session
     const result = await stripeService.createCheckoutSession({
-      productName: 'Premium Dream Analysis',
-      description: 'AI-powered deep dream interpretation with psychological and spiritual insights',
-      priceUSD: price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
-        analysisType: readingType || 'dream-analysis',
+        analysisType: readingType,
         timestamp: new Date().toISOString()
       },
       successPath: '/success',
@@ -133,7 +143,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -299,10 +310,15 @@ app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Dream Interpreter API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Dream Interpreter API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };
