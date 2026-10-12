@@ -228,6 +228,14 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + 2 + 3: A11Y-004/015/005, PERF-
     check "$h nosniff" "curl -sI https://$h.mdo3d.com/ | grep -ci '^x-content-type-options'" "1"; done
   check "resume css cache 1d" "curl -sI https://resume.rigor.design/css/styles.css | grep -i '^cache-control' | grep -c 'max-age=86400'" "1"
   check "mdo3d directory count computed" "curl -s https://mdo3d.com/ | grep -c '14 Live platforms'" "0"
+  # batch 4: SURF-007/010 (rigor CSP tightened, Firebase 10.14.1, landing og/ build script hidden) · mdo3d SEO-008 / text size / directory
+  for t in resume cover interview linkedin networking portfolio salary; do
+    check "$t CSP header present" "curl -sI https://$t.rigor.design/ | grep -ci '^content-security-policy'" "1"
+    check "$t CSP no googleapis wildcard" "curl -sI https://$t.rigor.design/ | grep -i '^content-security-policy' | grep -c '\*\.googleapis\.com'" "0"; done
+  check "rigor landing og/build.sh hidden" "curl -s -o /dev/null -w '%{http_code}' https://rigor.design/og/build.sh" "404"
+  check "mdo3d no dead twitter:site" "curl -s https://mdo3d.com/ | grep -c 'twitter:site'" "0"
+  check "mdo3d security.txt (SURF-006, c9-staged)" "curl -s -o /dev/null -w '%{http_code}' https://mdo3d.com/.well-known/security.txt" "200"
+  echo "  MANUAL: rigor sign-in after deploy: sign in with a real test account; auth/operation-not-allowed = Firebase Email/Password provider off (JARVIS)" | tee -a "$LOG"
   echo "  MANUAL: xps browser pass at mdo3d.com 768/834/1024 (full nav, no overflow) — pre-verified on HEAD 2026-10-11" | tee -a "$LOG"
 }
 [ $# -eq 0 ] && { sed -n 2,8p "$0"; exit 1; }
