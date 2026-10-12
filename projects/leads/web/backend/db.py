@@ -10,6 +10,9 @@ Tables:
 - ingest_runs: one row per (state, source_date) ingest with its row counts
 - run_requests: manual profile runs queued by the API (POST /profiles/{id}/run), picked up by the
   scheduler container (runner.py --run-requests on a 1-minute supercronic tick)
+- account_access: account-level plan grants (source stripe | promo); no delivery profile involved
+- account_redemptions: promo codes redeemed at account level, UNIQUE(code_id, user_id)
+- saved_searches: per-user saved filter sets (weekly email only if LEADS_ENABLE_DELIVERY=1)
 
 DB location: $LEADS_DB_PATH, default <leads>/data/leads.db.
 """
@@ -224,6 +227,48 @@ CREATE TABLE IF NOT EXISTS run_requests (
     error TEXT
 );
 
+CREATE TABLE IF NOT EXISTS account_access (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    source TEXT NOT NULL,          -- stripe | promo
+    status TEXT NOT NULL,          -- pending | active | canceled
+    states TEXT NOT NULL,          -- JSON list of state codes in the bundle
+    plan_name TEXT,
+    code_id INTEGER,
+    stripe_session_id TEXT UNIQUE,
+    stripe_subscription_id TEXT,
+    renews_at TEXT,
+    expires_at TEXT,               -- NULL = no end date
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS account_redemptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    redeemed_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(code_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS saved_searches (
+    id TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    query TEXT NOT NULL,           -- JSON: the filter set as the client sent it
+    filters TEXT NOT NULL,         -- JSON: resolved DB filters (no states/dates); used by the weekly job
+    cadence TEXT NOT NULL DEFAULT 'weekly',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    last_run_at TEXT,
+    last_sent_at TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_account_access_user ON account_access(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_account_access_sub ON account_access(stripe_subscription_id);
+CREATE INDEX IF NOT EXISTS idx_saved_searches_user ON saved_searches(user_id);
+CREATE INDEX IF NOT EXISTS idx_filings_first_seen ON filings(first_seen);
 CREATE INDEX IF NOT EXISTS idx_run_requests_profile ON run_requests(profile_id, requested_at);
 CREATE INDEX IF NOT EXISTS idx_run_requests_status ON run_requests(status, requested_at);
 CREATE INDEX IF NOT EXISTS idx_filings_state_date ON filings(state, filed_date);
@@ -719,7 +764,8 @@ def record_ingest_run(state: str, source_date: str, rows: int, new_rows: int,
 
 
 def _filing_where(states=None, county=None, filing_type=None, entity_kind=None, keywords=None,
-                  exclude_keywords=None, must_contain=None, date_from=None, date_to=None, active_only=True):
+                  exclude_keywords=None, must_contain=None, date_from=None, date_to=None, active_only=True,
+                  first_seen_after=None):
     where, params = [], []
     if states is not None:
         states = [s.upper() for s in states]
@@ -755,6 +801,9 @@ def _filing_where(states=None, county=None, filing_type=None, entity_kind=None, 
         params.append(date_to)
     if active_only:
         where.append("active = 1")
+    if first_seen_after:
+        where.append("first_seen > ?")
+        params.append(first_seen_after)
     return (" AND ".join(where) or "1 = 1"), params
 
 
@@ -819,7 +868,8 @@ DEFAULT_ENTITLED_STATES = ("FL",)  # a paid profile with no `states` field cover
 
 
 def entitled_states(user_id: int) -> set[str]:
-    """States the user may search: the union of `states` over their PAID profiles.
+    """States the user may search: the union of `states` over their PAID profiles and their active
+    account-level grants (account_access: Stripe plan or promo code).
 
     A profile is paid only via a completed Stripe checkout (webhook) or a redeemed promo code.
     No paid profile -> empty set -> the API refuses (fails closed).
@@ -830,6 +880,8 @@ def entitled_states(user_id: int) -> set[str]:
             continue
         s = p.settings.get("states") or list(DEFAULT_ENTITLED_STATES)
         states.update(x.strip().upper() for x in s if isinstance(x, str) and x.strip())
+    for g in active_account_access(user_id):
+        states.update(g["states"])
     return states
 
 
@@ -943,6 +995,204 @@ def filings_for_source_dates(states: list[str], source_dates: list[str]) -> list
            f"AND source_date IN ({', '.join('?' for _ in source_dates)}) ORDER BY state, source_id")
     with get_db() as conn:
         return [dict(r) for r in conn.execute(sql, [*states, *source_dates]).fetchall()]
+
+
+# Account-level access (GET /v1/account, POST /v1/access/redeem, POST /v1/checkout).
+# A grant here never creates a delivery profile, so it never schedules email.
+
+def get_user_by_id(user_id: int) -> Optional[User]:
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+    return User(**dict(row)) if row else None
+
+
+def _access_row(row) -> dict:
+    d = dict(row)
+    d["states"] = json.loads(d.get("states") or "[]")
+    return d
+
+
+def active_account_access(user_id: int, now: Optional[datetime] = None) -> list[dict]:
+    """Active, unexpired grants for a user (Stripe first, then newest)."""
+    ts = _utc(now)
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT * FROM account_access WHERE user_id = ? AND status = 'active' "
+            "AND (expires_at IS NULL OR expires_at > ?) "
+            "ORDER BY CASE source WHEN 'stripe' THEN 0 ELSE 1 END, id DESC",
+            (user_id, ts),
+        ).fetchall()
+    return [_access_row(r) for r in rows]
+
+
+def paid_profile_source(user_id: int) -> Optional[str]:
+    """Legacy per-profile entitlement: 'stripe' if a paid profile has a completed payment, else 'promo'."""
+    with get_db() as conn:
+        paid = conn.execute("SELECT 1 FROM profiles WHERE user_id = ? AND paid = 1 LIMIT 1", (user_id,)).fetchone()
+        if not paid:
+            return None
+        stripe_paid = conn.execute(
+            "SELECT 1 FROM payments p JOIN profiles f ON f.id = p.profile_id "
+            "WHERE f.user_id = ? AND f.paid = 1 AND p.status = 'completed' LIMIT 1", (user_id,)).fetchone()
+    return "stripe" if stripe_paid else "promo"
+
+
+def redeem_code_for_account(code: str, user_id: int, states: list[str],
+                            access_days: int = 0) -> tuple[bool, str]:
+    """Redeem a promo code for the whole account (no profile, no delivery). Returns (success, message).
+
+    Validation, the use counter and the grant share one IMMEDIATE transaction, so concurrent redemptions
+    cannot exceed max_uses.
+    """
+    norm = (code or "").strip().upper()
+    if not norm:
+        return False, "Enter a promo code"
+    now = datetime.utcnow()
+    with get_db() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+        row = conn.execute("SELECT * FROM codes WHERE code = ?", (norm,)).fetchone()
+        if not row:
+            return False, "Invalid code"
+        if row["expires_at"] and now > datetime.fromisoformat(row["expires_at"]):
+            return False, "Code has expired"
+        if conn.execute("SELECT 1 FROM account_redemptions WHERE code_id = ? AND user_id = ?",
+                        (row["id"], user_id)).fetchone():
+            return False, "Code already redeemed for this account"
+        cur = conn.execute("UPDATE codes SET uses = uses + 1 WHERE id = ? AND uses < max_uses", (row["id"],))
+        if cur.rowcount != 1:
+            return False, "Code has reached maximum uses"
+        conn.execute("INSERT INTO account_redemptions (code_id, user_id, redeemed_at) VALUES (?, ?, ?)",
+                     (row["id"], user_id, _utc(now)))
+        expires = _utc(now + timedelta(days=access_days)) if access_days and access_days > 0 else None
+        conn.execute(
+            "INSERT INTO account_access (user_id, source, status, states, code_id, expires_at, created_at, updated_at) "
+            "VALUES (?, 'promo', 'active', ?, ?, ?, ?, ?)",
+            (user_id, json.dumps(sorted({s.upper() for s in states})), row["id"], expires, _utc(now), _utc(now)),
+        )
+    return True, "Code accepted. Your access is active."
+
+
+def create_pending_checkout(user_id: int, stripe_session_id: str, states: list[str],
+                            plan_name: Optional[str] = None) -> None:
+    now = _utc()
+    with get_db() as conn:
+        conn.execute(
+            "INSERT INTO account_access (user_id, source, status, states, plan_name, stripe_session_id, "
+            "created_at, updated_at) VALUES (?, 'stripe', 'pending', ?, ?, ?, ?, ?)",
+            (user_id, json.dumps(sorted({s.upper() for s in states})), plan_name, stripe_session_id, now, now),
+        )
+
+
+def activate_checkout(stripe_session_id: str, stripe_subscription_id: Optional[str] = None) -> Optional[int]:
+    """checkout.session.completed for an account checkout: pending -> active (idempotent).
+
+    Only sessions this API created (a pending/active row with this id) are honoured. Returns the user id.
+    """
+    with get_db() as conn:
+        row = conn.execute("SELECT id, user_id, status FROM account_access WHERE stripe_session_id = ?",
+                           (stripe_session_id,)).fetchone()
+        if not row:
+            return None
+        if row["status"] == "pending":
+            conn.execute(
+                "UPDATE account_access SET status = 'active', stripe_subscription_id = COALESCE(?, stripe_subscription_id), "
+                "updated_at = ? WHERE id = ?", (stripe_subscription_id, _utc(), row["id"]))
+        return row["user_id"]
+
+
+def update_subscription(stripe_subscription_id: str, status: Optional[str] = None,
+                        renews_at: Optional[str] = None) -> int:
+    """Apply a customer.subscription.* event to the account grant(s) for that subscription."""
+    if not stripe_subscription_id:
+        return 0
+    sets, params = ["updated_at = ?"], [_utc()]
+    if status:
+        sets.append("status = ?")
+        params.append(status)
+    if renews_at is not None:
+        sets.append("renews_at = ?")
+        params.append(renews_at)
+    with get_db() as conn:
+        cur = conn.execute(
+            f"UPDATE account_access SET {', '.join(sets)} WHERE stripe_subscription_id = ? AND status != 'pending'",
+            [*params, stripe_subscription_id])
+        return cur.rowcount
+
+
+# Saved searches (weekly email of new filings; sent only when LEADS_ENABLE_DELIVERY=1)
+
+SAVED_SEARCH_FIELDS = ("id", "name", "query", "cadence", "created_at", "last_sent_at")
+
+
+def _saved_row(row) -> dict:
+    d = dict(row)
+    d["query"] = json.loads(d.get("query") or "{}")
+    d["filters"] = json.loads(d.get("filters") or "{}")
+    return d
+
+
+def list_saved_searches(user_id: int) -> list[dict]:
+    with get_db() as conn:
+        rows = conn.execute("SELECT * FROM saved_searches WHERE user_id = ? ORDER BY created_at DESC, rowid DESC",
+                            (user_id,)).fetchall()
+    return [_saved_row(r) for r in rows]
+
+
+def count_saved_searches(user_id: int) -> int:
+    with get_db() as conn:
+        return conn.execute("SELECT COUNT(*) FROM saved_searches WHERE user_id = ?", (user_id,)).fetchone()[0]
+
+
+def create_saved_search(user_id: int, name: str, query: dict, filters: dict, cadence: str = "weekly") -> dict:
+    from uuid import uuid4
+    sid = uuid4().hex[:16]
+    with get_db() as conn:
+        conn.execute(
+            "INSERT INTO saved_searches (id, user_id, name, query, filters, cadence, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (sid, user_id, name, json.dumps(query), json.dumps(filters), cadence, _utc()))
+    return get_saved_search(sid)
+
+
+def get_saved_search(search_id: str) -> Optional[dict]:
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM saved_searches WHERE id = ?", (search_id,)).fetchone()
+    return _saved_row(row) if row else None
+
+
+def delete_saved_search(search_id: str, user_id: int) -> bool:
+    with get_db() as conn:
+        cur = conn.execute("DELETE FROM saved_searches WHERE id = ? AND user_id = ?", (search_id, user_id))
+        return cur.rowcount == 1
+
+
+def due_saved_searches(interval_days: int = 7, now: Optional[datetime] = None) -> list[dict]:
+    """Saved searches whose last weekly run is at least `interval_days` old (or that never ran)."""
+    cutoff = _utc((now or datetime.utcnow()) - timedelta(days=interval_days))
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT * FROM saved_searches WHERE cadence = 'weekly' AND COALESCE(last_run_at, created_at) <= ? "
+            "ORDER BY COALESCE(last_run_at, created_at)", (cutoff,)).fetchall()
+    return [_saved_row(r) for r in rows]
+
+
+def mark_saved_search_run(search_id: str, sent: bool, now: Optional[datetime] = None) -> None:
+    ts = _utc(now)
+    with get_db() as conn:
+        if sent:
+            conn.execute("UPDATE saved_searches SET last_run_at = ?, last_sent_at = ? WHERE id = ?", (ts, ts, search_id))
+        else:
+            conn.execute("UPDATE saved_searches SET last_run_at = ? WHERE id = ?", (ts, search_id))
+
+
+def filing_type_counts(state: str) -> list[dict]:
+    """Distinct filing_type values stored for a state, with counts (reference data, no filing content)."""
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT filing_type, MIN(entity_kind) AS entity_kind, COUNT(*) AS filings FROM filings "
+            "WHERE state = ? AND filing_type IS NOT NULL AND filing_type != '' GROUP BY filing_type",
+            (state.upper(),)).fetchall()
+    return [dict(r) for r in rows]
 
 
 # Initialization

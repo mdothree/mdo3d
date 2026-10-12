@@ -17,3 +17,7 @@ CRON_TZ=America/New_York
 # Profile delivery (emails CSVs to paid profiles). OFF unless LEADS_ENABLE_DELIVERY=1:
 # outbound email needs the Principal's OK.
 0 8 * * * /app/ops/scheduler/run_delivery.sh
+
+# Saved-search weekly email (each search is due 7 days after its last run). OFF unless
+# LEADS_ENABLE_DELIVERY=1: outbound email needs the Principal's OK.
+30 8 * * * /app/ops/scheduler/run_saved_searches.sh

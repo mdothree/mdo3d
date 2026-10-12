@@ -21,7 +21,7 @@ export const PATHS = {
   filings: '/filings',
   filingsCsv: '/filings/export.csv',
   profiles: '/profiles',
-  // proposed, not implemented yet (the UI treats 404 as "not available yet")
+  // account level (live on the backend; a 404 from an older backend still reads as "not available yet")
   account: '/v1/account',
   redeem: '/v1/access/redeem',
   checkout: '/v1/checkout',

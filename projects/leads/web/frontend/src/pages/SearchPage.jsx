@@ -144,8 +144,13 @@ export default function SearchPage() {
     setSaveState({ status: 'loading', message: 'Saving…' });
     try {
       const { limit, offset, ...q } = query; // eslint-disable-line no-unused-vars
-      await createSavedSearch(name, q);
-      setSaveState({ status: 'ok', message: 'Saved. You will get this search by email weekly.' });
+      const saved = await createSavedSearch(name, q);
+      setSaveState({
+        status: 'ok',
+        message: saved?.email === 'enabled'
+          ? 'Saved. You will get new matches by email weekly.'
+          : 'Saved. The weekly email is not switched on yet, so nothing will be sent for now.',
+      });
     } catch {
       setSaveState({ status: 'error', message: 'Could not save this search. Nothing was scheduled.' });
     }

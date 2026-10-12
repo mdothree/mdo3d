@@ -18,6 +18,12 @@ Endpoints:
 - DELETE /profiles/{id} - Delete profile
 - POST /profiles/{id}/run - Queue a manual run (202 + run id; executed by the scheduler container)
 - GET /runs/{id} - Manual run status
+- GET /filing-types?state=XX - public: filing-type codes + labels for a state
+- GET /v1/account - signed-in user's plan status (account level)
+- POST /v1/access/redeem - redeem a promo code for the account (no profile, no email scheduled)
+- POST /v1/checkout - Stripe Checkout for the configured plan (off unless LEADS_CHECKOUT_ENABLED=1)
+- GET/POST /v1/saved-searches, DELETE /v1/saved-searches/{id} - saved filter sets (weekly email only
+  when LEADS_ENABLE_DELIVERY=1)
 
 Auth: Firebase token verification + API key fallback
 """
@@ -29,10 +35,12 @@ import json
 import os
 import shutil
 import subprocess
+import threading
+import time
 from urllib.parse import urlparse
 from pathlib import Path
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Header, Depends, Query, Request
@@ -42,6 +50,7 @@ from pydantic import BaseModel, Field, field_validator
 import stripe
 
 from . import db
+from . import filing_types as filing_types_mod
 from . import verticals as verticals_mod
 
 # Configuration
@@ -59,6 +68,43 @@ FIREBASE_CREDENTIALS_PATH = os.environ.get(
 ALLOWED_PRICE_IDS = {
     p.strip() for p in os.environ.get("LEADS_STRIPE_PRICE_IDS", "").split(",") if p.strip()
 }
+
+
+
+def _env_flag(name: str) -> bool:
+    return os.environ.get(name, "0").strip() == "1"
+
+
+def _env_states(name: str, default: str) -> list[str]:
+    return sorted({s.strip().upper() for s in os.environ.get(name, default).split(",") if s.strip()})
+
+
+# Account-level plan settings are read per request, so an env change takes effect on restart without
+# code changes and tests can set them with monkeypatch.setenv.
+#   LEADS_CHECKOUT_ENABLED=1   open /v1/checkout (default off -> 503 "Plans opening soon")
+#   LEADS_STRIPE_PRICE_ID      the one price /v1/checkout sells (the client never sends a price id)
+#   LEADS_PLAN_NAME            label shown on the plan page (optional)
+#   LEADS_PLAN_STATES          states a Stripe plan covers (default FL,CO)
+#   LEADS_PROMO_STATES         states a promo code grants (default FL,CO)
+#   LEADS_PROMO_ACCESS_DAYS    promo access length in days (default 0 = no end date)
+#   LEADS_PROMO_ENABLED        0 turns promo redemption off (default on)
+#   LEADS_ENABLE_DELIVERY=1    saved-search weekly email (and profile delivery) actually sends
+def checkout_enabled() -> bool:
+    return (_env_flag("LEADS_CHECKOUT_ENABLED") and bool(os.environ.get("LEADS_STRIPE_PRICE_ID", "").strip())
+            and bool(STRIPE_SECRET_KEY))
+
+
+def delivery_enabled() -> bool:
+    return _env_flag("LEADS_ENABLE_DELIVERY")
+
+
+def promo_enabled() -> bool:
+    return os.environ.get("LEADS_PROMO_ENABLED", "1").strip() != "0"
+
+
+def _is_live_key(key: str) -> bool:
+    return key.startswith(("sk_live_", "rk_live_"))
+
 
 TOOLS_DIR = Path(__file__).parent.parent.parent
 PROFILES_PATH = TOOLS_DIR / "config" / "profiles.json"
@@ -87,6 +133,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Let the browser read the CSV export's row count / truncation flag / filename.
+    expose_headers=["X-Total-Count", "X-Truncated", "Content-Disposition"],
 )
 
 
@@ -158,6 +206,26 @@ class CheckoutRequest(BaseModel):
 class RedeemCodeRequest(BaseModel):
     profile_id: str
     code: str
+
+
+class AccessRedeemRequest(BaseModel):
+    code: str = Field(..., max_length=64)
+
+
+class AccountCheckoutRequest(BaseModel):
+    success_url: str = Field(..., max_length=500)
+    cancel_url: str = Field(..., max_length=500)
+
+
+SAVED_QUERY_KEYS = ("state", "county", "filing_type", "entity_kind", "vertical", "q", "date_from", "date_to",
+                    "include_inactive")
+SAVED_SEARCH_MAX_PER_USER = int(os.environ.get("LEADS_SAVED_SEARCH_MAX", "25"))
+
+
+class SavedSearchCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=120)
+    query: dict = Field(default_factory=dict)
+    cadence: Literal["weekly"] = "weekly"
 
 
 # Auth dependencies
@@ -300,6 +368,8 @@ async def health_check():
         "apollo_configured": bool(apollo_key),
         "stripe_mode": ("live" if STRIPE_SECRET_KEY.startswith(("sk_live_", "rk_live_"))
                         else "test" if STRIPE_SECRET_KEY.startswith(("sk_test_", "rk_test_")) else "unset"),
+        "checkout_enabled": checkout_enabled(),
+        "delivery_enabled": delivery_enabled(),
         "latest_ingest_runs": runs,
     }
 
@@ -322,6 +392,15 @@ async def list_verticals():
             for k, v in verticals_mod.VERTICALS.items()
         ]
     }
+
+
+@app.get("/filing-types")
+async def list_filing_types(state: str = Query(..., description="Two-letter state code, e.g. FL")):
+    """Public reference data: a state's filing-type codes, labels, entity kinds and stored counts."""
+    st = state.strip().upper()
+    if len(st) != 2 or not st.isalpha():
+        raise HTTPException(status_code=422, detail="state must be a two-letter code")
+    return {"state": st, "filing_types": filing_types_mod.for_state(st, db.filing_type_counts(st))}
 
 
 async def require_entitlement(user: db.User = Depends(get_or_create_user)) -> tuple[db.User, set]:
@@ -609,7 +688,9 @@ async def create_checkout_session(
     request: CheckoutRequest,
     user: db.User = Depends(get_or_create_user)
 ):
-    """Create Stripe Checkout session for profile payment."""
+    """Create Stripe Checkout session for profile payment (legacy per-profile flow)."""
+    if _is_live_key(STRIPE_SECRET_KEY) and not _env_flag("LEADS_CHECKOUT_ENABLED"):
+        raise HTTPException(status_code=503, detail="Plans opening soon")
     profile = db.get_profile(request.profile_id)
     if not profile or profile.user_id != user.id:
         raise HTTPException(status_code=404, detail="Profile not found")
@@ -677,11 +758,178 @@ async def redeem_code(
     if profile.paid:
         return {"ok": True, "message": "Profile already activated"}
 
+    _check_redeem_rate(user.id)
     success, message = db.redeem_code(request.code, request.profile_id)
     if not success:
+        _note_redeem_failure(user.id)
         raise HTTPException(status_code=400, detail=message)
 
     return {"ok": True, "message": message}
+
+
+# ---------------------------------------------------------------------------
+# Account level (v1): plan status, promo redemption, checkout, saved searches
+# ---------------------------------------------------------------------------
+
+REDEEM_MAX_FAILURES = int(os.environ.get("LEADS_REDEEM_MAX_FAILURES", "10"))  # per user per hour
+_redeem_failures: dict[int, list[float]] = {}
+_redeem_lock = threading.Lock()
+
+
+def _check_redeem_rate(user_id: int):
+    now = time.monotonic()
+    with _redeem_lock:
+        recent = [t for t in _redeem_failures.get(user_id, []) if now - t < 3600]
+        _redeem_failures[user_id] = recent
+        if len(recent) >= REDEEM_MAX_FAILURES:
+            retry = max(1, int(3600 - (now - recent[0])))
+            raise HTTPException(status_code=429, detail="Too many attempts; try again later.",
+                                headers={"Retry-After": str(retry)})
+
+
+def _note_redeem_failure(user_id: int):
+    with _redeem_lock:
+        _redeem_failures.setdefault(user_id, []).append(time.monotonic())
+
+
+def _plan_view(user: db.User) -> dict:
+    states = sorted(db.entitled_states(user.id))
+    grants = db.active_account_access(user.id)
+    plan = {"active": bool(states), "name": None, "source": None, "states": states,
+            "renews_at": None, "expires_at": None}
+    if grants:
+        g = grants[0]
+        plan.update(source=g["source"], name=g.get("plan_name"), renews_at=g.get("renews_at"),
+                    expires_at=g.get("expires_at"))
+    elif states:
+        plan["source"] = db.paid_profile_source(user.id)
+    return plan
+
+
+@app.get("/v1/account")
+async def get_account(user: db.User = Depends(get_or_create_user)):
+    """The signed-in user's own plan status. No PII beyond the user's own email."""
+    return {
+        "email": user.email or None,
+        "plan": _plan_view(user),
+        "features": {
+            "checkout": checkout_enabled(),
+            "saved_searches": True,
+            "saved_search_email": delivery_enabled(),
+            "promo_codes": promo_enabled(),
+        },
+    }
+
+
+@app.post("/v1/access/redeem")
+async def redeem_access(request: AccessRedeemRequest, user: db.User = Depends(get_or_create_user)):
+    """Redeem an early-access promo code for the account. Creates no profile and schedules no email."""
+    if not promo_enabled():
+        raise HTTPException(status_code=503, detail="Promo codes are not being accepted right now.")
+    if db.entitled_states(user.id):
+        return {"ok": True, "message": "Your access is already active. The code was not used."}
+    _check_redeem_rate(user.id)
+    try:
+        days = int(os.environ.get("LEADS_PROMO_ACCESS_DAYS", "0") or 0)
+    except ValueError:
+        days = 0
+    ok, message = db.redeem_code_for_account(request.code, user.id, _env_states("LEADS_PROMO_STATES", "FL,CO"),
+                                             access_days=days)
+    if not ok:
+        _note_redeem_failure(user.id)
+        raise HTTPException(status_code=400, detail=message)
+    return {"ok": True, "message": message}
+
+
+@app.post("/v1/checkout")
+async def create_account_checkout(request: AccountCheckoutRequest, user: db.User = Depends(get_or_create_user)):
+    """Stripe Checkout for the configured plan. The price comes from LEADS_STRIPE_PRICE_ID, never the client.
+
+    Off unless LEADS_CHECKOUT_ENABLED=1 (503 "Plans opening soon"), so a live key is never used by default.
+    """
+    if not checkout_enabled():
+        raise HTTPException(status_code=503, detail="Plans opening soon")
+    if db.entitled_states(user.id):
+        raise HTTPException(status_code=409, detail="Your plan is already active.")
+    for url in (request.success_url, request.cancel_url):
+        u = urlparse(url)
+        if f"{u.scheme}://{u.netloc}" not in CORS_ORIGINS:
+            raise HTTPException(status_code=400, detail="Redirect URL not allowed")
+
+    price_id = os.environ["LEADS_STRIPE_PRICE_ID"].strip()
+    states = _env_states("LEADS_PLAN_STATES", "FL,CO")
+    plan_name = os.environ.get("LEADS_PLAN_NAME", "").strip() or None
+    try:
+        if not user.stripe_customer_id:
+            customer = stripe.Customer.create(email=user.email, metadata={"firebase_uid": user.firebase_uid})
+            db.update_user_stripe_customer(user.id, customer.id)
+            customer_id = customer.id
+        else:
+            customer_id = user.stripe_customer_id
+        session = stripe.checkout.Session.create(
+            customer=customer_id,
+            line_items=[{"price": price_id, "quantity": 1}],
+            mode="subscription",
+            success_url=request.success_url,
+            cancel_url=request.cancel_url,
+            client_reference_id=str(user.id),
+            metadata={"purpose": "account", "user_id": str(user.id), "states": ",".join(states)},
+            subscription_data={"metadata": {"purpose": "account", "user_id": str(user.id)}},
+        )
+    except stripe.StripeError:
+        raise HTTPException(status_code=502, detail="Checkout is not available right now. You were not charged.")
+    db.create_pending_checkout(user.id, session.id, states, plan_name)
+    return {"checkout_url": session.url, "session_id": session.id}
+
+
+def _saved_view(s: dict) -> dict:
+    return {k: s.get(k) for k in db.SAVED_SEARCH_FIELDS}
+
+
+def _email_status() -> str:
+    return "enabled" if delivery_enabled() else "disabled"
+
+
+@app.get("/v1/saved-searches")
+async def list_saved_searches(user: db.User = Depends(get_or_create_user)):
+    return {"saved_searches": [_saved_view(s) for s in db.list_saved_searches(user.id)], "email": _email_status()}
+
+
+@app.post("/v1/saved-searches")
+async def create_saved_search(request: SavedSearchCreate, ent: tuple = Depends(require_entitlement)):
+    """Save a filter set. The weekly email of new matches is sent only when LEADS_ENABLE_DELIVERY=1."""
+    user, entitled = ent
+    q = {k: v for k, v in (request.query or {}).items() if k not in ("limit", "offset")}
+    unknown = sorted(set(q) - set(SAVED_QUERY_KEYS))
+    if unknown:
+        raise HTTPException(status_code=422, detail=f"Unknown filter(s): {', '.join(unknown)}")
+    for k, v in q.items():
+        if k == "include_inactive":
+            if not isinstance(v, bool):
+                raise HTTPException(status_code=422, detail="include_inactive must be true or false")
+        elif v is not None and (not isinstance(v, str) or len(v) > 200):
+            raise HTTPException(status_code=422, detail=f"{k} must be a short string")
+    q = {k: v for k, v in q.items() if v not in (None, "")}
+    if db.count_saved_searches(user.id) >= SAVED_SEARCH_MAX_PER_USER:
+        raise HTTPException(status_code=400, detail=f"You can keep up to {SAVED_SEARCH_MAX_PER_USER} saved searches.")
+    filters = _filing_filters(entitled, q.get("state"), q.get("county"), q.get("filing_type"), q.get("entity_kind"),
+                              q.get("vertical"), q.get("q"), q.get("date_from"), q.get("date_to"),
+                              bool(q.get("include_inactive")))
+    # The weekly email covers filings first seen since the previous run, so the date range and the
+    # state list are applied at send time (states re-checked against the plan then).
+    stored = {k: filters[k] for k in ("county", "filing_type", "entity_kind", "keywords", "must_contain",
+                                       "active_only")}
+    if q.get("state"):
+        q["state"] = ",".join(filters["states"])
+    saved = db.create_saved_search(user.id, request.name.strip(), q, stored, request.cadence)
+    return {**_saved_view(saved), "email": _email_status()}
+
+
+@app.delete("/v1/saved-searches/{search_id}")
+async def delete_saved_search(search_id: str, user: db.User = Depends(get_or_create_user)):
+    if not db.delete_saved_search(search_id, user.id):
+        raise HTTPException(status_code=404, detail="Saved search not found")
+    return {"ok": True}
 
 
 # Manual runs. The API container has no pipeline code (src/ lives in the scheduler image), so the API
@@ -814,7 +1062,13 @@ async def stripe_webhook(request: Request):
     # Handle checkout completion
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
-        profile_id = session.get("metadata", {}).get("profile_id")
+        meta = session.get("metadata") or {}
+        if meta.get("purpose") == "account":
+            # Account-level plan (/v1/checkout): only a session this API created is honoured.
+            if session.get("payment_status") in ("paid", "no_payment_required"):
+                db.activate_checkout(session["id"], session.get("subscription"))
+            return {"received": True}
+        profile_id = meta.get("profile_id")
 
         # complete_payment() is idempotent (keyed by the session id we stored at
         # checkout, so a redelivered event re-applies the same state).
@@ -830,12 +1084,26 @@ async def stripe_webhook(request: Request):
             if profile:
                 update_cron_entry(profile_id, profile.settings)
 
-    elif event["type"] == "customer.subscription.deleted":
-        # Handle subscription cancellation
-        subscription = event["data"]["object"]
-        # Mark profile as inactive
-        # (would need to track subscription_id -> profile_id mapping)
-        pass
+    elif event["type"] in ("customer.subscription.created", "customer.subscription.updated",
+                           "customer.subscription.deleted"):
+        # Account-level grants are keyed by subscription id. (Legacy per-profile subscriptions have no
+        # subscription -> profile mapping, so they are not changed here.)
+        sub = event["data"]["object"]
+        status = sub.get("status")
+        if event["type"] == "customer.subscription.deleted":
+            mapped = "canceled"
+        elif status in ("active", "trialing", "past_due"):
+            mapped = "active"
+        elif status in ("canceled", "unpaid", "incomplete_expired", "paused"):
+            mapped = "canceled"
+        else:
+            mapped = None
+        period_end = sub.get("current_period_end") or next(
+            (i.get("current_period_end") for i in (sub.get("items") or {}).get("data", [])
+             if i.get("current_period_end")), None)
+        renews = (datetime.utcfromtimestamp(int(period_end)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                  if period_end and mapped == "active" else None)
+        db.update_subscription(sub.get("id"), mapped, renews)
 
     return {"received": True}
 

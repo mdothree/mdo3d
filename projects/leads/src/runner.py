@@ -11,6 +11,8 @@ Usage:
                                                   # (no profile filtering, no enrichment, no email)
     python runner.py --run-requests               # Execute manual runs queued by the API
                                                   # (stored filings only; email only if LEADS_ENABLE_DELIVERY=1)
+    python runner.py --saved-searches             # Weekly email of new matches for saved searches
+                                                  # (does nothing unless LEADS_ENABLE_DELIVERY=1)
 
 Date Range Options:
     python runner.py --last-week --force          # Last 7 workdays
@@ -1286,6 +1288,73 @@ def process_run_requests(max_runs: int = 5, timeout_s: int = RUN_TIMEOUT_S) -> i
     return n
 
 
+# ---------------------------------------------------------------------------
+# Saved searches (GET/POST /v1/saved-searches): weekly email of filings first seen since the last run
+# ---------------------------------------------------------------------------
+
+SAVED_SEARCH_MAX_ROWS = int(os.environ.get("LEADS_EXPORT_MAX_ROWS", "10000"))
+SAVED_SEARCH_CSV_FIELDS = [
+    "state", "source_id", "entity", "filing_type", "entity_kind", "filed_date", "status", "county",
+    "registered_agent", "address_1", "address_2", "city", "address_state", "zip_code", "source_date",
+]
+
+
+def process_saved_searches(now: Optional[datetime] = None, interval_days: int = 7) -> dict:
+    """Email each due saved search its new matches. Sends nothing unless LEADS_ENABLE_DELIVERY=1.
+
+    States are re-checked against the user's plan at send time; a user without an active plan gets
+    nothing. A search with no new matches is marked as run but no email is sent.
+    """
+    stats = {"due": 0, "sent": 0, "empty": 0, "skipped": 0, "errors": 0, "delivery": "disabled"}
+    if not delivery_enabled():
+        log("[saved] delivery disabled (LEADS_ENABLE_DELIVERY!=1); nothing sent")
+        return stats
+    stats["delivery"] = "enabled"
+    db = _backend_db()
+    now = now or datetime.utcnow()
+    for s in db.due_saved_searches(interval_days, now):
+        stats["due"] += 1
+        sid = s["id"]
+        user = db.get_user_by_id(s["user_id"])
+        entitled = db.entitled_states(s["user_id"]) if user else set()
+        wanted = {x.strip().upper() for x in (s["query"].get("state") or "").split(",") if x.strip()}
+        states = sorted((wanted & entitled) if wanted else entitled)
+        if not user or not user.email or not states:
+            stats["skipped"] += 1
+            log(f"[saved {sid}] skipped (no active plan for its states, or no email)", "WARN")
+            db.mark_saved_search_run(sid, sent=False, now=now)
+            continue
+        since = s.get("last_run_at") or s["created_at"]
+        rows, total = db.search_filings(limit=SAVED_SEARCH_MAX_ROWS, offset=0, states=states,
+                                        first_seen_after=since, **s["filters"])
+        if not rows:
+            stats["empty"] += 1
+            db.mark_saved_search_run(sid, sent=False, now=now)
+            log(f"[saved {sid}] no new matches since {since}")
+            continue
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        stamp = now.strftime("%Y%m%d")
+        path = OUTPUT_DIR / f"saved_{sid}_{stamp}.csv"
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=SAVED_SEARCH_CSV_FIELDS, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(rows)
+        more = f" (first {len(rows)} of {total})" if total > len(rows) else ""
+        body = (f"Your saved search \"{s['name']}\" has {total} new filing(s) since the last email{more}.\n"
+                f"States: {', '.join(states)}\n\nThe CSV is attached.\n\n---\n MDO3D Leads\n leads@mdo3d.com\n")
+        ok, res = send_email(user.email, user.email, f"New filings: {s['name']}", body, "leads@mdo3d.com",
+                             attachment=path, attachment_name=f"{s['name'][:40] or 'saved-search'}_{stamp}.csv")
+        if ok:
+            stats["sent"] += 1
+            db.mark_saved_search_run(sid, sent=True, now=now)
+            log(f"[saved {sid}] sent rows={len(rows)} total={total}")
+        else:
+            stats["errors"] += 1  # not marked as run: retried on the next tick
+            log(f"[saved {sid}] send failed: {res}", "ERROR")
+    log(f"[saved] {stats}")
+    return stats
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="FL Sunbiz Lead Pipeline")
@@ -1330,10 +1399,16 @@ if __name__ == "__main__":
     parser.add_argument("--run-requests", action="store_true",
                         help="Execute manual runs queued by the API (stored filings; email only if "
                              "LEADS_ENABLE_DELIVERY=1)")
+    parser.add_argument("--saved-searches", action="store_true",
+                        help="Weekly email of new matches for saved searches (only if LEADS_ENABLE_DELIVERY=1)")
     args = parser.parse_args()
 
     if args.run_requests:
         process_run_requests()
+        sys.exit(0)
+
+    if args.saved_searches:
+        process_saved_searches()
         sys.exit(0)
 
     if args.ingest:

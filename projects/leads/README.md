@@ -64,12 +64,17 @@ Customer profiles live in SQLite (created in the app, activated by Stripe checko
 | `GET /health`, `GET /coverage`, `GET /verticals` | public (no filing content) |
 | `GET /filings?state=&county=&filing_type=&entity_kind=&vertical=&q=&date_from=&date_to=&limit=&offset=` | signed in + paid |
 | `GET /filings/export.csv` (same filters) | signed in + paid |
-| `/profiles`, `/checkout`, `/redeem-code`, `/stripe-webhook` | as before |
+| `GET /filing-types?state=XX` | public (codes + labels + stored counts) |
+| `GET /v1/account` | signed in: own plan status (`active`, `states`, `source` stripe\|promo, `renews_at`/`expires_at`) |
+| `POST /v1/access/redeem {code}` | signed in: account-level promo access (no profile, no email) |
+| `POST /v1/checkout` | signed in: 503 "Plans opening soon" unless `LEADS_CHECKOUT_ENABLED=1`; price from `LEADS_STRIPE_PRICE_ID` |
+| `GET/POST /v1/saved-searches`, `DELETE /v1/saved-searches/{id}` | signed in (+ plan to create); weekly email only if `LEADS_ENABLE_DELIVERY=1` |
+| `/profiles`, `/checkout`, `/redeem-code`, `/stripe-webhook` | as before (legacy per-profile) |
 | `POST /profiles/{id}/run` → `202 {run_id, status_url}` | owner + paid + active; 1 per profile per 10 min (`429` + `Retry-After`) |
 | `GET /runs/{id}` → `queued \| running \| done \| error`, `leads`, `delivery` | owner |
 
-Entitlement = the states of the user's **paid** profiles (a profile without `states` covers FL). No paid profile →
-`402`; a state outside the bundle → `403`. Verticals match the entity **name** only, so the UI should say
+Entitlement = the states of the user's active account-level grant (promo or Stripe) plus those of any **paid**
+profile (a profile without `states` covers FL). Nothing active → `402`; a state outside the bundle → `403`. Verticals match the entity **name** only, so the UI should say
 "name contains", not "industry".
 
 ## Scheduling

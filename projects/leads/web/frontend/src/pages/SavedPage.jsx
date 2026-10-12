@@ -17,12 +17,12 @@ function describe(q) {
 }
 
 function SavedList() {
-  const [state, setState] = useState({ status: 'loading', items: [], error: null });
+  const [state, setState] = useState({ status: 'loading', items: [], email: null, error: null });
   const load = () => {
     setState((s) => ({ ...s, status: 'loading' }));
     listSavedSearches()
-      .then((r) => setState({ status: 'ok', items: r.saved_searches || [], error: null }))
-      .catch((error) => setState({ status: 'error', items: [], error }));
+      .then((r) => setState({ status: 'ok', items: r.saved_searches || [], email: r.email || null, error: null }))
+      .catch((error) => setState({ status: 'error', items: [], email: null, error }));
   };
   useEffect(load, []);
 
@@ -44,7 +44,11 @@ function SavedList() {
         <li key={s.id} className="card">
           <h2 className="card-title">{s.name}</h2>
           <p className="muted small">{describe(s.query)}</p>
-          <p className="small">Weekly email{s.last_sent_at ? ` · last sent ${s.last_sent_at.slice(0, 10)}` : ' · not sent yet'}</p>
+          <p className="small">
+            {state.email === 'enabled'
+              ? `Weekly email${s.last_sent_at ? ` · last sent ${s.last_sent_at.slice(0, 10)}` : ' · not sent yet'}`
+              : 'Weekly email not switched on yet · nothing is sent'}
+          </p>
           <button type="button" className="btn btn-ghost"
             onClick={() => deleteSavedSearch(s.id).then(load).catch(() => setState((st) => ({ ...st, status: 'error' })))}>
             Delete <span className="sr-only">{s.name}</span>

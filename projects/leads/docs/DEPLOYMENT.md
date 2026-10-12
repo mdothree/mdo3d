@@ -36,6 +36,7 @@ rollbacks; only `docker compose down -v` deletes them.
 | every minute | `runner.py --run-requests`: manual runs queued by `POST /profiles/{id}/run` (stored filings; email only if `LEADS_ENABLE_DELIVERY=1`) |
 | 03:30 daily | `sqlite3 .backup` → `PRAGMA integrity_check` → gzip → prune |
 | 08:00 daily | profile delivery, **only if `LEADS_ENABLE_DELIVERY=1`** (email needs the Principal's OK) |
+| 08:30 daily | `runner.py --saved-searches`: each saved search is due 7 days after its last run, and gets the filings first seen since then (states re-checked against the plan). **Only if `LEADS_ENABLE_DELIVERY=1`.** |
 
 ## Deploying (`ops/DEPLOY_FLEET.sh`, run from the laptop; builds happen on xps)
 ```bash
@@ -60,8 +61,20 @@ additive (`CREATE TABLE IF NOT EXISTS`), so a rollback reads the same DB.
 
 ## Environment
 - **backend.env:** `LEADS_API_KEY`, `FIREBASE_PROJECT_ID=leads-59279`, `STRIPE_SECRET_KEY`,
-  `STRIPE_WEBHOOK_SECRET`, `LEADS_STRIPE_PRICE_IDS` (allowlist), optional `LEADS_CORS_ORIGINS` and
-  `LEADS_EXPORT_MAX_ROWS` (default 10000).
+  `STRIPE_WEBHOOK_SECRET`, `LEADS_STRIPE_PRICE_IDS` (allowlist for the legacy `/checkout`), optional
+  `LEADS_CORS_ORIGINS` and `LEADS_EXPORT_MAX_ROWS` (default 10000). Account-level plan settings:
+
+  | var | default | meaning |
+  |---|---|---|
+  | `LEADS_CHECKOUT_ENABLED` | `0` | `1` opens `POST /v1/checkout`. While it is off, checkout answers 503 "Plans opening soon", `features.checkout` is false, and the legacy `/checkout` refuses to run with a live key. **Turning it on with a live key takes real payments, so it needs the Principal's go.** |
+  | `LEADS_STRIPE_PRICE_ID` | — | the one price `/v1/checkout` sells (the client never sends a price). Checkout stays closed while it is unset. Which price, and so what we charge, is CONVERSION's call. |
+  | `LEADS_PLAN_NAME` | — | label on the plan page (optional) |
+  | `LEADS_PLAN_STATES` | `FL,CO` | states a Stripe plan covers |
+  | `LEADS_PROMO_STATES` | `FL,CO` | states a promo code grants |
+  | `LEADS_PROMO_ACCESS_DAYS` | `0` | promo access length in days (`0` = no end date) |
+  | `LEADS_PROMO_ENABLED` | `1` | `0` stops promo redemption (503) |
+  | `LEADS_ENABLE_DELIVERY` | `0` | compose passes the same value to the backend. The API only reports it (`email: "disabled"`); the scheduler does the sending. |
+  | `LEADS_SAVED_SEARCH_MAX` / `LEADS_REDEEM_MAX_FAILURES` | `25` / `10` | saved searches per user / failed redemptions per user per hour |
 - **frontend.env:** `VITE_API_URL=https://leadsapi.mdo3d.com`, the Firebase web config and
   `VITE_STRIPE_PUBLISHABLE_KEY`. It's copied into the build context because Vite reads it at build time.
 - **leads.env** (scheduler): `SUNBIZ_SFTP_HOST/USER/PASS` (state-published public login) and an optional
@@ -80,9 +93,16 @@ Pricing per state bundle is CONVERSION's call (plan §C5); `/filings` already sc
 paid profile.
 
 ## Access model (paid-only)
-- No free tier. A profile becomes `paid` through a completed Stripe checkout (`checkout.session.completed`
-  webhook) or a redeemed **promo code**, the early-access lever. Create one with
+- No free tier. Access is **account level** (`account_access`), granted by a redeemed **promo code**
+  (`POST /v1/access/redeem`, the early-access lever) or a completed Stripe checkout (`POST /v1/checkout`, then
+  the `checkout.session.completed` webhook). `customer.subscription.updated/deleted` keep `renews_at` and the
+  status current. Neither path creates a delivery profile or schedules email. The legacy per-profile paths
+  (`/redeem-code`, `/checkout`) still work, and a paid profile still entitles its states.
+- Promo codes live in the DB (never in the client). Create one on the host with
   `INSERT INTO codes (code, max_uses, expires_at) VALUES ('EARLY-XXXX', 25, '2026-12-31T00:00:00');`.
+  `expires_at` is the redemption deadline. How long the access lasts and which states it covers come from
+  `LEADS_PROMO_ACCESS_DAYS` / `LEADS_PROMO_STATES`. Each account can redeem a code once, and `max_uses` is
+  enforced in one transaction.
 - `/filings` and `/filings/export.csv` need a Firebase sign-in (not anonymous) **and** a paid profile. They
   fail closed: 401 without sign-in, 402 without a paid profile, 403 for a state outside the bundle.
 - Tests run with `LEADS_TEST_MODE=1`, and the API refuses to start if a live Stripe key is present. Stripe calls
@@ -90,6 +110,8 @@ paid profile.
 
 ## Database (`$LEADS_DB_PATH`, default `data/leads.db`; `/data/leads.db` in containers)
 `users`, `profiles`, `payments`, `leads` (per-profile delivered rows), `codes`, `code_redemptions`,
+`account_access` (account-level grants: source stripe|promo, status, states, renews/expires),
+`account_redemptions`, `saved_searches`,
 **`filings`** (`UNIQUE(state, source_id)`), **`ingest_runs`** (state, source_date, rows, new_rows, status) and
 **`run_requests`** (manual runs: queued → running → done/error, leads, delivery).
 

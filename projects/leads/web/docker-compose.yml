@@ -35,6 +35,8 @@ services:
         required: false
     environment:
       LEADS_DB_PATH: /data/leads.db
+      # Same switch as the scheduler: the API only reports it (saved searches show email "disabled").
+      LEADS_ENABLE_DELIVERY: ${LEADS_ENABLE_DELIVERY:-0}
     volumes:
       - ../config:/config:ro    # api.py reads <root>/config = /config in the image
       - leads-data:/data

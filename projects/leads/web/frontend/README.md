@@ -36,27 +36,27 @@ when signed in. Errors are JSON `{"detail": "..."}`. The UI renders them like th
 402 → "An active plan is required", 403 → "That state is not in your plan", 400/422 → bad filter,
 5xx or network failure → "Service unavailable — no results were generated."
 
-**Live on the backend** (`web/backend/api.py`, commit 7c11b41):
+**Live on the backend** (`web/backend/api.py`; the account-level `/v1/*` endpoints and `/filing-types` were added after 98a9f41):
 
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/coverage` | public. `{states:[{state, filings, latest_filed_date, latest_source_date, last_ingest_at}]}`. A state is selectable only when it has `filings > 0`. If the call fails, FL and CO (the adapters in `src/adapters/`) stay enabled and search then reports the outage. |
 | GET | `/verticals` | public. `{verticals:[{id, label, match}]}`. Labelled "Name contains… (keyword group)": they match the entity **name** only, not an industry. |
 | GET | `/filings` | paid. `state, filing_type, entity_kind, vertical, q, date_from, date_to, limit, offset` (also `county`, `include_inactive`). Returns `{filings, total, limit, offset, states}`. Rows are flat (`address_1, address_2, city, address_state, zip_code`) and `normalizeFiling()` maps them to `principal_address`. The UI defaults to the last 30 days of `filed_date`, because the daily feed also carries amendments to older entities. |
-| GET | `/filings/export.csv` | paid. Same filters minus limit/offset, at most 10k rows. The UI notes truncation when `X-Truncated: 1` is readable. **Backend: add `expose_headers=["X-Total-Count","X-Truncated","Content-Disposition"]` to CORS** so the browser can read them. |
-| GET | `/profiles` | Used for plan status (any `paid` profile means active, matching `entitled_states`) until `/v1/account` exists. |
+| GET | `/filings/export.csv` | paid. Same filters minus limit/offset, at most 10k rows. CORS exposes `X-Total-Count`, `X-Truncated` and `Content-Disposition`, so the UI can read the row count and note truncation. |
+| GET | `/filing-types?state=XX` | public reference data. `{state, filing_types:[{code, label, entity_kind, filings}]}`. FL and CO come from the adapters' code tables (with stored counts). Other states (e.g. CT) list the distinct codes stored for them, labelled by code. 422 for a malformed state. |
+| GET | `/v1/account` | signed in. `{email, plan:{active, name, source:"stripe"\|"promo"\|null, states, renews_at, expires_at}, features:{checkout, saved_searches, saved_search_email, promo_codes}}`. `email` is the user's own and is the only PII returned. A legacy paid profile also counts as active. |
+| POST | `/v1/access/redeem` | signed in. `{code}` → `{ok, message}`. Account level: it creates **no** profile and schedules no email. 400 + `detail` for a bad, expired or used-up code. 429 after repeated failures. 503 when promo codes are switched off. If the plan is already active, the code is not used. |
+| POST | `/v1/checkout` | signed in. `{success_url, cancel_url}` → `{checkout_url:"https://checkout.stripe.com/...", session_id}`. The server picks the price (`LEADS_STRIPE_PRICE_ID`), so the client never sends one. **503 "Plans opening soon" unless `LEADS_CHECKOUT_ENABLED=1`** (the default is off, and then `features.checkout` is false). 409 if the plan is already active. The Stripe webhook grants account-level access. |
+| GET/POST | `/v1/saved-searches` | signed in (POST also needs an active plan: 402, or 403 for a state outside it). GET → `{saved_searches:[{id, name, query, cadence:"weekly", created_at, last_sent_at}], email:"enabled"\|"disabled"}`. POST `{name, query, cadence:"weekly"}` → the saved search plus `email`. `query` takes the `/filings` filter keys (limit/offset are dropped; unknown keys → 422). The weekly email sends only when `LEADS_ENABLE_DELIVERY=1`; until then `email` is `"disabled"` and nothing is sent. |
+| DELETE | `/v1/saved-searches/{id}` | owner only → `{ok:true}` (404 otherwise). |
+| GET | `/profiles` | Legacy per-profile records. Plan status now comes from `/v1/account`. |
 
 The **county** filter is not shown: the FL corporate file and the CO dataset have no county field (the
 adapters store `null`).
 
-**Proposed, not built yet.** The UI treats a 404 as "not available yet" and never fakes success:
-
-| Method | Path | Request → Response |
-|---|---|---|
-| GET | `/v1/account` | → `{email, plan:{active, name, source:"stripe"\|"promo"\|null, renews_at}, features:{checkout, saved_searches, promo_codes}}` |
-| POST | `/v1/access/redeem` | `{code}` → `{ok, message}` (400 + `detail` for a bad code). Account-level, with no profile needed. Today `/redeem-code` needs a `profile_id`, and creating a delivery profile only to redeem would schedule emails. |
-| POST | `/v1/checkout` | `{success_url, cancel_url}` → `{checkout_url:"https://checkout.stripe.com/..."}`. The button renders only when `features.checkout` is true. |
-| GET/POST | `/v1/saved-searches` | → `{saved_searches:[{id, name, query, cadence:"weekly", created_at, last_sent_at}]}` / `{name, query, cadence}` |
-| DELETE | `/v1/saved-searches/{id}` | → `{ok:true}` |
+The UI still treats a 404 from these paths as "not available yet" (an older backend) and never fakes
+success. `src/lib/states.js` still lists FL codes locally; switching the filing-type select to
+`/filing-types` is open UI work.
 
 `contacts` carries **verified contacts only** (never guessed emails).
