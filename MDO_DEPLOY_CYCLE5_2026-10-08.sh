@@ -1,7 +1,7 @@
 #!/bin/bash
 # MDO lane — cycle 5 consolidated operator deploy (Principal GO required).
 # Usage:  bash ~/mdo3d/MDO_DEPLOY_CYCLE5_2026-10-08.sh <group...>
-#   groups: rigor | runwae | ronna | mdothree | div | all  (+ c8qw: cycle-8 QW3/QW4; + b26: Builder cycle-8 P2/P3 pushes+deploys; neither in all)
+#   groups: rigor | runwae | ronna | mdothree | div | all  (+ c8qw; + b26 Builder cycle-8 P2/P3; + wave63 divination $5/$10 + paid-first-use; + wave94r rigor paid-first-use (needs #93); none in all; order: b26 → wave63 → wave94r)
 # Every project deploys from a clean `git archive HEAD` export (never a working tree — several hold
 # unrelated uncommitted work). Uses the MDO3 Vercel token from ~/latarence/secrets/sega_credentials.env.
 # ~25 deploys total (Vercel Hobby cap is 100/day). No Stripe charges; PRO_CHECKOUT_ENABLED stays false.
@@ -308,11 +308,52 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + 2 + 3: A11Y-004/015/005, PERF-
   check "prompts /free → /samples" "curl -s -o /dev/null -w '%{http_code}' https://promptsforbusiness.com/free" "308"
   echo "  MANUAL: xps browser pass at mdo3d.com 768/834/1024 (full nav, no overflow) — pre-verified on HEAD 2026-10-11" | tee -a "$LOG"
 }
+ffmerge() {  # ffmerge <repo dir rel ~/mdo3d or "."> <branch>  — fast-forward the checked-out main/master to a wave branch
+  local r=$1 b=$2 cur; cur=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
+  git -C "$ROOT/$r" merge --ff-only -q "$b" && echo "  ff $r $cur ← $b ($(git -C "$ROOT/$r" log -1 --format=%h))" | tee -a "$LOG" \
+    || { echo "  FF FAIL $r ($b): rebase the branch onto $cur first" | tee -a "$LOG"; return 1; }
+}
+pushrepo() {  # pushrepo <repo dir>: token-free push via the gh mdothree login (git-connected projects deploy on push)
+  local r=$1 slug br; slug=$(git -C "$ROOT/$r" remote get-url origin | sed -E 's#^https://([^@]*@)?github.com/##; s#\.git$##'); br=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
+  ( cd "$ROOT/$r" && git pull -q --rebase "https://mdothree@github.com/$slug.git" "$br" && git push -q "https://mdothree@github.com/$slug.git" "HEAD:$br" ) \
+    && echo "  pushed $r ($(git -C "$ROOT/$r" log -1 --format=%h))" | tee -a "$LOG" || echo "  PUSH FAIL $r" | tee -a "$LOG"
+}
+g_wave63() {  # JARVIS #63 ($5 single / $10 deep, one shared config the API enforces) + #94 mechanics (paid from first use) — divination ×9
+  # Run AFTER b26. No Stripe objects change: the APIs send the amount inline, so the charged price changes when each API deploys.
+  local D=projects/divination N="$D/astrology/astrology $D/iching/iching $D/runes/runes $D/fengshui/feng-shui-analyzer $D/pastlives/past-life-insights" r p
+  ffmerge . wave/63-price-ladder || return 1
+  for r in $N; do ffmerge "$r" wave/63-price-ladder || return 1; done
+  ( cd "$ROOT" && node $D/shared/sync-pricing.mjs --check --strict \
+      --repo astrology/astrology=$ROOT/$D/astrology/astrology --repo iching/iching=$ROOT/$D/iching/iching --repo runes/runes=$ROOT/$D/runes/runes \
+      --repo fengshui/feng-shui-analyzer=$ROOT/$D/fengshui/feng-shui-analyzer --repo pastlives/past-life-insights=$ROOT/$D/pastlives/past-life-insights ) \
+    || { echo "  PRICE COPIES DRIFTED: not deploying" | tee -a "$LOG"; return 1; }
+  for p in astrology dreams fengshui iching numerology oracle pastlives runes tarot; do deploy $D/$p/api; done          # APIs first
+  for p in dreams/dream-interpreter tarot/tarot-cards oracle/oracle-cards numerology/numerology-app; do deploy $D/$p; done  # CLI frontends
+  for r in $N; do pushrepo "$r"; done                                                                                         # git-connected frontends
+  sleep 60
+  for u in astrology-api-alpha dream-interpreter-api-delta fengshui-api-eosin iching-api numerology-api oracle-cards-api pastlives-api runes-api tarot-cards-api; do
+    check "$u unknown readingType → 400" "curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{\"email\":\"qa@example.invalid\",\"readingType\":\"__nope__\"}' https://$u.vercel.app/api/payment/create-checkout" "400"; done
+  for h in tarot oracle dreams numerology astrology iching runes; do
+    check "$h shows \$5 (single)" "curl -s https://$h.mdo3d.com/js/config/pricing.json | grep -c '\"amount_cents\": *500'" "1"; done
+  echo "  MANUAL: one TEST-key checkout per product (never live) once CONVERSION has test keys; oracle 'Subscribe' + monthly tiers await JARVIS" | tee -a "$LOG"
+}
+g_wave94r() {  # JARVIS #94 mechanics for rigor: paid from first use (INCLUDED_ANALYSES=0). API and the 7 tools ship TOGETHER (402 body changed).
+  local h; h=$(curl -s -o /dev/null -w '%{http_code}' https://api.rigor.design/health)
+  [ "$h" = 200 ] || { echo "  api.rigor.design/health=$h: finish JARVIS #93 (domain/SSL/env) first; not deploying rigor wave94" | tee -a "$LOG"; return 1; }
+  local t; ffmerge projects/rigor/api wave/94-paid-first-use || return 1
+  for t in resume cover interview linkedin networking portfolio salary; do ffmerge projects/rigor/$t wave/94-paid-first-use || return 1; done
+  deploy projects/rigor/api; pushrepo projects/rigor/api
+  for t in resume cover interview linkedin networking portfolio salary; do deploy projects/rigor/$t; pushrepo projects/rigor/$t; done
+  echo "  MANUAL (Vercel env, project rigor): remove RIGOR_FREE_* (now ignored); keep PRO_CHECKOUT_ENABLED as decided in #7/#93" | tee -a "$LOG"
+  check "rigor anonymous → 401" "curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' https://api.rigor.design/api/analyze" "401"
+  echo "  MANUAL: signed-in unsubscribed test account → 402 subscription_required (needs #96 Email/Password on)" | tee -a "$LOG"
+  for t in resume cover interview linkedin networking portfolio salary; do check "$t no \$0 plan" "curl -s https://$t.rigor.design/js/services/paywallUI.js | grep -c '\\\$0'" "0"; done
+}
 [ $# -eq 0 ] && { sed -n 2,8p "$0"; exit 1; }
 for g in "$@"; do
   case $g in
     all) g_rigor; g_runwae; g_ronna; g_mdothree; g_div;;   # c8qw and b26 are separate: run them explicitly
-    rigor|runwae|ronna|mdothree|div|c8qw|b26) "g_$g";;
+    rigor|runwae|ronna|mdothree|div|c8qw|b26|wave63|wave94r) "g_$g";;
     *) echo "unknown group $g";;
   esac
 done
