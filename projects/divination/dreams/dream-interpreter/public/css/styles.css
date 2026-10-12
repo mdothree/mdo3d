@@ -871,3 +871,14 @@ footer {
         padding-bottom: 1rem;
     }
 }
+
+/* C7B-DREAMS-MAXLEN: counter states + inline error */
+.char-count.near-limit { color: var(--accent); }
+.char-count.at-limit { color: #f87171; font-weight: 600; }
+.dream-input-section .field-error {
+    color: #f87171;
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+}
+.dream-input-section .field-error[hidden] { display: none; }
+.dream-input-section textarea[aria-invalid="true"] { border-color: #f87171; }

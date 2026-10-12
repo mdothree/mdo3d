@@ -93,9 +93,11 @@
                         id="dream-input" 
                         placeholder="I was flying over the ocean when I saw a white bird carrying a key..."
                         rows="6"
-                        maxlength="1000"></textarea>
+                        maxlength="1000"
+                        aria-describedby="dream-input-count dream-input-error"></textarea>
+                    <p id="dream-input-error" class="field-error" role="alert" hidden></p>
                     <div class="input-footer">
-                        <p class="char-count"><span id="char-count">0</span>/1000</p>
+                        <p class="char-count" id="dream-input-count"><span id="char-count">0</span>/<span id="char-max">1000</span></p>
                         <p class="tip">💡 Tip: Include emotions, colors, and specific details</p>
                     </div>
                     

@@ -61,7 +61,11 @@ class DreamInterpreterApp {
     initializeEventListeners() {
         // Dream input character counter
         const dreamInput = document.getElementById('dream-input');
-        dreamInput.addEventListener('input', () => this.updateCharCount());
+        dreamInput.addEventListener('input', () => {
+            this.updateCharCount();
+            this.showDreamError('');
+        });
+        this.updateCharCount();
 
         // Interpret button
         const interpretBtn = document.getElementById('interpret-btn');
@@ -106,10 +110,30 @@ class DreamInterpreterApp {
         document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', (e) => this.handleUpgrade(e.currentTarget)));
     }
 
+    // C7B-DREAMS-MAXLEN: live counter tracks the textarea's maxlength.
     updateCharCount() {
         const dreamInput = document.getElementById('dream-input');
         const charCount = document.getElementById('char-count');
-        charCount.textContent = dreamInput.value.length;
+        const charMax = document.getElementById('char-max');
+        const max = Number(dreamInput.getAttribute('maxlength')) || 1000;
+        const len = dreamInput.value.length;
+        charCount.textContent = len;
+        if (charMax) charMax.textContent = max;
+        const counter = charCount.closest('.char-count');
+        if (counter) {
+            counter.classList.toggle('near-limit', len >= max * 0.9 && len < max);
+            counter.classList.toggle('at-limit', len >= max);
+        }
+    }
+
+    showDreamError(message) {
+        const el = document.getElementById('dream-input-error');
+        const dreamInput = document.getElementById('dream-input');
+        if (el) {
+            el.textContent = message;
+            el.hidden = !message;
+        }
+        dreamInput?.setAttribute('aria-invalid', message ? 'true' : 'false');
     }
 
     interpretDream() {
@@ -117,8 +141,14 @@ class DreamInterpreterApp {
         this.currentDream = dreamInput.value.trim();
         
         // 20 chars matches the API's minimum, so a premium reading never 400s.
-        if (!this.currentDream || this.currentDream.length < 20) {
-            alert('Please describe your dream in more detail (at least 20 characters).');
+        if (!this.currentDream) {
+            this.showDreamError('Please describe your dream before interpreting it.');
+            dreamInput.focus();
+            return;
+        }
+        if (this.currentDream.length < 20) {
+            this.showDreamError('Please describe your dream in more detail (at least 20 characters).');
+            dreamInput.focus();
             return;
         }
         
@@ -126,9 +156,10 @@ class DreamInterpreterApp {
         this.detectedSymbols = this.detectSymbols(this.currentDream);
         
         if (this.detectedSymbols.length === 0) {
-            alert('No recognizable symbols found in your dream. Try adding more details about what you saw, felt, or experienced.');
+            this.showDreamError('No recognizable symbols found in your dream. Try adding more details about what you saw, felt, or experienced.');
             return;
         }
+        this.showDreamError('');
         
         // Loading state: show the results section with a placeholder, bring it
         // into view, then render the interpretation.
