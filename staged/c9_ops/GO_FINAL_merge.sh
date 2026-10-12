@@ -15,14 +15,14 @@
 # mdo3d-compare, dailyaitoll). The rest ship with MDO_DEPLOY_CYCLE5_2026-10-08.sh (deploy() archives the PUSHED tip).
 set -uo pipefail
 # owner/repo:prod-branch:go-ref
-REPOS="mdothree/rigor-resume:main:go-final-r3 mdothree/rigor-cover:main:go-final-r3 mdothree/rigor-interview:main:go-final-r3
-mdothree/rigor-linkedin:main:go-final-r3 mdothree/rigor-networking:main:go-final-r3 mdothree/rigor-portfolio:main:go-final-r3
-mdothree/rigor-salary:main:go-final-r3 mdothree/rigor-landing:main:go-final-r2 mdothree/runwae:master:go-final-r7
+REPOS="mdothree/rigor-resume:main:go-final-r4 mdothree/rigor-cover:main:go-final-r4 mdothree/rigor-interview:main:go-final-r4
+mdothree/rigor-linkedin:main:go-final-r4 mdothree/rigor-networking:main:go-final-r4 mdothree/rigor-portfolio:main:go-final-r4
+mdothree/rigor-salary:main:go-final-r4 mdothree/rigor-landing:main:go-final-r2 mdothree/runwae:master:go-final-r7
 mdothree/ronnascanner-companies:main:main mdothree/ronnascanner-contacts:main:main mdothree/ronnascanner-emails:main:main
 mdothree/ronnascanner-leads:main:main mdothree/ronnascanner-prospects:main:main mdothree/ronnascanner-landing:main:go-final-r2
-mdothree/mdothree-text:main:go-final-r3 mdothree/mdothree-pdf:main:go-final-r3 mdothree/mdothree-qr:main:go-final-r3
-mdothree/mdothree-hash:main:go-final-r4 mdothree/mdothree-color:main:go-final-r4 mdothree/mdothree-password:main:go-final-r4
-mdothree/mdothree-timestamp:main:go-final-r4 mdothree/mdothree-image:main:go-final-r3 mdothree/astrology:master:go-final
+mdothree/mdothree-text:main:go-final-r4 mdothree/mdothree-pdf:main:go-final-r4 mdothree/mdothree-qr:main:go-final-r4
+mdothree/mdothree-hash:main:go-final-r5 mdothree/mdothree-color:main:go-final-r5 mdothree/mdothree-password:main:go-final-r5
+mdothree/mdothree-timestamp:main:go-final-r5 mdothree/mdothree-image:main:go-final-r3 mdothree/astrology:master:go-final
 mdothree/iching:master:go-final mdothree/runes:master:go-final mdothree/feng-shui-analyzer:main:go-final
 mdothree/past-life-insights:main:go-final mdothree/baby-name-oracle:main:go-final mdothree/mdo3d-landing:main:go-final-r2
 mdothree/promptsforbusiness:main:go-final-r2 mdothree/layoffleads:main:go-final mdothree/mdo3d-compare:master:go-final
