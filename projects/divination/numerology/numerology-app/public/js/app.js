@@ -12,6 +12,9 @@ const API_URL = window.location.hostname === 'localhost'
 
 let currentNumbers = null;
 let isPremium = false;
+// True once a reading has been shown in this session; input edits then keep the
+// on-screen result in sync (recalculate when valid, clear when not).
+let resultsShown = false;
 
 const elements = {
   nameInput: document.getElementById('name-input'),
@@ -90,12 +93,21 @@ function setupEventListeners() {
   const recalcIfShowing = () => {
     clearTimeout(recalcTimer);
     recalcTimer = setTimeout(() => {
-      if (!currentNumbers) return;
+      if (!resultsShown) return;
       const name = elements.nameInput?.value.trim();
       const birthDate = elements.birthDateInput?.value;
-      if (!name || !birthDate) return; // wait until both are valid again
-      if (validateBirthDate(birthDate)) { showBirthDateError(validateBirthDate(birthDate)); return; }
-      if (name === currentNumbers.name && birthDate === currentNumbers.birthDate) return;
+      // C7B-COLOR-STALE-RESULT (numerology): an emptied or invalid input clears
+      // the reading instead of leaving the previous numbers on screen.
+      const dateError = validateBirthDate(birthDate);
+      if (!name || dateError) {
+        showNameError(name ? '' : 'Please enter your full name.');
+        showBirthDateError(dateError);
+        clearResults();
+        return;
+      }
+      showNameError('');
+      showBirthDateError('');
+      if (currentNumbers && name === currentNumbers.name && birthDate === currentNumbers.birthDate) return;
       calculateNumbers({ scroll: false });
     }, 300);
   };
@@ -246,19 +258,49 @@ function showBirthDateError(message) {
   elements.birthDateInput?.setAttribute('aria-invalid', message ? 'true' : 'false');
 }
 
+function showNameError(message) {
+  const input = elements.nameInput;
+  if (!input) return;
+  let el = document.getElementById('name-error');
+  if (!el && message) {
+    el = document.createElement('p');
+    el.id = 'name-error';
+    el.className = 'field-error';
+    el.setAttribute('role', 'alert');
+    input.insertAdjacentElement('afterend', el);
+    input.setAttribute('aria-describedby', 'name-error');
+  }
+  if (el) {
+    el.textContent = message;
+    el.hidden = !message;
+  }
+  input.setAttribute('aria-invalid', message ? 'true' : 'false');
+}
+
+// Hide the on-screen reading (inputs are kept so the user can fix them).
+function clearResults() {
+  currentNumbers = null;
+  if (elements.numbersDisplay) elements.numbersDisplay.style.display = 'none';
+  if (elements.readingSection) elements.readingSection.style.display = 'none';
+  if (elements.resetBtn) elements.resetBtn.style.display = 'none';
+  if (elements.calculateBtn) elements.calculateBtn.style.display = 'inline-block';
+}
+
 function calculateNumbers(opts = {}) {
   const name = elements.nameInput?.value.trim();
   const birthDate = elements.birthDateInput?.value;
 
-  if (!name) {
-    alert('Please enter your full name');
-    return;
-  }
+  // Inline message instead of alert(); a failed attempt never leaves an older reading up.
+  showNameError(name ? '' : 'Please enter your full name.');
 
   // C7B-NUMEROLOGY-FUTURE-DATE: reject empty, future and pre-1900 dates inline.
   const dateError = validateBirthDate(birthDate);
   showBirthDateError(dateError);
-  if (dateError) return;
+  if (!name || dateError) {
+    clearResults();
+    (!name ? elements.nameInput : elements.birthDateInput)?.focus();
+    return;
+  }
 
   currentNumbers = getAllNumbers(name, birthDate);
   currentNumbers.name = name;
@@ -301,6 +343,7 @@ function showNumbers(scroll = true) {
   `;
 
   elements.numbersDisplay.style.display = 'block';
+  resultsShown = true;
   if (elements.upgradeBtn) elements.upgradeBtn.style.display = '';
 
   showReading();
@@ -364,6 +407,8 @@ function showReading() {
 
 function reset() {
   currentNumbers = null;
+  resultsShown = false;
+  showNameError('');
 
   elements.nameInput.value = '';
   elements.birthDateInput.value = '';
