@@ -461,7 +461,8 @@ footer {
 
 footer a {
   color: #a5b4fc; /* was --primary #6366f1: ~4.0:1 on the page background; this is >7:1 */
-  text-decoration: none;
+  text-decoration: underline; /* A11Y-009: non-color cue for links inside text */
+  text-underline-offset: 2px;
 }
 
 footer a:hover {
