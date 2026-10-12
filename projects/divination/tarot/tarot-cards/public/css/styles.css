@@ -709,3 +709,8 @@ footer {
         transform: scale(1);
     }
 }
+
+/* A11Y-013: 44px minimum tap targets on touch widths */
+@media (max-width: 768px) {
+    .nav-links a, .footer-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+}

@@ -890,3 +890,9 @@ footer {
     outline: 3px solid var(--primary-text);
     outline-offset: 2px;
 }
+
+/* A11Y-013: 44px minimum tap targets on touch widths */
+@media (max-width: 768px) {
+    .nav-links a, .footer-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+    .tab { min-height: 44px; }
+}
