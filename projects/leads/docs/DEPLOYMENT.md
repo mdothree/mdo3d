@@ -1,124 +1,73 @@
-# Leads Platform Deployment
+# Leads platform deployment
 
-## Current Status
+## Status (2026-10-12)
+- **leads.mdo3d.com / leadsapi.mdo3d.com are down (530).** Their tunnel ran on littlemini, which is on a disk hold
+  (do not touch it).
+- **New home: xps** (Linux x86_64, docker 28 + compose v2, ~434 GB free). littlemini2 (19 GiB) and bigmini are
+  under the 20 GB floor.
+- The stack is **staged, not deployed**: `ops/DEPLOY_FLEET.sh` is ready to run and needs the **Principal's go**
+  (it deploys backend auth / DB / payments).
+- Tested on xps under a throwaway compose project (port 18050, torn down with its volumes): backend and scheduler
+  healthy, in-container ingest FL + CO, backup ok, delivery gate off.
 
-**Live URLs**:
-- Frontend: https://leads.mdo3d.com
-- API: https://leadsapi.mdo3d.com
+## Why the fleet and not Vercel
+Daily SFTP pulls (FL), multi-minute parse jobs, SQLite on a persistent disk and cron. Vercel Hobby crons run at
+most daily with ±59 min precision, functions stop at 300 s, and there is no persistent disk. The frontend could go
+to Vercel later; ingest + API stay on the fleet.
 
-**Host**: was littlemini (via Cloudflare Tunnel); leads.mdo3d.com is down (530) and the new ingest host is TBD (plan: `~/latarence/docs/plans/input_prompts_0/` Part C §C5, fleet host recommended)
+## Stack (`web/docker-compose.yml`, project name `leads`)
+| service | container | port (host, 127.0.0.1 only) | notes |
+|---|---|---|---|
+| frontend | leads-frontend | `${LEADS_WEB_PORT:-3050}` (xps: 3150) | Vite build served by `serve`; healthcheck wget |
+| backend | leads-backend | `${LEADS_API_PORT:-8050}` (xps: 8150) | FastAPI; `/health` healthcheck; reads `/data/leads.db` |
+| scheduler | leads-scheduler | — | supercronic: ingest, nightly backup, gated delivery; healthcheck = DB readable + last ingest < 30 h |
+| tunnel | leads-tunnel | host network | `--profile tunnel` only; cloudflared with `TUNNEL_TOKEN` |
 
----
+xps:8050 is already taken by another stack, so the deploy script uses 8150/3150.
 
-## Docker Setup
+**Volumes:** `leads-data` (`/data`: `leads.db` in WAL mode, `raw/` downloads, `logs/`, `ingest_status.json`) and
+`leads-backups` (`/backups`: `leads-<ts>.db.gz`, newest 14 kept, `LAST_BACKUP_OK`). Both survive releases and
+rollbacks; only `docker compose down -v` deletes them.
 
-### Project Structure
+**Schedule** (`ops/scheduler/crontab`, America/New_York):
+| when | job |
+|---|---|
+| 09:15 and 21:15 daily | `runner.py --ingest --states $LEADS_INGEST_STATES --lookback 3` (FL,CO) |
+| 03:30 daily | `sqlite3 .backup` → `PRAGMA integrity_check` → gzip → prune |
+| 08:00 daily | profile delivery, **only if `LEADS_ENABLE_DELIVERY=1`** (email needs the Principal's OK) |
 
-```
-web/
-├── docker-compose.yml    # Project name: leads
-├── frontend/
-│   ├── Dockerfile        # Multi-stage: Node build → serve
-│   ├── .env              # VITE_* environment variables
-│   └── src/
-└── backend/
-    ├── Dockerfile        # Python 3.11 + uvicorn
-    ├── .env              # API keys, Firebase config
-    ├── api.py
-    └── db.py
-```
-
-### Container Configuration
-
-| Service | Container | Port | Image |
-|---------|-----------|------|-------|
-| Frontend | leads-frontend | 3050 | node:20-alpine + serve |
-| Backend | leads-backend | 8050 | python:3.11-slim + uvicorn |
-
-### Commands
-
+## Deploying (`ops/DEPLOY_FLEET.sh`, run from the laptop; builds happen on xps)
 ```bash
-# Start/rebuild
-cd ~/mdo3d/projects/leads/web
-docker compose up -d --build
-
-# View logs
-docker logs leads-backend -f
-docker logs leads-frontend -f
-
-# Check status
-docker compose ps
-
-# Stop
-docker compose down
+ops/DEPLOY_FLEET.sh preflight   # disk, docker, ports, which shared/*.env exist (read-only)
+ops/DEPLOY_FLEET.sh deploy      # git-archive the pushed tip of main -> xps:~/leads-app/releases/<sha>,
+                                # link shared env files, compose up -d --build, local verify (auto-rollback on fail)
+ops/DEPLOY_FLEET.sh tunnel      # start cloudflared (after operator steps O1-O2), public verify
+ops/DEPLOY_FLEET.sh verify      # local + public curls: status + bytes; /filings without auth must be 401
+ops/DEPLOY_FLEET.sh rollback    # previous release back into service; data volumes untouched
+ops/DEPLOY_FLEET.sh status
 ```
+The script header lists the **operator steps**:
+- **O1:** secrets in `xps:~/leads-app/shared/{backend,frontend,leads,tunnel}.env`.
+- **O2:** a new Cloudflare tunnel `mdo3d-leads-xps`. Delete the old `leads` / `leadsapi` CNAMEs, then add the
+  public hostnames → `localhost:3150` / `localhost:8150`. Don't reuse tunnel 64d3ed96 (littlemini).
+- **O3:** the Stripe webhook URL.
+- **O4:** the Firebase authorized domain.
+- **O5:** delivery stays off.
 
-### Important: Project Naming
+Releases are kept under `~/leads-app/releases/<sha>`, with `current`/`previous` symlinks. Schema changes are
+additive (`CREATE TABLE IF NOT EXISTS`), so a rollback reads the same DB.
 
-The `docker-compose.yml` includes `name: leads` to avoid conflicts with other projects (e.g., latarence.ai) that might use the same directory name "web".
+## Environment
+- **backend.env:** `LEADS_API_KEY`, `FIREBASE_PROJECT_ID=leads-59279`, `STRIPE_SECRET_KEY`,
+  `STRIPE_WEBHOOK_SECRET`, `LEADS_STRIPE_PRICE_IDS` (allowlist), optional `LEADS_CORS_ORIGINS` and
+  `LEADS_EXPORT_MAX_ROWS` (default 10000).
+- **frontend.env:** `VITE_API_URL=https://leadsapi.mdo3d.com`, the Firebase web config and
+  `VITE_STRIPE_PUBLISHABLE_KEY`. It's copied into the build context because Vite reads it at build time.
+- **leads.env** (scheduler): `SUNBIZ_SFTP_HOST/USER/PASS` (state-published public login) and an optional
+  `SOCRATA_APP_TOKEN`. Add `MAILGUN_*` only once delivery is approved.
+- **tunnel.env:** `TUNNEL_TOKEN`.
 
----
-
-## Cloudflare Tunnel
-
-### Tunnel Details
-
-- **Account**: MDO3D (mdo3d.com DNS zone)
-- **Tunnel ID**: `64d3ed96-0f2e-4940-8e9e-99fa5bc4aa86`
-- **Config**: `~/.cloudflared/mdo3d-config.yml`
-
-### Configuration
-
-```yaml
-tunnel: 64d3ed96-0f2e-4940-8e9e-99fa5bc4aa86
-credentials-file: ~/.cloudflared/mdo3d-credentials.json
-
-ingress:
-  - hostname: leads.mdo3d.com
-    service: http://localhost:3050
-  - hostname: leadsapi.mdo3d.com
-    service: http://localhost:8050
-  - service: http_status:404
-```
-
-### SSL Note
-
-The API uses `leadsapi.mdo3d.com` (not `api.leads.mdo3d.com`) because Cloudflare's Universal SSL wildcard (`*.mdo3d.com`) only covers single-level subdomains, not two-level subdomains like `api.leads.mdo3d.com`.
-
-### Running the Tunnel
-
-```bash
-# Manual
-cloudflared tunnel --config ~/.cloudflared/mdo3d-config.yml run
-
-# As service (recommended)
-sudo cloudflared service install
-sudo launchctl start com.cloudflare.cloudflared
-```
-
----
-
-## Environment Variables
-
-### Frontend (.env)
-
-```env
-# API
-VITE_API_URL=https://leadsapi.mdo3d.com
-
-# Firebase
-VITE_FIREBASE_API_KEY=...
-VITE_FIREBASE_AUTH_DOMAIN=leads-59279.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=leads-59279
-VITE_FIREBASE_STORAGE_BUCKET=leads-59279.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=...
-VITE_FIREBASE_APP_ID=...
-
-# Stripe
-VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...
-```
-
-Stripe price IDs (MDO3D Stripe account):
+Stripe price IDs (MDO3D Stripe account; **every Stripe link is live**, so never test against these):
 
 | Plan | Price ID |
 |------|----------|
@@ -126,139 +75,32 @@ Stripe price IDs (MDO3D Stripe account):
 | Pro ($79/mo) | `price_1TbTQNCRLa19N9qBezJO7C2P` |
 | Enterprise ($249/mo) | `price_1TbTQOCRLa19N9qBpRYvkhZC` |
 
-### Backend (.env)
+Pricing per state bundle is CONVERSION's call (plan §C5); `/filings` already scopes access by the `states` on a
+paid profile.
 
-```env
-LEADS_API_KEY=...
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-FIREBASE_PROJECT_ID=leads-59279
-```
+## Access model (paid-only)
+- No free tier. A profile becomes `paid` through a completed Stripe checkout (`checkout.session.completed`
+  webhook) or a redeemed **promo code**, the early-access lever. Create one with
+  `INSERT INTO codes (code, max_uses, expires_at) VALUES ('EARLY-XXXX', 25, '2026-12-31T00:00:00');`.
+- `/filings` and `/filings/export.csv` need a Firebase sign-in (not anonymous) **and** a paid profile. They
+  fail closed: 401 without sign-in, 402 without a paid profile, 403 for a state outside the bundle.
+- Tests run with `LEADS_TEST_MODE=1`, and the API refuses to start if a live Stripe key is present. Stripe calls
+  are stubbed, and the webhook is checked with a locally signed test payload. No live Stripe call is made.
 
-### Stripe Dashboard Updates (After Domain Change)
-
-- Webhook endpoint URL: `https://leadsapi.mdo3d.com/stripe-webhook`
-- If using Stripe Customer Portal: update allowed return URLs to include `https://leads.mdo3d.com`
-
----
-
-## Firebase Setup
-
-- **Project**: leads-59279
-- **Auth Methods**: Email/Password, Google
-- **Admin SDK**: Uses `FIREBASE_PROJECT_ID` env var (no service account file needed for token verification)
-
-### Token Verification
-
-The backend verifies Firebase ID tokens using:
-```python
-firebase_admin.initialize_app(cred, {
-    'projectId': FIREBASE_PROJECT_ID
-})
-```
-
----
-
-## Database
-
-SQLite database at `web/backend/leads.db`:
-
-### Tables
-
-- `users` - Firebase auth users
-- `profiles` - Lead generation profiles
-- `payments` - Stripe payment records
-- `leads` - Generated leads per profile
-- `codes` - Redemption codes for free access
-- `code_redemptions` - Code usage tracking
-
----
-
-## Features Implemented
-
-### Core
-
-- [x] Firebase Authentication (email/password, Google)
-- [x] User profiles with settings
-- [x] Stripe Checkout integration
-- [x] Lead storage and retrieval
-- [x] Pipeline execution (manual trigger)
-
-### Code Redemption
-
-Allows free access without payment:
-
-```python
-# Create a code (via SQLite)
-INSERT INTO codes (code, max_uses) VALUES ('BETA2026', 100);
-```
-
-Users can redeem codes to activate profiles without going through Stripe.
-
----
-
-## Issues Resolved
-
-### 1. Cloudflare Tunnel Error 1033
-
-**Cause**: Tunnel was in the wrong Cloudflare account for the DNS zone.
-
-**Fix**: Created new tunnel in Butts Technologies account.
-
-### 2. SSL Handshake Failure
-
-**Cause**: `api.leads.mdo3d.com` (two-level subdomain) not covered by wildcard SSL.
-
-**Fix**: Use `leadsapi.mdo3d.com` (single-level subdomain).
-
-### 3. Firebase Project ID Missing
-
-**Cause**: `FIREBASE_PROJECT_ID` env var not passed to `firebase_admin.initialize_app()`.
-
-**Fix**: Added `projectId` to app options.
-
-### 4. Docker Project Name Conflict
-
-**Cause**: Both leads and latarence.ai projects used default name "web".
-
-**Fix**: Added `name: leads` to docker-compose.yml.
-
----
+## Database (`$LEADS_DB_PATH`, default `data/leads.db`; `/data/leads.db` in containers)
+`users`, `profiles`, `payments`, `leads` (per-profile delivered rows), `codes`, `code_redemptions`,
+**`filings`** (`UNIQUE(state, source_id)`) and **`ingest_runs`** (state, source_date, rows, new_rows, status).
 
 ## Monitoring
-
-### Health Check
-
 ```bash
-curl https://leadsapi.mdo3d.com/health
+curl -s https://leadsapi.mdo3d.com/health     # db_ok, stripe_mode, latest ingest runs
+curl -s https://leadsapi.mdo3d.com/coverage   # per-state filings + freshness
+ssh xps 'docker ps --filter name=leads-; docker logs leads-scheduler --tail 50'
+ssh xps 'docker exec leads-scheduler cat /backups/LAST_BACKUP_OK /data/raw/ingest_status.json'
 ```
 
-### Container Logs
-
-```bash
-ssh <ingest-host> "docker logs leads-backend --tail 50"
-ssh <ingest-host> "docker logs leads-frontend --tail 50"
-```
-
-### Error Locations
-
-| Layer | Where to Check |
-|-------|----------------|
-| Frontend | Browser console (F12) |
-| Backend | `docker logs leads-backend` |
-| Firebase | Browser console + Firebase Console |
-| Tunnel | `journalctl -u cloudflared` |
-
----
-
-## Deployment Workflow
-
-```bash
-# 1. Make changes locally
-# 2. Commit
-git add -A && git commit -m "Description"
-
-# 3. Push and deploy
-git push origin main
-ssh <ingest-host> "cd ~/mdo3d && git pull && cd projects/leads/web && docker compose up -d --build"
-```
+## Notes kept from the littlemini era
+- Use `leadsapi.mdo3d.com`, not `api.leads.mdo3d.com`: Universal SSL `*.mdo3d.com` covers one level only.
+- `name: leads` in the compose file avoids clashes with other stacks whose directory is also `web`.
+- Firebase token verification needs `projectId` in the app options (`FIREBASE_PROJECT_ID`).
+- `web/deploy/` (systemd unit, locally-managed tunnel config) is the legacy non-docker path.

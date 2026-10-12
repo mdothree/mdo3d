@@ -1,11 +1,37 @@
 # State Corporation Databases
 
+Implementation status and the adapter interface: `docs/STATE_ADAPTERS.md`.
+Order (plan §C5): free bulk/open data first, then registration-required, then paid. **Paid feeds are a spend
+decision for the Principal; registration-required ones need a Principal account step.** Neither is implemented.
+
+| state | access | status |
+|---|---|---|
+| FL | free bulk SFTP (public login) | adapter #1, live in ingest |
+| CO | free open data (Socrata 4ykn-tg5h, Public Domain) | adapter #2, live in ingest |
+| CT | free open data (data.ct.gov n7gp-d28j, Public Domain) | candidate #3 (has `date_registration`, NAICS, state-published business email) |
+| OR | free open data (data.oregon.gov tckn-sxa6; no licence in metadata) | candidate; one row per associated person, check terms first |
+| WV, AR | registration required | Principal account step |
+| KY, TN, TX | paid | spend decision |
+
 ## Florida ✅ (Working)
 - **SFTP Host:** sftp.floridados.gov
 - **User:** Public
 - **Pass:** PubAccess1845!
 - **Format:** Fixed-width TXT
 - **Location:** doc/cor/yyyymmddc.txt
+
+## Colorado ✅ (Working)
+- **Dataset:** https://data.colorado.gov/Business/Business-Entities-in-Colorado/4ykn-tg5h
+- **API:** `https://data.colorado.gov/resource/4ykn-tg5h.json?$where=entityformdate='2026-10-09T00:00:00'`
+- **Licence:** Public Domain; daily refresh; no registration (optional free Socrata app token for rate limits)
+
+## Connecticut (candidate)
+- **Dataset:** https://data.ct.gov/resource/n7gp-d28j.json ("Connecticut Business Registry - Business Master")
+- **Licence:** Public Domain; filter on `date_registration`
+
+## Oregon (candidate)
+- **Dataset:** https://data.oregon.gov/resource/tckn-sxa6.json ("Active Businesses - ALL"), filter `registry_date`
+- One row per associated name (registered agent, members): group by `registry_number`. No licence in metadata.
 
 ## Other States Found
 

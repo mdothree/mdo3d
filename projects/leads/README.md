@@ -1,158 +1,78 @@
-# FL Sunbiz Lead Generator
+# MDO3D Leads — new-business filings by state
 
-Automated lead generation from Florida Division of Corporations filings.
+New business filings from state registries, as leads: search/filter by state, county, filing type and keyword
+vertical, export CSV. Paid-only (no free tier; promo codes are the early-access lever). Target URL:
+leads.mdo3d.com (app) / leadsapi.mdo3d.com (API).
 
-> **Email policy:** email addresses are never guessed. `guess_email_variants` is `false` in every profile and is
-> hard-disabled in `src/runner.py`; only addresses published on the business's own site are kept.
+> **Email policy:** email addresses are never guessed. `guess_email_variants` is `false` in every profile, the
+> API model forces it false, and the variant guesser has been removed from `src/runner.py` (tests enforce this).
+> Only addresses published on the business's own site are kept; one that fails validation is dropped.
 
-## Setup
+## Layout
+```
+src/runner.py            pipeline entry point (ingest, per-profile filter/enrich/deliver, cron helpers)
+src/adapters/            state adapters: base.py (interface + Filing schema), fl.py, co.py
+src/validate_email.py    MX/SMTP checks for published addresses
+config/profiles.json     internal profiles (fallback when the DB has no paid customer profiles)
+web/backend/             FastAPI API + SQLite (db.py) — filings search/export, profiles, Stripe, promo codes
+web/frontend/            React app (owned by the web lane)
+web/docker-compose.yml   frontend + backend + scheduler (+ optional tunnel)
+ops/scheduler/           supercronic crontab, ingest / backup / delivery / healthcheck scripts
+ops/DEPLOY_FLEET.sh      staged fleet deploy (needs the Principal's go)
+tests/                   pytest suite (run on a fleet host, never the laptop)
+docs/                    STATE_ADAPTERS.md, OTHER_STATES.md, DEPLOYMENT.md
+```
 
+## States
+FL (Sunbiz SFTP) and CO (data.colorado.gov) are implemented. See `docs/STATE_ADAPTERS.md` for the interface and
+`docs/OTHER_STATES.md` for what is next (free sources first; paid feeds are a spend decision).
+
+## Running (on a fleet host — never the laptop)
 ```bash
-cd ~/mdo3d/projects/leads   # canonical checkout (was ~/ridgefield/tools/leads)
-source .venv/bin/activate
-pip install python-dotenv requests paramiko
+cd ~/mdo3d/projects/leads
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+# .env: SUNBIZ_SFTP_HOST/USER/PASS (the state-published public login, see docs/OTHER_STATES.md)
+
+# Ingest only: fetch + store filings in SQLite (no filtering, no enrichment, no email)
+.venv/bin/python src/runner.py --ingest --states FL,CO --lookback 3
+.venv/bin/python src/runner.py --ingest --states CO --date 20261009
+
+# One profile, ignoring its schedule, without enrichment
+.venv/bin/python src/runner.py --profile signals_institute --force --no-email-lookup
+
+# Tests
+.venv/bin/python -m pytest -q tests
 ```
+Ingest logs one line per state and date, e.g. `[ingest] state=FL source_date=20261009 rows=1231 new=1231 status=ok`,
+and records it in the `ingest_runs` table (the API's `/health` and `/coverage` show the latest).
 
-Add to `.env`:
-```
-SENDGRID_API_KEY=SG.your_key_here
-SUNBIZ_SFTP_HOST=sftp.floridados.gov
-SUNBIZ_SFTP_USER=Public
-SUNBIZ_SFTP_PASS=PubAccess1845!
-```
+Date options for profile runs: `--date YYYYMMDD`, `--date-from/--date-to`, `--last-week`, `--last-month`, or the
+profile's `date_range` (`daily|weekly|monthly`).
 
-## Usage
+## Profiles
+Customer profiles live in SQLite (created in the app, activated by Stripe checkout or a promo code);
+`config/profiles.json` holds internal ones. Fields:
+- `states`: e.g. `["FL", "CO"]` — runs through the state adapters. Omit it to run the legacy FL-only path.
+- `filing_types` (state codes; FL: FLAL, DOMP, FORP, DOMNP, FORNP, DOMLP), or `entity_kinds`
+  (`llc`, `corporation`, `nonprofit`, `partnership`, `cooperative`, `trade_name`)
+- `keywords` / `exclude_keywords` (entity name contains), `target_counties` (only where the state publishes county)
+- `email_lookup` (search the business's own site for published addresses), `delivery.*` (frequency, recipients)
 
-### CLI Mode (One Shot)
-```bash
-# Run all scheduled profiles
-python src/runner.py
+## API (web/backend/api.py)
+| endpoint | access |
+|---|---|
+| `GET /health`, `GET /coverage`, `GET /verticals` | public (no filing content) |
+| `GET /filings?state=&county=&filing_type=&entity_kind=&vertical=&q=&date_from=&date_to=&limit=&offset=` | signed in + paid |
+| `GET /filings/export.csv` (same filters) | signed in + paid |
+| `/profiles`, `/checkout`, `/redeem-code`, `/stripe-webhook` | as before |
 
-# Run specific profile (ignores schedule)
-python src/runner.py --profile ridgefield --force
-
-# Skip email enrichment for faster testing
-python src/runner.py --profile ridgefield --force --no-email-lookup
-
-# Run multiple profiles
-python src/runner.py --profile ridgefield --profile nonprofits_general --force
-```
-
-### Daemon Mode (Continuous)
-```bash
-# Run continuously, check every hour
-python src/runner.py --daemon --interval 3600
-
-# Run continuously, check every 15 minutes
-python src/runner.py --daemon --interval 900
-```
-
-### Individual Scripts
-```bash
-# Download only
-python src/download.py
-
-# Convert TXT to CSV
-python src/convert.py data/20260403_corporate.txt
-
-# Extract nonprofits only
-python src/convert.py --nonprofits data/20260403_corporate.txt
-
-# Find emails for leads
-python src/find_emails.py output/leads.csv
-
-# Send emails only
-python src/deliver.py ridgefield
-```
-
-## Pipeline Flow
-
-```
-SFTP Download → Parse → Filter → Find Emails → Deliver
-     ↓              ↓        ↓          ↓          ↓
-  .txt file    .csv     profile    enriched   SendGrid
-                           CSV       CSV       email
-```
-
-## Profiles (`config/profiles.json`)
-
-Each profile defines:
-- `active`: Enable/disable
-- `email_lookup`: Enable/disable email enrichment for this profile
-- `filing_types`: Filter by entity type (FLAL, DOMP, DOMNP, etc.)
-- `keywords`: Match in entity name
-- `exclude_keywords`: Exclude matches
-- `target_counties`: Filter by county
-- `delivery.frequency`: daily, weekly, biweekly, monthly
-- `delivery.day_of_week`: monday, tuesday, etc.
-- `delivery.recipients`: List of {email, name} objects
-
-### Filing Types
-- `FLAL` - Florida LLC
-- `DOMP` - Domestic Profit Corp
-- `FORP` - Foreign Profit Corp
-- `DOMNP` - Domestic Non-Profit
-- `FORNP` - Foreign Non-Profit
-- `DOMLP` - Domestic Limited Partnership
-
-## Output
-
-```
-
-├── data/           # Raw TXT downloads
-├── output/         # Filtered & enriched CSVs
-├── config/         # profiles.json
-├── logs/           # Pipeline logs
-└── src/            # Python scripts
-```
-
-## Email Enrichment
-
-The `find_emails.py` module searches for business emails:
-1. Searches for entity's official website via DuckDuckGo
-2. Fetches page and extracts emails
-3. Scores by pattern:
-   - **HIGH**: info@, contact@, hello@
-   - **MEDIUM**: admin@, support@, sales@
-   - **LOW**: firstname.lastname@
-
-Up to 3 emails per lead are stored with columns:
-- `email_1`, `email_1_score`, `email_1_source`
-- `email_2`, `email_2_score`, `email_2_source`
-- `email_3`, `email_3_score`, `email_3_source`
-
-Control via:
-- Profile setting: `"email_lookup": true/false`
-- CLI flag: `--no-email-lookup` to skip enrichment
+Entitlement = the states of the user's **paid** profiles (a profile without `states` covers FL). No paid profile →
+`402`; a state outside the bundle → `403`. Verticals match the entity **name** only, so the UI should say
+"name contains", not "industry".
 
 ## Scheduling
-
-### Cron (on the ingest host — never the laptop)
-
-Crontab is generated from profiles.json — each profile's `frequency` and `day_of_week` settings create individual cron entries.
-
-```bash
-# On the ingest host, from the leads checkout (default $HOME/mdo3d/projects/leads; override with LEADS_HOME)
-python3 cron.d/generate_cron.py      # writes cron.d/leads.cron + cron.d/install_cron.sh
-cron.d/install_cron.sh               # replaces only lines tagged "# mdo3d-leads"
-```
-
-The ingest host is not yet chosen (see `~/latarence/docs/plans/input_prompts_0/` Part C §C5: fleet host recommended).
-
-Crontab entries run at 8am on configured days (Mon-Fri).
-
-### Daemon Mode (Alternative)
-```bash
-# Run continuously, check every hour
-python src/runner.py --daemon --interval 3600
-
-# Stop daemon
-pkill -f "runner.py --daemon"
-```
-
-## Notes
-
-- Files only generated on work days (Mon-Fri, excluding holidays)
-- Set `download_date` in profiles.json for backfill
-- Mailgun is used for outbound delivery (domain-authenticated)
-- Multiple recipients supported per profile
+In production the scheduler container (`ops/scheduler/crontab`, America/New_York) runs:
+ingest 09:15 and 21:15 daily, the SQLite `.backup` at 03:30, and profile delivery at 08:00 **only if**
+`LEADS_ENABLE_DELIVERY=1` (outbound email needs the Principal's OK). See `docs/DEPLOYMENT.md`.
+For a plain host crontab instead: `python3 cron.d/generate_cron.py && cron.d/install_cron.sh`
+(replaces only lines tagged `# mdo3d-leads`).
