@@ -1,110 +1,114 @@
-# Runwae Apparel — Playbook (working notes)
+# Runwae Apparel — Playbook
 
-*Status: idea capture / scoping. Nothing committed. Owner: LB.*
-*Location: `mdo3d/projects/external/runwae-apparel/` — sibling to the `runwae` project.*
+*Status: model decided 2026-10-07; supplier unverified; first drop undetermined. Owner: LB.*
+*Home: `~/mdo3d/projects/external/runwae-apparel/` (Runwae stays under mdo3d). Brand-wise, **Runwae Apparel is a subsidiary of Butts Studios** (Principal, 2026-10-07). Both domains, runwaeapparel.com and girlslovebutts.com, are confirmed owned. The Runwae **app** (`../runwae`) is a separate product beside it.*
 
----
+## How the lab runs this
+Runwae and **GLB (girlslovebutts.com)** are two apparel brands built **concurrently**: no "one first", and
+learnings are shared. They run on **one storefront codebase** with two brand configs, two domains and two
+catalogs. Sequencing only happens inside a drop. The lab-wide bottleneck is **reach from the CLI**, so every
+drop is planned around its distribution (see Reach).
 
-## Objective
+## Decided (2026-10-07)
 
-Stand up a Runwae apparel line **without owning manufacturing, inventory, or shipping.** LB
-holds the brand, the designs, and the storefront; everything physical is outsourced. The line
-should be able to launch, take orders, and fulfill with near-zero operational overhead so it
-does not compete for attention with the simulation/platform work.
+### 1. Pre-order drops: make only what's sold
+1. **Open the pre-order window** for a set of designs: **2–3 weeks**.
+2. **Close the window**, then tally the orders by design × size.
+3. **Order that count from the Pakistan supplier**, plus a **~10% buffer** for defects and size swaps.
+4. **The supplier ships one bulk carton by air courier.**
+5. **We receive it, pack and ship domestically** (see §3).
 
-## Hard constraints (from LB)
+**Rules for every drop:**
+- **Charge at checkout** (Stripe Checkout). A card authorization can't be held for weeks.
+- **Minimum per design** = the supplier's minimum order (MOQ). If a design misses it, refund those buyers
+  in full or offer a swap to a design that made it.
+- **Show "ships by [date]" on every product page.** That date = window close + production (~2–4 wk once
+  samples are approved) + air freight (~1 wk) + receiving and packing (days). It's typically **5–8 weeks
+  after close**.
+- **FTC Mail Order Rule:** we must ship by the stated date. With no date stated, the deadline is 30 days,
+  which pre-orders would break. If a date will be missed, notify buyers **before** it passes and offer
+  cancel-for-full-refund.
+- **Returns: size exchanges only, no returns.** State it at checkout. The buffer covers the swaps.
 
-1. **No handling of manufacturing.** A manufacturer in Pakistan is already available for
-   production runs.
-2. **No handling of shipping/fulfillment.** Fulfillment must be handled by a third party.
-3. Keep it lightweight — a Shopify page or a standalone site, not a warehouse operation.
+### 2. Print-on-demand in parallel
+Simple printed tees run on **Printful**, which has a free account with a full API: catalog, Mockup Generator,
+shipping rates and orders. That gives both brands a live store while the supplier is being verified, and it
+covers long-tail designs. Hero pieces and cut-and-sew go through the Pakistan pre-order drops.
 
-## The core tension to resolve first
+### 3. Self-fulfillment (LB receives, packs and ships)
+- **Import:** LB is the importer of record. With DHL Express the courier clears customs and bills the duty,
+  so no broker is needed. Count the carton against the tally when it lands.
+- **Duty:** cotton tees and hoodies run roughly **16.5%** standard US duty, plus the **temporary 10% import
+  surcharge** that took effect Feb 2026 (Pakistan's earlier 19% reciprocal rate was replaced). Build both
+  into the unit cost. Re-check the rates at each drop; they move.
+- **Labels:** an agent pulls the paid orders from Stripe and buys discounted USPS labels through a shipping
+  API (**Shippo** or **EasyPost**). It prints labels with matching packing slips, sorted by design × size,
+  and sends tracking numbers back to buyers.
+- **LB's time:** about 1–2 minutes per order, so a 100-order drop is a few hours.
+- **Kit:** a thermal label printer (one-time, ~$100–150), poly mailers, and optional branded inserts.
+- **Return address:** a **PO box or virtual mailbox**, never the home address.
+- **When to hand off:** move to a 3PL when packing time costs more than the warehouse fees. The same label
+  and order export then goes to the warehouse instead of the printer, so nothing else changes. Boutique
+  apparel 3PLs take small brands; the large ones (e.g. ShipBob) often set volume minimums.
 
-There are two fundamentally different operating models, and the Pakistan manufacturer only fits one of them cleanly:
+### 4. Storefront: custom, not Shopify
+- **Why not Shopify:** Basic is $39/mo ($29/mo annual) **per store**, plus 2.9% + 30¢ per card sale. Using
+  our own Stripe instead of Shopify Payments adds another **2%**. Two brands means two subscriptions.
+- **Our stack:**
+  - **Hosting:** Vercel or Cloudflare Pages (already run fleet-wide).
+  - **Checkout:** Stripe Checkout, which has the same 2.9% + 30¢ card rate and no monthly fee.
+  - **Sales tax:** Stripe Tax, a small fee per transaction.
+  - **Print-on-demand:** the Printful API.
+- **What we give up:** Shopify's built-in fraud screening, abandoned-cart emails and app marketplace.
+- **What we gain:** full control of each brand's look (Runwae's gold-frame renaissance style; GLB's line
+  art), which templates would flatten.
+- **The existing Shopify store** (its custom-domain TLS cert is broken) lapses once the custom site is live.
 
-- **Model A — Print-on-demand (POD).** No upfront inventory. A POD service prints + ships each
-  item when it's ordered. Zero inventory risk. **But** this largely bypasses the Pakistan
-  manufacturer — POD services use their own blanks and printers.
-- **Model B — Bulk produce (Pakistan) → third-party fulfillment (3PL).** Manufacturer does a
-  production run, ships bulk to a fulfillment warehouse, the 3PL pick-packs-ships each order.
-  Uses the Pakistan relationship, better unit economics and quality control, **but** requires
-  upfront cash for the run and carries inventory risk.
+### 5. Product imagery from the CLI
+- **The designs are LB's, never generated.**
+- **Product shots:** Printful's Mockup Generator API (design file in → photoreal product shot out). Free
+  tier; paid plans from $24.99/mo.
+- **Lifestyle and hero images:** image-generation APIs. Flux Schnell is about $0.003/image, Flux Dev about
+  $0.012, Ideogram Turbo about $0.03 (best for type on garments). Production quality sits around
+  $0.03–0.04/image.
 
-> **Decision needed:** Is the Pakistan manufacturer central to this (→ Model B), or is it just
-> one option and speed-to-launch / zero-risk matters more (→ Model A)? A common answer is
-> **hybrid**: launch a small hero capsule with the Pakistan run through a 3PL (Model B) for the
-> pieces where quality/margin matter, and use POD for long-tail designs and pre-launch demand
-> testing (Model A).
+## Open (the Principal's calls)
+- **Supplier verification.** He hasn't been in contact in years. Reconnect and confirm:
+  - MOQ per design, color and size
+  - unit price at small quantities
+  - lead time
+  - methods: printing vs. embroidery, and custom neck labels
+  - deposit terms (30–50% is typical)
+  - shipping: whether he can ship by air courier
 
-## Fulfillment options to evaluate (3PL — for Model B / hybrid)
+  Then **pay for a sample run of 1–2 designs** before any pre-order opens. The samples double as product photos.
+- **First drop:** undetermined. Most likely a re-release of an older line.
+- **Pricing:** worked back from the supplier quote, duty, packaging and postage.
 
-These warehouse your bulk inventory and ship orders, integrating directly with Shopify:
+## Brand source material (all pre-LLM, all real)
+- **Design source:** `~/Downloads/RunwaeApparel/` (108 files).
+  - **Fall '21 line:** True Grit tee + hoodie, Crafting, the wordmark tee, Poison, Pave.
+  - **Marks:** the dripping-R emblem, "The Runwae Company" / TRC.
+  - **Illustrator sources:** `Fall 21/all_products.ai`, `finaldesigns.ai`, `TLT/RWAline.ai`.
+- **Older web exports:** `~/buttsstudios/client_assets_archive/{runwae,runwaeapparel}/`, including the 2021
+  magazine cover "Everybody Influences", Issue No. 1.
+- **Old site template:** `~/buttsstudios/clients/runwae_template/`.
+- **Brand naming:** "Runwae Apparel" is the brand (a Butts Studios subsidiary); TRC is a secondary mark.
+- **GLB source:** `~/Downloads/Butts_Studios/GLB/` (line-art figure drawings + branding inspiration). GLB is
+  an apparel brand built from the line art. **No apparel mockups exist yet** for the GLB drawings, so they're
+  the first concrete design task: vectorize/clean the line drawings, then run them through Printful's Mockup
+  Generator on tees and hoodies. The finished artwork is LB's call; generation is for mockups only.
+- **Accounts:** `GLB/GLBKeys.xlsx` lists the old Runwae/GLB accounts. It holds passwords, so **never copy it
+  into a repo, a doc or a chat.** Whether those accounts are still live is open, and they matter for reach.
 
-- **ShipBob** — startup-friendly, strong Shopify integration, distributed US warehouses.
-- **ShipMonk** — good for growing DTC brands, apparel-experienced.
-- **Shippo / Easyship** — lighter-weight, more shipping-label aggregation than full 3PL;
-  useful if fulfilling from a small setup.
-- **Amazon MCF (Multi-Channel Fulfillment)** — use Amazon's warehouse network to fulfill
-  your *own* store's orders; cheap, but Amazon branding on packaging unless configured.
+## Reach (the lab-wide bottleneck)
+Every drop gets a reach plan run through the shared CLI distribution layer: social posting, YouTube and
+attribution (GA4 → Stripe). The existing Runwae/GLB social accounts are existing audiences, if they're still
+live. Nothing posts without the Principal's per-batch OK.
 
-Key questions to ask any 3PL: minimum monthly volume, receiving fees for the Pakistan
-inbound shipment, per-pick + storage pricing, customs/import handling (the Pakistan run
-lands as an international inbound), and Shopify sync latency.
-
-## Fulfillment options to evaluate (POD — for Model A / long-tail)
-
-- **Printful** — best-in-class Shopify integration, good quality, higher unit cost.
-- **Printify** — cheaper, broader supplier network, more variable quality.
-- **Gooten / SPOD** — alternatives worth a price/quality check.
-
-## Storefront options
-
-- **Shopify** (recommended default) — fastest path, native integrations with every 3PL and POD
-  service above, handles payments/tax/checkout. ~$29–39/mo + txn fees. Least engineering.
-- **Custom site** (Runwae already has a template — see `../runwae`, `buttsstudios/website/clients/runwae*`)
-  — more brand control, but then payments (Stripe), inventory sync, and fulfillment API wiring
-  become our problem. Only worth it if the existing Runwae site assets get us most of the way.
-- **Recommendation:** Start on **Shopify** to validate demand and get fulfillment plumbing for
-  free; port to / embed in a custom Runwae site later if the brand warrants it. The existing
-  Runwae template can become the marketing/landing front with a "Shop" button into Shopify.
-
-## Import / customs note (Model B specifics)
-
-The Pakistan → US bulk shipment is an international import: duties, HTS classification for
-apparel, and a customs broker or DDP (delivered-duty-paid) terms with the manufacturer. Confirm
-whether the manufacturer ships DDP (they handle it) or the 3PL's receiving can act as importer
-of record. This is the single most-overlooked cost/logistics item in Model B.
-
-## Economics sketch (to fill in with real quotes)
-
-| Line | POD (Model A) | Bulk + 3PL (Model B) |
-|---|---|---|
-| Upfront cash | ~$0 | production run + inbound freight + customs |
-| Unit cost (blank + print) | high | low (best at volume) |
-| Inventory risk | none | yes |
-| Quality control | vendor's blanks | our manufacturer, our spec |
-| Fulfillment cost/order | bundled | per-pick + storage |
-| Speed to launch | days | weeks (run + ship + receive) |
-
-## Positioning / brand (open)
-
-- How does Runwae Apparel relate to the Runwae software project and to MDO3D? Same brand,
-  sub-brand, or independent? (Affects storefront domain + visual identity.)
-- Runwae brand assets already exist under `buttsstudios/` — reuse rather than redesign.
-- Apparel is a **top-of-funnel / community** play, not a core revenue engine (see the broader
-  engagement thesis: subscriptions pay the bills; merch builds affinity). Scope it accordingly —
-  a capsule, not a catalog.
-
-## Proposed next steps (nothing committed)
-
-1. **Decide Model A vs B vs hybrid** (the tension above). Everything downstream depends on it.
-2. Get a real production quote + DDP terms from the Pakistan manufacturer for one hero SKU.
-3. Get pricing from 1 POD (Printful) and 1 3PL (ShipBob) to compare unit economics side by side.
-4. Reserve the Shopify store + decide the domain/brand relationship to Runwae/MDO3D.
-5. Design a small hero capsule (3–5 SKUs) rather than a full line.
-6. Wire the existing Runwae template as the marketing front; "Shop" → Shopify.
-
----
-
-*These are scoping notes, not decisions. Update as quotes come in.*
+## Agent-doable once the accounts exist
+- **Storefront:** one codebase with two brand configs, plus Stripe Checkout and Stripe Tax.
+- **Printful:** catalog sync and mockup generation.
+- **Each drop:** pre-order window pages with ship-by dates, tally reports at close, supplier PO sheets, the
+  label/packing-slip pipeline, tracking emails and delay notices.
+- **Nothing** is published, listed, charged or ordered without the Principal's OK.
