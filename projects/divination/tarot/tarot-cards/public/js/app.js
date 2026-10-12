@@ -93,14 +93,11 @@ class TarotApp {
         // Update current spread
         this.currentSpread = option.dataset.spread;
         
-        // Update premium price (must match the API's checkout price per spread;
-        // the single-card premium upgrade is $2.99, not $0)
-        const prices = {
-            'single': '2.99',
-            'three': '4.99',
-            'celtic': '9.99'
-        };
-        document.getElementById('premium-price').textContent = `$${prices[this.currentSpread]}`;
+        // Show this spread's price from js/config/pricing.json, the same file the
+        // API charges from (JARVIS #63): shown price == charged price.
+        const priceEl = document.getElementById('premium-price');
+        priceEl.dataset.price = this.currentSpread;
+        priceEl.textContent = window.MdoPricing ? window.MdoPricing.price(this.currentSpread, priceEl.textContent) : priceEl.textContent;
     }
 
     drawCards() {
@@ -115,15 +112,11 @@ class TarotApp {
         };
         const numCards = cardCounts[this.currentSpread];
         
-        // Check if premium spread
-        if (this.currentSpread !== 'single') {
-            alert('Premium spreads require payment. For demo purposes, showing a single card reading.');
-            this.currentSpread = 'single';
-            this.selectSpread(document.querySelector('[data-spread="single"]'));
-            return;
-        }
-        
+        // Every spread is a paid reading (JARVIS #94); displayReading() shows the
+        // checkout prompt when there is no verified purchase.
+
         // Draw random cards
+        this.entitlementRejected = false;
         this.drawnCards = drawCards(numCards);
         
         // Randomly determine if cards are reversed (30% chance)
@@ -213,40 +206,22 @@ class TarotApp {
     displayReading() {
         const readingSection = document.getElementById('reading-section');
         const cardMeanings = document.getElementById('card-meanings');
-        
+        const upsell = document.getElementById('premium-upsell');
+
         // Clear previous reading
         cardMeanings.innerHTML = '';
-        
-        // Display each card's meaning
-        this.drawnCards.forEach((card, index) => {
-            const isReversed = this.isReversed[index];
-            const meaning = isReversed ? card.reversed : card.upright;
-            
-            const meaningElement = document.createElement('div');
-            meaningElement.className = 'card-meaning';
-            meaningElement.innerHTML = `
-                <h4>${card.name} ${isReversed ? '(Reversed)' : ''}</h4>
-                <p class="meaning-brief">${meaning.brief}</p>
-                <div class="meaning-details">
-                    <p><strong>Meaning:</strong> ${meaning.meaning}</p>
-                    <p><strong>Guidance:</strong> ${meaning.guidance}</p>
-                </div>
-            `;
-            
-            cardMeanings.appendChild(meaningElement);
-        });
-        
+
         // Show reading section
         readingSection.style.display = 'block';
 
-        // Show premium upsell for free tier (hidden once a purchase is unlocked)
-        if (this.currentSpread === 'single' && !this.premiumUnlocked) {
-            document.getElementById('premium-upsell').style.display = 'block';
-        }
-
-        // Paid customers get the full AI interpretation delivered in place.
-        if (this.premiumUnlocked) {
+        // Paid from first use (JARVIS #94): the reading is the paid AI
+        // interpretation. With a verified purchase it is delivered in place;
+        // without one, only the checkout prompt (priced for this spread) shows.
+        if (window.PremiumEntitlement?.has() && !this.entitlementRejected) {
+            if (upsell) upsell.style.display = 'none';
             this.deliverPremiumReading();
+        } else if (upsell) {
+            upsell.style.display = 'block';
         }
     }
 
@@ -276,6 +251,15 @@ class TarotApp {
             block.innerHTML = `<h4>✨ Your Personalized Reading</h4>${this.mdLite(text)}`;
         } catch (e) {
             console.error('Premium reading error:', e);
+            if (/API Error: 40[23]\b/.test(e && e.message)) {
+                // The purchase on this device doesn't cover this spread (or was
+                // used up): offer checkout for this spread instead.
+                this.entitlementRejected = true;
+                block.remove();
+                const upsell = document.getElementById('premium-upsell');
+                if (upsell) upsell.style.display = 'block';
+                return;
+            }
             block.innerHTML = `<p>Your purchase is confirmed, but the reading service is momentarily
                 unavailable. Please try again shortly — you will not be charged again.</p>`;
             // keep the entitlement so the reading can be retried
@@ -343,24 +327,20 @@ class TarotApp {
         if (this.checkoutInFlight) return;
         const originalLabel = upgradeBtn ? upgradeBtn.innerHTML : null;
         try {
-            // Already paid (verified by /success): unlock — never charge twice.
-            if (window.PremiumEntitlement?.has()) {
-                // Do not consume() yet — premium AI delivery isn't wired in this frontend.
-                // Keeping the credit prevents a re-charge on a second click. Restore
-                // consume-after-successful-render when delivery lands.
-                this.premiumUnlocked = true;
+            // (unless the API just said that purchase doesn't cover this spread)
+            if (window.PremiumEntitlement?.has() && !this.entitlementRejected) {
+                // Already paid (verified by /success): deliver, never charge twice.
+                // deliverPremiumReading() consumes the credit only after a reading renders.
                 const upsell = document.getElementById('premium-upsell');
                 if (upsell) upsell.style.display = 'none';
+                if (!this.drawnCards.length) {
+                    // Nothing drawn yet (pricing button): go draw first.
+                    document.getElementById('draw-btn').scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
                 this.displayReading();
                 return;
             }
-            const prices = {
-                'single': 2.99,
-                'three': 4.99,
-                'celtic': 9.99
-            };
-            const price = prices[this.currentSpread];
-
             // Get user email
             const email = this.getUserEmail();
             if (!email) {

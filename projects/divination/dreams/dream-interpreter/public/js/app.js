@@ -210,6 +210,7 @@ class DreamInterpreterApp {
         }
         this.showDreamError('');
         this.interpretedDream = this.currentDream;
+        this.entitlementRejected = false;
         this.setResultsStale(false);
         
         // Loading state: show the results section with a placeholder, bring it
@@ -247,9 +248,16 @@ class DreamInterpreterApp {
             if (!text) throw new Error('Empty interpretation');
             // Real premium content delivered — consume the paid credit now.
             window.PremiumEntitlement?.consume();
+            this.lastInterpretation = text;
             basicMeaning.innerHTML = `<div class="interpretation-text premium">${this.mdLite(text)}</div>`;
         } catch (e) {
             console.error('Premium interpretation error:', e);
+            if (/API Error: 40[23]\b/.test(e && e.message)) {
+                // The purchase on this device was used up: offer checkout again.
+                this.entitlementRejected = true;
+                this.showPaywall();
+                return;
+            }
             basicMeaning.innerHTML = `
                 <p class="interpretation-text">Your purchase is confirmed, but the AI analysis service is
                 momentarily unavailable. Please try again shortly — you will not be charged again.</p>`;
@@ -295,38 +303,30 @@ class DreamInterpreterApp {
             symbolGrid.appendChild(symbolCard);
         });
         
-        // Generate basic interpretation
-        const interpretation = this.generateBasicInterpretation();
-        basicMeaning.innerHTML = `
-            <p class="interpretation-text">${interpretation}</p>
-            <p class="disclaimer">This is a basic interpretation based on common symbol meanings. Upgrade for personalized AI analysis.</p>
-        `;
-
-        // Paid customers get the full AI interpretation delivered in place.
-        if (this.premiumUnlocked) {
+        // Paid from first use (JARVIS #94): the interpretation is the paid AI
+        // analysis. With a verified purchase it is delivered in place; without
+        // one, only the checkout prompt shows. (The symbol library stays public.)
+        this.lastInterpretation = '';
+        if (this.hasPurchase()) {
+            document.getElementById('free-interpretation').style.display = '';
+            document.getElementById('premium-upsell').style.display = 'none';
             this.deliverPremiumInterpretation();
+        } else {
+            this.showPaywall();
         }
 
         // Show results section
         resultsSection.style.display = 'block';
     }
 
-    generateBasicInterpretation() {
-        if (this.detectedSymbols.length === 0) {
-            return "No clear symbols detected in your dream.";
-        }
-        
-        let interpretation = "Your dream contains several meaningful symbols:\n\n";
-        
-        this.detectedSymbols.slice(0, 3).forEach((symbol, index) => {
-            interpretation += `<strong>${symbol.symbol}:</strong> ${symbol.meanings.general}\n\n`;
-        });
-        
-        if (this.detectedSymbols.length > 3) {
-            interpretation += `\n<em>...and ${this.detectedSymbols.length - 3} more symbols detected.</em>`;
-        }
-        
-        return interpretation.replace(/\n/g, '<br>');
+    hasPurchase() {
+        return !this.entitlementRejected && window.PremiumEntitlement?.has() === true;
+    }
+
+    showPaywall() {
+        document.getElementById('basic-meaning').innerHTML = '';
+        document.getElementById('free-interpretation').style.display = 'none';
+        document.getElementById('premium-upsell').style.display = '';
     }
 
     showSymbolDetail(symbol) {
@@ -501,7 +501,7 @@ class DreamInterpreterApp {
             date: new Date().toISOString(),
             dream: this.currentDream,
             symbols: this.detectedSymbols.map(s => s.symbol),
-            interpretation: this.generateBasicInterpretation()
+            interpretation: this.lastInterpretation || ''
         };
         
         this.dreamJournal.unshift(entry);
@@ -583,12 +583,9 @@ class DreamInterpreterApp {
         const upgradeBtn = clickedBtn || null;
         const originalLabel = upgradeBtn ? upgradeBtn.textContent : '';
         try {
-            // Already paid (verified by /success): unlock — never charge twice.
-            if (window.PremiumEntitlement?.has()) {
-                // Do not consume() yet — premium AI delivery isn't wired in this frontend.
-                // Keeping the credit prevents a re-charge on a second click. Restore
-                // consume-after-successful-render when delivery lands.
-                this.premiumUnlocked = true;
+            // Already paid (verified by /success): deliver — never charge twice.
+            // deliverPremiumInterpretation() consumes the credit only after it renders.
+            if (this.hasPurchase()) {
                 if (typeof this.interpretDream === 'function') this.interpretDream();
                 return;
             }

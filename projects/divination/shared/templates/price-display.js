@@ -40,10 +40,14 @@
     ready: ready,
     format: format,
     cents: cents,
-    /** Display string for a readingType, e.g. "$5"; fallback when unknown. */
+    /** Display string for a readingType, e.g. "$5". Before the config has
+     *  loaded, falls back to a sync-written [data-price] element of the same
+     *  type in the page, then to `fallback`. */
     price: function (type, fallback) {
       var c = cents(type);
-      return c === null ? (fallback || '') : format(c);
+      if (c !== null) return format(c);
+      var el = document.querySelector('[data-price="' + String(type).replace(/"/g, '') + '"]');
+      return (el && el.textContent) || fallback || '';
     },
     apply: apply
   };

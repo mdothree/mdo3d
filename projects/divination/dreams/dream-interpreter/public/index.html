@@ -145,7 +145,7 @@
                         <li>✨ Save to your dream journal</li>
                     </ul>
                     <button class="btn-premium">
-                        Get Premium Analysis - $4.99
+                        Get Premium Analysis - <span data-price="dream-analysis">$5</span>
                     </button>
                 </div>
 
@@ -252,25 +252,12 @@
             <div class="container">
                 <h2>Pricing</h2>
                 <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">$0</div>
-                        <ul>
-                            <li>Basic dream interpretation</li>
-                            <li>Symbol database access</li>
-                            <li>Symbol search</li>
-                            <li>Unlimited dream entries</li>
-                        </ul>
-                        <button class="btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                            Get Started
-                        </button>
-                    </div>
                     <div class="pricing-card featured">
                         <div class="badge">Most Popular</div>
                         <h3>Premium Analysis</h3>
-                        <div class="price">$4.99</div>
+                        <div class="price" data-price="dream-analysis">$5</div>
                         <ul>
-                            <li>Everything in Basic</li>
+                            <li>Symbol database and search</li>
                             <li>AI-powered personalized analysis</li>
                             <li>Psychological insights</li>
                             <li>Spiritual meanings</li>
@@ -313,6 +300,7 @@
 
     <!-- Firebase is optional and lazy-loaded by js/config/firebase.js (off by default). -->
 
+    <script src="js/price-display.js"></script>
     <script src="js/entitlement.js"></script>
     <script src="js/app.js" type="module"></script>
 </body>

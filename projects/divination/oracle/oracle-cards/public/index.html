@@ -135,19 +135,19 @@
                                 <div class="spread-icon">🃏</div>
                                 <div class="spread-name">Single Card</div>
                                 <div class="spread-desc">Daily guidance</div>
-                                <div class="spread-badge">BASIC</div>
+                                <div class="spread-badge" data-price="single-premium">$5</div>
                             </div>
                             <div class="spread-option" data-spread="three">
                                 <div class="spread-icon">🃏🃏🃏</div>
                                 <div class="spread-name">Three Card</div>
                                 <div class="spread-desc">Past, Present, Future</div>
-                                <div class="spread-badge premium">$4.99</div>
+                                <div class="spread-badge premium" data-price="three">$10</div>
                             </div>
                             <div class="spread-option" data-spread="celtic">
                                 <div class="spread-icon">🃏✨🃏</div>
                                 <div class="spread-name">Celtic Cross</div>
                                 <div class="spread-desc">Deep insight (10 cards)</div>
-                                <div class="spread-badge premium">$9.99</div>
+                                <div class="spread-badge premium" data-price="celtic">$10</div>
                             </div>
                         </div>
                     </div>
@@ -200,7 +200,7 @@
                             <div class="feature">✓ Action steps and affirmations</div>
                         </div>
                         <button class="btn-premium">
-                            Unlock Full Reading - $2.99
+                            Unlock Full Reading - <span id="premium-price" data-price="single-premium">$5</span>
                         </button>
                     </div>
                 </div>
@@ -244,17 +244,17 @@
                     <div class="spread-detail">
                         <h3>Single Card Draw</h3>
                         <p>Perfect for daily guidance and quick insights</p>
-                        <div class="price">BASIC</div>
+                        <div class="price" data-price="single-premium">$5</div>
                     </div>
                     <div class="spread-detail featured">
                         <h3>Three Card Spread</h3>
                         <p>Past, Present, Future - see the timeline of your situation</p>
-                        <div class="price">$4.99</div>
+                        <div class="price" data-price="three">$10</div>
                     </div>
                     <div class="spread-detail">
                         <h3>Celtic Cross</h3>
                         <p>10-card deep dive into complex questions</p>
-                        <div class="price">$9.99</div>
+                        <div class="price" data-price="celtic">$10</div>
                     </div>
                 </div>
             </div>
@@ -265,21 +265,10 @@
             <div class="container">
                 <h2>Pricing</h2>
                 <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">$0</div>
-                        <ul>
-                            <li>1 card daily</li>
-                            <li>Basic interpretation</li>
-                            <li>44 oracle cards</li>
-                            <li>Card meanings</li>
-                        </ul>
-                        <button class="btn-secondary" id="try-free-btn">Draw a Card</button>
-                    </div>
                     <div class="pricing-card featured">
                         <div class="badge">Popular</div>
                         <h3>Premium Reading</h3>
-                        <div class="price">$2.99<span>/reading</span></div>
+                        <div class="price"><span data-price="single-premium">$5</span><span>/reading</span></div>
                         <ul>
                             <li>Personalized AI interpretation</li>
                             <li>Detailed guidance</li>
@@ -290,7 +279,7 @@
                     </div>
                     <div class="pricing-card">
                         <h3>Monthly</h3>
-                        <div class="price">$9.99<span>/month</span></div>
+                        <div class="price"><span data-price="monthly">$9.99</span><span>/month</span></div>
                         <ul>
                             <li>Unlimited readings</li>
                             <li>All card spreads</li>
@@ -325,6 +314,7 @@
     }
     </script>
 
+    <script src="js/price-display.js"></script>
     <script src="js/entitlement.js"></script>
     <script src="js/app.js" type="module"></script>
 </body>

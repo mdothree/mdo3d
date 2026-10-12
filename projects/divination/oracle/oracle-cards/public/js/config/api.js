@@ -34,7 +34,9 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to generate reading');
+      const err = new Error('Failed to generate reading');
+      err.status = response.status; // 402/403: no purchase covering this spread
+      throw err;
     }
 
     return await response.json();

@@ -571,6 +571,12 @@ nav {
     color: #6B7280;
 }
 
+/* The amount itself (filled from js/config/pricing.json) keeps the big price style. */
+.pricing-card .price span[data-price] {
+    font-size: inherit;
+    color: inherit;
+}
+
 .pricing-card ul {
     list-style: none;
     margin: 2rem 0;
