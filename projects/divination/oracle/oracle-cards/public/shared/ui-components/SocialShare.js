@@ -310,7 +310,6 @@ export class SocialShare {
       });
     }
 
-    console.log('Share tracked:', platform, data);
   }
 
   /**
