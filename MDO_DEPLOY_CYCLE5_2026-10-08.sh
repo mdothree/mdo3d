@@ -41,6 +41,7 @@ g_rigor() {  # P0 RIGOR-PAY-BEFORE-API + RIGOR-SUCCESS-CANCEL-404, -HEADER-SIGNI
   check "resume /success" "curl -s -o /dev/null -w '%{http_code}' https://resume.rigor.design/success" "200"
   check "resume unknown → 404" "curl -s -o /dev/null -w '%{http_code}' https://resume.rigor.design/zz-nope" "404"
   check "resume CSP" "curl -sI https://resume.rigor.design/ | grep -qi content-security-policy && echo yes" "yes"
+  check "portfolio #career-stage named (A11Y-002)" "curl -s https://portfolio.rigor.design/ | grep -c 'aria-label=\"Career stage\" class=\"u-rigor_portfolio-3 input\" id=\"career-stage\"'" "1"
   for t in resume cover interview linkedin networking portfolio salary; do   # cycle-8 P1 RIGOR-HEADER-SIGNIN-DEAD-REST (fixed at HEAD; live after this deploy)
     check "$t header #signin/#signup anchors" "n=\$(curl -sL https://$t.rigor.design/ | grep -oE 'href=\"#sign(in|up)\" id=\"nav-(login|signup)\"' | wc -l); [ \"\$n\" -ge 2 ] && echo yes" "yes"; done
 }
@@ -63,6 +64,17 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
   check "runwae /blog author link not runwae.com" "echo n=\$(curl -sL https://runwae.com/blog | grep -c 'href=\"runwae.com\"')." "n=0."
   check "runwae /faqs no dup id whoshouldifollow" "echo n=\$(curl -sL https://runwae.com/faqs | grep -c 'id=\"whoshouldifollow\"')." "n=1."
   check "runwae /faqs #howdoimessage anchor fixed" "echo n=\$(curl -sL https://runwae.com/faqs | grep -c 'href=\"/howdoimessage#\"\\|href=\"howdoimessage#\"')." "n=0."
+  # cycle-8 P1b (1243764): XB-001 · SEO-003 · PERF-001 · A11Y-001
+  for p in welcome login privacy terms; do
+    check "runwae /$p has DOCTYPE (XB-001)" "curl -sL https://runwae.com/$p | head -c 15" "<!DOCTYPE html>"; done
+  check "runwae / → single 301 → /welcome (SEO-003)" "curl -s -o /dev/null -w '%{http_code} %{redirect_url}' https://runwae.com/" "301 https://runwae.com/welcome"
+  check "runwae / redirect hops (SEO-003)" "echo n=\$(curl -sL -o /dev/null -w '%{num_redirects}' https://runwae.com/)." "n=1."
+  check "runwae og:url absolute (SEO-003)" "curl -s https://runwae.com/welcome | grep -c 'og:url\" content=\"https://runwae.com/welcome\"'" "1"
+  check "runwae welcome no fontawesome-all (PERF-001)" "curl -s https://runwae.com/welcome | grep -c 'src=\"fonts/fontawesome-all'" "0"
+  check "runwae welcome deferred scripts (PERF-001)" "n=\$(curl -s https://runwae.com/welcome | grep -c '<script defer'); [ \"\$n\" -ge 45 ] && echo yes" "yes"
+  check "runwae welcome email inputs labelled (A11Y-001)" "curl -s https://runwae.com/welcome | grep -o 'for=\"\(marketerGuide\|influencerGuide\|subscribe\)EmailInput\"' | wc -l | tr -d ' '" "3"
+  check "runwae Bootstrap/dist served (.gitignore 'dist' also matches Bootstrap/dist)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/Bootstrap/dist/js/bootstrap.bundle.js" "200"
+  echo "  MANUAL: xps Lighthouse runwae.com/welcome (expect perf ≥70, LCP <4s; local dist was 75 / 2.4s) + axe label 0" | tee -a "$LOG"
   cat <<'EOF' | tee -a "$LOG"
   NEXT (operator, after the checks above pass):
    3) firebase database:set /admins/<OWNER_UID> --data true --project runwaedesign --account mdo3group@gmail.com
@@ -83,6 +95,12 @@ g_ronna() {  # P0 RONNA-ENV-SYNTAX + P0 RONNA-MOCK-FALLBACK + SOFT-200-EMPTY (ro
     check "$s no double .json() (RONNA-APIFETCH-DOUBLE-JSON)" "curl -s https://$s.ronnascanner.com/js/app.js | grep -q 'res\\.json()' && echo FOUND || echo none" "none"; done
   check "leads imports showSkeleton" "curl -s https://leads.ronnascanner.com/js/app.js | grep -q 'import { showSkeleton }' && echo yes" "yes"
   for s in companies contacts prospects; do check "$s reads #filter-company" "curl -s https://$s.ronnascanner.com/js/app.js | grep -q 'getElementById(\"filter-company\")' && echo yes" "yes"; done
+  for s in leads companies contacts emails prospects; do  # cycle-8 P1b SEO-001: canonical/og:url on own host
+    check "$s canonical own host (SEO-001)" "curl -s https://$s.ronnascanner.com/ | grep -c 'rel=\"canonical\" href=\"https://$s.ronnascanner.com/\"'" "1"
+    check "$s og:url own host (SEO-001)" "curl -s https://$s.ronnascanner.com/ | grep -c 'og:url\" content=\"https://$s.ronnascanner.com/\"'" "1"; done
+  check "companies #filter-data labelled (A11Y-002)" "curl -s https://companies.ronnascanner.com/ | grep -c 'for=\"filter-data\"'" "1"
+  check "contacts dept/seniority labelled (A11Y-002)" "curl -s https://contacts.ronnascanner.com/ | grep -o 'for=\"filter-\(dept\|seniority\)\"' | wc -l | tr -d ' '" "2"
+  check "prospects depth/focus labelled (A11Y-002)" "curl -s https://prospects.ronnascanner.com/ | grep -o 'for=\"filter-\(depth\|focus\)\"' | wc -l | tr -d ' '" "2"
 }
 g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MDOTHREE-STRAY-FAVICON, -SIGNED-IN-BADGE, JSON-BEAUTIFY-EMPTY-SILENT, HASH-MOBILE-NAV-OVERFLOW, MDOTHREE-TRIAL-PATH-UNVERIFIED
   for t in json text pdf qr hash color password timestamp image; do deploy projects/mdothree/mdothree-$t; done
@@ -103,6 +121,14 @@ g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MD
   check "text diff by grapheme (C7B-TEXTDIFF-SURROGATE)" "curl -s https://text.mdothree.com/js/services/textDiff.js https://text.mdothree.com/js/workers/diff-worker.js | grep -c 'Intl.Segmenter) ?'" "2"
   check "timestamp ISO week UTC (C7B-TS-WEEK)" "curl -s https://timestamp.mdothree.com/js/services/timestampConverter.js | grep -q 'ISO week (UTC)' && echo yes" "yes"
   check "qr level copy (C7B-QR-COPY)" "curl -s https://qr.mdothree.com/js/pages/generate.js | grep -c '(L or M)'" "0"
+  # cycle-8 P1b A11Y-001/002 (color 3a41946 · timestamp 1807acb · pdf 6d91ed7 · image 3a1050c · qr 2073dc9 · hash e4ca6ab · password e2e8cb9 · text 838017d · json in mdo3d main)
+  check "color #colorPicker named" "curl -s https://color.mdothree.com/ | grep -c 'aria-label=\"Pick a color\"'" "1"
+  check "timestamp #dateInput + #tsUnit named" "curl -s https://timestamp.mdothree.com/ | grep -o 'aria-label=\"\(Date and time to convert\|Timestamp unit\)\"' | wc -l | tr -d ' '" "2"
+  check "json #indent labelled" "curl -sL https://json.mdothree.com/format | grep -c 'for=\"indent\"'" "1"
+  check "qr #errorLevel labelled" "curl -sL https://qr.mdothree.com/generate | grep -c 'for=\"errorLevel\"'" "1"
+  check "pdf merge #fileInput named" "curl -sL https://pdf.mdothree.com/merge | grep -c 'aria-label=\"Choose PDF files\"'" "1"
+  check "image compress #fileInput named" "curl -sL https://image.mdothree.com/compress | grep -c 'aria-label=\"Choose an image file\"'" "1"
+  echo "  MANUAL: xps axe (rules label/select-name) on every mdothree tool page → 0 (pre-verified on HEAD: 69/69 pages)" | tee -a "$LOG"
   for t in json text image pdf qr; do
     check "$t robots no config Disallow (C7-012)" "curl -s https://$t.mdothree.com/robots.txt | grep -c 'js/config'" "0"
     check "$t home has no .html links (C7-018)" "curl -s https://$t.mdothree.com/ | grep -cE 'href=\"/?[a-z0-9-]+\\.html\"'" "0"; done
@@ -119,6 +145,7 @@ g_c8qw() {  # cycle-8 QW3 C7-010 entertainment disclaimer + QW4 C7-002/003/016/0
   for a in astrology dreams fengshui iching numerology oracle pastlives runes tarot; do deploy projects/divination/$a/api; done
   for h in tarot numerology astrology iching runes fengshui pastlife names; do
     check "$h disclaimer (C7-010)" "curl -s https://$h.mdo3d.com/ | grep -c 'For entertainment and reflection purposes'" "1"; done
+  check "pastlife birth date/time labelled (A11Y-001)" "curl -s https://pastlife.mdo3d.com/ | grep -o 'for=\"pl-birth\(Date\|Time\)\"' | wc -l | tr -d ' '" "2"
   check "tarot health ping /api/health (C7-016)" "curl -s https://tarot.mdo3d.com/js/config/api.js | grep -c \"request('/api/health')\"" "1"
   for u in tarot-cards-api.vercel.app dream-interpreter-api-delta.vercel.app oracle-cards-api.vercel.app pastlives-api.vercel.app; do
     check "$u bad JSON -> 400 JSON (C7-002)" "curl -s -w ' %{http_code}' -X POST -H 'content-type: application/json' --data '{\"x\":' https://$u/api/payment/verify" "Malformed JSON in request body\"} 400"

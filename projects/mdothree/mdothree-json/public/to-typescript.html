@@ -78,15 +78,15 @@
           <div class="panel-title">JSON Input</div>
           <textarea class="form-textarea" id="inputJson" style="min-height:360px;font-size:0.82rem;" placeholder='{"user": {"name": "Alice", "age": 30, "active": true}}'></textarea>
           <div class="form-group mt-16">
-            <label class="form-label">Root interface name</label>
+            <label class="form-label" for="rootName">Root interface name</label>
             <input type="text" class="form-input" id="rootName" value="Root" style="max-width:200px;" />
           </div>
           <div class="toggle-group">
-            <label class="toggle"><input type="checkbox" id="useInterface" checked /><span class="toggle-slider"></span></label>
+            <label class="toggle"><input aria-label="Use interface (vs type)" type="checkbox" id="useInterface" checked /><span class="toggle-slider"></span></label>
             <span class="toggle-label">Use interface (vs type)</span>
           </div>
           <div class="toggle-group">
-            <label class="toggle"><input type="checkbox" id="optionalFields" /><span class="toggle-slider"></span></label>
+            <label class="toggle"><input aria-label="All fields optional (?)" type="checkbox" id="optionalFields" /><span class="toggle-slider"></span></label>
             <span class="toggle-label">All fields optional (?)</span>
           </div>
           <button class="btn btn-primary mt-16" id="convertBtn">🔷 Generate Types</button>
