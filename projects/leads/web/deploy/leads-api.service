@@ -1,3 +1,4 @@
+# LEGACY non-docker install. The supported deployment is web/docker-compose.yml via ops/DEPLOY_FLEET.sh.
 [Unit]
 Description=FL Sunbiz Leads API
 After=network.target
@@ -5,10 +6,10 @@ After=network.target
 [Service]
 Type=simple
 User=latarencebutts
-WorkingDirectory=/home/latarencebutts/ridgefield/tools/leads
-Environment="PATH=/home/latarencebutts/ridgefield/tools/leads/.venv/bin"
-EnvironmentFile=/home/latarencebutts/ridgefield/tools/leads/.env
-ExecStart=/home/latarencebutts/ridgefield/tools/leads/.venv/bin/python -m uvicorn web.backend.api:app --host 127.0.0.1 --port 5050
+WorkingDirectory=/home/latarencebutts/mdo3d/projects/leads
+Environment="PATH=/home/latarencebutts/mdo3d/projects/leads/.venv/bin"
+EnvironmentFile=/home/latarencebutts/mdo3d/projects/leads/.env
+ExecStart=/home/latarencebutts/mdo3d/projects/leads/.venv/bin/python -m uvicorn web.backend.api:app --host 127.0.0.1 --port 5050
 Restart=always
 RestartSec=5
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install FL Sunbiz Leads API on littlemini
+# LEGACY: install the Leads API as a systemd service (non-docker). Supported path: ops/DEPLOY_FLEET.sh
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

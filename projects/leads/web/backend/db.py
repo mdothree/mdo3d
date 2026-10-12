@@ -227,6 +227,8 @@ def init_db():
     """Initialize database with schema."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
+        # WAL: the API container reads while the scheduler container's ingest writes.
+        conn.execute("PRAGMA journal_mode=WAL")
         conn.executescript(SCHEMA)
     return DB_PATH
 
@@ -234,7 +236,7 @@ def init_db():
 @contextmanager
 def get_db():
     """Context manager for database connection."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
     try:
         yield conn

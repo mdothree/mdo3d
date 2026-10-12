@@ -1,5 +1,5 @@
-# Cloudflare Tunnel config for FL Sunbiz Leads
-# Place at ~/.cloudflared/config.yml on littlemini
+# LEGACY locally-managed tunnel config (was on littlemini, now on a disk hold).
+# The supported path is the token-based `tunnel` service in web/docker-compose.yml (ops/DEPLOY_FLEET.sh).
 #
 # Setup (example):
 #   cloudflared tunnel create mdo3d-leads

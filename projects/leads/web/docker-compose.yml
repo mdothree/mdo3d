@@ -1,24 +1,84 @@
 name: leads
 
+# Fleet deployment (recommended host: xps). See docs/DEPLOYMENT.md and ops/DEPLOY_FLEET.sh.
+# Ports bind to 127.0.0.1 only; the host's cloudflared tunnel publishes leads.mdo3d.com and
+# leadsapi.mdo3d.com. SQLite lives on the named volume leads-data; nightly .backup copies go to
+# leads-backups.
+
 services:
   frontend:
     build: ./frontend
     container_name: leads-frontend
     ports:
-      - "3050:3050"
+      - "127.0.0.1:${LEADS_WEB_PORT:-3050}:3050"
     env_file:
-      - ./frontend/.env
+      - path: ./frontend/.env
+        required: false
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3050/ >/dev/null || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   backend:
     build: ./backend
     container_name: leads-backend
     ports:
-      - "8050:8050"
+      - "127.0.0.1:${LEADS_API_PORT:-8050}:8050"
     env_file:
-      - ./backend/.env
+      - path: ./backend/.env
+        required: false
+    environment:
+      LEADS_DB_PATH: /data/leads.db
     volumes:
-      - ../config:/app/config:ro
+      - ../config:/config:ro    # api.py reads <root>/config = /config in the image
+      - leads-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8050/health', timeout=5).status == 200 else 1)"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     restart: unless-stopped
+
+  scheduler:
+    build:
+      context: ..
+      dockerfile: ops/scheduler/Dockerfile
+    container_name: leads-scheduler
+    env_file:
+      - path: ../.env            # SUNBIZ_SFTP_*, optional SOCRATA_APP_TOKEN, mail keys (delivery only)
+        required: false
+    environment:
+      LEADS_INGEST_STATES: ${LEADS_INGEST_STATES:-FL,CO}
+      LEADS_INGEST_LOOKBACK: ${LEADS_INGEST_LOOKBACK:-3}
+      LEADS_ENABLE_DELIVERY: ${LEADS_ENABLE_DELIVERY:-0}   # outbound email: Principal's OK first
+      LEADS_BACKUP_KEEP: ${LEADS_BACKUP_KEEP:-14}
+    volumes:
+      - leads-data:/data
+      - leads-backups:/backups
+    restart: unless-stopped
+
+  # Cloudflare tunnel (token / remotely-managed). Only started with `--profile tunnel`.
+  # Public hostnames are set in the Cloudflare dashboard on the tunnel:
+  #   leads.mdo3d.com    -> http://localhost:${LEADS_WEB_PORT}
+  #   leadsapi.mdo3d.com -> http://localhost:${LEADS_API_PORT}
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: leads-tunnel
+    profiles: ["tunnel"]
+    command: tunnel --no-autoupdate run
+    network_mode: host
+    env_file:
+      - path: ../tunnel.env      # TUNNEL_TOKEN=... (operator; never committed)
+        required: true
+    restart: unless-stopped
+
+volumes:
+  leads-data:
+  leads-backups:
