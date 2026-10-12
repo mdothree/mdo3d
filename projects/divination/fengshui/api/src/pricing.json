@@ -14,16 +14,9 @@
       "description": "Comprehensive analysis of your entire home"
     },
     "office": {
-      "amount_cents": 999,
+      "amount_cents": 500,
       "label": "Office/Workspace Analysis",
-      "description": "Optimize your workspace for success",
-      "needs_principal": true
-    },
-    "monthly": {
-      "amount_cents": 1499,
-      "label": "Monthly Subscription",
-      "description": "Unlimited analyses for 30 days",
-      "needs_principal": true
+      "description": "Optimize your workspace for success"
     }
   }
 }

@@ -55,10 +55,10 @@ app.post('/api/chart/interpret', async (req, res) => {
 
     // For premium, generate AI reading
     // Premium requires a verified, paid Stripe session from this service, bought
-    // for a birth-chart reading (or monthly) — prevents a free reading via premium:true.
+    // for a birth-chart reading — prevents a free reading via premium:true.
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['birth-chart', 'monthly']
+        allowedTypes: ['birth-chart']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
@@ -110,10 +110,10 @@ app.post('/api/chart/compatibility', async (req, res) => {
     }
 
     // `premium: true` alone must not unlock a paid reading: require a verified
-    // session bought for compatibility (or monthly).
+    // session bought for compatibility.
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['compatibility', 'monthly']
+        allowedTypes: ['compatibility']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }

@@ -58,7 +58,7 @@ app.post('/api/analysis/generate', async (req, res) => {
     // a free reading via premium:true. All analysis tiers share this one endpoint.
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['single-room', 'full-home', 'office', 'monthly'],
+        allowedTypes: ['single-room', 'full-home', 'office'],
         typeKey: 'analysisType'
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });

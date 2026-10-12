@@ -65,12 +65,22 @@ test('pricing.json has the expected product and only positive integer cents', ()
   }
 });
 
-test('JARVIS #63 ladder: non-flagged types are $5 single or $10 deep', () => {
+test('JARVIS #63 ladder: every type is $5 single or $10 deep', () => {
   for (const [type, e] of Object.entries(pricing.types)) {
-    if (e.needs_principal) continue;
     assert.ok([500, 1000].includes(e.amount_cents), `${type} = ${e.amount_cents}`);
   }
   assert.equal(pricing.types[CASES.singleType].amount_cents, 500);
+});
+
+test('JARVIS #63b: no monthly tier (none is a Stripe subscription) and "monthly" checkout is refused', async () => {
+  for (const [type, e] of Object.entries(pricing.types)) {
+    assert.ok(!/month/i.test(type + ' ' + e.label + ' ' + (e.description || '')), type);
+    assert.equal(e.needs_principal, undefined, type);
+  }
+  calls.length = 0;
+  const res = await checkout('monthly');
+  assert.equal(res.status, 400);
+  assert.equal(calls.length, 0);
 });
 
 for (const type of Object.keys(pricing.types)) {

@@ -34,9 +34,9 @@ app.use((req, res, next) => {
 // Checkout readingTypes that may redeem a premium reading of each spread size.
 const SPREAD_ORDER = ['single', 'three', 'celtic'];
 const SPREAD_ENTITLEMENTS = {
-  single: ['single-premium', 'three', 'celtic', 'monthly'],
-  three: ['three', 'celtic', 'monthly'],
-  celtic: ['celtic', 'monthly']
+  single: ['single-premium', 'three', 'celtic'],
+  three: ['three', 'celtic'],
+  celtic: ['celtic']
 };
 
 // Routes

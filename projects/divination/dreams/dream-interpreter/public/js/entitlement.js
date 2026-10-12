@@ -19,12 +19,8 @@
     try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
   }
   function isActive(e) {
-    if (e.consumed) return false;
-    // Monthly/subscription entitlements expire; single readings are one-shot credits.
-    if (e.readingType && e.readingType.indexOf('monthly') !== -1) {
-      return Date.now() - e.verifiedAt < 30 * 24 * 60 * 60 * 1000;
-    }
-    return true;
+    // Every reading is a one-shot credit (no monthly tier, JARVIS #63b).
+    return !e.consumed;
   }
 
   window.PremiumEntitlement = {
@@ -49,12 +45,12 @@
       var e = load().filter(isActive)[0];
       return e ? e.sessionId : null;
     },
-    /** Use up one single-reading credit (subscriptions are not consumed). */
+    /** Use up one reading credit. */
     consume: function () {
       var list = load();
       for (var i = 0; i < list.length; i++) {
         if (isActive(list[i])) {
-          if (!(list[i].readingType || '').match(/monthly/)) list[i].consumed = true;
+          list[i].consumed = true;
           save(list);
           return list[i];
         }

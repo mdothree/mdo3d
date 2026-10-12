@@ -58,7 +58,7 @@ app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
     // a free reading via premium:true. Every past life product covers a single reading.
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['single-life', 'multiple-lives', 'deep-dive', 'monthly']
+        allowedTypes: ['single-life', 'multiple-lives', 'deep-dive']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
@@ -107,11 +107,11 @@ app.post('/api/reading/multiple-lives', async (req, res) => {
     }
 
     // Same paid-session guard as /api/reading/generate — `premium: true` alone
-    // must not unlock a paid reading — and the session must be for the $9.99
-    // multiple-lives product or a tier above it (a $5.99 single-life session is refused).
+    // must not unlock a paid reading — and the session must be for the $10
+    // multiple-lives product or a tier above it (a $5 single-life session is refused).
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['multiple-lives', 'deep-dive', 'monthly']
+        allowedTypes: ['multiple-lives', 'deep-dive']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }

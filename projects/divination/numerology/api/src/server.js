@@ -105,7 +105,7 @@ app.post('/api/reading/generate', async (req, res) => {
     // for a numbers reading (compatibility sessions have no reading here yet).
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['core-numbers', 'full-chart', 'monthly']
+        allowedTypes: ['core-numbers', 'full-chart']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }

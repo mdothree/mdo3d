@@ -58,7 +58,7 @@ app.post('/api/reading/generate', async (req, res) => {
     // Any I Ching product covers this reading: the app only sells single-premium
     // and that reading already includes the changing lines.
     const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-      allowedTypes: ['single-premium', 'changing-lines', 'monthly']
+      allowedTypes: ['single-premium', 'changing-lines']
     });
     if (denied) {
       return res.status(denied.status).json({ success: false, error: denied.error });

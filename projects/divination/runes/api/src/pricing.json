@@ -17,12 +17,6 @@
       "amount_cents": 1000,
       "label": "Five Rune Spread",
       "description": "Comprehensive spread with higher guidance"
-    },
-    "monthly": {
-      "amount_cents": 999,
-      "label": "Monthly Subscription",
-      "description": "Unlimited premium readings for 30 days",
-      "needs_principal": true
     }
   }
 }
