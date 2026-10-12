@@ -17,11 +17,14 @@ mkdir "$LOCK" 2>/dev/null || { echo "$(date -u +%FT%TZ) another refresh is runni
 trap 'rmdir "$LOCK"' EXIT
 cd "$LL_HOME"
 [ -z "$(git status --porcelain)" ] || { echo "dirty clone at $LL_HOME; refusing"; exit 2; }
-git pull -q --ff-only origin main
+if ! git pull -q --ff-only origin main 2>/dev/null; then
+  [ "$PUSH" = 1 ] && { echo "git pull failed (push credential missing?); refusing --push"; exit 4; }
+  echo "$(date -u +%FT%TZ) WARN: git pull failed (no read credential on this host); dry run uses clone @ $(git log -1 --format=%h)"
+fi
 
 count() { node -e 'const d=require(process.argv[1]);console.log((d.events||d).length)' "$LL_HOME/data/events.json"; }
 before=$(count)
-npm ci --silent
+[ -f package-lock.json ] && npm ci --silent   # layoffleads has no dependencies today (no lockfile)
 npm run -s refresh            # ingest-warn → normalize → build → check (check.mjs exits 1 on failure)
 after=$(count)
 echo "$(date -u +%FT%TZ) events before=$before after=$after"
