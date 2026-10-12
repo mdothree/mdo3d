@@ -13,7 +13,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'mdothree-v10'; // bump on every JS/CSS deploy (cache-first)
+const CACHE_NAME = 'mdothree-v11'; // bump on every JS/CSS deploy (cache-first)
 
 // Assets to pre-cache on install
 const PRECACHE = [
@@ -33,8 +33,6 @@ const PRECACHE = [
 const CDN_CACHE = 'mdothree-cdn-v1';
 const CDN_HOSTS = [
   'cdn.jsdelivr.net',
-  'fonts.googleapis.com',
-  'fonts.gstatic.com',
   'www.gstatic.com',
 ];
 

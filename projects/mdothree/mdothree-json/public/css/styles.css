@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Sora:wght@300;400;500;600;700&display=swap');
+/* Fonts: self-hosted in /css/fonts.css (PERF-009), linked before this file. */
 
 
 
@@ -941,6 +941,20 @@ input[type="color"] {
 .animate-fade-up-2 { animation: fadeUp 0.5s 0.1s ease both; }
 .animate-fade-up-3 { animation: fadeUp 0.5s 0.2s ease both; }
 .animate-fade-up-4 { animation: fadeUp 0.5s 0.3s ease both; }
+
+/* PERF-009: the page's LCP text (hero h1, tool-header h1) must paint on the first frame.
+   An opacity fade from 0 delays LCP until the fade runs, so these get a transform-only rise
+   (fully opaque from frame 1, same end state) and no stagger delay. */
+@keyframes riseIn {
+  from { transform: translateY(16px); }
+  to   { transform: translateY(0); }
+}
+.hero h1.animate-fade-up-2,
+.tool-header.animate-fade-up { animation: riseIn 0.4s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up, .animate-fade-up-2, .animate-fade-up-3, .animate-fade-up-4 { animation: none; }
+}
 
 .spinner {
   width: 20px; height: 20px;
