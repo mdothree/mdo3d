@@ -21,6 +21,14 @@
     {
       "src": "/(.*)",
       "dest": "/public/$1"
+    },
+    {
+      "handle": "error"
+    },
+    {
+      "src": "/(.*)",
+      "status": 404,
+      "dest": "/public/404.html"
     }
   ],
   "headers": [
