@@ -1,7 +1,7 @@
 #!/bin/bash
 # MDO lane — cycle 5 consolidated operator deploy (Principal GO required).
 # Usage:  bash ~/mdo3d/MDO_DEPLOY_CYCLE5_2026-10-08.sh <group...>
-#   groups: rigor | runwae | ronna | mdothree | div | all  (+ c8qw: cycle-8 QW3/QW4, not in all)
+#   groups: rigor | runwae | ronna | mdothree | div | all  (+ c8qw: cycle-8 QW3/QW4; + b26: Builder cycle-8 P2/P3 pushes+deploys; neither in all)
 # Every project deploys from a clean `git archive HEAD` export (never a working tree — several hold
 # unrelated uncommitted work). Uses the MDO3 Vercel token from ~/latarence/secrets/sega_credentials.env.
 # ~25 deploys total (Vercel Hobby cap is 100/day). No Stripe charges; PRO_CHECKOUT_ENABLED stays false.
@@ -127,11 +127,42 @@ g_c8qw() {  # cycle-8 QW3 C7-010 entertainment disclaimer + QW4 C7-002/003/016/0
     check "$u wrong method -> 405 JSON (C7-017)" "curl -s -w ' %{http_code}' https://$u/api/payment/verify" "not allowed\"} 405"; done
 }
 
+g_b26() {  # Builder %26 cycle-8 P2/P3: C7-011 (rigor) · C7-019 · C7-020 · C7B-NUMEROLOGY-FUTURE-DATE · C7B-ASTRO-NO-VALIDATION · C7B-DREAMS-MAXLEN · A11Y-014(dreams) · IMG-RONNA-MANIFEST-ICONS-404 · SEO-009(ronna) · TABLET-MDO3D-NAV-HAMBURGER · C7-007(mdo3d) · A11Y-005(mdo3d) · PERF-006(mdo3d) · SEO-006(prompts)
+  # 1) push nested repos (token-free URL via gh credential helper, mdothree account). For the git-connected
+  #    projects (astrology, feng-shui-analyzer, past-life-insights, baby-name-oracle, mdo3d-landing, ronnascanner-landing,
+  #    promptsforbusiness, if connected) THE PUSH IS THE PROD DEPLOY. Rollback = `git revert <sha> && push` in that repo.
+  local r slug
+  for r in projects/rigor/{resume,cover,interview,linkedin,networking,portfolio,salary} \
+           projects/divination/astrology/astrology projects/divination/fengshui/feng-shui-analyzer \
+           projects/divination/pastlives/past-life-insights projects/jarvisbee/babynames/baby-name-oracle \
+           projects/mdo3d/landing projects/mdo3d/promptsforbusiness projects/ronnascanner/frontend; do
+    slug=$(git -C "$ROOT/$r" remote get-url origin | sed -E 's#^https://([^@]*@)?github.com/##; s#\.git$##')
+    br=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
+    ( cd "$ROOT/$r" && git pull -q --rebase "https://mdothree@github.com/$slug.git" "$br" && git push -q "https://mdothree@github.com/$slug.git" "HEAD:$br" ) \
+      && echo "  pushed $r ($slug@$(git -C "$ROOT/$r" log -1 --format=%h))" | tee -a "$LOG" || echo "  PUSH FAIL $r" | tee -a "$LOG"
+  done
+  # 2) CLI deploys for apps that live in the parent repo (rollback lines recorded by deploy())
+  for d in projects/divination/{numerology/numerology-app,dreams/dream-interpreter,oracle/oracle-cards,tarot/tarot-cards}; do deploy $d; done
+  sleep 60   # let git-triggered builds finish
+  # 3) verify
+  for h in numerology dreams oracle tarot fengshui pastlife names; do check "$h /index.html → 308" "curl -s -o /dev/null -w '%{http_code}' https://$h.mdo3d.com/index.html" "308"; done
+  check "oracle no 'Save readings' claim" "curl -s https://oracle.mdo3d.com/ | grep -ci 'save readings'" "0"
+  check "numerology future-date guard" "curl -s https://numerology.mdo3d.com/js/app.js | grep -c validateBirthDate" "3"
+  check "astrology needs-birth-time" "curl -s https://astrology.mdo3d.com/js/app.js | grep -q 'Needs birth time' && echo yes" "yes"
+  check "dreams focus-visible" "curl -s https://dreams.mdo3d.com/css/styles.css | grep -q focus-visible && echo yes" "yes"
+  for t in resume cover interview linkedin networking portfolio salary; do check "$t auth autocomplete" "curl -s https://$t.rigor.design/ | grep -c 'autocomplete=\"current-password\"'" "1"; done
+  check "mdo3d no twitter link" "curl -s https://mdo3d.com/ | grep -c 'twitter.com/mdo3d\"'" "0"
+  check "mdo3d footer h3" "curl -s https://mdo3d.com/ | grep -c '<h4'" "0"
+  check "ronna manifest.json resolves" "curl -s -o /dev/null -w '%{http_code}' -L https://ronnascanner.com/manifest.json" "200"
+  check "ronna sitemap lists tools" "curl -s https://ronnascanner.com/sitemap.xml | grep -c 'ronnascanner.com/</loc>'" "6"
+  check "prompts title ≤60" "curl -s https://promptsforbusiness.com/ | grep -o '<title>[^<]*' | awk '{print (length(\$0)-7<=60)?\"ok\":\"long\"}'" "ok"
+  echo "  MANUAL: xps browser pass at mdo3d.com 768/834/1024 (full nav, no overflow) — pre-verified on HEAD 2026-10-11" | tee -a "$LOG"
+}
 [ $# -eq 0 ] && { sed -n 2,8p "$0"; exit 1; }
 for g in "$@"; do
   case $g in
-    all) g_rigor; g_runwae; g_ronna; g_mdothree; g_div;;   # c8qw is separate: run it explicitly
-    rigor|runwae|ronna|mdothree|div|c8qw) "g_$g";;
+    all) g_rigor; g_runwae; g_ronna; g_mdothree; g_div;;   # c8qw and b26 are separate: run them explicitly
+    rigor|runwae|ronna|mdothree|div|c8qw|b26) "g_$g";;
     *) echo "unknown group $g";;
   esac
 done
