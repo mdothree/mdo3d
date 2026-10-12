@@ -236,6 +236,10 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + 2 + 3: A11Y-004/015/005, PERF-
   check "mdo3d no dead twitter:site" "curl -s https://mdo3d.com/ | grep -c 'twitter:site'" "0"
   check "mdo3d security.txt (SURF-006, c9-staged)" "curl -s -o /dev/null -w '%{http_code}' https://mdo3d.com/.well-known/security.txt" "200"
   echo "  MANUAL: rigor sign-in after deploy: sign in with a real test account; auth/operation-not-allowed = Firebase Email/Password provider off (JARVIS)" | tee -a "$LOG"
+  # #94 copy (no "free" in user-facing copy, paid-only doctrine)
+  for u in tarot.mdo3d.com oracle.mdo3d.com dreams.mdo3d.com numerology.mdo3d.com astrology.mdo3d.com iching.mdo3d.com runes.mdo3d.com resume.rigor.design ronnascanner.com; do
+    check "$u no 'Start Free'/'Try Free'/'Free Reading'" "curl -sL https://$u/ | grep -ciE '>[^<]*(start free|try free|free reading|free tier|free plan|no credit card)'" "0"; done
+  check "prompts /free → /samples" "curl -s -o /dev/null -w '%{http_code}' https://promptsforbusiness.com/free" "308"
   echo "  MANUAL: xps browser pass at mdo3d.com 768/834/1024 (full nav, no overflow) — pre-verified on HEAD 2026-10-11" | tee -a "$LOG"
 }
 [ $# -eq 0 ] && { sed -n 2,8p "$0"; exit 1; }
