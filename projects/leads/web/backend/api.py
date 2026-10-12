@@ -78,7 +78,7 @@ class EmailMethodsConfig(BaseModel):
     skip_domains: list[str] = Field(default_factory=list)
     verify_mx: bool = False
     verify_smtp: bool = False
-    guess_email_variants: bool = True
+    guess_email_variants: bool = False  # disabled by policy (never guess emails); runner ignores True
     max_variant_attempts: int = 10
 
 

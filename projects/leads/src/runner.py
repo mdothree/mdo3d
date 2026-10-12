@@ -443,7 +443,8 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
     - skip_domains: list - Additional domains to skip (appended to default list)
     - verify_mx: bool - Verify emails have valid MX records (default: false)
     - verify_smtp: bool - Verify mailboxes exist via SMTP (default: false)
-    - guess_email_variants: bool - Generate email variants when validation fails (default: true)
+    - guess_email_variants: bool - DISABLED by policy (never guess email addresses). Ignored if set;
+                               only emails actually published on the business's own site are kept.
                                When an email passes MX/SMTP validation fails, generates variants
                                of the local part (e.g., john.smith -> john_smith, jsmith) and
                                re-validates them. Good for company emails.
@@ -456,7 +457,11 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
     extra_skip_domains = email_config.get("skip_domains", [])
     verify_mx = email_config.get("verify_mx", False)
     verify_smtp = email_config.get("verify_smtp", False)
-    guess_variants = email_config.get("guess_email_variants", True)
+    # Standing rule: never guess email addresses. Variant guessing is hard-disabled regardless of
+    # profile/CLI; a request to enable it is logged and ignored.
+    if email_config.get("guess_email_variants", False):
+        log("guess_email_variants requested but disabled by policy (never guess emails)", "WARN")
+    guess_variants = False
     max_variant_attempts = email_config.get("max_variant_attempts", 10)
     
     import requests
@@ -1071,7 +1076,7 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
             elif args.verify_smtp is False:
                 log(f"[{name}] SMTP validation disabled (CLI override)")
             if args.guess_variants:
-                log(f"[{name}] Email variant guessing enabled (CLI override)")
+                log(f"[{name}] --guess-variants ignored: email guessing is disabled by policy", "WARN")
             elif args.guess_variants is False:
                 log(f"[{name}] Email variant guessing disabled (CLI override)")
 
@@ -1163,7 +1168,7 @@ if __name__ == "__main__":
 
     # Email variant guessing
     parser.add_argument("--guess-variants", dest="guess_variants", action="store_true", default=None,
-                        help="Guess email variants when validation fails")
+                        help="(disabled by policy: never guess email addresses; ignored)")
     parser.add_argument("--no-guess-variants", dest="guess_variants", action="store_false", default=None,
                         help="Skip email variant guessing")
 

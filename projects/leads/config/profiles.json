@@ -22,7 +22,7 @@
         "use_godaddy": true,
         "verify_mx": false,
         "verify_smtp": false,
-        "guess_email_variants": true,
+        "guess_email_variants": false,
         "max_variant_attempts": 10,
         "skip_domains": []
       },
@@ -60,7 +60,7 @@
       "email_methods": {
         "use_apollo": true,
         "use_godaddy": true,
-        "guess_email_variants": true,
+        "guess_email_variants": false,
         "max_variant_attempts": 10,
         "skip_domains": []
       },
@@ -101,7 +101,7 @@
       "email_methods": {
         "use_apollo": true,
         "use_godaddy": true,
-        "guess_email_variants": true,
+        "guess_email_variants": false,
         "max_variant_attempts": 10,
         "skip_domains": []
       },
@@ -134,7 +134,7 @@
         "use_godaddy": true,
         "verify_mx": false,
         "verify_smtp": false,
-        "guess_email_variants": true,
+        "guess_email_variants": false,
         "max_variant_attempts": 10,
         "skip_domains": []
       },
@@ -161,7 +161,7 @@
       "use_godaddy": true,
       "verify_mx": false,
       "verify_smtp": false,
-      "guess_email_variants": true,
+      "guess_email_variants": false,
       "max_variant_attempts": 10,
       "skip_domains": []
     }
