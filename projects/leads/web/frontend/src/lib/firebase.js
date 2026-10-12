@@ -1,5 +1,6 @@
 /**
- * Firebase initialization and auth utilities
+ * Firebase auth. Initialised only when the build has a Firebase config; without
+ * one, sign-in is reported as unavailable (no fake session, no crash).
  */
 
 import { initializeApp, getApps } from 'firebase/app';
@@ -22,69 +23,57 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
+export const authConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 
-// App Check (OFF by default): set VITE_FIREBASE_APPCHECK_ENABLED=true and
-// VITE_FIREBASE_APPCHECK_SITE_KEY=<reCAPTCHA Enterprise site key> at build time after
-// registering the key in Firebase console > App Check (mdo3d-leads). Keep enforcement
-// off until the console shows verified traffic.
-if (import.meta.env.VITE_FIREBASE_APPCHECK_ENABLED === 'true' && import.meta.env.VITE_FIREBASE_APPCHECK_SITE_KEY) {
-  import('firebase/app-check')
-    .then(({ initializeAppCheck, ReCaptchaEnterpriseProvider }) => initializeAppCheck(app, {
-      provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_FIREBASE_APPCHECK_SITE_KEY),
-      isTokenAutoRefreshEnabled: true,
-    }))
-    .catch((e) => console.warn('[AppCheck] init failed:', e?.message));
+let auth = null;
+if (authConfigured) {
+  const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+
+  // App Check (OFF by default): set VITE_FIREBASE_APPCHECK_ENABLED=true and
+  // VITE_FIREBASE_APPCHECK_SITE_KEY=<reCAPTCHA Enterprise site key> at build time after
+  // registering the key in Firebase console > App Check (mdo3d-leads). Keep enforcement
+  // off until the console shows verified traffic.
+  if (import.meta.env.VITE_FIREBASE_APPCHECK_ENABLED === 'true' && import.meta.env.VITE_FIREBASE_APPCHECK_SITE_KEY) {
+    import('firebase/app-check')
+      .then(({ initializeAppCheck, ReCaptchaEnterpriseProvider }) => initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_FIREBASE_APPCHECK_SITE_KEY),
+        isTokenAutoRefreshEnabled: true,
+      }))
+      .catch((e) => console.warn('[AppCheck] init failed:', e?.message));
+  }
 }
 
-export { auth };
+function requireAuth() {
+  if (!auth) throw new Error('Sign-in is not available on this build.');
+  return auth;
+}
 
-/**
- * Get current user's ID token for API calls
- */
 export async function getIdToken() {
-  const user = auth.currentUser;
-  if (!user) return null;
-  return user.getIdToken();
+  const user = auth?.currentUser;
+  return user ? user.getIdToken() : null;
 }
 
-/**
- * Sign in with email/password
- */
 export async function signInWithEmail(email, password) {
-  const result = await signInWithEmailAndPassword(auth, email, password);
-  return result.user;
+  return (await signInWithEmailAndPassword(requireAuth(), email, password)).user;
 }
 
-/**
- * Create account with email/password
- */
 export async function signUpWithEmail(email, password) {
-  const result = await createUserWithEmailAndPassword(auth, email, password);
-  return result.user;
+  return (await createUserWithEmailAndPassword(requireAuth(), email, password)).user;
 }
 
-/**
- * Sign in with Google
- */
 export async function signInWithGoogle() {
-  const provider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, provider);
-  return result.user;
+  return (await signInWithPopup(requireAuth(), new GoogleAuthProvider())).user;
 }
 
-/**
- * Sign out
- */
 export async function signOut() {
-  await firebaseSignOut(auth);
+  if (auth) await firebaseSignOut(auth);
 }
 
-/**
- * Subscribe to auth state changes
- */
 export function onAuthChange(callback) {
+  if (!auth) {
+    callback(null);
+    return () => {};
+  }
   return onAuthStateChanged(auth, callback);
 }

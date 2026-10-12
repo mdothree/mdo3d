@@ -1,5 +1,5 @@
 /**
- * FL Sunbiz Leads - Client Library
+ * MDO3D Leads - Client Library (FL first; per-state)
  *
  * Usage:
  *   import { initFirebase, signInWithEmail, listProfiles } from '@/client';
@@ -51,3 +51,29 @@ export {
   FILING_TYPES,
   DEFAULT_PROFILE_SETTINGS,
 } from './types';
+
+// v1 search / export / account contract (see web/frontend/README.md "API contract")
+export {
+  createLeadsClient,
+  ApiError,
+  errorKindForStatus,
+  isStripeCheckoutUrl,
+  normalizeFiling,
+  queryString,
+  PATHS,
+  type LeadsClient,
+  type LeadsClientOptions,
+  type ApiErrorKind,
+  type Filing,
+  type FilingQuery,
+  type FilingPage,
+  type Address,
+  type Contact,
+  type FilingRow,
+  type EntityKind,
+  type StateCoverage,
+  type Vertical,
+  type CsvExport,
+  type Account,
+  type SavedSearch,
+} from './search';

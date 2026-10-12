@@ -1,121 +1,33 @@
-import { useState, useEffect } from 'react';
 import './styles/global.css';
-
-import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
-import { listProfiles } from './lib/api.js';
-
-import NavBar from './components/NavBar.jsx';
+import { AuthProvider } from './hooks/useAuth.jsx';
+import { AccountProvider } from './hooks/useAccount.jsx';
+import { RouterProvider, useRouter } from './lib/router.jsx';
+import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
+import SearchPage from './pages/SearchPage.jsx';
+import SavedPage from './pages/SavedPage.jsx';
+import AccountPage from './pages/AccountPage.jsx';
+import SignInPage from './pages/SignInPage.jsx';
+import NotFoundPage from './pages/NotFoundPage.jsx';
 
-import LoginPage from './pages/LoginPage.jsx';
-import OnboardingPage from './pages/OnboardingPage.jsx';
-import DashboardPage from './pages/DashboardPage.jsx';
-import LeadsPage from './pages/LeadsPage.jsx';
-import LeadDetailPage from './pages/LeadDetailPage.jsx';
-import PipelinePage from './pages/PipelinePage.jsx';
-import BillingPage from './pages/BillingPage.jsx';
-import SettingsPage from './pages/SettingsPage.jsx';
+const ROUTES = {
+  '/': SearchPage,
+  '/saved': SavedPage,
+  '/account': AccountPage,
+  '/signin': SignInPage,
+};
 
-function AppContent() {
-  const { user, loading, isAuthenticated, logout } = useAuth();
-  const [isOnboarded, setIsOnboarded] = useState(false);
-  const [checkingProfiles, setCheckingProfiles] = useState(true);
-  const [userPrefs, setUserPrefs] = useState(null);
-  const [activeProfileId, setActiveProfileId] = useState(null);
-  const [returnedFromStripe, setReturnedFromStripe] = useState(null);
-  const [page, setPage] = useState('dashboard');
-  const [selectedLead, setSelectedLead] = useState(null);
-
-  // Check for Stripe return URL params
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const paymentStatus = params.get('payment');
-    const profileId = params.get('profile');
-
-    if (paymentStatus === 'success' && profileId) {
-      setReturnedFromStripe(profileId);
-      setActiveProfileId(profileId);
-      // Clear URL params
-      window.history.replaceState({}, '', window.location.pathname);
-    } else if (paymentStatus === 'cancelled') {
-      // Clear URL params
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
-
-  // Check if user has existing profiles
-  useEffect(() => {
-    if (isAuthenticated && !loading) {
-      listProfiles()
-        .then(data => {
-          const profiles = data.profiles || [];
-          const paidProfiles = profiles.filter(p => p.paid);
-
-          if (paidProfiles.length > 0) {
-            setIsOnboarded(true);
-            setActiveProfileId(paidProfiles[0].id);
-          }
-          setCheckingProfiles(false);
-        })
-        .catch(err => {
-          console.error('Failed to check profiles:', err);
-          setCheckingProfiles(false);
-        });
-    } else if (!isAuthenticated && !loading) {
-      setCheckingProfiles(false);
-    }
-  }, [isAuthenticated, loading]);
-
-  const handleOnboardingComplete = prefs => {
-    setUserPrefs(prefs);
-    setIsOnboarded(true);
-    if (prefs.profileId) {
-      setActiveProfileId(prefs.profileId);
-    }
-    setPage('dashboard');
-  };
-
-  // Show loading spinner while checking auth or profiles
-  if (loading || checkingProfiles) {
-    return (
-      <div className="ob-root">
-        <div className="ob-body" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 14, color: 'var(--light)' }}>Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show login page if not authenticated
-  if (!isAuthenticated) {
-    return <LoginPage />;
-  }
-
-  // Show onboarding if user hasn't completed it
-  // If returned from Stripe with profile, show preferences step
-  if (!isOnboarded) {
-    return (
-      <OnboardingPage
-        onComplete={handleOnboardingComplete}
-        profileId={returnedFromStripe}
-      />
-    );
-  }
-
+function Shell() {
+  const { path } = useRouter();
+  const Page = ROUTES[path.replace(/\/+$/, '') || '/'] || NotFoundPage;
   return (
     <>
-      <NavBar page={page} setPage={setPage} onLogout={logout} user={user} />
-      <div style={{ minHeight: 'calc(100vh - 64px)', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1 }}>
-          {page === 'dashboard' && <DashboardPage setPage={setPage} userPrefs={userPrefs} profileId={activeProfileId} />}
-          {page === 'leads' && <LeadsPage setPage={setPage} setSelectedLead={setSelectedLead} profileId={activeProfileId} />}
-          {page === 'lead-detail' && <LeadDetailPage lead={selectedLead} setPage={setPage} />}
-          {page === 'pipeline' && <PipelinePage profileId={activeProfileId} />}
-          {page === 'billing' && <BillingPage userPrefs={userPrefs} setPage={setPage} />}
-          {page === 'settings' && <SettingsPage userPrefs={userPrefs} setUserPrefs={setUserPrefs} />}
-        </div>
-        <Footer />
-      </div>
+      <a className="skip-link" href="#main">Skip to main content</a>
+      <Header />
+      <main id="main" tabIndex={-1}>
+        <Page />
+      </main>
+      <Footer />
     </>
   );
 }
@@ -123,7 +35,11 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <AccountProvider>
+        <RouterProvider>
+          <Shell />
+        </RouterProvider>
+      </AccountProvider>
     </AuthProvider>
   );
 }

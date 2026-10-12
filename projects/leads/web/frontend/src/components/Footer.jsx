@@ -1,13 +1,16 @@
 export default function Footer() {
   return (
-    <footer>
-      <div>
-        <div className="footer-logo">RIDGEFIELD</div>
-        <div className="footer-line">Lead Intelligence Platform &nbsp;·&nbsp; West Palm Beach, FL</div>
-        <div className="footer-line">leads@mdo3d.com &nbsp;·&nbsp; mdo3d.com</div>
-      </div>
-      <div>
-        <div className="footer-link">Connect on LinkedIn</div>
+    <footer className="site-footer">
+      <div className="wrap footer-inner">
+        <p>
+          <strong>MDO3D Leads</strong> — new business filings from public state records: the Florida
+          Division of Corporations filings feed and the Colorado Secretary of State business-entities dataset.
+        </p>
+        <ul className="footer-links">
+          <li><a href="https://mdo3d.com/">mdo3d.com</a></li>
+          <li><a href="https://mdo3d.com/privacy.html">Privacy</a></li>
+          <li><a href="https://mdo3d.com/terms.html">Terms</a></li>
+        </ul>
       </div>
     </footer>
   );

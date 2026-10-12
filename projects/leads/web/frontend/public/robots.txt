@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /saved
+Disallow: /signin
+
+Sitemap: https://leads.mdo3d.com/sitemap.xml
