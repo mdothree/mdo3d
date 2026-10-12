@@ -1,0 +1,20 @@
+# robots.txt for guidance.mdo3d.com (Guidance by MDO3D)
+#
+# Guidance is the hub page for the MDO3D reading tools. Each reading runs on its own host,
+# and each of those hosts publishes its own robots.txt and sitemap:
+#   https://oracle.mdo3d.com/      Oracle Cards
+#   https://dreams.mdo3d.com/      Dream Interpreter
+#   https://tarot.mdo3d.com/       Tarot Readings
+#   https://numerology.mdo3d.com/  Numerology Lab
+#   https://astrology.mdo3d.com/   Astrology Charts
+#   https://fengshui.mdo3d.com/    Feng Shui Analyzer
+#   https://pastlife.mdo3d.com/    Past Life Insights
+#   https://runes.mdo3d.com/       Runes
+#   https://iching.mdo3d.com/      I Ching
+#
+# Short paths on this host (/oracle, /tarot, ...) are permanent redirects to those hosts.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://guidance.mdo3d.com/sitemap.xml

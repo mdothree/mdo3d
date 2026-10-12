@@ -1,4 +1,89 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/oracle",
+      "destination": "https://oracle.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/dreams",
+      "destination": "https://dreams.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/tarot",
+      "destination": "https://tarot.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/numerology",
+      "destination": "https://numerology.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/astrology",
+      "destination": "https://astrology.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/fengshui",
+      "destination": "https://fengshui.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/feng-shui",
+      "destination": "https://fengshui.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/pastlife",
+      "destination": "https://pastlife.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/past-life",
+      "destination": "https://pastlife.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/runes",
+      "destination": "https://runes.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/iching",
+      "destination": "https://iching.mdo3d.com/",
+      "permanent": true
+    },
+    {
+      "source": "/i-ching",
+      "destination": "https://iching.mdo3d.com/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
 }

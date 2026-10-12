@@ -64,7 +64,8 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
   for pg in welcome welcome-v2 account blog; do check "runwae /$pg no zoom block" "curl -sL https://runwae.com/$pg | grep -c user-scalable" "0"; done
   check "runwae / still serves" "curl -sL -o /dev/null -w '%{http_code}' https://runwae.com/" "200"
   check "runwae sitemap" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/sitemap.xml" "200"
-  check "runwae config.js parses" "curl -s https://runwae.com/js/config.js -o /tmp/rcfg.js && node --check /tmp/rcfg.js && echo ok" "ok"
+  check "runwae runtime-config.js parses (runwae 213606e: js/config.js no longer published)" "curl -s https://runwae.com/js/runtime-config.js -o /tmp/rcfg.js && node --check /tmp/rcfg.js && echo ok" "ok"
+  check "runwae /js/config.js not served (RUNWAE-PUBLIC-CONFIG-FILES)" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/js/config.js" "404"
   # cycle-8 QW2 (runwae bde5acb): C7-001 / C7B-RUNWAE-BLOG-ASSETS-404 / C7-015
   for post in PabloTheDon NotesWithNiya AIandAuthenticity-2026; do
     check "runwae /blog/$post 0 relative href/src" "echo n=\$(curl -sL https://runwae.com/blog/$post | grep -oE '(href|src)=\"[^\"]*\"' | grep -vcE '=\"(https?:|/|#|mailto:)')." "n=0."; done
@@ -76,8 +77,9 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
   # cycle-8 P1b (1243764): XB-001 · SEO-003 · PERF-001 · A11Y-001
   for p in welcome login privacy terms; do
     check "runwae /$p has DOCTYPE (XB-001)" "curl -sL https://runwae.com/$p | head -c 15" "<!DOCTYPE html>"; done
-  check "runwae / → single 301 → /welcome (SEO-003)" "curl -s -o /dev/null -w '%{http_code} %{redirect_url}' https://runwae.com/" "301 https://runwae.com/welcome"
-  check "runwae / redirect hops (SEO-003)" "echo n=\$(curl -sL -o /dev/null -w '%{num_redirects}' https://runwae.com/)." "n=1."
+  check "runwae / serves welcome directly, 0 hops (SEO-003; runwae 213606e rewrite so / carries the CSP)" "echo n=\$(curl -sL -o /dev/null -w '%{num_redirects}' https://runwae.com/)." "n=0."
+  check "runwae / CSP header (HEADERS-CSP)" "curl -sI https://runwae.com/ | grep -qi '^content-security-policy' && echo yes" "yes"
+  check "runwae www → apex one hop (SEO-010)" "curl -s -o /dev/null -w '%{http_code} %{redirect_url}' https://www.runwae.com/" "https://runwae.com/"
   check "runwae og:url absolute (SEO-003)" "curl -s https://runwae.com/welcome | grep -c 'og:url\" content=\"https://runwae.com/welcome\"'" "1"
   check "runwae welcome no fontawesome-all (PERF-001)" "curl -s https://runwae.com/welcome | grep -c 'src=\"fonts/fontawesome-all'" "0"
   check "runwae welcome deferred scripts (PERF-001; fd07868 trimmed 45 → 19)" "n=\$(curl -s https://runwae.com/welcome | grep -c '<script defer'); [ \"\$n\" -ge 15 ] && echo yes" "yes"
