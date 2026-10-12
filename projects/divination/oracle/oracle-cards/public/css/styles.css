@@ -551,7 +551,8 @@ nav {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: var(--primary);
+    /* A11Y-003: white on --primary (#8B5CF6) is 4.23:1; --primary-text is 5.7:1 */
+    background: var(--primary-text);
     color: white;
     padding: 0.25rem 1rem;
     border-radius: 20px;
