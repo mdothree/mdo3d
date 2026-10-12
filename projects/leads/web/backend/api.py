@@ -1,7 +1,15 @@
 """
-FastAPI backend for FL Sunbiz Leads self-service platform.
+FastAPI backend for the MDO3D per-state business-filings leads product (leads.mdo3d.com).
+
+Paid-only: there is no free tier. Filing search/export requires an entitlement — at least one
+profile marked paid by a completed Stripe checkout (webhook) or a redeemed promo code (the
+early-access lever). Without one the API refuses (fails closed).
 
 Endpoints:
+- GET /coverage - public: per-state filing counts + freshness (no filing content)
+- GET /verticals - public: keyword verticals for search
+- GET /filings - search filings (state, county, filing_type, entity_kind, vertical, q, date range)
+- GET /filings/export.csv - same filters, CSV download
 - POST /sync - Update profile in profiles.json and cron
 - POST /stripe-webhook - Handle Stripe payment events
 - GET /health - Health check
@@ -12,8 +20,12 @@ Endpoints:
 Auth: Firebase token verification + API key fallback
 """
 
+import csv
 import hmac
+import io
+import json
 import os
+import shutil
 import subprocess
 from urllib.parse import urlparse
 from pathlib import Path
@@ -21,12 +33,14 @@ from datetime import datetime
 from typing import Optional
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException, Header, Depends, Request
+from fastapi import FastAPI, HTTPException, Header, Depends, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field, field_validator
 import stripe
 
 from . import db
+from . import verticals as verticals_mod
 
 # Configuration
 # No default: an unset LEADS_API_KEY disables the API-key routes instead of
@@ -48,18 +62,23 @@ TOOLS_DIR = Path(__file__).parent.parent.parent
 PROFILES_PATH = TOOLS_DIR / "config" / "profiles.json"
 RUNNER_PATH = TOOLS_DIR / "src" / "runner.py"
 
+# Test runs must never reach live Stripe: under LEADS_TEST_MODE a live key is refused outright.
+if os.environ.get("LEADS_TEST_MODE") and STRIPE_SECRET_KEY.startswith(("sk_live_", "rk_live_")):
+    raise RuntimeError("LEADS_TEST_MODE is set but STRIPE_SECRET_KEY is a LIVE key; refusing to start")
+
 # Initialize
 stripe.api_key = STRIPE_SECRET_KEY
-app = FastAPI(title="FL Sunbiz Leads API", version="1.0.0")
+app = FastAPI(title="MDO3D Leads API", version="1.1.0")
 
-# CORS for frontend
+# CORS for frontend (extra origins via LEADS_CORS_ORIGINS, comma-separated)
 CORS_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:3050",
     "http://localhost:5173",  # Vite dev
-    "https://tools.ridgefield.llc",
-    "https://leads.ridgefield.llc",
     "https://leads.mdo3d.com",
-]
+] + [o.strip() for o in os.environ.get("LEADS_CORS_ORIGINS", "").split(",") if o.strip()]
+
+EXPORT_MAX_ROWS = int(os.environ.get("LEADS_EXPORT_MAX_ROWS", "10000"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -78,8 +97,13 @@ class EmailMethodsConfig(BaseModel):
     skip_domains: list[str] = Field(default_factory=list)
     verify_mx: bool = False
     verify_smtp: bool = False
-    guess_email_variants: bool = False  # disabled by policy (never guess emails); runner ignores True
+    guess_email_variants: bool = False  # removed by policy (never guess emails); always stored False
     max_variant_attempts: int = 10
+
+    @field_validator("guess_email_variants", mode="before")
+    @classmethod
+    def _never_guess(cls, v):
+        return False
 
 
 class DeliverySettings(BaseModel):
@@ -101,6 +125,8 @@ class ProfileSettings(BaseModel):
     keywords: list[str] = Field(default_factory=list)
     exclude_keywords: list[str] = Field(default_factory=list)
     target_counties: Optional[list[str]] = None
+    states: Optional[list[str]] = None  # state bundle; None = FL (original product)
+    entity_kinds: Optional[list[str]] = None
     delivery: DeliverySettings
     sender: str = "leads@mdo3d.com"
 
@@ -226,6 +252,11 @@ def update_cron_entry(profile_id: str, settings: dict = None, remove: bool = Fal
     """Update cron entry for a specific profile using marker comments."""
     marker = f"LEADS:{profile_id}"
 
+    # In the container deployment there is no crontab: the scheduler container runs every active,
+    # paid profile from the database (runner.py with no --profile), so nothing to do here.
+    if shutil.which("crontab") is None:
+        return
+
     # Read current crontab
     result = subprocess.run(["crontab", "-l"], capture_output=True, text=True)
     if result.returncode != 0:
@@ -253,15 +284,152 @@ def update_cron_entry(profile_id: str, settings: dict = None, remove: bool = Fal
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint (also used by the container healthcheck)."""
     apollo_key = os.environ.get("APOLLO_API_KEY", "")
+    try:
+        runs = db.latest_ingest_runs(limit=10)
+        db_ok = True
+    except Exception:
+        runs, db_ok = [], False
     return {
-        "status": "healthy",
+        "status": "healthy" if db_ok else "degraded",
         "timestamp": datetime.utcnow().isoformat(),
-        "profiles_path": str(PROFILES_PATH),
+        "db_ok": db_ok,
         "profiles_exists": PROFILES_PATH.exists(),
         "apollo_configured": bool(apollo_key),
+        "stripe_mode": ("live" if STRIPE_SECRET_KEY.startswith(("sk_live_", "rk_live_"))
+                        else "test" if STRIPE_SECRET_KEY.startswith(("sk_test_", "rk_test_")) else "unset"),
+        "latest_ingest_runs": runs,
     }
+
+
+# ---------------------------------------------------------------------------
+# Filings search (paid-only)
+# ---------------------------------------------------------------------------
+
+@app.get("/coverage")
+async def coverage():
+    """Public: which states have data, how many filings, and how fresh. No filing content."""
+    return {"states": db.filings_coverage()}
+
+
+@app.get("/verticals")
+async def list_verticals():
+    return {
+        "verticals": [
+            {"id": k, "label": v["label"], "match": "entity type" if v.get("entity_kind") else "name contains"}
+            for k, v in verticals_mod.VERTICALS.items()
+        ]
+    }
+
+
+async def require_entitlement(user: db.User = Depends(get_or_create_user)) -> tuple[db.User, set]:
+    """Fail closed: no paid profile (Stripe or promo code) -> 402."""
+    states = db.entitled_states(user.id)
+    if not states:
+        raise HTTPException(
+            status_code=402,
+            detail="An active subscription or early-access code is required to search filings.",
+        )
+    return user, states
+
+
+def _date_param(value: Optional[str], name: str) -> Optional[str]:
+    if not value:
+        return None
+    for fmt in ("%Y-%m-%d", "%Y%m%d"):
+        try:
+            return datetime.strptime(value, fmt).date().isoformat()
+        except ValueError:
+            continue
+    raise HTTPException(status_code=422, detail=f"{name} must be YYYY-MM-DD")
+
+
+def _filing_filters(entitled: set, state, county, filing_type, entity_kind, vertical, q, date_from, date_to,
+                    include_inactive) -> dict:
+    if state:
+        wanted = {s.strip().upper() for s in state.split(",") if s.strip()}
+        not_entitled = wanted - entitled
+        if not_entitled:
+            raise HTTPException(status_code=403, detail=f"Not subscribed to: {', '.join(sorted(not_entitled))}")
+        states = sorted(wanted)
+    else:
+        states = sorted(entitled)
+    try:
+        keywords, vertical_kind = verticals_mod.resolve(vertical)
+    except KeyError:
+        raise HTTPException(status_code=422, detail=f"Unknown vertical {vertical!r}")
+    filters = {
+        "states": states,
+        "county": county,
+        "filing_type": filing_type,
+        "entity_kind": entity_kind or vertical_kind,
+        "keywords": keywords or None,     # vertical: name contains ANY of these
+        "must_contain": (q or "").strip() or None,  # q: name contains this (AND)
+        "date_from": _date_param(date_from, "date_from"),
+        "date_to": _date_param(date_to, "date_to"),
+        "active_only": not include_inactive,
+    }
+    return filters
+
+
+@app.get("/filings")
+async def search_filings(
+    state: Optional[str] = Query(None, description="Comma-separated state codes, e.g. FL,CO"),
+    county: Optional[str] = None,
+    filing_type: Optional[str] = Query(None, description="State filing-type codes, comma-separated"),
+    entity_kind: Optional[str] = Query(None, description="llc,corporation,nonprofit,partnership,..."),
+    vertical: Optional[str] = None,
+    q: Optional[str] = Query(None, description="Entity name contains"),
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    include_inactive: bool = False,
+    limit: int = Query(50, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    ent: tuple = Depends(require_entitlement),
+):
+    _, entitled = ent
+    filters = _filing_filters(entitled, state, county, filing_type, entity_kind, vertical, q,
+                              date_from, date_to, include_inactive)
+    rows, total = db.search_filings(limit=limit, offset=offset, **filters)
+    return {"filings": rows, "total": total, "limit": limit, "offset": offset,
+            "states": filters["states"]}
+
+
+CSV_FIELDS = [
+    "state", "source_id", "entity", "filing_type", "entity_kind", "filed_date", "status", "county",
+    "registered_agent", "address_1", "address_2", "city", "address_state", "zip_code", "source_date",
+]
+
+
+@app.get("/filings/export.csv")
+async def export_filings_csv(
+    state: Optional[str] = None,
+    county: Optional[str] = None,
+    filing_type: Optional[str] = None,
+    entity_kind: Optional[str] = None,
+    vertical: Optional[str] = None,
+    q: Optional[str] = None,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    include_inactive: bool = False,
+    ent: tuple = Depends(require_entitlement),
+):
+    _, entitled = ent
+    filters = _filing_filters(entitled, state, county, filing_type, entity_kind, vertical, q,
+                              date_from, date_to, include_inactive)
+    rows, total = db.search_filings(limit=EXPORT_MAX_ROWS, offset=0, **filters)
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=CSV_FIELDS, extrasaction="ignore")
+    w.writeheader()
+    w.writerows(rows)
+    name = f"filings_{'-'.join(filters['states'])}_{datetime.utcnow().strftime('%Y%m%d')}.csv"
+    headers = {
+        "Content-Disposition": f'attachment; filename="{name}"',
+        "X-Total-Count": str(total),
+        "X-Truncated": "1" if total > len(rows) else "0",
+    }
+    return StreamingResponse(iter([buf.getvalue()]), media_type="text/csv", headers=headers)
 
 
 @app.get("/validate-apollo")
@@ -614,6 +782,10 @@ async def stripe_webhook(request: Request):
         raise HTTPException(status_code=400, detail="Invalid payload")
     except stripe.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid signature")
+
+    # Work on the verified payload as plain JSON: newer stripe-python returns StripeObjects whose
+    # .get() raises (it is "a dict method, but a Session is not a dict").
+    event = json.loads(payload)
 
     # Handle checkout completion
     if event["type"] == "checkout.session.completed":
