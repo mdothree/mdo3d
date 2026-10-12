@@ -121,7 +121,7 @@ Shippo/EasyPost label + packing-slip pipeline, tracking/delay emails, GA4 → St
 - **2026-10-12:** Under the standing order (do ungated work now), built `storefront/`, the shared Runwae + GLB codebase and drop toolkit. 17/17 tests pass; checked visually. Not deployed, not committed. Gated items (commit, deploy, accounts, first drop, pricing) are posted to `~/jarvis/JARVIS QUESTIONS.md` #82.
 - **2026-10-12 (later):** Catalogued GLB: 6 usable line drawings that need scanning. Found third-party art: the birdcage illustration on the wordmark tee back is signed by an outside artist. Added a `rights_hold` guard to the catalog and checkout (tested) and posted the question to JARVIS #82-d.
 - **2026-10-12 (decision wave):** Wave rows **#82 a + c** and **#95**.
-  - **#82-a:** committed the playbook, STATUS and `storefront/` to mdo3d (no deploy, no keys).
+  - **#82-a:** committed the playbook, STATUS and `storefront/` to mdo3d as `5413d8a` (local; no deploy, no keys). Not pushed: mdo3d main has diverged from origin.
   - **#82-c:** `design/` stays local.
   - **#95** (Runwae *app* purple `#6259e8` / grey `#676c88`): verified it's in the pushed runwae tip `213606e` (from `fd07868`, the build #5 ships), so there was nothing to change. Leftovers aren't live: a CSS comment, and `main.min.css`, which no page links. One real one: the `email.html` template button is white on `#9389FF` (~3:1). That's app/email code, so it's handed to the MDO lane, not edited here.
   - **Still with the Principal:** #82-b (first drop), #82-d (birdcage art rights).
