@@ -16,6 +16,7 @@ class DreamInterpreterApp {
         this.api = apiClient;
         this.auth = authService;
         this.currentDream = '';
+        this.interpretedDream = '';
         this.detectedSymbols = [];
         this.currentInterpretation = null;
         this.dreamJournal = this.loadJournal();
@@ -60,9 +61,21 @@ class DreamInterpreterApp {
     initializeEventListeners() {
         // Dream input character counter
         const dreamInput = document.getElementById('dream-input');
+        // A paste longer than maxlength is cut by the browser; say so instead of
+        // trimming silently (C7B-DREAMS-MAXLEN follow-up).
+        let pasteTrimmed = false;
+        dreamInput.addEventListener('paste', (e) => {
+            const max = Number(dreamInput.getAttribute('maxlength')) || 1000;
+            const pasted = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+            const selected = (dreamInput.selectionEnd || 0) - (dreamInput.selectionStart || 0);
+            pasteTrimmed = dreamInput.value.length - selected + pasted.length > max;
+        });
         dreamInput.addEventListener('input', () => {
             this.updateCharCount();
-            this.showDreamError('');
+            const max = Number(dreamInput.getAttribute('maxlength')) || 1000;
+            this.showDreamError(pasteTrimmed ? `Your text was cut to the ${max}-character limit.` : '');
+            pasteTrimmed = false;
+            this.updateStaleState();
         });
         this.updateCharCount();
 
@@ -135,6 +148,40 @@ class DreamInterpreterApp {
         dreamInput?.setAttribute('aria-invalid', message ? 'true' : 'false');
     }
 
+    // C7B-COLOR-STALE-RESULT (dreams): results describe the text that was
+    // interpreted; once the text changes they are marked out of date.
+    updateStaleState() {
+        const resultsSection = document.getElementById('results-section');
+        if (!resultsSection || resultsSection.style.display === 'none' || !this.interpretedDream) return;
+        const text = document.getElementById('dream-input').value.trim();
+        this.setResultsStale(text !== this.interpretedDream);
+    }
+
+    setResultsStale(stale) {
+        const resultsSection = document.getElementById('results-section');
+        if (!resultsSection) return;
+        let note = document.getElementById('results-stale-note');
+        if (stale && !note) {
+            note = document.createElement('p');
+            note.id = 'results-stale-note';
+            note.setAttribute('role', 'status');
+            note.style.cssText = 'margin:0 auto 1rem;max-width:900px;padding:.75rem 1rem;border-radius:8px;background:#fff3cd;color:#111;font-weight:600;';
+            note.textContent = 'Your dream text changed. Press "Interpret My Dream" again to update these results.';
+            resultsSection.prepend(note);
+        }
+        if (note) note.hidden = !stale;
+        Array.from(resultsSection.children).forEach((el) => {
+            if (el !== note) el.style.opacity = stale ? '0.45' : '';
+        });
+    }
+
+    hideResults() {
+        this.interpretedDream = '';
+        this.setResultsStale(false);
+        const resultsSection = document.getElementById('results-section');
+        if (resultsSection) resultsSection.style.display = 'none';
+    }
+
     interpretDream() {
         const dreamInput = document.getElementById('dream-input');
         this.currentDream = dreamInput.value.trim();
@@ -142,11 +189,13 @@ class DreamInterpreterApp {
         // 20 chars matches the API's minimum, so a premium reading never 400s.
         if (!this.currentDream) {
             this.showDreamError('Please describe your dream before interpreting it.');
+            this.hideResults();
             dreamInput.focus();
             return;
         }
         if (this.currentDream.length < 20) {
             this.showDreamError('Please describe your dream in more detail (at least 20 characters).');
+            this.hideResults();
             dreamInput.focus();
             return;
         }
@@ -156,9 +205,12 @@ class DreamInterpreterApp {
         
         if (this.detectedSymbols.length === 0) {
             this.showDreamError('No recognizable symbols found in your dream. Try adding more details about what you saw, felt, or experienced.');
+            this.hideResults();
             return;
         }
         this.showDreamError('');
+        this.interpretedDream = this.currentDream;
+        this.setResultsStale(false);
         
         // Loading state: show the results section with a placeholder, bring it
         // into view, then render the interpretation.
@@ -605,7 +657,7 @@ class DreamInterpreterApp {
         this.detectedSymbols = [];
         document.getElementById('dream-input').value = '';
         this.updateCharCount();
-        document.getElementById('results-section').style.display = 'none';
+        this.hideResults();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
