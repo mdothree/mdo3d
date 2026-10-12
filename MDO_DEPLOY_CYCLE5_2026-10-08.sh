@@ -120,6 +120,8 @@ g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MD
   check "color clears stale result (C7B-COLOR-STALE-RESULT)" "curl -s https://color.mdothree.com/js/pages/converter.js | grep -q 'function clearResult' && echo yes" "yes"
   check "text diff by grapheme (C7B-TEXTDIFF-SURROGATE)" "curl -s https://text.mdothree.com/js/services/textDiff.js https://text.mdothree.com/js/workers/diff-worker.js | grep -c 'Intl.Segmenter) ?'" "2"
   check "timestamp ISO week UTC (C7B-TS-WEEK)" "curl -s https://timestamp.mdothree.com/js/services/timestampConverter.js | grep -q 'ISO week (UTC)' && echo yes" "yes"
+  check "text-diff row wraps (MDOTHREE-HSCROLL)" "curl -s https://text.mdothree.com/css/pages/text-diff.css | grep -q MDOTHREE-HSCROLL && echo yes" "yes"
+  check "timestamp dur-grid stacks (MDOTHREE-HSCROLL)" "curl -s https://timestamp.mdothree.com/css/styles.css | grep -q MDOTHREE-HSCROLL && echo yes" "yes"
   check "qr level copy (C7B-QR-COPY)" "curl -s https://qr.mdothree.com/js/pages/generate.js | grep -c '(L or M)'" "0"
   # cycle-8 P1b A11Y-001/002 (color 3a41946 · timestamp 1807acb · pdf 6d91ed7 · image 3a1050c · qr 2073dc9 · hash e4ca6ab · password e2e8cb9 · text 838017d · json in mdo3d main)
   check "color #colorPicker named" "curl -s https://color.mdothree.com/ | grep -c 'aria-label=\"Pick a color\"'" "1"
