@@ -14,12 +14,19 @@ TEAM=team_DXUPiQz3KkYmyhAgmT99OQQr
 ok=0; fail=0
 
 deploy() {  # deploy <folder relative to ~/mdo3d>
-  local d=$1 top; rm -rf "$W" && mkdir -p "$W"
-  top=$(git -C "$ROOT/$d" rev-parse --show-toplevel)
-  if [ "$top" = "$ROOT/$d" ]; then git -C "$ROOT/$d" archive HEAD | tar -x -C "$W"
-  else git -C "$ROOT" archive "HEAD:$d" | tar -x -C "$W"; fi
+  # Ships the PUSHED tip of the checkout's branch, not local HEAD: lanes push from worktrees and the
+  # primaries hold unrelated WIP, so a primary can lag origin (2026-10-12: 13 sources were behind).
+  local d=$1 top br url ref pre; rm -rf "$W" && mkdir -p "$W"
+  top=$(git -C "$ROOT/$d" rev-parse --show-toplevel); pre=$(git -C "$ROOT/$d" rev-parse --show-prefix)
+  br=$(git -C "$top" rev-parse --abbrev-ref HEAD)
+  url=$(git -C "$top" remote get-url origin | sed -E 's#//[^@/]*@#//#')
+  if git -C "$top" fetch -q "$url" "$br" 2>/dev/null; then ref=$(git -C "$top" rev-parse FETCH_HEAD)
+  else ref=$(git -C "$top" rev-parse HEAD); echo "  WARN $d: fetch of origin/$br failed, deploying local HEAD" | tee -a "$LOG"; fi
+  git -C "$top" merge-base --is-ancestor HEAD "$ref" || echo "  WARN $d: local HEAD has commits not on origin/$br (they are NOT in this deploy)" | tee -a "$LOG"
+  if [ -z "$pre" ]; then git -C "$top" archive "$ref" | tar -x -C "$W"
+  else git -C "$top" archive "$ref:${pre%/}" | tar -x -C "$W"; fi
   mkdir -p "$W/.vercel" && cp "$ROOT/$d/.vercel/project.json" "$W/.vercel/"
-  local sha; sha=$(git -C "$ROOT/$d" log -1 --format=%h)
+  local sha; sha=$(git -C "$top" rev-parse --short=7 "$ref")
   local pid prev; pid=$(jq -r .projectId "$ROOT/$d/.vercel/project.json")
   prev=$(curl -s -H "Authorization: Bearer $T" "https://api.vercel.com/v6/deployments?teamId=$TEAM&projectId=$pid&target=production&state=READY&limit=1" | jq -r '.deployments[0].url // empty')
   [ -n "$prev" ] && echo "vercel promote https://$prev --yes --scope mdothrees-projects --token \"\$VERCEL_TOKEN_MDO3\"   # $d (pre-cycle5)" >> "$RB"
@@ -187,6 +194,14 @@ g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MD
   check "hash guest skips Firestore history (XB-005)" "curl -s https://hash.mdothree.com/js/services/hashStorage.js | grep -c 'user.isAnonymous) return _memHistory'" "1"
   check "qr no compat Firebase SDK (XB-004)" "curl -s https://qr.mdothree.com/ | grep -c 'firebase-app-compat'" "0"
   check "json landing no unused preconnects (PERF-009)" "curl -s https://json.mdothree.com/ | grep -c 'identitytoolkit\|js.stripe.com'" "0"
+  # cycle-9 %24 (A11Y-010 text 6185d02 / qr 43ff447 / json cf4169b; PERF-007 cache headers + SW reload; FIREBASE-DUAL-SDK already in HEADs)
+  check "text word-counter textarea named (A11Y-010)" "curl -sL https://text.mdothree.com/word-counter | grep -c 'aria-label=\"Text to count\"'" "1"
+  check "text text-diff textA labelled (A11Y-010)" "curl -sL https://text.mdothree.com/text-diff | grep -c 'aria-labelledby=\"textALabel\"'" "1"
+  check "qr generate emailBody label (A11Y-010)" "curl -sL https://qr.mdothree.com/generate | grep -c 'for=\"emailBody\"'" "1"
+  check "json validate textarea labelled (A11Y-010)" "curl -sL https://json.mdothree.com/validate | grep -c 'aria-labelledby=\"inputJsonLabel\"'" "1"
+  for t in json text pdf qr color hash password timestamp; do check "$t css Cache-Control 1d (PERF-007)" "curl -sI https://$t.mdothree.com/css/styles.css | grep -i '^cache-control' | tr -d '\r'" "max-age=86400, stale-while-revalidate=604800"; done
+  for t in json text pdf qr color hash password timestamp; do check "$t sw precache reload (PERF-007)" "curl -s https://$t.mdothree.com/sw.js | grep -c \"cache: 'reload'\"" "1"; done
+  for t in color hash password timestamp json text pdf qr; do check "$t no compat Firebase SDK (FIREBASE-DUAL-SDK)" "curl -sL https://$t.mdothree.com/ | grep -c firebase-app-compat" "0"; done
 }
 g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching already live); oracle-cards: C7-020 share-script console.log removal
   deploy projects/divination/oracle/oracle-cards
