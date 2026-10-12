@@ -1,7 +1,7 @@
 // sw.js — Service Worker (generated — do not edit directly)
 // Cache-first for assets, network-first for HTML navigation.
 
-const CACHE_NAME = 'landing-v5';
+const CACHE_NAME = 'landing-v6';
 
 const PRECACHE_URLS = [
   '/',

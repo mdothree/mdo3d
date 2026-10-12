@@ -5,13 +5,13 @@
    ============================================================ */
 
 :root {
-  --emerald: #10B981;
+  --emerald: #047857; /* A11Y-003: 5.5:1 on white (was #10B981 2.5:1); body.dark restores the bright emerald */
   --emerald-dark: #059669;
   --emerald-light: #34D399;
   --slate-900: #0F172A;
   --slate-800: #1E293B;
   --slate-700: #334155;
-  --slate-500: #64748B;
+  --slate-500: #475569; /* A11Y-003: muted text 6.9:1 on #F1F5F9 (was 4.34:1) */
   --slate-300: #CBD5E1;
   --slate-100: #F1F5F9;
   --white: #FFFFFF;
@@ -72,6 +72,7 @@ body {
 }
 
 .logo .dot { color: #047857; } /* A11Y-003: wordmark 5.5:1 on white (was #10B981 2.5:1); dark mode keeps emerald */
+body.dark { --emerald: #10B981; }
 body.dark .logo .dot { color: var(--emerald); }
 
 .main-nav {
@@ -350,3 +351,6 @@ body.dark .logo .dot { color: var(--emerald); }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
   .tool-grid { grid-template-columns: 1fr; }
 }
+
+/* A11Y-013: legal/pro footer links get a 44px-tall tap target (were 15px) */
+.site-footer a { display: inline-block; padding: 12px 2px; }
