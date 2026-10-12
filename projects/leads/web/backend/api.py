@@ -84,11 +84,14 @@ def _env_states(name: str, default: str) -> list[str]:
 #   LEADS_CHECKOUT_ENABLED=1   open /v1/checkout (default off -> 503 "Plans opening soon")
 #   LEADS_STRIPE_PRICE_ID      the one price /v1/checkout sells (the client never sends a price id)
 #   LEADS_PLAN_NAME            label shown on the plan page (optional)
-#   LEADS_PLAN_STATES          states a Stripe plan covers (default FL,CO)
-#   LEADS_PROMO_STATES         states a promo code grants (default FL,CO)
+#   LEADS_PLAN_STATES          states a Stripe plan covers (default FL,CO,CT)
+#   LEADS_PROMO_STATES         states a promo code grants (default FL,CO,CT)
 #   LEADS_PROMO_ACCESS_DAYS    promo access length in days (default 0 = no end date)
 #   LEADS_PROMO_ENABLED        0 turns promo redemption off (default on)
 #   LEADS_ENABLE_DELIVERY=1    saved-search weekly email (and profile delivery) actually sends
+DEFAULT_BUNDLE = "FL,CO,CT"  # the states with an adapter (matches LEADS_INGEST_STATES' default)
+
+
 def checkout_enabled() -> bool:
     return (_env_flag("LEADS_CHECKOUT_ENABLED") and bool(os.environ.get("LEADS_STRIPE_PRICE_ID", "").strip())
             and bool(STRIPE_SECRET_KEY))
@@ -833,7 +836,7 @@ async def redeem_access(request: AccessRedeemRequest, user: db.User = Depends(ge
         days = int(os.environ.get("LEADS_PROMO_ACCESS_DAYS", "0") or 0)
     except ValueError:
         days = 0
-    ok, message = db.redeem_code_for_account(request.code, user.id, _env_states("LEADS_PROMO_STATES", "FL,CO"),
+    ok, message = db.redeem_code_for_account(request.code, user.id, _env_states("LEADS_PROMO_STATES", DEFAULT_BUNDLE),
                                              access_days=days)
     if not ok:
         _note_redeem_failure(user.id)
@@ -857,7 +860,7 @@ async def create_account_checkout(request: AccountCheckoutRequest, user: db.User
             raise HTTPException(status_code=400, detail="Redirect URL not allowed")
 
     price_id = os.environ["LEADS_STRIPE_PRICE_ID"].strip()
-    states = _env_states("LEADS_PLAN_STATES", "FL,CO")
+    states = _env_states("LEADS_PLAN_STATES", DEFAULT_BUNDLE)
     plan_name = os.environ.get("LEADS_PLAN_NAME", "").strip() or None
     try:
         if not user.stripe_customer_id:

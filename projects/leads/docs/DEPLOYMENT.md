@@ -69,8 +69,8 @@ additive (`CREATE TABLE IF NOT EXISTS`), so a rollback reads the same DB.
   | `LEADS_CHECKOUT_ENABLED` | `0` | `1` opens `POST /v1/checkout`. While it is off, checkout answers 503 "Plans opening soon", `features.checkout` is false, and the legacy `/checkout` refuses to run with a live key. **Turning it on with a live key takes real payments, so it needs the Principal's go.** |
   | `LEADS_STRIPE_PRICE_ID` | — | the one price `/v1/checkout` sells (the client never sends a price). Checkout stays closed while it is unset. Which price, and so what we charge, is CONVERSION's call. |
   | `LEADS_PLAN_NAME` | — | label on the plan page (optional) |
-  | `LEADS_PLAN_STATES` | `FL,CO` | states a Stripe plan covers |
-  | `LEADS_PROMO_STATES` | `FL,CO` | states a promo code grants |
+  | `LEADS_PLAN_STATES` | `FL,CO,CT` | states a Stripe plan covers |
+  | `LEADS_PROMO_STATES` | `FL,CO,CT` | states a promo code grants |
   | `LEADS_PROMO_ACCESS_DAYS` | `0` | promo access length in days (`0` = no end date) |
   | `LEADS_PROMO_ENABLED` | `1` | `0` stops promo redemption (503) |
   | `LEADS_ENABLE_DELIVERY` | `0` | compose passes the same value to the backend. The API only reports it (`email: "disabled"`); the scheduler does the sending. |

@@ -69,6 +69,11 @@ def seeded(tmp_db):
                filed_date=date(2026, 1, 7), status="Good Standing", active=True, source_date="20260107"),
         Filing(state="CT", source_id="T1", entity="Nutmeg Software LLC", filing_type="LLC", entity_kind="llc",
                filed_date=date(2026, 1, 8), status="Active", active=True, source_date="20260108"),
+        Filing(state="CT", source_id="T2", entity="Nutmeg Holdings Inc", filing_type="Stock",
+               entity_kind="corporation", filed_date=date(2026, 1, 8), status="Active", active=True,
+               source_date="20260108"),
+        Filing(state="NY", source_id="N1", entity="Empire Widgets LLC", filing_type="DOMESTIC LLC", entity_kind="llc",
+               filed_date=date(2026, 1, 8), status="Active", active=True, source_date="20260108"),
     ]
     db.upsert_filings([f.to_row() for f in rows])
     return rows
@@ -128,7 +133,7 @@ def test_redeem_grants_account_access_without_profile_or_delivery(api, seeded):
     r = _redeem(api)
     assert r.status_code == 200 and r.json()["ok"] is True
     plan = api.get("/v1/account").json()["plan"]
-    assert plan == {"active": True, "name": None, "source": "promo", "states": ["CO", "FL"],
+    assert plan == {"active": True, "name": None, "source": "promo", "states": ["CO", "CT", "FL"],
                     "renews_at": None, "expires_at": None}
     # no delivery profile, nothing for the scheduler to send or run
     assert api.get("/profiles").json()["profiles"] == []
@@ -137,7 +142,8 @@ def test_redeem_grants_account_access_without_profile_or_delivery(api, seeded):
         assert conn.execute("SELECT COUNT(*) FROM run_requests").fetchone()[0] == 0
     # search is open for the promo bundle, still scoped to it
     assert api.get("/filings", params={"state": "CO"}).json()["total"] == 2
-    assert api.get("/filings", params={"state": "CT"}).status_code == 403
+    assert api.get("/filings", params={"state": "NY"}).status_code == 403
+    assert api.get("/filings", params={"state": "CT", "filing_type": "stock"}).json()["total"] == 1
 
     # a second redemption does not consume another use
     again = _redeem(api)
@@ -242,7 +248,7 @@ def test_checkout_enabled_test_key_and_webhook_grants_account(api, mod, seeded, 
     assert api.post("/stripe-webhook", content=done, headers=_sign(mod, done)).status_code == 200
     plan = api.get("/v1/account").json()["plan"]
     assert plan["active"] is True and plan["source"] == "stripe" and plan["name"] == "Leads"
-    assert plan["states"] == ["CO", "FL"]
+    assert plan["states"] == ["CO", "CT", "FL"]
     assert api.get("/profiles").json()["profiles"] == [] and db.get_all_active_profiles() == {}
     assert api.post("/v1/checkout", json={"success_url": ORIGIN, "cancel_url": ORIGIN}).status_code == 409
 
@@ -337,9 +343,12 @@ def test_filing_types(api, seeded):
     assert by["FIC"]["filings"] == 0 and by["FIC"]["entity_kind"] == "trade_name"
     co = {t["code"]: t for t in api.get("/filing-types", params={"state": "CO"}).json()["filing_types"]}
     assert co["DLLC"]["filings"] == 2 and co["DNC"]["label"] == "Domestic nonprofit corporation"
-    # a state without a static table is served from the stored values
-    ct = api.get("/filing-types", params={"state": "CT"}).json()["filing_types"]
-    assert ct == [{"code": "LLC", "label": "LLC", "entity_kind": "llc", "filings": 1}]
+    ct = {t["code"]: t for t in api.get("/filing-types", params={"state": "CT"}).json()["filing_types"]}
+    assert ct["Stock"] == {"code": "Stock", "label": "Stock corporation", "entity_kind": "corporation", "filings": 1}
+    assert ct["LLC"]["filings"] == 1 and ct["Non-Stock"]["entity_kind"] == "nonprofit"
+    # a state without a static table is served from the stored values, labelled by code
+    ny = api.get("/filing-types", params={"state": "NY"}).json()["filing_types"]
+    assert ny == [{"code": "DOMESTIC LLC", "label": "DOMESTIC LLC", "entity_kind": "llc", "filings": 1}]
     assert api.get("/filing-types", params={"state": "TX"}).json()["filing_types"] == []
     assert api.get("/filing-types", params={"state": "Florida"}).status_code == 422
     assert api.get("/filing-types").status_code == 422
@@ -348,8 +357,10 @@ def test_filing_types(api, seeded):
 def test_filing_type_tables_match_adapters():
     from adapters import FL_TYPE_KIND
     from adapters.co import CO_TYPE_KIND
+    from adapters.ct import CT_TYPE_KIND
     from backend.filing_types import FILING_TYPES
-    for st, adapter_map in (("FL", FL_TYPE_KIND), ("CO", CO_TYPE_KIND)):
+    assert set(FILING_TYPES) == {"FL", "CO", "CT"}
+    for st, adapter_map in (("FL", FL_TYPE_KIND), ("CO", CO_TYPE_KIND), ("CT", CT_TYPE_KIND)):
         assert {c: k for c, (_, k) in FILING_TYPES[st].items()} == adapter_map, f"{st} table drifted from adapter"
 
 

@@ -2,9 +2,10 @@
 Per-state filing-type reference data for GET /filing-types (codes, labels, entity kinds).
 
 The API image is built from web/backend only, so it cannot import src/adapters. These tables mirror the
-adapters' code maps (src/adapters/fl.py FL_TYPE_KIND, src/adapters/co.py CO_TYPE_KIND);
-tests/test_account_api.py fails if they drift. States without a table here (e.g. CT) are served from the
-distinct filing_type values stored in the filings table, labelled with the code itself.
+adapters' code maps (src/adapters/fl.py FL_TYPE_KIND, co.py CO_TYPE_KIND, ct.py CT_TYPE_KIND);
+tests/test_account_api.py fails if they drift. Codes keep the state's own spelling (CT uses words such as
+"Stock"); /filings matches filing_type case-insensitively. States or codes without a table entry are served
+from the distinct filing_type values stored in the filings table, labelled with the code itself.
 """
 
 # code -> (label, entity_kind)
@@ -50,6 +51,20 @@ FILING_TYPES: dict[str, dict[str, tuple[str, str]]] = {
         "FLCA": ("Foreign limited cooperative association", "cooperative"),
         "FCOOP": ("Foreign cooperative", "cooperative"),
     },
+    "CT": {
+        "LLC": ("Limited liability company", "llc"),
+        "Stock": ("Stock corporation", "corporation"),
+        "B Corp": ("Benefit corporation", "corporation"),
+        "Bank Stock": ("Bank stock corporation", "corporation"),
+        "Insurance Stock": ("Insurance stock corporation", "corporation"),
+        "Non-Stock": ("Nonstock corporation (nonprofit)", "nonprofit"),
+        "Religious": ("Religious corporation", "nonprofit"),
+        "Non-Stock Specially Chartered": ("Specially chartered nonstock corporation", "nonprofit"),
+        "LLP": ("Limited liability partnership", "partnership"),
+        "Limited Partnership": ("Limited partnership", "partnership"),
+        "General Partnerships": ("General partnership", "partnership"),
+        "Cooperative Association": ("Cooperative association", "cooperative"),
+    },
 }
 
 
@@ -60,13 +75,19 @@ def for_state(state: str, stored: list[dict]) -> list[dict]:
     Static codes come first in table order; stored-only codes follow, sorted, labelled by code.
     """
     table = FILING_TYPES.get(state.upper(), {})
-    counts = {r["filing_type"].upper(): r for r in stored if r.get("filing_type")}
+    counts: dict[str, dict] = {}  # upper(code) -> {code, entity_kind, filings}; variants of one code summed
+    for r in stored:
+        code = (r.get("filing_type") or "").strip()
+        if not code:
+            continue
+        c = counts.setdefault(code.upper(), {"code": code, "entity_kind": r.get("entity_kind"), "filings": 0})
+        c["filings"] += int(r.get("filings") or 0)
     out = []
     for code, (label, kind) in table.items():
         out.append({"code": code, "label": label, "entity_kind": kind,
-                    "filings": int(counts.get(code, {}).get("filings") or 0)})
-    for code in sorted(set(counts) - set(table)):
-        r = counts[code]
-        out.append({"code": code, "label": code, "entity_kind": r.get("entity_kind") or "other",
-                    "filings": int(r.get("filings") or 0)})
+                    "filings": counts.pop(code.upper(), {}).get("filings", 0)})
+    for key in sorted(counts):
+        c = counts[key]
+        out.append({"code": c["code"], "label": c["code"], "entity_kind": c["entity_kind"] or "other",
+                    "filings": c["filings"]})
     return out
