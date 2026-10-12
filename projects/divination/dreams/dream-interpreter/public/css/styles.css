@@ -896,3 +896,14 @@ footer {
     .nav-links a, .footer-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
     .tab { min-height: 44px; }
 }
+
+/* MOBILE-WARN: phone header. The logo sat flush against the top edge (.container
+   outranks nav, so nav's vertical padding was 0) and the 4 links wrapped loosely
+   under it. Logo and nav cannot share one row at 375 without dropping links, so:
+   two deliberate rows, breathing room, links spread across the full width. */
+@media (max-width: 400px) {
+    header nav.container { padding-top: .5rem; padding-bottom: .15rem; row-gap: 0; }
+    .logo h1 { font-size: 1.3rem; line-height: 1.3; white-space: nowrap; }
+    .nav-links { width: 100%; justify-content: space-between; gap: .25rem; }
+    .nav-links a { white-space: nowrap; }
+}
