@@ -16,7 +16,9 @@ ok=0; fail=0
 deploy() {  # deploy <folder relative to ~/mdo3d>
   # Ships the PUSHED tip of the checkout's branch, not local HEAD: lanes push from worktrees and the
   # primaries hold unrelated WIP, so a primary can lag origin (2026-10-12: 13 sources were behind).
-  local d=$1 top br url ref pre; rm -rf "$W" && mkdir -p "$W"
+  local d=$1 top br url ref pre
+  case " ${DONE_DIRS:-} " in *" $d "*) echo "  skip $d (already deployed in this run)" | tee -a "$LOG"; return 0;; esac
+  DONE_DIRS="${DONE_DIRS:-} $d"; rm -rf "$W" && mkdir -p "$W"
   top=$(git -C "$ROOT/$d" rev-parse --show-toplevel); pre=$(git -C "$ROOT/$d" rev-parse --show-prefix)
   br=$(git -C "$top" rev-parse --abbrev-ref HEAD)
   url=$(git -C "$top" remote get-url origin | sed -E 's#//[^@/]*@#//#')
@@ -108,6 +110,12 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
    5) Two-account smoke test (no live charges). Payments also need Vercel env FIREBASE_PROJECT_ID/CLIENT_EMAIL/PRIVATE_KEY on project runwae.
   Rollback rules: redeploy {"rules":{".read":false,".write":false}} (the locked state) — never the old auth!=null rules.
 EOF
+  # cycle-9 %24 runwae 12845c9 (FAQ-ACCORDION-A11Y) + 0402a04 (MOBILE-GENERAL-TEXT-SIZE)
+  check "runwae faqs accordion uses real buttons (FAQ-ACCORDION-A11Y)" "curl -sL https://runwae.com/faqs | grep -c '<button type=\"button\" id=\"heading'" "27"
+  check "runwae faqs no tab roles (FAQ-ACCORDION-A11Y)" "echo n=\$(curl -sL https://runwae.com/faqs | grep -cE 'role=\"(tab|tablist|tabpanel)\"')." "n=0."
+  check "runwae faqs answer regions labelled (FAQ-ACCORDION-A11Y)" "curl -sL https://runwae.com/faqs | grep -c 'role=\"region\" aria-labelledby=\"heading'" "27"
+  check "runwae min-text css served (MOBILE-GENERAL-TEXT-SIZE)" "curl -s https://runwae.com/css/mobile-min-text.css | grep -c 'max(.875rem, 12px)'" "1"
+  for pg in terms privacy blog/PabloTheDon; do check "runwae /$pg links min-text css (MOBILE-GENERAL-TEXT-SIZE)" "curl -sL https://runwae.com/$pg | grep -c 'mobile-min-text.css'" "1"; done
 }
 g_ronna() {  # P0 RONNA-ENV-SYNTAX + P0 RONNA-MOCK-FALLBACK + SOFT-200-EMPTY (ronna), RONNA-LEADS-ICON-404 — ships env.js + mock removal together (HEAD)
   for s in companies contacts emails leads prospects; do deploy projects/ronnascanner/ronnascanner-$s; done
