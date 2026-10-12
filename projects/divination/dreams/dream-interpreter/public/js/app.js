@@ -487,7 +487,7 @@ class DreamInterpreterApp {
     }
 
     trackShare() {
-        // TODO: Add Firebase Analytics tracking
+        // Share analytics not enabled.
     }
 
     saveToJournal() {
