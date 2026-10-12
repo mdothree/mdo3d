@@ -335,7 +335,7 @@ class TarotApp {
     }
 
     trackShare() {
-        // TODO: Add Firebase Analytics tracking
+        // Share analytics not enabled.
     }
 
     async handleUpgrade(upgradeBtn = null) {

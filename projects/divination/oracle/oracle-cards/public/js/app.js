@@ -248,8 +248,6 @@ class OracleCardsApp {
             return;
         }
 
-        // For premium, call Claude API
-        // TODO: Implement API call to backend
         setTimeout(() => {
             this.displayPremiumReading();
         }, 2000);
