@@ -12,10 +12,10 @@ function loadStripeConfig() {
     if (meta) { try { return JSON.parse(meta.content); } catch {} }
   }
   return {
-    publishableKey: 'pk_live_REPLACE_WITH_STRIPE_PUBLISHABLE_KEY',
+    publishableKey: '',   // set via <meta name="stripe-config">; empty = checkout fails closed
     paymentLinkMonthly: 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v',
     paymentLinkYearly:  'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w',
-    portalUrl:      'https://billing.stripe.com/p/login/REPLACE', // customer portal link
+    portalUrl:      '', // customer portal link
   };
 }
 

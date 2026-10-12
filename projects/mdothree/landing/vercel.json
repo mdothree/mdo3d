@@ -5,6 +5,15 @@
   "cleanUrls": true,
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-QJqTyFI88R5bax/6MO6XaZxrdOo2jOLCWZvU65oZ/tY=' 'sha256-sEQRLO12sTcIDIvUpWyEbNhIZ3URq6+3qo06hmiA+ZY=' https://www.gstatic.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://api.stripe.com https://www.gstatic.com; frame-src https://js.stripe.com https://hooks.stripe.com https://mdo3d-utilities.firebaseapp.com; img-src 'self' data: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://stripe.com"
+        }
+      ]
+    },
+    {
       "source": "/(css|js)/(.*)",
       "headers": [
         {

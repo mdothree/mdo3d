@@ -39,24 +39,28 @@ const required = [
 const missing = required.filter(k => !process.env[k]);
 if (missing.length > 0) {
   console.warn(`[inject-config] WARNING: missing env vars: ${missing.join(', ')}`);
-  console.warn('[inject-config] Placeholders will remain in output HTML — set vars in Vercel project settings.');
+  console.warn('[inject-config] Unset FIREBASE_* keeps the committed public web config; unset STRIPE_PUBLISHABLE_KEY leaves checkout failing closed.');
 }
 
-// Build the firebase-config and stripe-config JSON strings
-const firebaseConfig = JSON.stringify({
-  apiKey:            process.env.FIREBASE_API_KEY            || 'REPLACE_WITH_API_KEY',
-  authDomain:        process.env.FIREBASE_AUTH_DOMAIN        || 'REPLACE.firebaseapp.com',
-  projectId:         process.env.FIREBASE_PROJECT_ID         || 'REPLACE_WITH_PROJECT_ID',
-  storageBucket:     process.env.FIREBASE_STORAGE_BUCKET     || 'REPLACE.appspot.com',
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID|| 'REPLACE',
-  appId:             process.env.FIREBASE_APP_ID             || 'REPLACE_WITH_APP_ID',
-});
+// Firebase web config is public by design (it ships to every browser). The committed meta in public/*.html
+// already holds the shared mdo3d-utilities web config used by every mdothree tool, so it is only overridden
+// when ALL FIREBASE_* vars are set — a missing var never writes placeholders into the page.
+const fbKeys = required.filter(k => k.startsWith('FIREBASE_'));
+const firebaseConfig = fbKeys.every(k => process.env[k]) ? JSON.stringify({
+  apiKey:            process.env.FIREBASE_API_KEY,
+  authDomain:        process.env.FIREBASE_AUTH_DOMAIN,
+  projectId:         process.env.FIREBASE_PROJECT_ID,
+  storageBucket:     process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId:             process.env.FIREBASE_APP_ID,
+}) : null;
 
+// Publishable key only (never a secret key). Empty when unset: Stripe() then fails and checkout fails closed.
 const stripeConfig = JSON.stringify({
-  publishableKey: process.env.STRIPE_PUBLISHABLE_KEY       || 'REPLACE_WITH_STRIPE_PUBLISHABLE_KEY',
+  publishableKey: process.env.STRIPE_PUBLISHABLE_KEY       || '',
   paymentLinkMonthly: process.env.STRIPE_PAYMENT_LINK_MONTHLY || 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v',
   paymentLinkYearly: process.env.STRIPE_PAYMENT_LINK_YEARLY || 'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w',
-  portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || 'https://billing.stripe.com/p/login/REPLACE',
+  portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || '',
 });
 
 // ── Find all HTML files in public/ ───────────────────────────
@@ -80,7 +84,7 @@ for (const file of htmlFiles) {
   const original = content;
 
   // Replace firebase-config meta tag content
-  content = content.replace(
+  if (firebaseConfig) content = content.replace(
     /(<meta name="firebase-config" content=')[^']*(')/g,
     `$1${firebaseConfig.replace(/'/g, '&apos;')}$2`
   );

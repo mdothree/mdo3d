@@ -520,13 +520,25 @@ def build_manifest(site, pub):
     open(os.path.join(pub, 'site.webmanifest'), 'w').write(txt)
     open(old, 'w').write(txt)  # legacy path, still precached by older service workers
 
+def git_lastmod(path):
+    # C7-013: real per-page change date = the file's last commit date (no build-time stamp); omitted if unknown
+    try:
+        out = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', os.path.basename(path)],
+                             cwd=os.path.dirname(path) or '.', capture_output=True, text=True, timeout=10).stdout.strip()
+        return out or None
+    except Exception:
+        return None
+
 def build_sitemap(site, pub):
-    urls = [page_url(site, p['file']) for p in site['pages'] if not p['noindex']]
-    # C7-013: no build-time <lastmod> stamp (it is not a real per-page change date)
-    body = '\n'.join(f'  <url>\n    <loc>{u}</loc>\n  </url>' for u in urls)
+    rows = []
+    for p in site['pages']:
+        if p['noindex']:
+            continue
+        lm = git_lastmod(os.path.join(pub, p['file']))
+        rows.append(f'  <url>\n    <loc>{page_url(site, p["file"])}</loc>\n' + (f'    <lastmod>{lm}</lastmod>\n' if lm else '') + '  </url>')
     open(os.path.join(pub, 'sitemap.xml'), 'w').write(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + body + '\n</urlset>\n')
+        + '\n'.join(rows) + '\n</urlset>\n')
 
 def check_robots(site, pub):
     f = os.path.join(pub, 'robots.txt')
