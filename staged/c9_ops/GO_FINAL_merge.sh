@@ -15,17 +15,17 @@
 # mdo3d-compare, dailyaitoll). The rest ship with MDO_DEPLOY_CYCLE5_2026-10-08.sh (deploy() archives the PUSHED tip).
 set -uo pipefail
 # owner/repo:prod-branch:go-ref
-REPOS="mdothree/rigor-resume:main:go-final mdothree/rigor-cover:main:go-final mdothree/rigor-interview:main:go-final
-mdothree/rigor-linkedin:main:go-final mdothree/rigor-networking:main:go-final mdothree/rigor-portfolio:main:go-final
-mdothree/rigor-salary:main:go-final mdothree/rigor-landing:main:go-final mdothree/runwae:master:go-final-r2
-mdothree/ronnascanner-companies:main:go-final mdothree/ronnascanner-contacts:main:go-final mdothree/ronnascanner-emails:main:go-final
-mdothree/ronnascanner-leads:main:go-final mdothree/ronnascanner-prospects:main:go-final mdothree/ronnascanner-landing:main:go-final
-mdothree/mdothree-text:main:go-final mdothree/mdothree-pdf:main:go-final mdothree/mdothree-qr:main:go-final
-mdothree/mdothree-hash:main:go-final mdothree/mdothree-color:main:go-final mdothree/mdothree-password:main:go-final
-mdothree/mdothree-timestamp:main:go-final mdothree/mdothree-image:main:go-final mdothree/astrology:master:go-final
+REPOS="mdothree/rigor-resume:main:go-final-r2 mdothree/rigor-cover:main:go-final-r2 mdothree/rigor-interview:main:go-final-r2
+mdothree/rigor-linkedin:main:go-final-r2 mdothree/rigor-networking:main:go-final-r2 mdothree/rigor-portfolio:main:go-final-r2
+mdothree/rigor-salary:main:go-final-r2 mdothree/rigor-landing:main:go-final-r2 mdothree/runwae:master:go-final-r5
+mdothree/ronnascanner-companies:main:main mdothree/ronnascanner-contacts:main:main mdothree/ronnascanner-emails:main:main
+mdothree/ronnascanner-leads:main:main mdothree/ronnascanner-prospects:main:main mdothree/ronnascanner-landing:main:go-final-r2
+mdothree/mdothree-text:main:go-final-r3 mdothree/mdothree-pdf:main:go-final-r3 mdothree/mdothree-qr:main:go-final-r3
+mdothree/mdothree-hash:main:go-final-r4 mdothree/mdothree-color:main:go-final-r4 mdothree/mdothree-password:main:go-final-r4
+mdothree/mdothree-timestamp:main:go-final-r4 mdothree/mdothree-image:main:go-final-r3 mdothree/astrology:master:go-final
 mdothree/iching:master:go-final mdothree/runes:master:go-final mdothree/feng-shui-analyzer:main:go-final
-mdothree/past-life-insights:main:go-final mdothree/baby-name-oracle:main:go-final mdothree/mdo3d-landing:main:go-final
-mdothree/promptsforbusiness:main:go-final mdothree/layoffleads:main:go-final mdothree/mdo3d-compare:master:go-final
+mdothree/past-life-insights:main:go-final mdothree/baby-name-oracle:main:go-final mdothree/mdo3d-landing:main:go-final-r2
+mdothree/promptsforbusiness:main:go-final-r2 mdothree/layoffleads:main:go-final mdothree/mdo3d-compare:master:go-final
 Latarence/dailyaitoll:main:go-final"
 LOG=~/mdo3d/GO_FINAL_merge.log
 CRED=(-c credential.helper= -c 'credential.helper=!gh auth git-credential')
@@ -47,7 +47,7 @@ status() {
       news=0; git -C "$d" rev-parse -q --verify refs/s >/dev/null && news=$(git -C "$d" cherry refs/g refs/s | grep -c '^+')
       printf '%-34s %-15s %-22s %-4s %s\n' "$r" "$b@$p" "$g@$t" "$ff" "$news"; fi
     rm -rf "$d"; done
-  echo "Expected non-zero c9-staged column (content already in go ref, see GO_FINAL.md): runwae 1, mdo3d-landing 2, promptsforbusiness 1."
+  echo "Expected non-zero c9-staged column (content already in go ref, see GO_FINAL.md): runwae 1, mdo3d-landing 3, promptsforbusiness 2, mdothree-{hash,color,password,timestamp} 1 (beacon, landed on main as its own commit)."
 }
 merge1() {  # merge1 <owner/repo> <branch> <go-ref>
   local r=$1 b=$2 g=$3 d prev gf; d=$(mktemp -d)
