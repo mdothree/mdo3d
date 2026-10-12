@@ -629,3 +629,9 @@ footer {
         transform: none; /* UI-REVIEW: scale(1.05) overflowed single-column layout */
     }
 }
+
+/* A11Y-013: 44px minimum tap targets on touch widths */
+@media (max-width: 768px) {
+    .footer-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+    .btn-premium { min-height: 44px; }
+}
