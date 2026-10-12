@@ -1,6 +1,8 @@
 # Platforms
 
-User-facing web applications providing value to end users. All platforms follow the freemium model with social sharing for viral growth.
+User-facing web applications providing value to end users. Every platform is paid from first use, with promo codes as the early-access lever, and social sharing for growth.
+
+> **Pricing note (2026-10-12):** this page started as a March 2026 plan. The lab is paid-only: no free tier, flat whole-dollar prices (no `*.99`). Divination (Oracle, Tarot and the other readings) is decided at **$5 single / $10 deep** (DECISIONS, JARVIS #63). Other platforms take their live prices from each product's pricing config; prices below marked TBD are not set yet.
 
 ## Architecture
 
@@ -23,10 +25,10 @@ Each platform consists of:
 **Features**:
 - Complete 44-card oracle deck with diverse spiritual themes
 - Three.js 3D card rendering with particle effects and animations
-- Multiple spread types (Single FREE, Three Card $4.99, Celtic Cross $9.99)
+- Multiple spread types (Single, Three Card, Celtic Cross)
 - Claude API integration for personalized AI readings
 - Social sharing with custom image generation
-- Freemium revenue model
+- Paid per reading (promo codes for early access)
 
 **Tech Stack**:
 - Frontend: Vanilla JS, Three.js, Pure CSS
@@ -35,8 +37,8 @@ Each platform consists of:
 - Hosting: Vercel + Railway
 
 **Revenue Model**:
-- Free: Single card draws with basic meanings
-- Premium: $2.99 (single), $4.99 (three card), $9.99 (Celtic Cross)
+- Single reading: $5
+- Deep reading (Three Card, Celtic Cross): $10
 - Target: $1,350/month
 
 **Quick Start**:
@@ -61,7 +63,7 @@ npm run dev  # http://localhost:8080
 - Multiple spread types (Single, Three Card, Celtic Cross)
 - Beautiful dark mystical UI with starfield animations
 - Social sharing integration
-- Freemium model
+- Paid per reading (promo codes for early access)
 
 **Tech Stack**:
 - Frontend: Vanilla JS, Pure CSS with dark theme
@@ -70,8 +72,8 @@ npm run dev  # http://localhost:8080
 - Hosting: Vercel + Railway
 
 **Revenue Model**:
-- Free: Unlimited single card draws
-- Premium: $2.99 (single), $4.99 (three card), $9.99 (Celtic Cross)
+- Single reading: $5
+- Deep reading (Three Card, Celtic Cross): $10
 - Target: $3,240/month
 
 **Card Breakdown**:
@@ -104,7 +106,7 @@ npm run dev  # http://localhost:8081
 - Email delivery system (SMTP)
 - Stripe payment integration
 - Social sharing with custom score images
-- Freemium lead generation model
+- Paid report, from first use (promo codes for early access)
 
 **Tech Stack**:
 - Frontend: Vanilla JS, Pure CSS
@@ -114,9 +116,8 @@ npm run dev  # http://localhost:8081
 - Hosting: Vercel + Railway
 
 **Revenue Model**:
-- Free: Basic ATS score + top 3 issues
-- Premium: $29 one-time (full rewrite, AI suggestions, before/after)
-- Lead Gen: Email capture for free report
+- Paid report from first use: ATS score, issues, full rewrite, AI suggestions, before/after (price per the Rigor pricing config; the March plan said a one-time fee)
+- Promo codes for early access; email capture happens at checkout
 - Target: Variable based on conversion
 
 **Quick Start**:
@@ -161,7 +162,7 @@ npm run dev  # http://localhost:3001
 
 **Input**: Dream description  
 **Output**: Symbol meanings + interpretation  
-**Revenue**: Free basic, $4.99 premium
+**Revenue**: Paid per reading (price TBD, flat whole dollars; the $5 / $10 divination ladder applies if it ships as a divination site)
 
 ### 7. Past Life Insights
 
@@ -169,7 +170,7 @@ npm run dev  # http://localhost:3001
 
 **Input**: Birth date, name, time (optional)  
 **Output**: Past life story + life themes  
-**Revenue**: $9.99 per reading
+**Revenue**: Paid per reading (price TBD, flat whole dollars; the $5 / $10 divination ladder applies if it ships as a divination site)
 
 ### 8. Numerology Calculator
 
@@ -177,7 +178,7 @@ npm run dev  # http://localhost:3001
 
 **Input**: Name, birth date  
 **Output**: Numerology chart + meanings  
-**Revenue**: Free basic, $7.99 detailed
+**Revenue**: Paid per reading (divination ladder: $5 / $10)
 
 ### 9. Astrology Birth Chart
 
@@ -185,7 +186,7 @@ npm run dev  # http://localhost:3001
 
 **Input**: Birth date, time, location  
 **Output**: Full natal chart + interpretation  
-**Revenue**: $14.99 per chart
+**Revenue**: Paid per chart (price TBD, flat whole dollars)
 
 ### 10. Baby Name Oracle
 
@@ -193,7 +194,7 @@ npm run dev  # http://localhost:3001
 
 **Input**: Preferences, due date  
 **Output**: Curated name list with meanings  
-**Revenue**: Free basic names, $9.99 full report
+**Revenue**: Paid report (price TBD, flat whole dollars)
 
 ---
 
@@ -262,10 +263,10 @@ platform-name-api/       # Separate API server
 - **Hosting**: Vercel (frontend) + Railway/Render (backend)
 
 ### Revenue Model Pattern
-All platforms follow freemium:
-1. **Free Tier**: Basic functionality, unlimited usage
-2. **Premium**: Enhanced features ($2.99-$29 per transaction)
-3. **Email Capture**: Lead generation for upsells
+All platforms are paid from first use (lab rule: no free tier, ever):
+1. **Paid from first use**: every reading/report is a purchase, at flat whole-dollar prices
+2. **Promo codes**: the early-access and launch lever
+3. **Email Capture**: at checkout, for receipts and follow-up offers
 4. **Social Sharing**: Viral growth mechanism
 
 ### Social Sharing Requirements
@@ -313,7 +314,7 @@ Each platform requires:
 
 ### Growth Tactics
 1. **Social Sharing**: Built into every platform
-2. **Free Tier**: Low barrier to entry
+2. **Promo codes**: Low barrier to a first purchase
 3. **Content Marketing**: Card meanings, guides, tips
 4. **Viral Loops**: Share to unlock features
 5. **Email Marketing**: Lead nurturing sequences
@@ -324,7 +325,7 @@ Each platform requires:
 
 ### Per Platform
 - Daily Active Users (DAU)
-- Conversion Rate (Free → Premium)
+- Conversion Rate (visit → purchase, and promo-code redemption → repeat purchase)
 - Average Revenue Per User (ARPU)
 - Share Rate
 - Email Capture Rate
