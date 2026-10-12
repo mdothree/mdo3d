@@ -8,7 +8,7 @@ decision for the Principal; registration-required ones need a Principal account 
 |---|---|---|
 | FL | free bulk SFTP (public login) | adapter #1, live in ingest |
 | CO | free open data (Socrata 4ykn-tg5h, Public Domain) | adapter #2, live in ingest |
-| CT | free open data (data.ct.gov n7gp-d28j, Public Domain) | candidate #3 (has `date_registration`, NAICS, state-published business email) |
+| CT | free open data (data.ct.gov n7gp-d28j, Public Domain) | adapter #3, live in ingest |
 | OR | free open data (data.oregon.gov tckn-sxa6; no licence in metadata) | candidate; one row per associated person, check terms first |
 | WV, AR | registration required | Principal account step |
 | KY, TN, TX | paid | spend decision |
@@ -25,9 +25,11 @@ decision for the Principal; registration-required ones need a Principal account 
 - **API:** `https://data.colorado.gov/resource/4ykn-tg5h.json?$where=entityformdate='2026-10-09T00:00:00'`
 - **Licence:** Public Domain; daily refresh; no registration (optional free Socrata app token for rate limits)
 
-## Connecticut (candidate)
-- **Dataset:** https://data.ct.gov/resource/n7gp-d28j.json ("Connecticut Business Registry - Business Master")
-- **Licence:** Public Domain; filter on `date_registration`
+## Connecticut ✅ (Working)
+- **Dataset:** https://data.ct.gov/Business/Connecticut-Business-Registry-Business-Master/n7gp-d28j
+- **API:** `https://data.ct.gov/resource/n7gp-d28j.json?$where=date_registration='2026-10-09T00:00:00'`
+- **Licence:** Public Domain (attribution Secretary of the State); daily refresh; no registration (optional free
+  Socrata app token). Publishes NAICS and the business email on the filing; ~150–230 new rows per weekday.
 
 ## Oregon (candidate)
 - **Dataset:** https://data.oregon.gov/resource/tckn-sxa6.json ("Active Businesses - ALL"), filter `registry_date`

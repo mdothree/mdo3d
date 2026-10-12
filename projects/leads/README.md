@@ -24,7 +24,7 @@ docs/                    STATE_ADAPTERS.md, OTHER_STATES.md, DEPLOYMENT.md
 ```
 
 ## States
-FL (Sunbiz SFTP) and CO (data.colorado.gov) are implemented. See `docs/STATE_ADAPTERS.md` for the interface and
+FL (Sunbiz SFTP), CO (data.colorado.gov) and CT (data.ct.gov) are implemented. See `docs/STATE_ADAPTERS.md` for the interface and
 `docs/OTHER_STATES.md` for what is next (free sources first; paid feeds are a spend decision).
 
 ## Running (on a fleet host — never the laptop)
@@ -34,7 +34,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 # .env: SUNBIZ_SFTP_HOST/USER/PASS (the state-published public login, see docs/OTHER_STATES.md)
 
 # Ingest only: fetch + store filings in SQLite (no filtering, no enrichment, no email)
-.venv/bin/python src/runner.py --ingest --states FL,CO --lookback 3
+.venv/bin/python src/runner.py --ingest --states FL,CO,CT --lookback 3
 .venv/bin/python src/runner.py --ingest --states CO --date 20261009
 
 # One profile, ignoring its schedule, without enrichment
@@ -52,7 +52,7 @@ profile's `date_range` (`daily|weekly|monthly`).
 ## Profiles
 Customer profiles live in SQLite (created in the app, activated by Stripe checkout or a promo code);
 `config/profiles.json` holds internal ones. Fields:
-- `states`: e.g. `["FL", "CO"]` — runs through the state adapters. Omit it to run the legacy FL-only path.
+- `states`: e.g. `["FL", "CO", "CT"]` — runs through the state adapters. Omit it to run the legacy FL-only path.
 - `filing_types` (state codes; FL: FLAL, DOMP, FORP, DOMNP, FORNP, DOMLP), or `entity_kinds`
   (`llc`, `corporation`, `nonprofit`, `partnership`, `cooperative`, `trade_name`)
 - `keywords` / `exclude_keywords` (entity name contains), `target_counties` (only where the state publishes county)

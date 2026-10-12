@@ -32,7 +32,7 @@ rollbacks; only `docker compose down -v` deletes them.
 **Schedule** (`ops/scheduler/crontab`, America/New_York):
 | when | job |
 |---|---|
-| 09:15 and 21:15 daily | `runner.py --ingest --states $LEADS_INGEST_STATES --lookback 3` (FL,CO) |
+| 09:15 and 21:15 daily | `runner.py --ingest --states $LEADS_INGEST_STATES --lookback 3` (FL,CO,CT) |
 | every minute | `runner.py --run-requests`: manual runs queued by `POST /profiles/{id}/run` (stored filings; email only if `LEADS_ENABLE_DELIVERY=1`) |
 | 03:30 daily | `sqlite3 .backup` → `PRAGMA integrity_check` → gzip → prune |
 | 08:00 daily | profile delivery, **only if `LEADS_ENABLE_DELIVERY=1`** (email needs the Principal's OK) |

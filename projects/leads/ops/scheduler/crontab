@@ -1,7 +1,7 @@
 # Leads scheduler (supercronic). Times are America/New_York.
 CRON_TZ=America/New_York
 
-# Daily ingest of every configured state ($LEADS_INGEST_STATES, e.g. FL,CO) into /data/leads.db.
+# Daily ingest of every configured state ($LEADS_INGEST_STATES, e.g. FL,CO,CT) into /data/leads.db.
 # --lookback 3 re-fetches the last 3 days too: late-posted files are picked up, upserts dedupe.
 15 9 * * * /app/ops/scheduler/ingest.sh
 # Evening pass: FL posts some daily files late in the day.

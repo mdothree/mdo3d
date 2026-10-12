@@ -17,7 +17,7 @@
 #   ops/DEPLOY_FLEET.sh status
 #
 # Env overrides: LEADS_HOST (xps), LEADS_REF (main), LEADS_API_PORT (8150), LEADS_WEB_PORT (3150),
-#   LEADS_INGEST_STATES (FL,CO), LEADS_WITH_FRONTEND (1).
+#   LEADS_INGEST_STATES (FL,CO,CT), LEADS_WITH_FRONTEND (1).
 #   xps:8050 is already used by another stack, hence 8150/3150.
 #
 # ---------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ REF="${LEADS_REF:-main}"
 REPO_URL="https://github.com/mdothree/mdo3d.git"
 API_PORT="${LEADS_API_PORT:-8150}"
 WEB_PORT="${LEADS_WEB_PORT:-3150}"
-STATES="${LEADS_INGEST_STATES:-FL,CO}"
+STATES="${LEADS_INGEST_STATES:-FL,CO,CT}"
 WITH_FRONTEND="${LEADS_WITH_FRONTEND:-1}"
 BASE='$HOME/leads-app'        # expanded on the host
 PROJECT=leads                 # compose project: volumes leads_leads-data / leads_leads-backups persist

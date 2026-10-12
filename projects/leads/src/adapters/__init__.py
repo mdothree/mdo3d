@@ -3,11 +3,12 @@ from .base import (  # noqa: F401
     ENTITY_KINDS, Address, Contact, Filing, RawBatch, StateAdapter, dedupe, run_adapter,
 )
 from .co import ColoradoAdapter  # noqa: F401
+from .ct import ConnecticutAdapter  # noqa: F401
 from .fl import FL_TYPE_KIND, FloridaAdapter  # noqa: F401
 
 # Implemented adapters. Only free, no-registration sources are implemented; registration-required
 # and paid state feeds are a spend/registration decision (docs/OTHER_STATES.md).
-ADAPTERS = {"FL": FloridaAdapter, "CO": ColoradoAdapter}
+ADAPTERS = {"FL": FloridaAdapter, "CO": ColoradoAdapter, "CT": ConnecticutAdapter}
 
 
 def get_adapter(state: str):

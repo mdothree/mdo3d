@@ -55,7 +55,7 @@ services:
       - path: ../.env            # SUNBIZ_SFTP_*, optional SOCRATA_APP_TOKEN, mail keys (delivery only)
         required: false
     environment:
-      LEADS_INGEST_STATES: ${LEADS_INGEST_STATES:-FL,CO}
+      LEADS_INGEST_STATES: ${LEADS_INGEST_STATES:-FL,CO,CT}
       LEADS_INGEST_LOOKBACK: ${LEADS_INGEST_LOOKBACK:-3}
       LEADS_ENABLE_DELIVERY: ${LEADS_ENABLE_DELIVERY:-0}   # outbound email: Principal's OK first
       LEADS_BACKUP_KEEP: ${LEADS_BACKUP_KEEP:-14}

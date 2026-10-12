@@ -376,7 +376,7 @@ def _filing_filters(entitled: set, state, county, filing_type, entity_kind, vert
 
 @app.get("/filings")
 async def search_filings(
-    state: Optional[str] = Query(None, description="Comma-separated state codes, e.g. FL,CO"),
+    state: Optional[str] = Query(None, description="Comma-separated state codes, e.g. FL,CO,CT"),
     county: Optional[str] = None,
     filing_type: Optional[str] = Query(None, description="State filing-type codes, comma-separated"),
     entity_kind: Optional[str] = Query(None, description="llc,corporation,nonprofit,partnership,..."),

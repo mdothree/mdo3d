@@ -7,7 +7,7 @@ Usage:
     python runner.py --profile ridgefield         # Run specific profile
     python runner.py --force                      # Force run (ignore schedule)
     python runner.py --cron generate              # Generate crontab from profiles
-    python runner.py --ingest --states FL,CO --lookback 3   # Ingest state filings into SQLite only
+    python runner.py --ingest --states FL,CO,CT --lookback 3  # Ingest state filings into SQLite only
                                                   # (no profile filtering, no enrichment, no email)
     python runner.py --run-requests               # Execute manual runs queued by the API
                                                   # (stored filings only; email only if LEADS_ENABLE_DELIVERY=1)
