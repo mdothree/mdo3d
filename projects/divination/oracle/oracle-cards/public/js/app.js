@@ -408,9 +408,9 @@ class OracleCardsApp {
         try {
             // Already paid (verified by /success): unlock and deliver — never charge twice.
             if (window.PremiumEntitlement?.has()) {
-                // NOTE: do not consume() yet — premium AI delivery is not wired in this
-                // frontend (renders mock). Keeping the credit prevents a re-charge on a
-                // second click. Restore consume-after-successful-render when delivery lands.
+                // Do not consume() here: displayPremiumReading() calls the paid-session-verified
+                // API (/api/reading/generate) and consumes the credit only after a real reading
+                // renders. Keeping the credit here prevents a re-charge on a second click.
                 this.premiumUnlocked = true;
                 // No cards drawn yet (e.g. clicked a pricing button from the hero):
                 // open the setup so the paid reading is delivered after the draw,
