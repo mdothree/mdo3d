@@ -335,8 +335,17 @@ g_wave63() {  # JARVIS #63 ($5 single / $10 deep, one shared config the API enfo
   for u in astrology-api-alpha dream-interpreter-api-delta fengshui-api-eosin iching-api numerology-api oracle-cards-api pastlives-api runes-api tarot-cards-api; do
     check "$u unknown readingType → 400" "curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{\"email\":\"qa@example.invalid\",\"readingType\":\"__nope__\"}' https://$u.vercel.app/api/payment/create-checkout" "400"; done
   for h in tarot oracle dreams numerology astrology iching runes; do
-    check "$h shows \$5 (single)" "curl -s https://$h.mdo3d.com/js/config/pricing.json | grep -c '\"amount_cents\": *500'" "1"; done
-  echo "  MANUAL: one TEST-key checkout per product (never live) once CONVERSION has test keys; oracle 'Subscribe' + monthly tiers await JARVIS" | tee -a "$LOG"
+    check "$h shows \$5 (single)" "n=\$(curl -s https://$h.mdo3d.com/js/config/pricing.json | grep -c '\"amount_cents\": *500'); [ \"\$n\" -ge 1 ] && echo yes" "yes"; done   # astrology has two \$5 types since #63b
+  # #63b (JARVIS, Principal): no monthly tiers, oracle's dead Subscribe goes, compatibility \$10, transit \$5, fengshui office \$5
+  for h in oracle numerology astrology iching runes; do
+    check "$h no monthly tier (#63b)" "curl -s https://$h.mdo3d.com/js/config/pricing.json | grep -ci month | sed s.^.n=." "n=0"; done
+  for u in astrology-api-alpha fengshui-api-eosin iching-api numerology-api oracle-cards-api pastlives-api runes-api; do
+    check "$u monthly checkout → 400 (#63b)" "curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{\"email\":\"qa@example.invalid\",\"readingType\":\"monthly\",\"analysisType\":\"monthly\"}' https://$u.vercel.app/api/payment/create-checkout" "400"; done
+  check "oracle page: no Subscribe or /month (#63b)" "curl -s https://oracle.mdo3d.com/ | grep -ci -E 'subscribe|/month' | sed s.^.n=." "n=0"
+  check "astrology compatibility \$10 (#63b)" "curl -s https://astrology.mdo3d.com/js/config/pricing.json | tr -d ' \\n' | grep -o '\"compatibility\":{\"amount_cents\":[0-9]*'" '"compatibility":{"amount_cents":1000'
+  check "astrology transit \$5 (#63b)" "curl -s https://astrology.mdo3d.com/js/config/pricing.json | tr -d ' \\n' | grep -o '\"transit\":{\"amount_cents\":[0-9]*'" '"transit":{"amount_cents":500'
+  check "numerology compatibility \$10 (#63b)" "curl -s https://numerology.mdo3d.com/js/config/pricing.json | tr -d ' \\n' | grep -o '\"compatibility\":{\"amount_cents\":[0-9]*'" '"compatibility":{"amount_cents":1000'
+  echo "  MANUAL: one TEST-key checkout per product (never live) once CONVERSION has test keys; fengshui office \$5 ships in the Next bundle (check on fengshui.mdo3d.com after purchase flow)" | tee -a "$LOG"
 }
 g_wave94r() {  # JARVIS #94 mechanics for rigor: paid from first use (INCLUDED_ANALYSES=0). API and the 7 tools ship TOGETHER (402 body changed).
   local h; h=$(curl -s -o /dev/null -w '%{http_code}' https://api.rigor.design/health)
