@@ -310,8 +310,9 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + 2 + 3: A11Y-004/015/005, PERF-
 }
 ffmerge() {  # ffmerge <repo dir rel ~/mdo3d or "."> <branch>  — fast-forward the checked-out main/master to a wave branch
   local r=$1 b=$2 cur; cur=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
-  git -C "$ROOT/$r" merge --ff-only -q "$b" && echo "  ff $r $cur ← $b ($(git -C "$ROOT/$r" log -1 --format=%h))" | tee -a "$LOG" \
-    || { echo "  FF FAIL $r ($b): rebase the branch onto $cur first" | tee -a "$LOG"; return 1; }
+  if git -C "$ROOT/$r" merge --ff-only -q "$b" 2>/dev/null; then echo "  ff $r $cur ← $b ($(git -C "$ROOT/$r" log -1 --format=%h))" | tee -a "$LOG"
+  elif git -C "$ROOT/$r" merge --no-ff --no-edit -q "$b" 2>/dev/null; then echo "  merged $r $cur ← $b ($(git -C "$ROOT/$r" log -1 --format=%h); $cur had moved)" | tee -a "$LOG"
+  else git -C "$ROOT/$r" merge --abort 2>/dev/null; echo "  MERGE CONFLICT $r ($b): aborted, nothing changed; rebase the branch onto $cur" | tee -a "$LOG"; return 1; fi
 }
 pushrepo() {  # pushrepo <repo dir>: token-free push via the gh mdothree login (git-connected projects deploy on push)
   local r=$1 slug br; slug=$(git -C "$ROOT/$r" remote get-url origin | sed -E 's#^https://([^@]*@)?github.com/##; s#\.git$##'); br=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
