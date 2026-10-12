@@ -1,0 +1,3 @@
+# STAGED, NOT INSTALLED. Host: bigmini2 (off-box per doctrine; node 26 + git present, 79 GiB free on 2026-10-12).
+# Weekly, Monday 06:15 local. Install with `crontab -e` only after the Principal's GO. Drop `--push` for dry runs.
+15 6 * * 1 LL_HOME="$HOME/mdo3d-ops/layoffleads" bash "$HOME/mdo3d/ops/layoffleads-refresh/refresh.sh" --push >> "$HOME/mdo3d-ops/logs/layoffleads-refresh.log" 2>&1 # mdo3d-layoffleads-refresh
