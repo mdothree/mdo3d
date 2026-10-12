@@ -71,7 +71,8 @@ body {
   letter-spacing: -0.02em;
 }
 
-.logo .dot { color: var(--emerald); }
+.logo .dot { color: #047857; } /* A11Y-003: wordmark 5.5:1 on white (was #10B981 2.5:1); dark mode keeps emerald */
+body.dark .logo .dot { color: var(--emerald); }
 
 .main-nav {
   display: flex;

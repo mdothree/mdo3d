@@ -119,13 +119,20 @@
             padding: 3rem 1rem;
             color: #666;
         }
-        footer a { color: #333; text-decoration: none; }
-        footer a:hover, footer a:focus-visible { text-decoration: underline; }
+        /* A11Y-009: links are underlined, not distinguished by colour alone */
+        footer a { color: #333; text-decoration: underline; text-underline-offset: 2px; }
+        footer a:hover, footer a:focus-visible { color: #000; }
         .footer-links { margin-bottom: 0.75rem; }
-        .footer-links a { margin: 0 0.5rem; }
+        /* A11Y-013: footer links get a 44px-tall tap target */
+        .footer-links a { margin: 0 0.25rem; display: inline-block; padding: 12px 0.25rem; min-height: 44px; }
+        /* A11Y-015: skip link, visible on keyboard focus */
+        .skip-link { position: absolute; left: 8px; top: -100px; background: #1a1a1a; color: #fff; padding: 10px 14px; border-radius: 6px; z-index: 100; text-decoration: none; }
+        .skip-link:focus { top: 8px; }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to tools</a>
+    <main id="main">
     <section class="hero">
         <h1>mdothree</h1>
         <p class="tagline">Simple tools for everyday tasks</p>
@@ -202,6 +209,7 @@
             </div>
         </div>
     </section>
+    </main>
     
     <footer>
         <p class="footer-links">
