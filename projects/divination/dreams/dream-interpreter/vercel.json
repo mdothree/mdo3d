@@ -15,6 +15,20 @@
       }
     },
     {
+      "src": "/(css|js|src|shared)/.*",
+      "headers": {
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800"
+      },
+      "continue": true
+    },
+    {
+      "src": "/.*\\.(png|jpg|jpeg|gif|svg|webp|avif|ico|woff|woff2|ttf|otf)",
+      "headers": {
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800"
+      },
+      "continue": true
+    },
+    {
       "src": "/success",
       "dest": "/public/success.html"
     },
