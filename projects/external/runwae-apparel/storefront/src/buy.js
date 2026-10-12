@@ -1,2 +1,0 @@
-document.getElementById('buy').addEventListener('submit',async e=>{e.preventDefault();const f=e.target,b=f.querySelector('button'),m=document.getElementById('msg');b.disabled=true;m.textContent='';
-try{const r=await fetch('/api/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({product:f.dataset.product,size:f.size.value,qty:1})});const j=await r.json();if(r.ok&&j.url){location.href=j.url;return}m.textContent=j.error||'Checkout is unavailable right now.'}catch{m.textContent='Checkout is unavailable right now.'}b.disabled=false});
