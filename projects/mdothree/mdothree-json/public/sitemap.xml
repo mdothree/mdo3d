@@ -2,46 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://json.mdothree.com/</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/format</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/validate</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/to-yaml</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/to-csv</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/to-xml</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/to-typescript</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/json-diff</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/base64</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/json-path</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://json.mdothree.com/pricing</loc>
-    <lastmod>2026-10-07</lastmod>
   </url>
 </urlset>
