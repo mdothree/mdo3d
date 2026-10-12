@@ -1,0 +1,14 @@
+{
+  "name": "butts-studios-apparel-storefront",
+  "private": true,
+  "type": "module",
+  "description": "One storefront codebase for Runwae Apparel and GLB (girlslovebutts.com). Static build + Stripe Checkout function.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node src/build.mjs",
+    "build:brand": "node src/build.mjs --brand $BRAND --out public",
+    "assets": "python3 tools/assets.py runwae",
+    "test": "node --test test/*.test.mjs",
+    "drop": "node tools/drop.mjs"
+  }
+}
