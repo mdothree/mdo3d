@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 """
-Generate crontab from profiles.json
-Run: python generate_cron.py > cron_install.sh && chmod +x cron_install.sh && ./cron_install.sh
+Generate crontab from profiles.json.
+
+Run ON THE HOST that will run ingest (never the laptop):
+    python3 cron.d/generate_cron.py && cron.d/install_cron.sh
+
+Paths are host-agnostic: entries use $LEADS_HOME, defaulting to the canonical checkout
+$HOME/mdo3d/projects/leads (cron runs commands via /bin/sh, so $HOME expands there).
+Override by exporting LEADS_HOME before generating, e.g. LEADS_HOME=/srv/mdo3d/projects/leads.
+The venv is expected at $LEADS_HOME/.venv. Every entry carries the marker "# mdo3d-leads"
+so reinstall/remove only touch these lines.
 """
 
 import json
+import os
 from pathlib import Path
 
 CONFIG_DIR = Path(__file__).parent.parent / "config"
@@ -13,7 +22,7 @@ CRON_TEMPLATE = """#!/bin/bash
 # Generated from profiles.json
 
 # Clear existing leads cron entries
-crontab -l | grep -v "ridgefield/tools/leads" > /tmp/current_cron || true
+crontab -l 2>/dev/null | grep -v "# mdo3d-leads" > /tmp/current_cron || true
 
 # Add new entries
 {entries}
@@ -23,7 +32,7 @@ crontab /tmp/current_cron
 rm /tmp/current_cron
 
 echo "Crontab installed. Current crontab:"
-crontab -l | grep ridgefield || echo "No ridgefield entries found"
+crontab -l | grep "# mdo3d-leads" || echo "No mdo3d-leads entries found"
 """
 
 FREQUENCY_CRON = {
@@ -38,8 +47,10 @@ DAY_MAP = {
     "thursday": 4, "friday": 5, "saturday": 6, "sunday": 0
 }
 
-SCRIPT_PATH = "/opt/ridgefield/tools/leads/src/runner.py"
-VENV_PYTHON = "/opt/ridgefield/.venv/bin/python"
+LEADS_HOME = os.environ.get("LEADS_HOME", "$HOME/mdo3d/projects/leads")
+SCRIPT_PATH = f"{LEADS_HOME}/src/runner.py"
+VENV_PYTHON = f"{LEADS_HOME}/.venv/bin/python"
+MARKER = "# mdo3d-leads"
 
 
 def generate_cron():
@@ -72,7 +83,7 @@ def generate_cron():
         else:
             continue
         
-        entry = f'{cron_time} cd /opt/ridgefield/tools/leads/src && {VENV_PYTHON} {SCRIPT_PATH} --profile {name} >> /opt/ridgefield/tools/leads/logs/{name}.log 2>&1'
+        entry = f'{cron_time} cd "{LEADS_HOME}/src" && "{VENV_PYTHON}" "{SCRIPT_PATH}" --profile {name} >> "{LEADS_HOME}/logs/{name}.log" 2>&1 {MARKER}:{name}'
         entries.append(entry)
     
     cron_dir = Path(__file__).parent
@@ -85,7 +96,8 @@ def generate_cron():
         for entry in entries:
             f.write(entry + "\n")
     
-    install_script = CRON_TEMPLATE.format(entries="\n".join(f'echo "{e}" >> /tmp/current_cron' for e in entries))
+    # single-quote each entry so $HOME/$LEADS_HOME reach crontab unexpanded (cron's shell expands them)
+    install_script = CRON_TEMPLATE.format(entries="\n".join("echo '" + e.replace("'", "'\\''") + "' >> /tmp/current_cron" for e in entries))
     
     install_file = cron_dir / "install_cron.sh"
     with open(install_file, "w") as f:
@@ -94,9 +106,8 @@ def generate_cron():
     
     print(f"Generated crontab at: {cron_file}")
     print(f"Generated install script at: {install_file}")
-    print("\nTo install on littlemini:")
-    print(f"  scp -r tools/leads/cron.d user@littlemini:/opt/ridgefield/tools/leads/")
-    print(f"  ssh user@littlemini '/opt/ridgefield/tools/leads/cron.d/install_cron.sh'")
+    print("\nTo install (on the ingest host, from the leads checkout):")
+    print("  cron.d/install_cron.sh")
 
 
 if __name__ == "__main__":

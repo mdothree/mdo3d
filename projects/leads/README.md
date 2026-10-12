@@ -2,10 +2,13 @@
 
 Automated lead generation from Florida Division of Corporations filings.
 
+> **Email policy:** email addresses are never guessed. `guess_email_variants` is `false` in every profile and is
+> hard-disabled in `src/runner.py`; only addresses published on the business's own site are kept.
+
 ## Setup
 
 ```bash
-cd ridgefield
+cd ~/mdo3d/projects/leads   # canonical checkout (was ~/ridgefield/tools/leads)
 source .venv/bin/activate
 pip install python-dotenv requests paramiko
 ```
@@ -23,43 +26,43 @@ SUNBIZ_SFTP_PASS=PubAccess1845!
 ### CLI Mode (One Shot)
 ```bash
 # Run all scheduled profiles
-python tools/leads/src/runner.py
+python src/runner.py
 
 # Run specific profile (ignores schedule)
-python tools/leads/src/runner.py --profile ridgefield --force
+python src/runner.py --profile ridgefield --force
 
 # Skip email enrichment for faster testing
-python tools/leads/src/runner.py --profile ridgefield --force --no-email-lookup
+python src/runner.py --profile ridgefield --force --no-email-lookup
 
 # Run multiple profiles
-python tools/leads/src/runner.py --profile ridgefield --profile nonprofits_general --force
+python src/runner.py --profile ridgefield --profile nonprofits_general --force
 ```
 
 ### Daemon Mode (Continuous)
 ```bash
 # Run continuously, check every hour
-python tools/leads/src/runner.py --daemon --interval 3600
+python src/runner.py --daemon --interval 3600
 
 # Run continuously, check every 15 minutes
-python tools/leads/src/runner.py --daemon --interval 900
+python src/runner.py --daemon --interval 900
 ```
 
 ### Individual Scripts
 ```bash
 # Download only
-python tools/leads/src/download.py
+python src/download.py
 
 # Convert TXT to CSV
-python tools/leads/src/convert.py tools/leads/data/20260403_corporate.txt
+python src/convert.py data/20260403_corporate.txt
 
 # Extract nonprofits only
-python tools/leads/src/convert.py --nonprofits tools/leads/data/20260403_corporate.txt
+python src/convert.py --nonprofits data/20260403_corporate.txt
 
 # Find emails for leads
-python tools/leads/src/find_emails.py tools/leads/output/leads.csv
+python src/find_emails.py output/leads.csv
 
 # Send emails only
-python tools/leads/src/deliver.py ridgefield
+python src/deliver.py ridgefield
 ```
 
 ## Pipeline Flow
@@ -95,7 +98,7 @@ Each profile defines:
 ## Output
 
 ```
-tools/leads/
+
 ├── data/           # Raw TXT downloads
 ├── output/         # Filtered & enriched CSVs
 ├── config/         # profiles.json
@@ -124,25 +127,24 @@ Control via:
 
 ## Scheduling
 
-### Cron (Recommended for littlemini)
+### Cron (on the ingest host — never the laptop)
 
 Crontab is generated from profiles.json — each profile's `frequency` and `day_of_week` settings create individual cron entries.
 
 ```bash
-# Generate crontab from profiles.json
-python tools/leads/cron.d/generate_cron.py
-
-# Install on littlemini
-scp -r tools/leads/cron.d user@littlemini:/opt/ridgefield/tools/leads/
-ssh user@littlemini '/opt/ridgefield/tools/leads/cron.d/install_cron.sh'
+# On the ingest host, from the leads checkout (default $HOME/mdo3d/projects/leads; override with LEADS_HOME)
+python3 cron.d/generate_cron.py      # writes cron.d/leads.cron + cron.d/install_cron.sh
+cron.d/install_cron.sh               # replaces only lines tagged "# mdo3d-leads"
 ```
+
+The ingest host is not yet chosen (see `~/latarence/docs/plans/input_prompts_0/` Part C §C5: fleet host recommended).
 
 Crontab entries run at 8am on configured days (Mon-Fri).
 
 ### Daemon Mode (Alternative)
 ```bash
 # Run continuously, check every hour
-python tools/leads/src/runner.py --daemon --interval 3600
+python src/runner.py --daemon --interval 3600
 
 # Stop daemon
 pkill -f "runner.py --daemon"

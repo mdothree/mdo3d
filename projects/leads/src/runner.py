@@ -1203,7 +1203,8 @@ if __name__ == "__main__":
             else:
                 continue
             
-            entry = f'{cron_time} cd {TOOLS_DIR.resolve()} && .venv/bin/python tools/leads/src/runner.py --profile {name} >> tools/leads/logs/{name}.log 2>&1'
+            home = TOOLS_DIR.resolve()
+            entry = f'{cron_time} cd "{home}" && "{home}/.venv/bin/python" src/runner.py --profile {name} >> "{home}/logs/{name}.log" 2>&1 # mdo3d-leads:{name}'
             entries.append(entry)
         
         if args.cron == "generate":
@@ -1219,15 +1220,16 @@ if __name__ == "__main__":
                 print(f"  {e}")
         
         elif args.cron == "install":
-            os.system("crontab -l | grep -v 'ridgefield/tools/leads' > /tmp/current_cron || true")
+            os.system("crontab -l 2>/dev/null | grep -v '# mdo3d-leads' > /tmp/current_cron || true")
             for e in entries:
-                os.system(f'echo "{e}" >> /tmp/current_cron')
+                with open("/tmp/current_cron", "a") as cf:
+                    cf.write(e + "\n")
             os.system("crontab /tmp/current_cron")
             os.system("rm /tmp/current_cron")
             print("Crontab installed")
         
         elif args.cron == "remove":
-            os.system("crontab -l | grep -v 'ridgefield/tools/leads' | crontab -")
-            print("Ridgefield cron entries removed")
+            os.system("crontab -l 2>/dev/null | grep -v '# mdo3d-leads' | crontab -")
+            print("mdo3d-leads cron entries removed")
     else:
         run(args.profile, args.force, args.date, args)

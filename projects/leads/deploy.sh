@@ -1,41 +1,27 @@
 #!/bin/bash
-# FL Sunbiz Lead Generator - Deployment Script
-# Run from littlemini after uploading
+# FL Sunbiz Lead Generator - host setup (in place, on the ingest host; never the laptop)
+# Usage: from a checkout of the mdo3d repo on the ingest host:
+#   LEADS_HOME=~/mdo3d/projects/leads bash ~/mdo3d/projects/leads/deploy.sh
+# The ingest host is not yet chosen (plan: ~/latarence/docs/plans/input_prompts_0/ Part C §C5).
 
 set -e
 
-DEPLOY_DIR="/opt/ridgefield/leads"
-VENV_DIR="/opt/ridgefield/leads/.venv"
+DEPLOY_DIR="${LEADS_HOME:-$HOME/mdo3d/projects/leads}"
+VENV_DIR="$DEPLOY_DIR/.venv"
 
-echo "=== FL Sunbiz Lead Generator Deployment ==="
+echo "=== FL Sunbiz Lead Generator setup in $DEPLOY_DIR ==="
+[ -f "$DEPLOY_DIR/src/runner.py" ] || { echo "runner.py not found under $DEPLOY_DIR (set LEADS_HOME)"; exit 1; }
 
-# Create directory
-echo "Creating directory structure..."
-sudo mkdir -p $DEPLOY_DIR
-sudo chown -R $USER:$USER $(dirname $DEPLOY_DIR)
-
-# Sync files (run from ridgefield repo root)
-echo "Copying files..."
-rsync -avz --exclude='.venv' --exclude='.git' --exclude='*.log' \
-    tools/leads/ $DEPLOY_DIR/
-
-# Create virtual environment
 echo "Setting up Python environment..."
-python3 -m venv $VENV_DIR
-source $VENV_DIR/bin/activate
-
+python3 -m venv "$VENV_DIR"
+# shellcheck disable=SC1091
+source "$VENV_DIR/bin/activate"
 pip install --upgrade pip
 pip install python-dotenv requests paramiko beautifulsoup4
 
-# Set permissions
-chmod +x $DEPLOY_DIR/src/*.py
+chmod +x "$DEPLOY_DIR"/src/*.py
+mkdir -p "$DEPLOY_DIR/logs"
 
-# Create log directory
-mkdir -p $DEPLOY_DIR/logs
-
-echo "=== Deployment Complete ==="
-echo "To configure cron, run:"
-echo "  crontab -e"
-echo ""
-echo "Add this line for daily at 8am:"
-echo "  0 8 * * 1-5 cd $DEPLOY_DIR/src && .venv/bin/python runner.py >> ../logs/cron.log 2>&1"
+echo "=== Setup complete ==="
+echo "To schedule the profiles (writes + installs only '# mdo3d-leads' lines):"
+echo "  cd $DEPLOY_DIR && LEADS_HOME=$DEPLOY_DIR python3 cron.d/generate_cron.py && cron.d/install_cron.sh"

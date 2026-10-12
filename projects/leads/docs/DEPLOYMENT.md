@@ -6,7 +6,7 @@
 - Frontend: https://leads.mdo3d.com
 - API: https://leadsapi.mdo3d.com
 
-**Host**: littlemini (via Cloudflare Tunnel)
+**Host**: was littlemini (via Cloudflare Tunnel); leads.mdo3d.com is down (530) and the new ingest host is TBD (plan: `~/latarence/docs/plans/input_prompts_0/` Part C §C5, fleet host recommended)
 
 ---
 
@@ -39,7 +39,7 @@ web/
 
 ```bash
 # Start/rebuild
-cd ~/ridgefield/tools/leads/web
+cd ~/mdo3d/projects/leads/web
 docker compose up -d --build
 
 # View logs
@@ -236,8 +236,8 @@ curl https://leadsapi.mdo3d.com/health
 ### Container Logs
 
 ```bash
-ssh littlemini "docker logs leads-backend --tail 50"
-ssh littlemini "docker logs leads-frontend --tail 50"
+ssh <ingest-host> "docker logs leads-backend --tail 50"
+ssh <ingest-host> "docker logs leads-frontend --tail 50"
 ```
 
 ### Error Locations
@@ -260,5 +260,5 @@ git add -A && git commit -m "Description"
 
 # 3. Push and deploy
 git push origin main
-ssh littlemini "cd ~/ridgefield/tools/leads && git pull && cd web && docker compose up -d --build"
+ssh <ingest-host> "cd ~/mdo3d && git pull && cd projects/leads/web && docker compose up -d --build"
 ```
