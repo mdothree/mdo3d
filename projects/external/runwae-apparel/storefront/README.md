@@ -38,7 +38,7 @@ node tools/drop.mjs notice runwae fall21-rerelease --new-date 2027-01-20
 ```
 
 ## How a product goes live (each step needs the Principal's OK)
-0. Clear any `rights_hold` (a product with one can never be sold; currently `wordmark-tee`, for third-party back art).
+0. Clear any `rights_hold` (a product with one can never be sold; none currently. The wordmark tee went front-only per #82-d).
 1. **Printful tee:** set `price_cents`, `printful_variant_ids` (once the Printful key exists) and `status: "live"`.
 2. **Pre-order piece:** also set its drop's `window.open/close` (14–21 days) and `moq` from the supplier quote.
    Ship-by = close + 28 production + 7 freight + 7 receiving + 7 safety days. Override per drop in `schedule`.

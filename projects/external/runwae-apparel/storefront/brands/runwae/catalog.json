@@ -33,10 +33,9 @@
       "channel": "printful",
       "method": "screen print",
       "images": [
-        "Fall 21/FB1_2048x2048.png",
-        "Fall 21/FB2_2048x2048.png"
+        "Fall 21/FB1_2048x2048.png"
       ],
-      "description": "Small RUNWAE APPAREL chest wordmark; the birdcage-head illustration across the back. Black.",
+      "description": "Small RUNWAE APPAREL wordmark on the chest. Black.",
       "sizes": [
         "S",
         "M",
@@ -47,7 +46,7 @@
       "price_cents": null,
       "status": "draft",
       "printful_variant_ids": null,
-      "rights_hold": "Back print (birdcage-head illustration) is signed by an outside artist (watermark on ~/Downloads/Butts_Studios/GLB/Design/IMG_3206.JPG). Confirm commercial rights or drop the back print before this can be sold."
+      "rights_hold": null
     },
     {
       "id": "true-grit-tee",

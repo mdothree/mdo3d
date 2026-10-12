@@ -53,7 +53,10 @@ test('sessionParams: rejections', () => {
 
 test('the real Runwae catalog has nothing purchasable (all draft, unpriced)', () => {
   const real = loadCatalog('runwae', ROOT);
-  assert.ok(real.products.find((p) => p.id === 'wordmark-tee').rights_hold, 'wordmark tee back print is on a rights hold');
+  const w = real.products.find((p) => p.id === 'wordmark-tee');
+  assert.deepEqual(w.images, ['Fall 21/FB1_2048x2048.png'], 'wordmark tee is front-only (#82-d)');
+  assert.equal(w.rights_hold, null);
+  assert.ok(real.products.every((p) => p.images.every((i) => !/FB2/.test(i))), 'third-party birdcage art never ships');
   for (const p of real.products) {
     assert.equal(p.status, 'draft');
     assert.equal(p.price_cents, null);

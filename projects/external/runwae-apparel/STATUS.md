@@ -27,17 +27,17 @@
   playbook names for the storefront.
 - **Line-art thread:** *"Luv thy neighbor"* (three hand-drawn figures) shares the hand-drawn line style that GLB is
   built on, a natural bridge between the two brands.
-- ⚠️ **Rights flag (found 2026-10-12):** the **birdcage-head illustration** (back of the wordmark tee, `FB2`) is signed by an
-  **outside artist**: `GLB/Design/IMG_3206.JPG` carries the watermark `NINEPARDON105@GMAIL.COM` (file dated 2021-01-11).
-  Probably a commission, but the playbook says the designs are LB's. `wordmark-tee` is on `rights_hold` in the catalog,
-  so it can't be sold until LB confirms commercial rights or drops the back print.
+- **Third-party art, resolved:** the **birdcage-head illustration** (formerly the wordmark tee's back print, `FB2`) is signed
+  by an outside artist (watermark on `GLB/Design/IMG_3206.JPG`). **Principal, #82-d, 2026-10-12: "drop the birdcage back
+  print and go front only."** The wordmark tee is front-only, the art isn't used anywhere in the storefront, and a test
+  keeps it out. Don't reuse it without a license.
 - **Contact collateral:** business cards (Fayetteville, AR). The mobile site mock is in `design/runwaeapparelmobile.png`.
 
 **Fall '21 line (mapped from file codes):**
 | Product | Files (`design/Fall 21/`, transparent versions in `design/Transparent Clothing/`) | Notes |
 |---|---|---|
 | Crafting tee | `C1` front ("CRAFTING" stencil), `C2` back (dripping R + RUNWAE APPAREL) | orange tee |
-| Wordmark tee | `FB1` front (small RUNWAE APPAREL), `FB2` back (birdcage-head illustration, coral) | black tee |
+| Wordmark tee | `FB1` front (small RUNWAE APPAREL) | black tee, **front only** (#82-d). `FB2` back art is third-party, not used |
 | True Grit tee | `TG1` | black tee, orange dripping type |
 | True Grit hoodie | `TRB1`, `TrueGrit` | black/white; olive/red version too |
 | Poison hoodie | `Transparent Clothing/Poison` | black, cyan/magenta glow type |
@@ -63,7 +63,7 @@ logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site;
 **GLB (sibling), catalogued 2026-10-12:** `~/Downloads/Butts_Studios/GLB/`.
 - `Design/`: **6 usable line drawings**, single-line figure studies (back views, one sheet of six), shot as phone
   photos of paper. They need a clean scan or vectorising before any mockup (shadows, paper texture). Also: one
-  "Brain Dead" notebook doodle, the birdcage illustration (third-party, see the rights flag above), and a screenshot
+  "Brain Dead" notebook doodle, the birdcage illustration (third-party, not used; see above), and a screenshot
   of someone else's tee (reference only).
 - `Branding Insp/`: 7 Instagram screenshots of other studios' work (bold hand-lettering, pastel pop palettes). **Mood only, never source.**
 - `GLB.docx`, `Progress.xlsx` not opened yet. `GLBKeys.xlsx` holds passwords. It wasn't opened or copied, and it stays out of every repo, doc and chat.
@@ -92,7 +92,7 @@ logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site;
 - [ ] **Shopify catalog export:** if wanted, export products CSV from Admin (or share the `*.myshopify.com` handle) so the catalog, prices and copy can seed the new store.
 - [ ] **Vector exports:** export print-ready art from the `.ai` masters (Illustrator is LB's machine/hands), or OK an agent to try a CLI export.
 - [x] **Versioning `design/`:** stays local-only (#82-c, 2026-10-12).
-- [ ] **Birdcage illustration rights:** commissioned with commercial rights, or drop it from the wordmark tee? (JARVIS #82-d)
+- [x] **Birdcage illustration:** dropped; the wordmark tee is front-only (#82-d, 2026-10-12).
 - [ ] **Accounts/keys:** Printful, Stripe (test mode first), Shippo or EasyPost; PO box / virtual mailbox; label printer.
 
 ## Agent-doable
@@ -125,3 +125,4 @@ Shippo/EasyPost label + packing-slip pipeline, tracking/delay emails, GA4 → St
   - **#82-c:** `design/` stays local.
   - **#95** (Runwae *app* purple `#6259e8` / grey `#676c88`): verified it's in the pushed runwae tip `213606e` (from `fd07868`, the build #5 ships), so there was nothing to change. Leftovers aren't live: a CSS comment, and `main.min.css`, which no page links. One real one: the `email.html` template button is white on `#9389FF` (~3:1). That's app/email code, so it's handed to the MDO lane, not edited here.
   - **Still with the Principal:** #82-b (first drop), #82-d (birdcage art rights).
+- **2026-10-12 (#82-d answered):** The Principal said "drop the birdcage back print and go front only." Applied: catalog (one image, front-only copy, `rights_hold` cleared), the back-print asset removed, a test added so the art can't return, README and STATUS updated. **The only open decision is #82-b (first drop).** Tests now run off-box per doctrine.
