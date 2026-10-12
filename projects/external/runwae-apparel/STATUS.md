@@ -7,7 +7,7 @@
 | Area | State |
 |---|---|
 | Model | **Decided** (2026-10-07): pre-order drops from the Pakistan supplier, Printful POD in parallel, self-fulfillment, one custom storefront shared with GLB |
-| runwaeapparel.com | **DOWN.** Re-checked 2026-10-08: `sslv3 alert handshake failure` on apex + www (Shopify edge 23.227.38.32 serves no cert for the custom domain). Fix is **operator-only**: Shopify Admin → Settings → Domains → remove + reconnect |
+| runwaeapparel.com | **DOWN** (Shopify TLS; DNS at **GoDaddy**). **Holding page built + staged** (`storefront/deploy/holding_go.sh`): it needs a Vercel-token holder to run it and two GoDaddy records (JARVIS setup `[runwae-holding]`). Preview: `http://latarence-xps-9320:8730/holding/index.html` |
 | girlslovebutts.com | Resolves, HTTP 200, `Server: DPS/2.0.0` (looks like a GoDaddy builder/parked page, not a store) |
 | Design source | Copied to `design/` (139 files, checksums verified; Downloads untouched). **Stays local, git-ignored** (decided #82-c, 2026-10-12) |
 | Supplier | Unverified. No contact in years |
