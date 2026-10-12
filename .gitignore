@@ -119,3 +119,6 @@ build/
 # standalone repos (own GitHub remotes)
 projects/mdo3d/layoffleads/
 projects/mdo3d/promptsforbusiness/
+
+# Runwae Apparel playbook: private, kept on disk only (JARVIS #102 follow-up)
+projects/external/runwae-apparel/APPAREL_PLAYBOOK.md
