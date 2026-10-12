@@ -1,0 +1,7 @@
+[
+ {"entityid":"20260000001","entityname":"Example Cloud Robotics LLC","principaladdress1":"1 Test St","principalcity":"Denver","principalstate":"CO","principalzipcode":"80202","principalcountry":"US","entitystatus":"Good Standing","jurisdictonofformation":"CO","entitytype":"DLLC","agentfirstname":"JANE","agentmiddlename":"Q","agentlastname":"SAMPLE","entityformdate":"2026-01-05T00:00:00.000"},
+ {"entityid":"20260000002","entityname":"Fictional Front Range Roofing, Inc.","principaladdress1":"2 Mock Ave","principaladdress2":"Unit 3","principalcity":"Boulder","principalstate":"CO","principalzipcode":"80302","entitystatus":"Good Standing","entitytype":"DPC","agentorganizationname":"Placeholder Registered Agents Inc","entityformdate":"2026-01-05T00:00:00.000"},
+ {"entityid":"20260000003","entityname":"Demo Mountain Youth Academy","principaladdress1":"3 Fake Rd","principalcity":"Pueblo","principalstate":"CO","principalzipcode":"81003","entitystatus":"Good Standing","entitytype":"DNC","agentfirstname":"RICHARD","agentlastname":"ROE","entityformdate":"2026-01-05T00:00:00.000"},
+ {"entityid":"20260000004","entityname":"Dissolved Data Partners LLC","principalcity":"Aurora","principalstate":"CO","entitystatus":"Voluntarily Dissolved","entitytype":"DLLC","entityformdate":"2026-01-05T00:00:00.000"},
+ {"entityid":"20260000005","entityname":"Odd Type Trust","principalcity":"Golden","principalstate":"CO","entitystatus":"Exists","entitytype":"DT","entityformdate":"2026-01-05T00:00:00.000"}
+]
