@@ -85,7 +85,8 @@ g_ronna() {  # P0 RONNA-ENV-SYNTAX + P0 RONNA-MOCK-FALLBACK + SOFT-200-EMPTY (ro
   for s in companies contacts prospects; do check "$s reads #filter-company" "curl -s https://$s.ronnascanner.com/js/app.js | grep -q 'getElementById(\"filter-company\")' && echo yes" "yes"; done
 }
 g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MDOTHREE-STRAY-FAVICON, -SIGNED-IN-BADGE, JSON-BEAUTIFY-EMPTY-SILENT, HASH-MOBILE-NAV-OVERFLOW, MDOTHREE-TRIAL-PATH-UNVERIFIED
-  for t in json text pdf qr hash color password timestamp image; do deploy projects/mdothree/mdothree-$t; done   # image: cycle-8 QW1 footer (0663366)
+  for t in json text pdf qr hash color password timestamp image; do deploy projects/mdothree/mdothree-$t; done
+  deploy projects/mdothree/landing   # mdothree.com: C7-018 clean links (QW5 2b0033a), cleanUrls, legal   # image: cycle-8 QW1 footer (0663366)
   check "pdf stray favicon gone" "curl -s https://pdf.mdothree.com/ | grep -c '📄\" />'" "0"
   check "qr no 7-day trial" "curl -s https://qr.mdothree.com/pricing | grep -c '7-Day'" "0"
   check "color badge anon-safe" "curl -s https://color.mdothree.com/js/app.js | grep -q isAnonymous && echo yes" "yes"
@@ -106,7 +107,8 @@ g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MD
     check "$t robots no config Disallow (C7-012)" "curl -s https://$t.mdothree.com/robots.txt | grep -c 'js/config'" "0"
     check "$t home has no .html links (C7-018)" "curl -s https://$t.mdothree.com/ | grep -cE 'href=\"/?[a-z0-9-]+\\.html\"'" "0"; done
 }
-g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching already live)
+g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching already live); oracle-cards: C7-020 share-script console.log removal
+  deploy projects/divination/oracle/oracle-cards
   deploy projects/divination/numerology/numerology-app
   deploy projects/divination/pastlives/api
   check "numerology recalc" "curl -s https://numerology.mdo3d.com/js/app.js | grep -q NUMEROLOGY-NO-RECALC && echo yes" "yes"
