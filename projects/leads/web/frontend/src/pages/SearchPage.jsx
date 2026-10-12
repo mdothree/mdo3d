@@ -5,8 +5,8 @@ import Notice from '../components/Notice.jsx';
 import { Link } from '../lib/router.jsx';
 import { useAccount } from '../hooks/useAccount.jsx';
 import { useAuth } from '../hooks/useAuth.jsx';
-import { exportCsv, getCoverage, listVerticals, searchFilings, createSavedSearch } from '../lib/api.js';
-import { ENTITY_KINDS, filingTypesFor, mergeStates, STATE_NAME } from '../lib/states.js';
+import { exportCsv, getCoverage, listFilingTypes, listVerticals, searchFilings, createSavedSearch } from '../lib/api.js';
+import { ENTITY_KINDS, filingTypeOptions, mergeStates, STATE_NAME } from '../lib/states.js';
 
 const PAGE_SIZE = 50;
 const DEFAULT_DAYS = 30;
@@ -57,7 +57,7 @@ function ErrorState({ error }) {
 }
 
 export default function SearchPage() {
-  const { planActive, savedSearchesAvailable } = useAccount();
+  const { planActive, savedSearchesAvailable, savedSearchEmailOn } = useAccount();
   const [states, setStates] = useState(() => mergeStates(null));
   const [state, setState] = useState('FL');
   const [coverageStatus, setCoverageStatus] = useState('loading');
@@ -85,7 +85,21 @@ export default function SearchPage() {
       .catch(() => setVerticals([]));
   }, []);
 
-  const filingTypes = filingTypesFor(state);
+  // Filing-type codes per state from GET /filing-types (cached per state in lib/api.js).
+  const [filingTypesState, setFilingTypesState] = useState({ state: null, status: 'loading', items: [] });
+  useEffect(() => {
+    let live = true;
+    setFilingTypesState({ state, status: 'loading', items: [] });
+    listFilingTypes(state)
+      .then((rows) => { if (live) setFilingTypesState({ state, status: 'ok', items: filingTypeOptions(rows) }); })
+      .catch(() => { if (live) setFilingTypesState({ state, status: 'error', items: [] }); });
+    return () => { live = false; };
+  }, [state]);
+  const filingTypes = filingTypesState.state === state ? filingTypesState.items : [];
+  const filingTypesNote = filingTypesState.status === 'loading' ? 'Loading filing types…'
+    : filingTypesState.status === 'error' ? 'Filing types could not be loaded, so this filter is off. Search still covers every filing type.'
+    : !filingTypes.length ? `No filing-type list is available for ${STATE_NAME[state] || state} yet, so this filter is off. Search covers every filing type.`
+    : '';
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -192,10 +206,12 @@ export default function SearchPage() {
           <div className="filter-fields">
           <div className="field">
             <label htmlFor="f-type">Filing type</label>
-            <select id="f-type" value={form.filing_type} onChange={set('filing_type')} disabled={!filingTypes.length}>
+            <select id="f-type" value={form.filing_type} onChange={set('filing_type')} disabled={!filingTypes.length}
+              aria-describedby={filingTypesNote ? 'f-type-hint' : undefined}>
               <option value="">All filing types</option>
               {filingTypes.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
+            {filingTypesNote && <p id="f-type-hint" className="hint" aria-live="polite">{filingTypesNote}</p>}
           </div>
 
           <div className="field">
@@ -256,10 +272,10 @@ export default function SearchPage() {
               {savedSearchesAvailable && planActive ? (
                 <button type="button" className="btn btn-secondary" onClick={onSave}
                   disabled={result.status !== 'ok' || saveState.status === 'loading'}>
-                  Save search (weekly email)
+                  {savedSearchEmailOn ? 'Save search (weekly email)' : 'Save search'}
                 </button>
               ) : (
-                <span className="muted small">Saved searches with weekly email: <Link to="/saved">coming soon</Link></span>
+                <span className="muted small">Saved searches: <Link to="/saved">coming soon</Link></span>
               )}
             </div>
           </div>

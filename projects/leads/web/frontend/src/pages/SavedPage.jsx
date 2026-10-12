@@ -34,7 +34,7 @@ function SavedList() {
     return (
       <Notice title="No saved searches yet."
         action={<Link to="/" className="btn btn-primary">Start a search</Link>}>
-        Run a search, then choose “Save search (weekly email)”.
+        Run a search, then choose “Save search”.
       </Notice>
     );
   }

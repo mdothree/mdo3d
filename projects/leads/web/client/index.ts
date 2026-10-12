@@ -73,6 +73,8 @@ export {
   type EntityKind,
   type StateCoverage,
   type Vertical,
+  type FilingType,
+  type FilingTypeList,
   type CsvExport,
   type Account,
   type SavedSearch,

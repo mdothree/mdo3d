@@ -2,10 +2,10 @@
  * MDO3D Leads - search / export / account client (v1 contract)
  *
  * Framework-agnostic typed client for the per-state business-filings API
- * (https://leadsapi.mdo3d.com). Search/export/coverage/verticals match the
- * backend as pushed in 7c11b41 (web/backend/api.py). Account, promo redeem,
- * checkout and saved searches are PROPOSED paths the backend has not built yet;
- * see web/frontend/README.md ("API contract").
+ * (https://leadsapi.mdo3d.com). Every path here is live on the backend
+ * (web/backend/api.py): search/export/coverage/verticals/filing-types and the
+ * account-level /v1/* endpoints (account, promo redeem, checkout, saved
+ * searches). See web/frontend/README.md ("API contract").
  *
  * Rules this client keeps:
  *  - Never fabricates data: every failure is returned as a typed error, never
@@ -94,6 +94,22 @@ export interface Vertical {
   match: 'name contains' | 'entity type';
 }
 
+/** GET /filing-types?state=XX row (public). `code` keeps the state's own spelling (CT: "Stock", ...). */
+export interface FilingType {
+  code: string;
+  /** Human label; equals `code` for codes the backend has no table entry for. */
+  label: string;
+  entity_kind: EntityKind | string;
+  /** Stored filings with this code. */
+  filings: number;
+}
+
+export interface FilingTypeList {
+  state: string;
+  /** May be empty: the UI then disables the filing-type filter with a note. */
+  filing_types: FilingType[];
+}
+
 export interface FilingQuery {
   state?: string;              // comma-separated codes; default = all entitled states
   county?: string;
@@ -130,12 +146,17 @@ export interface Account {
     name: string | null;
     /** "stripe" | "promo" | null */
     source: string | null;
+    /** Entitled state codes. */
+    states: string[];
     renews_at: string | null;
+    expires_at: string | null;
   };
   /** Feature switches the backend controls. The UI hides what is false. */
   features: {
     checkout: boolean;
     saved_searches: boolean;
+    /** Weekly saved-search email delivery (LEADS_ENABLE_DELIVERY). The UI promises email only when true. */
+    saved_search_email: boolean;
     promo_codes: boolean;
   };
 }
@@ -188,13 +209,13 @@ export interface LeadsClientOptions {
 }
 
 export const PATHS = {
-  // live (backend 7c11b41)
+  // all live on the backend (web/backend/api.py); a 404 from an older backend reads as "not available yet"
   coverage: '/coverage',                        // public
   verticals: '/verticals',                      // public
+  filingTypes: '/filing-types',                 // public, ?state=XX
   filings: '/filings',                          // ?FilingQuery (auth + paid)
   filingsCsv: '/filings/export.csv',            // ?FilingQuery minus limit/offset, <= 10k rows
   profiles: '/profiles',
-  // proposed (not built yet; 404 is treated as "not available yet")
   account: '/v1/account',
   redeem: '/v1/access/redeem',                  // POST {code}
   checkout: '/v1/checkout',                     // POST {success_url, cancel_url}
@@ -274,6 +295,8 @@ export function createLeadsClient(opts: LeadsClientOptions) {
   return {
     getCoverage: () => json<{ states: StateCoverage[] }>(PATHS.coverage),
     listVerticals: () => json<{ verticals: Vertical[] }>(PATHS.verticals),
+    listFilingTypes: (state: string) =>
+      json<FilingTypeList>(`${PATHS.filingTypes}${queryString({ state: state.toUpperCase() })}`),
     searchFilings: async (q: FilingQuery): Promise<FilingPage> => {
       const page = await json<Omit<FilingPage, 'filings'> & { filings: FilingRow[] }>(`${PATHS.filings}${queryString(q)}`);
       return { ...page, filings: (page.filings || []).map(normalizeFiling) };

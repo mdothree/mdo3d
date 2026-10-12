@@ -22,9 +22,10 @@ Build-time env (all optional): `VITE_API_URL`, `VITE_FIREBASE_*` (without them s
 - **Checkout fails closed.** The checkout button renders only when `GET /v1/account` reports
   `features.checkout: true`, and the app only follows a backend-issued `https://checkout.stripe.com/…` URL.
   Otherwise the plan page says "Plans opening soon". The app never calls Stripe directly.
-- **Saved searches** render only when `features.saved_searches: true`; otherwise "coming soon".
-- **States:** only states `GET /v1/states` reports `live` are selectable; others show "coming". If that
-  endpoint is missing, only states with an adapter in `src/adapters/` are enabled (FL).
+- **Saved searches** render only when `features.saved_searches: true`; otherwise "coming soon". The button
+  says "Save search", plus "(weekly email)" only when `features.saved_search_email: true`.
+- **States:** only states `GET /coverage` reports with filings are selectable; others show "coming". If that
+  call fails, only states with an adapter in `src/adapters/` are enabled (FL, CO, CT).
 - House style: MDO tokens (`projects/mdo3d/landing`), light/dark via `prefers-color-scheme`, WCAG AA,
   44px targets, skip link + `<main>`, labelled controls. Results are a table at ≥768px and cards below.
 
@@ -40,7 +41,7 @@ when signed in. Errors are JSON `{"detail": "..."}`. The UI renders them like th
 
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/coverage` | public. `{states:[{state, filings, latest_filed_date, latest_source_date, last_ingest_at}]}`. A state is selectable only when it has `filings > 0`. If the call fails, FL and CO (the adapters in `src/adapters/`) stay enabled and search then reports the outage. |
+| GET | `/coverage` | public. `{states:[{state, filings, latest_filed_date, latest_source_date, last_ingest_at}]}`. A state is selectable only when it has `filings > 0`. If the call fails, FL, CO and CT (the adapters in `src/adapters/`) stay enabled and search then reports the outage. |
 | GET | `/verticals` | public. `{verticals:[{id, label, match}]}`. Labelled "Name contains… (keyword group)": they match the entity **name** only, not an industry. |
 | GET | `/filings` | paid. `state, filing_type, entity_kind, vertical, q, date_from, date_to, limit, offset` (also `county`, `include_inactive`). Returns `{filings, total, limit, offset, states}`. Rows are flat (`address_1, address_2, city, address_state, zip_code`) and `normalizeFiling()` maps them to `principal_address`. The UI defaults to the last 30 days of `filed_date`, because the daily feed also carries amendments to older entities. |
 | GET | `/filings/export.csv` | paid. Same filters minus limit/offset, at most 10k rows. CORS exposes `X-Total-Count`, `X-Truncated` and `Content-Disposition`, so the UI can read the row count and note truncation. |
@@ -55,8 +56,10 @@ when signed in. Errors are JSON `{"detail": "..."}`. The UI renders them like th
 The **county** filter is not shown: the FL corporate file and the CO dataset have no county field (the
 adapters store `null`).
 
-The UI still treats a 404 from these paths as "not available yet" (an older backend) and never fakes
-success. `src/lib/states.js` still lists FL codes locally; switching the filing-type select to
-`/filing-types` is open UI work.
+This contract is accurate against `web/backend/api.py` as of ff95884. The UI treats a 404 from these
+paths as "not available yet" (an older backend) and never fakes success. The filing-type select is filled
+from `/filing-types` (cached per state); if a state returns no codes, or the call fails, the select is
+disabled with a note and search covers every filing type. The "Save search" button adds "(weekly email)"
+only when `features.saved_search_email` is true.
 
 `contacts` carries **verified contacts only** (never guessed emails).

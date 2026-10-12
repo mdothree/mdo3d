@@ -3,10 +3,10 @@ import { useAuth } from './useAuth.jsx';
 import { getAccount, listProfiles } from '../lib/api.js';
 
 /**
- * Account / plan state from GET /v1/account (proposed). When signed out nothing
- * is fetched. Until the backend ships /v1/account (404), plan status is derived
- * from GET /profiles (any paid profile = active, as the backend's entitlement
- * check does) and every feature switch stays off (checkout, saved searches).
+ * Account / plan state from GET /v1/account (live on the backend). When signed
+ * out nothing is fetched. If an older backend answers 404, plan status is
+ * derived from GET /profiles (any paid profile = active, as the backend's
+ * entitlement check does) and every feature switch stays off.
  */
 const AccountContext = createContext(null);
 
@@ -31,7 +31,7 @@ export function AccountProvider({ children }) {
             account: {
               email: null,
               plan: { active: paid, name: null, source: null, renews_at: null },
-              features: { checkout: false, saved_searches: false, promo_codes: false },
+              features: { checkout: false, saved_searches: false, saved_search_email: false, promo_codes: false },
             },
             error: null,
           });
@@ -56,6 +56,7 @@ export function useAccount() {
     planActive: !!ctx.account?.plan?.active,
     checkoutAvailable: features.checkout === true,
     savedSearchesAvailable: features.saved_searches === true,
+    savedSearchEmailOn: features.saved_search_email === true,
     promoAvailable: features.promo_codes === true,
   };
 }

@@ -1,11 +1,12 @@
 /**
- * Reference data only (names, tile-map positions, FL code lists). Which states
+ * Reference data only (names, tile-map positions). Filing-type codes come from
+ * the public GET /filing-types?state=XX (see lib/api.js). Which states
  * are searchable comes from the public API (GET /coverage: states with ingested
  * filings). If coverage cannot be read, only the states with an adapter in this
- * repo are enabled (src/adapters: FL, CO). Nothing here is lead data.
+ * repo are enabled (src/adapters: FL, CO, CT). Nothing here is lead data.
  */
 
-export const STATES_WITH_ADAPTER = ['FL', 'CO'];
+export const STATES_WITH_ADAPTER = ['FL', 'CO', 'CT'];
 
 // [code, name, column, row] for an 11 x 8 tile-grid map.
 export const US_STATES = [
@@ -52,26 +53,11 @@ export function mergeStates(coverage) {
   }));
 }
 
-const FL_FILING_TYPES = {
-  FLAL: 'Florida LLC',
-  DOMP: 'Domestic profit corporation',
-  FORP: 'Foreign profit corporation',
-  FORL: 'Foreign LLC',
-  DOMLP: 'Domestic limited partnership',
-  FORLP: 'Foreign limited partnership',
-  LLP: 'Limited liability partnership',
-  FORLLP: 'Foreign limited liability partnership',
-  GENPAR: 'General partnership',
-  DOMNP: 'Domestic non-profit corporation',
-  FORNP: 'Foreign non-profit corporation',
-  NPREG: 'Non-profit registration',
-  FIC: 'Fictitious name (trade name)',
-};
-
-/** Filing-type codes per state (no backend endpoint lists them yet). */
-export function filingTypesFor(state) {
-  if (state !== 'FL') return [];
-  return Object.entries(FL_FILING_TYPES).map(([value, label]) => ({ value, label: `${label} (${value})` }));
+/** Shape GET /filing-types rows ({code, label, entity_kind, filings}) as select options. */
+export function filingTypeOptions(rows) {
+  return (rows || [])
+    .filter((r) => r && typeof r.code === 'string' && r.code.trim())
+    .map((r) => ({ value: r.code, label: r.label && r.label !== r.code ? `${r.label} (${r.code})` : r.code }));
 }
 
 export const ENTITY_KINDS = [

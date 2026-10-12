@@ -18,6 +18,7 @@ export const PATHS = {
   // live on the backend (web/backend/api.py, 7c11b41)
   coverage: '/coverage',
   verticals: '/verticals',
+  filingTypes: '/filing-types',
   filings: '/filings',
   filingsCsv: '/filings/export.csv',
   profiles: '/profiles',
@@ -99,6 +100,20 @@ async function json(path, init) {
 
 export const getCoverage = () => json(PATHS.coverage);
 export const listVerticals = () => json(PATHS.verticals);
+
+// GET /filing-types?state=XX is static reference data: one request per state per page load.
+// A failed request is dropped from the cache so the next state change can retry.
+const filingTypesCache = new Map();
+export function listFilingTypes(state) {
+  const key = String(state || '').toUpperCase();
+  if (!filingTypesCache.has(key)) {
+    const p = json(`${PATHS.filingTypes}${queryString({ state: key })}`)
+      .then((r) => (Array.isArray(r?.filing_types) ? r.filing_types : []));
+    p.catch(() => filingTypesCache.delete(key));
+    filingTypesCache.set(key, p);
+  }
+  return filingTypesCache.get(key);
+}
 
 /** Backend rows are flat (address_1, city, ...); shape them as the Filing contract. */
 export function normalizeFiling(r) {
