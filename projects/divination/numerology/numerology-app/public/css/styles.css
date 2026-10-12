@@ -524,3 +524,12 @@ footer a:hover {
 .premium-reading-block li {
   margin-bottom: 0.4rem;
 }
+
+/* C7B-NUMEROLOGY-FUTURE-DATE inline field error */
+.field-error {
+  color: #ff8a8a;
+  font-size: 0.9rem;
+  margin: 0.4rem 0 0;
+}
+.field-error[hidden] { display: none; }
+input[aria-invalid="true"] { border-color: #ff8a8a; }

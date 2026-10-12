@@ -94,11 +94,13 @@ function setupEventListeners() {
       const name = elements.nameInput?.value.trim();
       const birthDate = elements.birthDateInput?.value;
       if (!name || !birthDate) return; // wait until both are valid again
+      if (validateBirthDate(birthDate)) { showBirthDateError(validateBirthDate(birthDate)); return; }
       if (name === currentNumbers.name && birthDate === currentNumbers.birthDate) return;
       calculateNumbers({ scroll: false });
     }, 300);
   };
   elements.nameInput?.addEventListener('input', recalcIfShowing);
+  if (elements.birthDateInput) elements.birthDateInput.max = todayISO();
   elements.birthDateInput?.addEventListener('input', recalcIfShowing);
   elements.birthDateInput?.addEventListener('change', recalcIfShowing);
 }
@@ -213,6 +215,37 @@ function hidePremiumModal() {
   }
 }
 
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// Returns an error message, or '' when the date is usable.
+function validateBirthDate(value) {
+  if (!value) return 'Please enter your birth date.';
+  const m = /^(\d{4,})-(\d{2})-(\d{2})$/.exec(value);
+  if (!m) return 'Please enter a valid birth date.';
+  const year = Number(m[1]);
+  if (year < 1900) return 'Please enter a birth year of 1900 or later.';
+  const date = new Date(year, Number(m[2]) - 1, Number(m[3]));
+  if (Number.isNaN(date.getTime()) || date.getMonth() !== Number(m[2]) - 1) {
+    return 'Please enter a valid birth date.';
+  }
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (date > today) return 'Your birth date cannot be in the future.';
+  return '';
+}
+
+function showBirthDateError(message) {
+  const el = document.getElementById('birth-date-error');
+  if (el) {
+    el.textContent = message;
+    el.hidden = !message;
+  }
+  elements.birthDateInput?.setAttribute('aria-invalid', message ? 'true' : 'false');
+}
+
 function calculateNumbers(opts = {}) {
   const name = elements.nameInput?.value.trim();
   const birthDate = elements.birthDateInput?.value;
@@ -222,10 +255,10 @@ function calculateNumbers(opts = {}) {
     return;
   }
 
-  if (!birthDate) {
-    alert('Please enter your birth date');
-    return;
-  }
+  // C7B-NUMEROLOGY-FUTURE-DATE: reject empty, future and pre-1900 dates inline.
+  const dateError = validateBirthDate(birthDate);
+  showBirthDateError(dateError);
+  if (dateError) return;
 
   currentNumbers = getAllNumbers(name, birthDate);
   currentNumbers.name = name;
@@ -334,6 +367,7 @@ function reset() {
 
   elements.nameInput.value = '';
   elements.birthDateInput.value = '';
+  showBirthDateError('');
   elements.numbersDisplay.style.display = 'none';
   elements.readingSection.style.display = 'none';
   elements.resetBtn.style.display = 'none';

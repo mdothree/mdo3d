@@ -82,7 +82,8 @@
 
         <div class="form-group">
           <label for="birth-date">Your Birth Date</label>
-          <input type="date" id="birth-date">
+          <input type="date" id="birth-date" min="1900-01-01" aria-describedby="birth-date-error">
+          <p id="birth-date-error" class="field-error" role="alert" hidden></p>
         </div>
 
         <div class="btn-group">
