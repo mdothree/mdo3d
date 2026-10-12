@@ -48,7 +48,7 @@ h2.line{font:500 34px/1.1 ${t.fontDisplay};margin:56px 0 6px}
 .card{text-decoration:none;display:block}
 .frame{${frame}background:#f2f0ec}
 .photo img{width:100%;box-shadow:0 14px 30px rgba(0,0,0,.45)}
-.taste{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:10px 0 40px}.taste figure{margin:0}.taste figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.taste{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:10px 0 40px}.taste3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (max-width:760px){.taste3{grid-template-columns:minmax(0,1fr)}}.taste figure{margin:0}.taste figcaption{font-size:13px;color:var(--muted);margin-top:6px}
 .card h3{font:500 21px/1.2 ${t.fontDisplay};margin:14px 0 2px}
 .status{font-size:13px;color:var(--accent);letter-spacing:.04em}
 .product{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;padding:48px 0}.product>*{min-width:0}
@@ -143,6 +143,19 @@ ${catalog.map(row).join('')}`;
   return layout({ brand: b, root: '', title: `Photo looks | ${b.name}`, body });
 }
 
+function digitalPage(b) {
+  const offer = (img, t, d) => `<figure><img src="digital/${img}.jpg" alt="${esc(t)} mock" loading="lazy" width="1080" height="1350"><figcaption><strong>${esc(t)}</strong><br>${esc(d)}</figcaption></figure>`;
+  const body = `<article class="prose"><h1>Digital ${esc(b.name)}: pick the offer</h1>
+<p>You said digital products only, so the physical drops are paused. These are mocks of what a digital ${esc(b.name)} could sell, made from LB's own art. Nothing is for sale.</p>
+<p><strong>Recommended:</strong> C + B, with A as the launch bundle (D: A + one pack + one edition, $39). Details and how it would sell: <code>DIGITAL_OFFER.md</code>.</p></article>
+<div class="taste taste3">
+${offer('a-lookbook', 'A · The Lookbook · $9', 'Everybody Influences, Issue No. 2: a digital magazine of both lines and the story behind each design.')}
+${offer('b-design-drops', 'B · Design Drops · $4/pack or $5/mo', 'Phone + desktop wallpaper packs from each line, a new pack every month.')}
+${offer('c-tlt-editions', 'C · TLT Digital Editions · $30', "Numbered, signed high-res art files + certificate. Editions of 50, capped.")}
+</div>`;
+  return layout({ brand: b, root: '', title: `Digital offers | ${b.name}`, body });
+}
+
 function policiesPage(b) {
   const body = `<article class="prose"><h1>Shipping &amp; Exchanges</h1>
 <h2>Pre-orders</h2><p>Pre-order pieces are made after their window closes, in the quantity ordered. Every pre-order page shows a <strong>ships-by date</strong>, and you're charged at checkout. If something will stop us shipping by that date, we'll email you <strong>before</strong> it passes with the new date and the option to cancel for a full refund.</p>
@@ -181,14 +194,14 @@ h1{font:500 clamp(42px,8vw,84px)/1 ${t.fontDisplay};letter-spacing:.04em;margin:
   writeFileSync(join(outDir, 'styles.css'), css);
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(brand.name)}: the first drop is coming</title>
-<meta name="description" content="${esc(brand.name)}, ${esc(brand.endorsement)}. The Fall '21 line returns alongside The Little Things. The first drop is coming soon.">
+<meta name="description" content="${esc(brand.name)}, ${esc(brand.endorsement)}. Fall '21 and The Little Things. The first drop is coming soon.">
 <meta property="og:title" content="${esc(brand.name)}"><meta property="og:description" content="The first drop is coming: Fall '21 and The Little Things.">
 ${shots[0] ? `<meta property="og:image" content="photos/${shots[0]}.jpg">` : ''}
 <link rel="stylesheet" href="styles.css">${brand.logo ? '<link rel="icon" href="emblem.png">' : ''}</head><body><main>
 ${brand.logo ? '<img class="seal" src="emblem.png" alt="Runwae Apparel seal" width="96" height="96">' : ''}
 <h1>${esc(brand.name)}</h1><div class="end">${esc(brand.endorsement)}</div><div class="bar"></div>
 <p class="lede">${esc(brand.tagline)}. The first drop is coming.</p>
-<p class="sub">The Fall '21 line returns alongside a new one, The Little Things. The shop opens here.</p>
+<p class="sub">Fall '21 and The Little Things. Opening here soon.</p>
 <div class="shots">${shots.map((s) => `<img src="photos/${s}.jpg" alt="${esc(brand.name)} piece" width="1080" height="1350" loading="lazy">`).join('')}</div>
 <footer>© ${new Date().getUTCFullYear()} ${esc(brand.name)}</footer></main></body></html>`;
   writeFileSync(join(outDir, 'index.html'), html);
@@ -213,6 +226,10 @@ export function buildBrand(id, outDir, now = new Date(), look = undefined) {
   writeFileSync(join(outDir, 'thanks.html'), layout({ brand, root: '', title: `Thank you | ${brand.name}`, body: '<article class="prose"><h1>Thank you.</h1><p>Your order is in. A receipt is on its way to your email, and you\'ll get tracking when it ships. Pre-orders ship by the date shown at checkout.</p><p><a href="index.html">Back to the shop</a></p></article>' }));
   for (const p of catalog) writeFileSync(join(outDir, 'products', `${p.id}.html`), productPage(brand, p, productStatus(p, drops, now), photos));
   if (photoFiles.length) writeFileSync(join(outDir, 'taste.html'), tastePage(brand, catalog));
+  if (existsSync(join(dir, 'digital'))) {
+    cpSync(join(dir, 'digital'), join(outDir, 'digital'), { recursive: true });
+    writeFileSync(join(outDir, 'digital.html'), digitalPage(brand));
+  }
   writeFileSync(join(outDir, 'robots.txt'), brand.mode === 'preview' ? 'User-agent: *\nDisallow: /\n' : 'User-agent: *\nAllow: /\n');
   return { brand: id, pages: catalog.length + 3, out: outDir };
 }

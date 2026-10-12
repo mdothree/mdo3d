@@ -4,7 +4,7 @@ One codebase, two brands (`brands/runwae`, `brands/glb`), per the playbook (`../
 It's a static site plus one serverless function for Stripe Checkout. Zero npm dependencies; Node ≥ 20.
 Python 3 + Pillow is used only for the image step.
 
-**State:** preview only. Every product is `draft` with no price, both brands are `"mode": "preview"`
+**State:** preview only. **Physical fulfillment is ON HOLD (digital-only direction, 2026-10-12).** Every product is `draft` with no price, both brands are `"mode": "preview"`
 (noindex, a banner, no buy buttons), and checkout is off unless `CHECKOUT_ENABLED=true`. **Nothing here has
 been deployed.** Deploying, pricing, going live and any Stripe key are the Principal's per-item calls.
 
@@ -19,6 +19,7 @@ src/build.mjs              static build -> dist/<brand>/ (or --brand X --out pub
 api/checkout.mjs           POST {product,size,qty} -> Stripe Checkout Session URL
 tools/drop.mjs             drop CLI (below)
 tools/assets.py            design/ originals -> brands/<id>/assets/*.jpg
+tools/digital_mocks.py     mocks of the digital offers (../DIGITAL_OFFER.md) -> brands/runwae/digital/
 tools/photos.py            styled product photos (looks: gallery | sketchbook) -> brands/<id>/photos/ (see ../AESTHETIC.md)
 test/                      node --test test/*.test.mjs  (17 tests)
 ```

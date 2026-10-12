@@ -1,4 +1,6 @@
-# Runwae Apparel: ads plan for the first drop (STAGED, no spend)
+# Runwae Apparel: ads plan for the first drop (⏸ ON HOLD: digital-only, 2026-10-12)
+
+> Paused with the physical drops. If the Principal picks a digital offer, this plan is re-pointed at it (same spend check, same creative).
 
 *Principal, #82-b, 2026-10-12 (verbatim): "Yes we can drop this and run adas agianst it." Applies the 14:02 ad policy:
 Runwae Apparel is a commerce line, so ads are allowed, **each gated by the spend check**

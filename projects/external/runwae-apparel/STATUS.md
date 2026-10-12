@@ -3,6 +3,11 @@
 *Updated 2026-10-12 (decision wave) by the C2 Studios/Runwae pane. Plan of record: [`APPAREL_PLAYBOOK.md`](./APPAREL_PLAYBOOK.md)
 (replaced 2026-10-08 with the dispatch version of 2026-10-07). Nothing has been published, listed, posted, ordered or charged.*
 
+> **⏸ PHYSICAL ON HOLD (2026-10-12 ~18:22 ET):** the Principal said "we dont want to sell phyiscal products". Printful,
+> the supplier, the shipping kit, the physical pre-order checkout and the drop ads are **paused** until he confirms the
+> Runwae Apparel call in JARVIS §3. Brand work continues: aesthetic, photos, holding page, shop design, and the
+> **digital offer draft** (`DIGITAL_OFFER.md`).
+
 ## At a glance
 | Area | State |
 |---|---|
@@ -86,7 +91,7 @@ logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site;
 
 ## Open decisions (Principal)
 - [ ] **Shopify domain fix** (Admin UI), or let the store lapse once the custom site is live. Until one of those happens the public domain stays broken.
-- [ ] **Supplier:** reconnect; get MOQ, price, lead time, methods/labels, deposit, air courier; pay for a 1–2 design sample run.
+- [ ] **⏸ Supplier (ON HOLD):** reconnect; get MOQ, price, lead time, methods/labels, deposit, air courier; pay for a 1–2 design sample run.
 - [x] **Commit playbook/STATUS/storefront** (no deploy, no keys): done (#82-a, 2026-10-12).
 - [x] **First drop:** both lines (#82-b, 2026-10-12).
 - [ ] **Photo look:** A Gallery / B Sketchbook / A for Fall '21 + B for TLT (taste call; preview link above).
@@ -95,7 +100,8 @@ logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site;
 - [ ] **Vector exports:** export print-ready art from the `.ai` masters (Illustrator is LB's machine/hands), or OK an agent to try a CLI export.
 - [x] **Versioning `design/`:** stays local-only (#82-c, 2026-10-12).
 - [x] **Birdcage illustration:** dropped; the wordmark tee is front-only (#82-d, 2026-10-12).
-- [ ] **Accounts/keys:** Printful, Stripe (test mode first), Shippo or EasyPost; PO box / virtual mailbox; label printer.
+- [ ] **⏸ Accounts/keys (physical, ON HOLD):** Printful, Shippo/EasyPost, PO box, label printer. Stripe is still needed for any digital offer.
+- [ ] **Digital vs physical:** JARVIS §3 "Runwae Apparel vs digital-only"; options in `DIGITAL_OFFER.md`.
 
 ## Agent-doable
 **Done 2026-10-12 (no accounts needed):**

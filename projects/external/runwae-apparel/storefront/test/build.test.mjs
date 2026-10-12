@@ -69,3 +69,13 @@ test('holding page: Runwae Apparel in full, drop coming, no forms/prices/emails,
   assert.ok(r.shots >= 1 && existsSync(join(out, 'emblem.png')) && existsSync(join(out, '404.html')));
   assert.match(readFileSync(join(out, 'robots.txt'), 'utf8'), /Allow: \//);
 });
+
+test('digital offers page: mocks shipped, no buy path, no inline styles anywhere', () => {
+  const out = mkdtempSync(join(tmpdir(), 'sf-dig-'));
+  buildBrand('runwae', out, new Date('2026-10-12'));
+  const html = readFileSync(join(out, 'digital.html'), 'utf8');
+  for (const m of ['a-lookbook', 'b-design-drops', 'c-tlt-editions']) assert.ok(existsSync(join(out, 'digital', `${m}.jpg`)), m);
+  assert.match(html, /Nothing is for sale/);
+  assert.doesNotMatch(html, /id="buy"|<form/);
+  for (const f of ['index.html', 'taste.html', 'digital.html']) assert.doesNotMatch(readFileSync(join(out, f), 'utf8'), / style="/, f);
+});
