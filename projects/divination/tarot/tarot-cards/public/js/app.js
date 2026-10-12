@@ -117,7 +117,7 @@ class TarotApp {
         
         // Check if premium spread
         if (this.currentSpread !== 'single') {
-            alert('Premium spreads require payment. For demo purposes, showing free single card reading.');
+            alert('Premium spreads require payment. For demo purposes, showing a single card reading.');
             this.currentSpread = 'single';
             this.selectSpread(document.querySelector('[data-spread="single"]'));
             return;
@@ -302,8 +302,8 @@ class TarotApp {
             }).join(', ');
             
             const shareText = this.question 
-                ? `I asked: "${this.question}" and drew: ${cardNames}. Get your free tarot reading!`
-                : `I drew: ${cardNames}. Get your free tarot reading!`;
+                ? `I asked: "${this.question}" and drew: ${cardNames}. Get your own tarot reading!`
+                : `I drew: ${cardNames}. Get your own tarot reading!`;
             
             // Generate share image
             // generateGenericImage is an instance method (calling it statically threw)
@@ -328,7 +328,7 @@ class TarotApp {
             // Fallback without image
             const cardNames = this.drawnCards.map(c => c.name).join(', ');
             await this.socialShare.share({
-                text: `I drew: ${cardNames}. Get your free tarot reading!`,
+                text: `I drew: ${cardNames}. Get your own tarot reading!`,
                 url: window.location.origin
             });
         }
