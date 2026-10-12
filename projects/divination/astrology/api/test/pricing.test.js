@@ -22,7 +22,42 @@ const CASES = {
   "typeField": "readingType",
   "metadataKey": "readingType",
   "singleType": "birth-chart",
-  "readings": []
+  "readings": [
+    {
+      "path": "/api/chart/interpret",
+      "body": {
+        "chart": {
+          "sun": {
+            "sign": {
+              "name": "Aries"
+            }
+          },
+          "moon": {
+            "sign": {
+              "name": "Leo"
+            }
+          },
+          "rising": {
+            "sign": {
+              "name": "Virgo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/chart/compatibility",
+      "body": {
+        "chart1": {
+          "sun": {}
+        },
+        "chart2": {
+          "sun": {}
+        },
+        "premium": true
+      }
+    }
+  ]
 };
 
 const { default: app, stripeService } = await import('../src/server.js');

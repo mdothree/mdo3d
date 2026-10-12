@@ -46,7 +46,7 @@ const SPREAD_ENTITLEMENTS = {
  */
 app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
   try {
-    const { cards, question, spreadType, premium } = req.body;
+    const { cards, question, spreadType } = req.body;
 
     // Validation
     if (!cards || !Array.isArray(cards) || cards.length === 0) {
@@ -76,9 +76,10 @@ app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
     }
 
     // Generate reading
-    // Premium requires a verified, paid Stripe session from this service, bought
-    // for this spread or a larger one (a $2.99 single session can't unlock Celtic Cross).
-    if (premium) {
+    // Paid from first use (JARVIS #94): every reading requires a verified, paid
+    // Stripe session from this service (no session -> 402), bought for this
+    // spread or a larger one (a single-card session can't unlock Celtic Cross).
+    {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
         allowedTypes: SPREAD_ENTITLEMENTS[spreadType]
       });
@@ -89,7 +90,7 @@ app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
       cards,
       question,
       spreadType,
-      premium: premium || false
+      premium: true
     });
 
     if (reading.success) {

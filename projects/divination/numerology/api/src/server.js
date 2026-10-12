@@ -75,7 +75,7 @@ app.post('/api/calculate', async (req, res) => {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { name, birthDate, question, premium } = req.body;
+    const { name, birthDate, question } = req.body;
 
     if (!name || !birthDate) {
       return res.status(400).json({ error: 'Name and birth date required' });
@@ -97,17 +97,8 @@ app.post('/api/reading/generate', async (req, res) => {
       birthdayNumber: ClaudeNumerologyService.calculateBirthdayNumber(birthDate)
     };
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          numbers: numerologyData,
-          basicMeaning: getBasicLifePathMeaning(numerologyData.lifePathNumber)
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     // For premium, generate AI reading
     // Premium requires a verified, paid Stripe session from this service, bought
@@ -346,26 +337,6 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
-// Helper function for basic life path meanings
-function getBasicLifePathMeaning(number) {
-  const meanings = {
-    1: { title: 'The Leader', brief: 'Independent, pioneering, ambitious. You are here to develop individuality and leadership.' },
-    2: { title: 'The Peacemaker', brief: 'Diplomatic, sensitive, cooperative. You are here to create harmony and partnerships.' },
-    3: { title: 'The Creative', brief: 'Expressive, artistic, optimistic. You are here to inspire through creativity and joy.' },
-    4: { title: 'The Builder', brief: 'Practical, disciplined, hardworking. You are here to create stable foundations.' },
-    5: { title: 'The Freedom Seeker', brief: 'Adventurous, versatile, dynamic. You are here to embrace change and freedom.' },
-    6: { title: 'The Nurturer', brief: 'Responsible, caring, harmonious. You are here to love, heal, and serve others.' },
-    7: { title: 'The Seeker', brief: 'Analytical, spiritual, introspective. You are here to seek truth and wisdom.' },
-    8: { title: 'The Achiever', brief: 'Ambitious, authoritative, successful. You are here to master material success.' },
-    9: { title: 'The Humanitarian', brief: 'Compassionate, generous, wise. You are here to serve humanity.' },
-    11: { title: 'The Intuitive Illuminator', brief: 'Highly intuitive, inspirational, visionary. Master number with spiritual gifts.' },
-    22: { title: 'The Master Builder', brief: 'Powerful manifestor, visionary leader. Master number that turns dreams into reality.' },
-    33: { title: 'The Master Teacher', brief: 'Selfless love, healing presence. Master number of pure compassion.' }
-  };
-
-  return meanings[number] || { title: 'Unknown', brief: 'Calculate your full reading for insights.' };
-}
 
 // JSON 404/405 for unmatched routes, then JSON error mapping (malformed JSON
 // -> 400, oversized body -> 413, everything else -> generic 500). Must stay last.

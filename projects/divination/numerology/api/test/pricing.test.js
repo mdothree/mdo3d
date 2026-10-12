@@ -22,7 +22,15 @@ const CASES = {
   "typeField": "readingType",
   "metadataKey": "readingType",
   "singleType": "core-numbers",
-  "readings": []
+  "readings": [
+    {
+      "path": "/api/reading/generate",
+      "body": {
+        "name": "Ada Lovelace",
+        "birthDate": "1815-12-10"
+      }
+    }
+  ]
 };
 
 const { default: app, stripeService } = await import('../src/server.js');

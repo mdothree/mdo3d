@@ -31,52 +31,6 @@ app.use((req, res, next) => {
   return jsonParser(req, res, next);
 });
 
-// Free-tier tips derived from the user's room, facing direction and issues.
-// Room and direction tips are the same copy the legacy static client used
-// (feng-shui-analyzer/public/js/app.js); issue tips reuse the original generic
-// tips. Falls back to the generic list when nothing specific applies.
-const ROOM_TIPS = {
-  'Living Room': ['Arrange seating to face the door for better social energy', 'Add plants to bring life force (Chi) into the space', 'Keep the area clutter-free to allow energy to flow freely'],
-  'Bedroom': ['Position bed diagonally from the door for better rest', 'Avoid mirrors facing the bed to prevent sleep disturbances', 'Use soft, calming colors for relaxation'],
-  'Kitchen': ['Keep the stove area clean and functional for wealth energy', 'Ensure good ventilation to let stagnant energy flow out', 'Fill cabinets completely to symbolize abundance'],
-  'Home Office': ['Place desk facing the door but not directly in line with it', 'Add a plant for focus and creativity', 'Keep the space organized to enhance mental clarity'],
-  'Bathroom': ['Use mirrors strategically to reflect positive energy back into the home', 'Keep the lid down on toilets to prevent energy from draining away', 'Add plants to absorb moisture and add life'],
-  'Entrance': ['Ensure the entrance is well-lit to welcome positive energy', 'Remove obstacles that block the flow from entering', 'Add a welcome mat and plants to invite good Chi']
-};
-const DIRECTION_TIPS = {
-  North: 'Use mirrors and water features to enhance career energy',
-  South: 'Add bright lights and red items for fame and recognition',
-  East: 'Plants and green colors promote health and family harmony',
-  West: 'Circular shapes and white items enhance children and creativity',
-  Northeast: 'Crystals and earth tones support knowledge and self-cultivation',
-  Northwest: 'Metal objects and white colors attract helpful people',
-  Southeast: 'Wooden furniture and plants attract wealth and abundance',
-  Southwest: 'Earth tones and crystals enhance love and relationships'
-};
-const ISSUE_TIPS = {
-  'Cluttered spaces': 'Remove clutter from corners',
-  'Blocked pathways': 'Ensure clear pathways for energy flow',
-  'Lack of plants': 'Add plants for Wood element energy'
-};
-function basicTipsFor(spaceData = {}) {
-  const elements = Array.isArray(spaceData.elements) ? spaceData.elements : [];
-  const issues = Array.isArray(spaceData.issues) ? spaceData.issues : [];
-  const tips = [];
-  const add = t => { if (t && !tips.includes(t)) tips.push(t); };
-  issues.forEach(i => add(ISSUE_TIPS[i]));
-  (ROOM_TIPS[spaceData.roomType] || []).forEach(add);
-  const dirTip = DIRECTION_TIPS[spaceData.direction];
-  // Don't pair a mirror tip with the bedroom "avoid mirrors" advice.
-  if (!(spaceData.roomType === 'Bedroom' && /mirror/i.test(dirTip || ''))) add(dirTip);
-  if (tips.length < 3) {
-    add('Ensure clear pathways for energy flow');
-    add('Remove clutter from corners');
-    if (!elements.includes('Wood')) add('Add plants for Wood element energy');
-    if (spaceData.roomType !== 'Bedroom') add('Use mirrors to expand small spaces');
-  }
-  return tips.slice(0, 5);
-}
-
 // Routes
 
 /**
@@ -85,7 +39,7 @@ function basicTipsFor(spaceData = {}) {
  */
 app.post('/api/analysis/generate', async (req, res) => {
   try {
-    const { spaceData, goals, premium } = req.body;
+    const { spaceData, goals } = req.body;
 
     if (!spaceData) {
       return res.status(400).json({ error: 'Space data required' });
@@ -96,35 +50,8 @@ app.post('/api/analysis/generate', async (req, res) => {
       return res.status(413).json({ success: false, error: lengthError });
     }
 
-    // For free tier, return basic analysis
-    if (!premium) {
-      // Deterministic basic energy score from the space inputs so the free
-      // loop shows a real number instead of N/A. Mirrors the balance logic in
-      // the static client (base 50, element-coverage + direction-match bonus).
-      const elementDirection = {
-        North: 'Water', Northeast: 'Earth', East: 'Wood', Southeast: 'Wood',
-        South: 'Fire', Southwest: 'Earth', West: 'Metal', Northwest: 'Metal'
-      };
-      const picked = Array.isArray(spaceData.elements) ? spaceData.elements : [];
-      let overallScore = 50;
-      if (picked.length >= 3) overallScore += 20;
-      else if (picked.length === 2) overallScore += 10;
-      else if (picked.length === 1) overallScore += 5;
-      const dirElem = elementDirection[spaceData.direction];
-      if (dirElem && picked.includes(dirElem)) overallScore += 15;
-      overallScore = Math.max(40, Math.min(95, overallScore));
-
-      return res.json({
-        success: true,
-        analysis: {
-          type: 'basic',
-          spaceType: spaceData.spaceType,
-          roomType: spaceData.roomType,
-          overallScore,
-          basicTips: basicTipsFor(spaceData)
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     // For premium, generate AI analysis
     // Premium requires a verified, paid Stripe session from this service — prevents

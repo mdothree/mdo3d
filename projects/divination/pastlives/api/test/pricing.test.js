@@ -22,7 +22,25 @@ const CASES = {
   "typeField": "readingType",
   "metadataKey": "readingType",
   "singleType": "single-life",
-  "readings": []
+  "readings": [
+    {
+      "path": "/api/reading/generate",
+      "body": {
+        "birthData": {
+          "birthDate": "1990-01-01"
+        }
+      }
+    },
+    {
+      "path": "/api/reading/multiple-lives",
+      "body": {
+        "birthData": {
+          "birthDate": "1990-01-01"
+        },
+        "premium": true
+      }
+    }
+  ]
 };
 
 const { default: app, stripeService } = await import('../src/server.js');

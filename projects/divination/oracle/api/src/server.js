@@ -47,7 +47,7 @@ const SPREAD_ENTITLEMENTS = {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { cards, question, spreadType, premium } = req.body;
+    const { cards, question, spreadType } = req.body;
 
     if (!Array.isArray(cards) || cards.length === 0) {
       return res.status(400).json({ error: 'Cards required' });
@@ -56,20 +56,8 @@ app.post('/api/reading/generate', async (req, res) => {
       return res.status(400).json({ error: 'Too many cards' });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          cards: cards.map(card => ({
-            name: card.name,
-            meaning: card.upright.brief,
-            guidance: card.upright.guidance
-          }))
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Cards: [cards, 20000] });
     if (lengthError) {
@@ -126,6 +114,15 @@ app.post('/api/reading/quick-insight', freeAiLimiter, async (req, res) => {
     const lengthError = tooLong({ Question: [question, 1000], Card: [card, 4000] });
     if (lengthError) {
       return res.status(413).json({ success: false, error: lengthError });
+    }
+
+    // Paid from first use (JARVIS #94): an insight is a reading, so it needs a
+    // verified paid session that covers a single card (no session -> 402).
+    {
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: SPREAD_ENTITLEMENTS.single
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
 
     const insight = await claudeService.generateQuickInsight(card, question);

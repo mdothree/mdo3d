@@ -39,7 +39,7 @@ app.use((req, res, next) => {
  */
 app.post('/api/dream/interpret', freeAiLimiter, async (req, res) => {
   try {
-    const { dreamText, detectedSymbols, premium } = req.body;
+    const { dreamText, detectedSymbols } = req.body;
 
     // Validation
     if (!dreamText || typeof dreamText !== 'string' || dreamText.trim().length === 0) {
@@ -62,8 +62,9 @@ app.post('/api/dream/interpret', freeAiLimiter, async (req, res) => {
     }
 
     // Generate interpretation
-    // Premium requires a verified, paid Stripe session from this service — prevents a free reading via premium:true.
-    if (premium) {
+    // Paid from first use (JARVIS #94): every interpretation requires a verified,
+    // paid Stripe session from this service (no session -> 402).
+    {
       const denied = await checkPaidSession(stripeService, req.body.sessionId);
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
@@ -71,7 +72,7 @@ app.post('/api/dream/interpret', freeAiLimiter, async (req, res) => {
     const interpretation = await dreamService.interpretDream({
       dreamText,
       detectedSymbols: detectedSymbols || [],
-      premium: premium || false
+      premium: true
     });
 
     if (interpretation.success) {

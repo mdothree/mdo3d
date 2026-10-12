@@ -22,7 +22,14 @@ const CASES = {
   "typeField": "readingType",
   "metadataKey": "analysisType",
   "singleType": "dream-analysis",
-  "readings": []
+  "readings": [
+    {
+      "path": "/api/dream/interpret",
+      "body": {
+        "dreamText": "I was flying over a wide blue ocean at night."
+      }
+    }
+  ]
 };
 
 const { default: app, stripeService } = await import('../src/server.js');

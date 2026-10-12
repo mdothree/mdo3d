@@ -22,7 +22,18 @@ const CASES = {
   "typeField": "analysisType",
   "metadataKey": "analysisType",
   "singleType": "single-room",
-  "readings": []
+  "readings": [
+    {
+      "path": "/api/analysis/generate",
+      "body": {
+        "spaceData": {
+          "spaceType": "Home",
+          "roomType": "Bedroom",
+          "direction": "North"
+        }
+      }
+    }
+  ]
 };
 
 const { default: app, stripeService } = await import('../src/server.js');

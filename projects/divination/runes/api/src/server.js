@@ -47,7 +47,7 @@ const SPREAD_ENTITLEMENTS = {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { runes, question, spreadType, premium } = req.body;
+    const { runes, question, spreadType } = req.body;
 
     if (!Array.isArray(runes) || runes.length === 0) {
       return res.status(400).json({ error: 'Runes required' });
@@ -64,21 +64,8 @@ app.post('/api/reading/generate', async (req, res) => {
       });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          runes: runes.map(rune => ({
-            name: rune.name,
-            symbol: rune.symbol,
-            meaning: rune.meaning,
-            guidance: rune.upright?.guidance || rune.guidance
-          }))
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Runes: [runes, 10000] });
     if (lengthError) {

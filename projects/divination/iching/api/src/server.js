@@ -39,28 +39,14 @@ app.use((req, res, next) => {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { hexagram, question, changingLines, premium } = req.body;
+    const { hexagram, question, changingLines } = req.body;
 
     if (!hexagram) {
       return res.status(400).json({ error: 'Hexagram data required' });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          hexagram: {
-            id: hexagram.id,
-            name: hexagram.name,
-            chinese: hexagram.chinese,
-            meaning: hexagram.upper?.meaning || hexagram.meaning,
-            guidance: hexagram.upper?.guidance || hexagram.guidance
-          }
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Hexagram: [hexagram, 5000], 'Changing lines': [changingLines, 200] });
     if (lengthError) {

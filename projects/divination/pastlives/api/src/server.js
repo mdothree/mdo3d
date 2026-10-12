@@ -39,7 +39,7 @@ app.use((req, res, next) => {
  */
 app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
   try {
-    const { birthData, question, premium } = req.body;
+    const { birthData, question } = req.body;
 
     if (!birthData || !birthData.birthDate) {
       return res.status(400).json({ error: 'Birth date required' });
@@ -50,23 +50,8 @@ app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
       return res.status(413).json({ success: false, error: lengthError });
     }
 
-    // For free tier, return basic glimpse
-    if (!premium) {
-      const quickInsight = await claudeService.generateQuickInsight(
-        birthData.birthDate,
-        question,
-        birthData
-      );
-
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          glimpse: quickInsight,
-          message: 'Unlock a full past life reading for deeper insights into your soul journey.'
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     // For premium, generate full AI reading
     // Premium requires a verified, paid Stripe session from this service — prevents
@@ -152,7 +137,7 @@ app.post('/api/reading/multiple-lives', async (req, res) => {
 
 // POST /api/reading/quick-insight was removed: it made unauthenticated Claude
 // calls and no frontend used it. ClaudePastLifeService.generateQuickInsight
-// still backs the free tier of /api/reading/generate.
+// remains but is unused since readings became paid from first use (JARVIS #94).
 
 /**
  * POST /api/payment/create-checkout

@@ -22,7 +22,19 @@ const CASES = {
   "typeField": "readingType",
   "metadataKey": "readingType",
   "singleType": "single-premium",
-  "readings": []
+  "readings": [
+    {
+      "path": "/api/reading/generate",
+      "body": {
+        "runes": [
+          {
+            "name": "Fehu"
+          }
+        ],
+        "spreadType": "single"
+      }
+    }
+  ]
 };
 
 const { default: app, stripeService } = await import('../src/server.js');

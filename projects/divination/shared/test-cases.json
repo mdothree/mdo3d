@@ -1,12 +1,24 @@
 {
   "_comment": "Per-API cases for templates/api-pricing.test.js (sync-pricing.mjs writes <api>/test/pricing.test.js). readings: every reading endpoint must answer 402 without a paid session (JARVIS #94).",
-  "astrology": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "birth-chart", "readings": [] },
-  "dreams": { "typeField": "readingType", "metadataKey": "analysisType", "singleType": "dream-analysis", "readings": [] },
-  "fengshui": { "typeField": "analysisType", "metadataKey": "analysisType", "singleType": "single-room", "readings": [] },
-  "iching": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [] },
-  "numerology": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "core-numbers", "readings": [] },
-  "oracle": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [] },
-  "pastlives": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-life", "readings": [] },
-  "runes": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [] },
-  "tarot": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single", "readings": [] }
+  "astrology": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "birth-chart", "readings": [
+    { "path": "/api/chart/interpret", "body": { "chart": { "sun": { "sign": { "name": "Aries" } }, "moon": { "sign": { "name": "Leo" } }, "rising": { "sign": { "name": "Virgo" } } } } },
+    { "path": "/api/chart/compatibility", "body": { "chart1": { "sun": {} }, "chart2": { "sun": {} }, "premium": true } } ] },
+  "dreams": { "typeField": "readingType", "metadataKey": "analysisType", "singleType": "dream-analysis", "readings": [
+    { "path": "/api/dream/interpret", "body": { "dreamText": "I was flying over a wide blue ocean at night." } } ] },
+  "fengshui": { "typeField": "analysisType", "metadataKey": "analysisType", "singleType": "single-room", "readings": [
+    { "path": "/api/analysis/generate", "body": { "spaceData": { "spaceType": "Home", "roomType": "Bedroom", "direction": "North" } } } ] },
+  "iching": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [
+    { "path": "/api/reading/generate", "body": { "hexagram": { "id": 1, "name": "Qian" } } } ] },
+  "numerology": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "core-numbers", "readings": [
+    { "path": "/api/reading/generate", "body": { "name": "Ada Lovelace", "birthDate": "1815-12-10" } } ] },
+  "oracle": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [
+    { "path": "/api/reading/generate", "body": { "cards": [ { "name": "Trust", "upright": { "brief": "b", "guidance": "g" } } ], "spreadType": "single" } },
+    { "path": "/api/reading/quick-insight", "body": { "card": { "name": "Trust" } } } ] },
+  "pastlives": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-life", "readings": [
+    { "path": "/api/reading/generate", "body": { "birthData": { "birthDate": "1990-01-01" } } },
+    { "path": "/api/reading/multiple-lives", "body": { "birthData": { "birthDate": "1990-01-01" }, "premium": true } } ] },
+  "runes": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single-premium", "readings": [
+    { "path": "/api/reading/generate", "body": { "runes": [ { "name": "Fehu" } ], "spreadType": "single" } } ] },
+  "tarot": { "typeField": "readingType", "metadataKey": "readingType", "singleType": "single", "readings": [
+    { "path": "/api/reading/generate", "body": { "cards": [ { "name": "The Fool" } ], "spreadType": "single" } } ] }
 }

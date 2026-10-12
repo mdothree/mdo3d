@@ -39,36 +39,14 @@ app.use((req, res, next) => {
  */
 app.post('/api/chart/interpret', async (req, res) => {
   try {
-    const { chart, question, premium } = req.body;
+    const { chart, question } = req.body;
 
     if (!chart || !chart.sun || !chart.moon || !chart.rising) {
       return res.status(400).json({ error: 'Complete chart data required (sun, moon, rising)' });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          sun: {
-            sign: chart.sun.sign.name,
-            element: chart.sun.sign.element,
-            quality: chart.sun.sign.quality
-          },
-          moon: {
-            sign: chart.moon.sign.name,
-            element: chart.moon.sign.element,
-            quality: chart.moon.sign.quality
-          },
-          rising: {
-            sign: chart.rising.sign.name,
-            element: chart.rising.sign.element,
-            quality: chart.rising.sign.quality
-          }
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Chart: [chart, 10000] });
     if (lengthError) {
