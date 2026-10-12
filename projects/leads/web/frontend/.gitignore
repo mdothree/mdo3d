@@ -2,3 +2,6 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# The repo root .gitignore excludes package-lock.json; the Dockerfile runs `npm ci`, which needs it.
+!package-lock.json
