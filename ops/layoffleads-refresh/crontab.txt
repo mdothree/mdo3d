@@ -1,3 +1,3 @@
-# STAGED, NOT INSTALLED. Host: bigmini2 (off-box per doctrine; node 26 + git present, 79 GiB free on 2026-10-12).
-# Weekly, Monday 06:15 local. Install with `crontab -e` only after the Principal's GO. Drop `--push` for dry runs.
-15 6 * * 1 LL_HOME="$HOME/mdo3d-ops/layoffleads" bash "$HOME/mdo3d/ops/layoffleads-refresh/refresh.sh" --push >> "$HOME/mdo3d-ops/logs/layoffleads-refresh.log" 2>&1 # mdo3d-layoffleads-refresh
+# DRY-RUN. Host: bigmini2 (off-box per doctrine; node 26 + git present; only 14 GiB free on 2026-10-12 (97%; JARVIS #78 reclaim), the refresh needs <15 MB).
+# Weekly, Monday 06:15 local. INSTALLED AS DRY-RUN (JARVIS #75 decision 2026-10-12). Enabling --push = the Principal's GO #75 + a push credential on bigmini2.
+15 6 * * 1 LL_HOME="$HOME/mdo3d-ops/layoffleads" bash "$HOME/mdo3d-ops/bin/layoffleads-refresh.sh" >> "$HOME/mdo3d-ops/logs/layoffleads-refresh.log" 2>&1 # mdo3d-layoffleads-refresh

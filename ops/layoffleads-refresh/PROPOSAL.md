@@ -1,6 +1,6 @@
 # layoffleads weekly refresh: cron proposal (STAGED, 2026-10-12)
 
-**Source:** plan `~/latarence/docs/plans/input_prompts_0/` Part C §C5 step 5 (dispatch C9). **Status:** written, **not installed**.
+**Source:** plan `~/latarence/docs/plans/input_prompts_0/` Part C §C5 step 5 (dispatch C9). **Status (2026-10-12):** **installed on bigmini2 as DRY-RUN** (JARVIS #75 decision): `~/mdo3d-ops/bin/layoffleads-refresh.sh`, clone `~/mdo3d-ops/layoffleads` (seeded from a git bundle; bigmini2 has no GitHub read credential, so the weekly dry run refreshes the WARN data against the clone and warns that the pull failed). First dry run 14:53Z: all checks passed, events 4220 → 4233, diff discarded. `--push` = the Principal's GO #75 + a push credential.
 **Why:** layoffleads.com is the Q2 launch-validation candidate. Its data (Big Local News WARN consolidated CSV) only
 refreshes when someone runs `npm run refresh` by hand.
 
