@@ -240,7 +240,7 @@ g_c8qw() {  # cycle-8 QW3 C7-010 entertainment disclaimer + QW4 C7-002/003/016/0
     check "$u wrong method -> 405 JSON (C7-017)" "curl -s -w ' %{http_code}' https://$u/api/payment/verify" "not allowed\"} 405"; done
 }
 
-g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + batch 2 A11Y-004/015/005, PERF-003/004): C7-011 (rigor) · C7-019 · C7-020 · C7B-NUMEROLOGY-FUTURE-DATE · C7B-ASTRO-NO-VALIDATION · C7B-DREAMS-MAXLEN · A11Y-014(dreams) · IMG-RONNA-MANIFEST-ICONS-404 · SEO-009(ronna) · TABLET-MDO3D-NAV-HAMBURGER · C7-007(mdo3d) · A11Y-005(mdo3d) · PERF-006(mdo3d) · SEO-006(prompts)
+g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + 2 + 3: A11Y-004/015/005, PERF-003/004/007, SEO-007, HEADERS-CSP legacy, MDO3D-DIRECTORY-MISMATCH, C7B-COLOR-STALE-RESULT, SURF-009): C7-011 (rigor) · C7-019 · C7-020 · C7B-NUMEROLOGY-FUTURE-DATE · C7B-ASTRO-NO-VALIDATION · C7B-DREAMS-MAXLEN · A11Y-014(dreams) · IMG-RONNA-MANIFEST-ICONS-404 · SEO-009(ronna) · TABLET-MDO3D-NAV-HAMBURGER · C7-007(mdo3d) · A11Y-005(mdo3d) · PERF-006(mdo3d) · SEO-006(prompts)
   # 1) push nested repos (token-free URL via gh credential helper, mdothree account). For the git-connected
   #    projects (astrology, feng-shui-analyzer, past-life-insights, baby-name-oracle, mdo3d-landing, ronnascanner-landing,
   #    promptsforbusiness, if connected) THE PUSH IS THE PROD DEPLOY. Rollback = `git revert <sha> && push` in that repo.
@@ -249,7 +249,7 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + batch 2 A11Y-004/015/005, PERF
            projects/divination/astrology/astrology projects/divination/fengshui/feng-shui-analyzer \
            projects/divination/iching/iching projects/divination/runes/runes projects/rigor/landing \
            projects/divination/pastlives/past-life-insights projects/jarvisbee/babynames/baby-name-oracle \
-           projects/mdo3d/landing projects/mdo3d/promptsforbusiness projects/ronnascanner/frontend; do
+           projects/mdo3d/landing projects/mdo3d/promptsforbusiness projects/ronnascanner/frontend landing/mdo3d-compare; do
     slug=$(git -C "$ROOT/$r" remote get-url origin | sed -E 's#^https://([^@]*@)?github.com/##; s#\.git$##')
     br=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
     ( cd "$ROOT/$r" && git pull -q --rebase "https://mdothree@github.com/$slug.git" "$br" && git push -q "https://mdothree@github.com/$slug.git" "HEAD:$br" ) \
@@ -277,6 +277,15 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + batch 2 A11Y-004/015/005, PERF
   for u in rigor.design ronnascanner.com mdo3d.com/about astrology.mdo3d.com iching.mdo3d.com runes.mdo3d.com dreams.mdo3d.com tarot.mdo3d.com oracle.mdo3d.com numerology.mdo3d.com fengshui.mdo3d.com pastlife.mdo3d.com names.mdo3d.com; do
     check "$u skip link" "curl -sL https://$u | grep -c 'href=\"#main-content\"'" "1"; done
   for h in dreams tarot; do check "$h no firebase compat (PERF-004)" "curl -s https://$h.mdo3d.com/ | grep -c 'firebase-.*-compat'" "0"; done
+  # batch 3: SEO-007 (real 404) · PERF-007 (1d cache + SWR) · HEADERS-CSP (legacy-routes security headers) · MDO3D-DIRECTORY-MISMATCH
+  for u in dreams.mdo3d.com tarot.mdo3d.com oracle.mdo3d.com numerology.mdo3d.com astrology.mdo3d.com runes.mdo3d.com iching.mdo3d.com mdo3d.com rigor.design ronnascanner.com; do
+    check "$u 404 status" "curl -s -o /dev/null -w '%{http_code}' https://$u/zz-nope-c8" "404"
+    check "$u 404 is html" "curl -s -o /dev/null -w '%{content_type}' https://$u/zz-nope-c8" "text/html"; done
+  for h in dreams tarot oracle numerology; do
+    check "$h X-Frame-Options" "curl -sI https://$h.mdo3d.com/ | grep -ci '^x-frame-options'" "1"
+    check "$h nosniff" "curl -sI https://$h.mdo3d.com/ | grep -ci '^x-content-type-options'" "1"; done
+  check "resume css cache 1d" "curl -sI https://resume.rigor.design/css/styles.css | grep -i '^cache-control' | grep -c 'max-age=86400'" "1"
+  check "mdo3d directory count computed" "curl -s https://mdo3d.com/ | grep -c '14 Live platforms'" "0"
   echo "  MANUAL: xps browser pass at mdo3d.com 768/834/1024 (full nav, no overflow) — pre-verified on HEAD 2026-10-11" | tee -a "$LOG"
 }
 [ $# -eq 0 ] && { sed -n 2,8p "$0"; exit 1; }
