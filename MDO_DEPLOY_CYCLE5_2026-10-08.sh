@@ -202,6 +202,12 @@ g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MD
   for t in json text pdf qr color hash password timestamp; do check "$t css Cache-Control 1d (PERF-007)" "curl -sI https://$t.mdothree.com/css/styles.css | grep -i '^cache-control' | tr -d '\r'" "max-age=86400, stale-while-revalidate=604800"; done
   for t in json text pdf qr color hash password timestamp; do check "$t sw precache reload (PERF-007)" "curl -s https://$t.mdothree.com/sw.js | grep -c \"cache: 'reload'\"" "1"; done
   for t in color hash password timestamp json text pdf qr; do check "$t no compat Firebase SDK (FIREBASE-DUAL-SDK)" "curl -sL https://$t.mdothree.com/ | grep -c firebase-app-compat" "0"; done
+  # cycle-9 %24 MDOTHREE-SECHEADERS-NOT-SERVED (color 4b37d1c / hash 3df0cf1 / password 2979da8 / timestamp f58534f): headers as a route before filesystem
+  for t in color hash password timestamp; do
+    check "$t XFO served (MDOTHREE-SECHEADERS-NOT-SERVED)" "curl -sI https://$t.mdothree.com/ | grep -ic '^x-frame-options'" "1"
+    check "$t CSP served (MDOTHREE-SECHEADERS-NOT-SERVED)" "curl -sI https://$t.mdothree.com/ | grep -ic '^content-security-policy'" "1"
+  done
+  echo "  MANUAL: open color/hash/password/timestamp once in a browser after deploy: 0 CSP violations in the console (Firestore/auth traffic)"
 }
 g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching already live); oracle-cards: C7-020 share-script console.log removal
   deploy projects/divination/oracle/oracle-cards
