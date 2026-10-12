@@ -55,6 +55,14 @@ g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-Z
   check "runwae / still serves" "curl -sL -o /dev/null -w '%{http_code}' https://runwae.com/" "200"
   check "runwae sitemap" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/sitemap.xml" "200"
   check "runwae config.js parses" "curl -s https://runwae.com/js/config.js -o /tmp/rcfg.js && node --check /tmp/rcfg.js && echo ok" "ok"
+  # cycle-8 QW2 (runwae bde5acb): C7-001 / C7B-RUNWAE-BLOG-ASSETS-404 / C7-015
+  for post in PabloTheDon NotesWithNiya AIandAuthenticity-2026; do
+    check "runwae /blog/$post 0 relative href/src" "echo n=\$(curl -sL https://runwae.com/blog/$post | grep -oE '(href|src)=\"[^\"]*\"' | grep -vcE '=\"(https?:|/|#|mailto:)')." "n=0."; done
+  for a in /Bootstrap/dist/css/bootstrap.css /css/main.css /js/jquery-3.2.1.js /img/logo-colored.png /login /faqs /terms /privacy; do
+    check "runwae $a → 200 (blog nav/asset)" "curl -sL -o /dev/null -w '%{http_code}' https://runwae.com$a" "200"; done
+  check "runwae /blog author link not runwae.com" "echo n=\$(curl -sL https://runwae.com/blog | grep -c 'href=\"runwae.com\"')." "n=0."
+  check "runwae /faqs no dup id whoshouldifollow" "echo n=\$(curl -sL https://runwae.com/faqs | grep -c 'id=\"whoshouldifollow\"')." "n=1."
+  check "runwae /faqs #howdoimessage anchor fixed" "echo n=\$(curl -sL https://runwae.com/faqs | grep -c 'href=\"/howdoimessage#\"\\|href=\"howdoimessage#\"')." "n=0."
   cat <<'EOF' | tee -a "$LOG"
   NEXT (operator, after the checks above pass):
    3) firebase database:set /admins/<OWNER_UID> --data true --project runwaedesign --account mdo3group@gmail.com
@@ -85,6 +93,18 @@ g_mdothree() {  # JSON-FIREBASE-IMPORT, JSON-CONSOLE-FIREBASE-SDK-NOT-LOADED, MD
     check "$t firebase lazy (HID-001)" "c=\$(curl -s https://$t.mdothree.com/js/config/config.js); echo \"\$c\" | grep -q 'export function loadFirebase' && ! echo \"\$c\" | grep -q '^import .*gstatic' && echo yes" "yes"; done
   for t in json text pdf qr hash color password timestamp image; do   # cycle-8 QW1 C7-009
     check "$t footer Terms/Privacy/Contact (C7-009)" "curl -s https://$t.mdothree.com/ | grep -o 'mdothree.com/terms\|mdothree.com/privacy\|mailto:hello@mdothree.com' | sort -u | wc -l | tr -d ' '" "3"; done
+  # cycle-8 QW5 (see documentation/MDO_CYCLE8_QW5_2026-10-11.md)
+  for t in color hash password timestamp; do
+    check "$t Pro pill contrast (C7B-PRO-BTN-INVISIBLE)" "curl -s https://$t.mdothree.com/css/styles.css | grep -q 'tool-nav a.pro-nav-link' && echo yes" "yes"
+    check "$t footer styled (QW1 follow-up)" "curl -s https://$t.mdothree.com/css/styles.css | grep -q 'nav.footer-legal {' && echo yes" "yes"; done
+  check "password needs >=1 charset (C7B-PW-NOSETS-EMPTY)" "curl -s https://password.mdothree.com/ | grep -c 'id=\"charsetMsg\"'" "1"
+  check "color clears stale result (C7B-COLOR-STALE-RESULT)" "curl -s https://color.mdothree.com/js/pages/converter.js | grep -q 'function clearResult' && echo yes" "yes"
+  check "text diff by grapheme (C7B-TEXTDIFF-SURROGATE)" "curl -s https://text.mdothree.com/js/services/textDiff.js https://text.mdothree.com/js/workers/diff-worker.js | grep -c 'Intl.Segmenter) ?'" "2"
+  check "timestamp ISO week UTC (C7B-TS-WEEK)" "curl -s https://timestamp.mdothree.com/js/services/timestampConverter.js | grep -q 'ISO week (UTC)' && echo yes" "yes"
+  check "qr level copy (C7B-QR-COPY)" "curl -s https://qr.mdothree.com/js/pages/generate.js | grep -c '(L or M)'" "0"
+  for t in json text image pdf qr; do
+    check "$t robots no config Disallow (C7-012)" "curl -s https://$t.mdothree.com/robots.txt | grep -c 'js/config'" "0"
+    check "$t home has no .html links (C7-018)" "curl -s https://$t.mdothree.com/ | grep -cE 'href=\"/?[a-z0-9-]+\\.html\"'" "0"; done
 }
 g_div() {  # NUMEROLOGY-NO-RECALC, PASTLIFE-INTEREST-IGNORED (fengshui + iching already live)
   deploy projects/divination/numerology/numerology-app
