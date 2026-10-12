@@ -1,7 +1,7 @@
 {
   "name": "mdothree-json",
   "version": "1.0.0",
-  "description": "JSON Tools \u2014 format, validate, convert, diff, JSONPath. Free & client-side.",
+  "description": "JSON Tools \u2014 format, validate, convert, diff, JSONPath. Client-side.",
   "private": true,
   "type": "module",
   "scripts": {

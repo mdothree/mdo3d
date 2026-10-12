@@ -1,7 +1,7 @@
 {
   "name": "mdothree JSON Tools",
   "short_name": "JSON Tools",
-  "description": "Free JSON tools: format and validate JSON, convert it to YAML, CSV, XML, or TypeScript, compare two documents, encode Base64, and run JSONPath queries.",
+  "description": "JSON tools in your browser: format and validate JSON, convert it to YAML, CSV, XML, or TypeScript, compare two documents, encode Base64, and run JSONPath queries.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
