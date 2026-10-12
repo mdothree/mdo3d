@@ -162,6 +162,41 @@ function indexPage(b, catalog, drops, now, photos) {
   return layout({ brand: b, root: '', title: `${b.name}: ${b.tagline}`, body });
 }
 
+/** Holding page for the public domain until the storefront launches. Indexable, no forms, no prices. */
+export function buildHolding(id, outDir) {
+  const { dir, brand } = loadBrand(id);
+  rmSync(outDir, { recursive: true, force: true });
+  mkdirSync(join(outDir, 'photos'), { recursive: true });
+  const t = brand.theme;
+  const shots = ['pave-hoodie-gallery', 'tlt-neighbor-hoodie-sketchbook', 'true-grit-tee-gallery'].filter((s) => existsSync(join(dir, 'photos', `${s}.jpg`)));
+  for (const s of shots) cpSync(join(dir, 'photos', `${s}.jpg`), join(outDir, 'photos', `${s}.jpg`));
+  if (brand.logo) cpSync(join(dir, brand.logo), join(outDir, 'emblem.png'));
+  const css = `*{box-sizing:border-box}body{margin:0;background:${t.bg};color:${t.text};font:16px/1.6 ${t.fontBody};text-align:center}
+main{max-width:1040px;margin:0 auto;padding:56px 20px 40px}img.seal{width:96px;height:96px;margin:0 auto 18px;display:block}
+h1{font:500 clamp(42px,8vw,84px)/1 ${t.fontDisplay};letter-spacing:.04em;margin:0}.bar{width:64px;height:4px;background:${t.accent};margin:22px auto}
+.end{font-size:13px;color:${t.muted};letter-spacing:.08em;text-transform:uppercase}.lede{font:400 24px/1.4 ${t.fontDisplay};margin:28px auto 8px;max-width:640px}
+.sub{color:${t.muted};margin:0 auto 40px;max-width:560px}.shots{display:grid;grid-template-columns:repeat(${shots.length || 1},minmax(0,1fr));gap:18px}
+.shots img{width:100%;height:auto;display:block;box-shadow:0 14px 30px rgba(0,0,0,.5)}footer{margin-top:48px;font-size:13px;color:${t.muted}}
+@media (max-width:640px){.shots{grid-template-columns:minmax(0,1fr)}}`;
+  writeFileSync(join(outDir, 'styles.css'), css);
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(brand.name)}: the first drop is coming</title>
+<meta name="description" content="${esc(brand.name)}, ${esc(brand.endorsement)}. The Fall '21 line returns alongside The Little Things. The first drop is coming soon.">
+<meta property="og:title" content="${esc(brand.name)}"><meta property="og:description" content="The first drop is coming: Fall '21 and The Little Things.">
+${shots[0] ? `<meta property="og:image" content="photos/${shots[0]}.jpg">` : ''}
+<link rel="stylesheet" href="styles.css">${brand.logo ? '<link rel="icon" href="emblem.png">' : ''}</head><body><main>
+${brand.logo ? '<img class="seal" src="emblem.png" alt="Runwae Apparel seal" width="96" height="96">' : ''}
+<h1>${esc(brand.name)}</h1><div class="end">${esc(brand.endorsement)}</div><div class="bar"></div>
+<p class="lede">${esc(brand.tagline)}. The first drop is coming.</p>
+<p class="sub">The Fall '21 line returns alongside a new one, The Little Things. The shop opens here.</p>
+<div class="shots">${shots.map((s) => `<img src="photos/${s}.jpg" alt="${esc(brand.name)} piece" width="1080" height="1350" loading="lazy">`).join('')}</div>
+<footer>© ${new Date().getUTCFullYear()} ${esc(brand.name)}</footer></main></body></html>`;
+  writeFileSync(join(outDir, 'index.html'), html);
+  writeFileSync(join(outDir, '404.html'), html);
+  writeFileSync(join(outDir, 'robots.txt'), 'User-agent: *\nAllow: /\n');
+  return { brand: id, holding: true, out: outDir, shots: shots.length };
+}
+
 export function buildBrand(id, outDir, now = new Date(), look = undefined) {
   const { dir, brand, catalog, drops } = loadBrand(id);
   const pdir = join(dir, 'photos');
@@ -186,6 +221,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : undefined; };
   const now = arg('--now') ? new Date(arg('--now')) : new Date();
   const look = arg('--look');
+  if (process.argv.includes('--holding')) { console.log(buildHolding(arg('--brand') ?? 'runwae', resolve(arg('--out') ?? 'holding-dist'))); process.exit(0); }
   const only = arg('--brand') ?? process.env.BRAND;
   const brands = only ? [only] : readdirSync(join(ROOT, 'brands'));
   for (const id of brands) {

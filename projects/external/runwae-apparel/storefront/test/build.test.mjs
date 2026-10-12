@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { buildBrand, loadBrand } from '../src/build.mjs';
+import { buildBrand, buildHolding, loadBrand } from '../src/build.mjs';
 
 for (const id of ['runwae', 'glb']) {
   test(`build ${id}: preview mode is noindex and shows no buy buttons`, () => {
@@ -57,4 +57,15 @@ test('Runwae Apparel: hero names the brand in full; styled photos + taste page',
 test('every Runwae product has both styled looks', () => {
   const { dir, catalog } = loadBrand('runwae');
   for (const p of catalog) for (const l of ['gallery', 'sketchbook']) assert.ok(existsSync(join(dir, 'photos', `${p.id}-${l}.jpg`)), `${p.id}-${l}`);
+});
+
+test('holding page: Runwae Apparel in full, drop coming, no forms/prices/emails, indexable', () => {
+  const out = mkdtempSync(join(tmpdir(), 'sf-hold-'));
+  const r = buildHolding('runwae', out);
+  const html = readFileSync(join(out, 'index.html'), 'utf8');
+  assert.match(html, /<h1>Runwae Apparel<\/h1>/);
+  assert.match(html, /first drop is coming/);
+  assert.doesNotMatch(html, /<form|\$\d|@[a-z]+\.(com|net)|noindex/i);
+  assert.ok(r.shots >= 1 && existsSync(join(out, 'emblem.png')) && existsSync(join(out, '404.html')));
+  assert.match(readFileSync(join(out, 'robots.txt'), 'utf8'), /Allow: \//);
 });

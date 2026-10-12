@@ -3,3 +3,5 @@ public/
 node_modules/
 .vercel/
 .env*
+holding-dist/
+deploy/holding_go.log
