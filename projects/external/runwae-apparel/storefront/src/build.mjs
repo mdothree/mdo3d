@@ -49,6 +49,7 @@ h2.line{font:500 34px/1.1 ${t.fontDisplay};margin:56px 0 6px}
 .frame{${frame}background:#f2f0ec}
 .photo img{width:100%;box-shadow:0 14px 30px rgba(0,0,0,.45)}
 .taste{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:10px 0 40px}.taste3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (max-width:760px){.taste3{grid-template-columns:minmax(0,1fr)}}.taste figure{margin:0}.taste figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.incl{margin:6px 0 12px;padding-left:20px}.incl li{margin:2px 0}h2.incl-h{font:500 20px/1.2 ${t.fontDisplay};margin:22px 0 4px}
 .card h3{font:500 21px/1.2 ${t.fontDisplay};margin:14px 0 2px}
 .status{font-size:13px;color:var(--accent);letter-spacing:.04em}
 .product{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;padding:48px 0}.product>*{min-width:0}
@@ -79,7 +80,7 @@ ${brand.mode === 'preview' ? '<meta name="robots" content="noindex, nofollow">' 
 <link rel="stylesheet" href="${root}styles.css">${brand.logo ? `<link rel="icon" href="${root}${esc(brand.logo)}">` : ''}
 </head><body>${preview}<div class="wrap">
 <header class="site">${logo}<div><a class="brandname" href="${root}index.html">${esc(brand.name)}</a><div class="endorse">${esc(brand.endorsement)}</div></div>
-<nav><a href="${root}index.html">Shop</a><a href="${root}policies.html">Shipping &amp; Exchanges</a></nav></header>
+<nav><a href="${root}index.html">Shop</a><a href="${root}policies.html">${brand._kind === 'digital' ? 'Delivery &amp; License' : 'Shipping &amp; Exchanges'}</a></nav></header>
 <main>${body}</main>
 <footer>© ${new Date().getUTCFullYear()} ${esc(brand.name)}, ${esc(brand.endorsement)}. · <a href="${root}policies.html">Policies</a> · ${esc(brand.policies.contact)}</footer>
 </div></body></html>`;
@@ -130,7 +131,7 @@ ${sb ? `<div class="notice"><strong>Pre-order.</strong> Made to order after the 
   return layout({ brand: b, root, title: `${p.name} | ${b.name}`, body, description: p.description });
 }
 
-function tastePage(b, catalog) {
+function tastePage(b, catalog, shopBase = '') {
   const row = (p) => `<h2 class="line">${esc(p.name)}</h2><p class="line-note">${esc(p.line)}</p><div class="taste">
 <figure><img src="photos/${esc(p.id)}-gallery.jpg" alt="${esc(p.name)}, look A" loading="lazy" width="1080" height="1350"><figcaption>A · The Gallery</figcaption></figure>
 <figure><img src="photos/${esc(p.id)}-sketchbook.jpg" alt="${esc(p.name)}, look B" loading="lazy" width="1080" height="1350"><figcaption>B · The Sketchbook</figcaption></figure></div>`;
@@ -138,7 +139,7 @@ function tastePage(b, catalog) {
 <p>Two looks for ${esc(b.name)}. Both use LB's own mockups, cut out and placed exactly as drawn. Nothing about the designs is generated or redrawn.</p>
 <p><strong>A · The Gallery</strong> extends the 2021 <em>Everybody Influences</em> magazine: each piece hung as a work of art in a gilt frame on a lit charcoal wall, with a museum placard.<br>
 <strong>B · The Sketchbook</strong> comes from The Little Things' hand-drawn line: the piece laid on warm sketch paper with coral tape and a pencil caption.</p>
-<p>Pick <strong>A</strong>, <strong>B</strong>, or <strong>A for Fall '21 + B for The Little Things</strong>. Browse the whole shop in each look: <a href="index.html">A · Gallery</a> · <a href="sketchbook/index.html">B · Sketchbook</a>.</p></article>
+<p>Pick <strong>A</strong>, <strong>B</strong>, or <strong>A for Fall '21 + B for The Little Things</strong>. Browse the whole shop in each look: <a href="${shopBase}index.html">A · Gallery</a> · <a href="${shopBase}sketchbook/index.html">B · Sketchbook</a>.</p></article>
 ${catalog.map(row).join('')}`;
   return layout({ brand: b, root: '', title: `Photo looks | ${b.name}`, body });
 }
@@ -156,6 +157,42 @@ ${offer('c-tlt-editions', 'C · TLT Digital Editions · $30', "Numbered, signed 
   return layout({ brand: b, root: '', title: `Digital offers | ${b.name}`, body });
 }
 
+// ---------- digital catalog (Principal 2026-10-12: digital products only) ----------
+const proposed = (b, p) => (b.mode === 'preview' && Number.isInteger(p.price_proposed_cents)
+  ? ` · proposed ${money(p.price_proposed_cents)}${p.billing === 'monthly' ? '/mo' : ''}` : '');
+
+function digitalCard(b, p, root) {
+  return `<a class="card" href="${root}products/${esc(p.id)}.html"><div class="photo"><img src="${root}${esc(p.images[0])}" alt="${esc(p.name)}" loading="lazy" width="1080" height="1350"></div>
+<h3>${esc(p.name)}</h3><div class="status">Coming soon${esc(proposed(b, p))}</div></a>`;
+}
+
+function digitalProductPage(b, p) {
+  const root = '../';
+  const imgs = p.images.map((src, i) => `<div class="photo"><img src="${root}${esc(src)}" alt="${esc(p.name)}" width="1080" height="1350"${i ? ' loading="lazy"' : ''}></div>`).join('');
+  const edition = p.edition_cap ? `<div class="notice"><strong>Edition of ${p.edition_cap}.</strong> Numbered, and capped: once ${p.edition_cap} are sold, it's closed for good.</div>` : '';
+  const what = `<ul class="incl">${p.includes.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  const delivery = p.billing === 'monthly' ? 'Delivered by email each month · cancel anytime' : 'Instant download after purchase';
+  const body = `<section class="product"><div class="gallery">${imgs}</div><div>
+<div class="meta">${esc(p.line)}</div><h1>${esc(p.name)}</h1><p>${esc(p.description)}</p>
+<div class="meta">Digital · ${esc(delivery)}</div>
+${b.mode === 'preview' && Number.isInteger(p.price_proposed_cents) ? `<div class="price">${money(p.price_proposed_cents)}${p.billing === 'monthly' ? '<span class="small"> / month</span>' : ''} <span class="small">(proposed)</span></div>` : ''}
+<h2 class="incl-h">What you get</h2>${what}${edition}
+<div class="notice">Coming soon.</div><button type="button" disabled>Not available yet</button>
+<p class="small">Personal-use license. <a href="${root}policies.html">Delivery &amp; license</a>.</p></div></section>`;
+  return layout({ brand: b, root, title: `${p.name} | ${b.name}`, body, description: p.description });
+}
+
+function digitalPoliciesPage(b) {
+  const body = `<article class="prose"><h1>Delivery &amp; License</h1>
+<p class="small">Draft terms for review; not final until the store opens.</p>
+<h2>Delivery</h2><p>Digital items are delivered as a download link by email right after purchase. Links stay active for 7 days, and we'll resend one any time you ask. The Design Drop Pass delivers each new pack by email when it drops.</p>
+<h2>License</h2><p>Everything here is LB's original work for ${esc(b.name)}. Your purchase is a <strong>personal-use license</strong>: set it as a wallpaper, print it for your own wall, keep it. It doesn't include resale, commercial use, or printing it on products to sell.</p>
+<h2>Editions</h2><p>Each digital edition is numbered and capped at the size shown. When it's sold out, it's closed for good: no reprints, no new numbers.</p>
+<h2>Refunds</h2><p>If you haven't downloaded your item, you can get a full refund within 14 days. Because downloads can't be returned, a downloaded item is final, and checkout asks you to agree to that first where the law requires it. Cancel the Design Drop Pass any time; it runs to the end of the month you paid for.</p>
+<h2>Contact</h2><p>${esc(b.policies.contact)}</p></article>`;
+  return layout({ brand: b, root: '', title: `Delivery & License | ${b.name}`, body });
+}
+
 function policiesPage(b) {
   const body = `<article class="prose"><h1>Shipping &amp; Exchanges</h1>
 <h2>Pre-orders</h2><p>Pre-order pieces are made after their window closes, in the quantity ordered. Every pre-order page shows a <strong>ships-by date</strong>, and you're charged at checkout. If something will stop us shipping by that date, we'll email you <strong>before</strong> it passes with the new date and the option to cancel for a full refund.</p>
@@ -168,8 +205,10 @@ function policiesPage(b) {
 
 function indexPage(b, catalog, drops, now, photos) {
   const lines = [...new Set(catalog.map((p) => p.line))];
-  const notes = { "Fall '21": 'The original line, back in production.', 'The Little Things': "In life, it's all about the little things." };
-  const sections = lines.map((l) => `<h2 class="line">${esc(l)}</h2><p class="line-note">${esc(notes[l] ?? '')}</p><div class="grid">${catalog.filter((p) => p.line === l).map((p) => card(p, productStatus(p, drops, now), '', photos)).join('')}</div>`).join('');
+  const notes = { "Fall '21": 'The original line, back in production.', 'The Little Things': "In life, it's all about the little things.",
+    'The Lookbook': 'Everybody Influences, the Runwae Apparel magazine.', 'Design Drops': 'The marks and the line art, made for your screens.',
+    'The Little Things, Digital Editions': 'Numbered digital editions of the hand-drawn line. Capped, signed, certified.', Bundles: 'The first drop, together.' };
+  const sections = lines.map((l) => `<h2 class="line">${esc(l)}</h2><p class="line-note">${esc(notes[l] ?? '')}</p><div class="grid">${catalog.filter((p) => p.line === l).map((p) => (p.format === 'digital' ? digitalCard(b, p, '') : card(p, productStatus(p, drops, now), '', photos))).join('')}</div>`).join('');
   const empty = catalog.length ? '' : '<p class="line-note empty">The first pieces are in the studio.</p>';
   const body = `<section class="hero"><h1>${esc(b.name)}</h1><div class="bar"></div><p>${esc(b.tagline)}</p></section>${sections}${empty}`;
   return layout({ brand: b, root: '', title: `${b.name}: ${b.tagline}`, body });
@@ -196,7 +235,9 @@ h1{font:500 clamp(42px,8vw,84px)/1 ${t.fontDisplay};letter-spacing:.04em;margin:
 <title>${esc(brand.name)}: the first drop is coming</title>
 <meta name="description" content="${esc(brand.name)}, ${esc(brand.endorsement)}. Fall '21 and The Little Things. The first drop is coming soon.">
 <meta property="og:title" content="${esc(brand.name)}"><meta property="og:description" content="The first drop is coming: Fall '21 and The Little Things.">
-${shots[0] ? `<meta property="og:image" content="photos/${shots[0]}.jpg">` : ''}
+<link rel="canonical" href="https://${esc(brand.domain)}/"><meta property="og:type" content="website"><meta property="og:url" content="https://${esc(brand.domain)}/">
+${shots[0] ? `<meta property="og:image" content="https://${esc(brand.domain)}/photos/${shots[0]}.jpg"><meta property="og:image:width" content="1080"><meta property="og:image:height" content="1350"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://${esc(brand.domain)}/photos/${shots[0]}.jpg">` : ''}
+<meta name="twitter:title" content="${esc(brand.name)}"><meta name="theme-color" content="${t.bg}">
 <link rel="stylesheet" href="styles.css">${brand.logo ? '<link rel="icon" href="emblem.png">' : ''}</head><body><main>
 ${brand.logo ? '<img class="seal" src="emblem.png" alt="Runwae Apparel seal" width="96" height="96">' : ''}
 <h1>${esc(brand.name)}</h1><div class="end">${esc(brand.endorsement)}</div><div class="bar"></div>
@@ -207,11 +248,22 @@ ${brand.logo ? '<img class="seal" src="emblem.png" alt="Runwae Apparel seal" wid
   writeFileSync(join(outDir, 'index.html'), html);
   writeFileSync(join(outDir, '404.html'), html);
   writeFileSync(join(outDir, 'robots.txt'), 'User-agent: *\nAllow: /\n');
+  // Shipped with the deploy (holding_go.sh deploys this folder as-is).
+  writeFileSync(join(outDir, 'vercel.json'), JSON.stringify({ cleanUrls: true, headers: [{ source: '/(.*)', headers: [
+    { key: 'X-Content-Type-Options', value: 'nosniff' }, { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+    { key: 'X-Frame-Options', value: 'DENY' }, { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+    { key: 'Content-Security-Policy', value: "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'" },
+  ] }] }, null, 2));
   return { brand: id, holding: true, out: outDir, shots: shots.length };
 }
 
-export function buildBrand(id, outDir, now = new Date(), look = undefined) {
-  const { dir, brand, catalog, drops } = loadBrand(id);
+export function buildBrand(id, outDir, now = new Date(), look = undefined, kind = 'physical') {
+  const loaded = loadBrand(id);
+  const { dir } = loaded;
+  const brand = { ...loaded.brand, _kind: kind };
+  const physicalCatalog = loaded.catalog;
+  const catalog = kind === 'digital' ? JSON.parse(readFileSync(join(dir, 'catalog-digital.json'), 'utf8')).products : physicalCatalog;
+  const drops = kind === 'digital' ? [] : loaded.drops;
   const pdir = join(dir, 'photos');
   const photoFiles = existsSync(pdir) ? readdirSync(pdir).filter((f) => f.endsWith('.jpg')) : [];
   const photos = { look: look ?? brand.photoStyle ?? null, has: new Set(photoFiles.map((f) => f.replace(/\.jpg$/, ''))) };
@@ -222,10 +274,10 @@ export function buildBrand(id, outDir, now = new Date(), look = undefined) {
   writeFileSync(join(outDir, 'styles.css'), css(brand.theme));
   writeFileSync(join(outDir, 'buy.js'), BUY_JS);
   writeFileSync(join(outDir, 'index.html'), indexPage(brand, catalog, drops, now, photos));
-  writeFileSync(join(outDir, 'policies.html'), policiesPage(brand));
+  writeFileSync(join(outDir, 'policies.html'), kind === 'digital' ? digitalPoliciesPage(brand) : policiesPage(brand));
   writeFileSync(join(outDir, 'thanks.html'), layout({ brand, root: '', title: `Thank you | ${brand.name}`, body: '<article class="prose"><h1>Thank you.</h1><p>Your order is in. A receipt is on its way to your email, and you\'ll get tracking when it ships. Pre-orders ship by the date shown at checkout.</p><p><a href="index.html">Back to the shop</a></p></article>' }));
-  for (const p of catalog) writeFileSync(join(outDir, 'products', `${p.id}.html`), productPage(brand, p, productStatus(p, drops, now), photos));
-  if (photoFiles.length) writeFileSync(join(outDir, 'taste.html'), tastePage(brand, catalog));
+  for (const p of catalog) writeFileSync(join(outDir, 'products', `${p.id}.html`), (p.format === 'digital' ? digitalProductPage(brand, p) : productPage(brand, p, productStatus(p, drops, now), photos)));
+  if (photoFiles.length) writeFileSync(join(outDir, 'taste.html'), tastePage(brand, physicalCatalog, kind === 'digital' ? 'physical/' : ''));
   if (existsSync(join(dir, 'digital'))) {
     cpSync(join(dir, 'digital'), join(outDir, 'digital'), { recursive: true });
     writeFileSync(join(outDir, 'digital.html'), digitalPage(brand));
@@ -238,11 +290,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : undefined; };
   const now = arg('--now') ? new Date(arg('--now')) : new Date();
   const look = arg('--look');
+  const kind = arg('--catalog') ?? 'physical';
   if (process.argv.includes('--holding')) { console.log(buildHolding(arg('--brand') ?? 'runwae', resolve(arg('--out') ?? 'holding-dist'))); process.exit(0); }
   const only = arg('--brand') ?? process.env.BRAND;
   const brands = only ? [only] : readdirSync(join(ROOT, 'brands'));
   for (const id of brands) {
     const out = arg('--out') && only ? resolve(arg('--out')) : join(ROOT, 'dist', id);
-    console.log(buildBrand(id, out, now, look));
+    console.log(buildBrand(id, out, now, look, kind));
   }
 }

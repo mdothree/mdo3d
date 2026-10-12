@@ -49,6 +49,8 @@ test('sessionParams: rejections', () => {
   c.brand.shipping.flat_cents = null;
   assert.equal(sessionParams(c, { product: 'tee', size: 'M' }, opts).status, 500);
   assert.equal(sessionParams(c, null, opts).status, 400);
+  c.products.push({ id: 'dig', name: 'D', description: 'd', format: 'digital', status: 'live', price_cents: 900, channel: 'printful' });
+  assert.equal(sessionParams(c, { product: 'dig', size: 'M' }, opts).status, 409);
 });
 
 test('the real Runwae catalog has nothing purchasable (all draft, unpriced)', () => {

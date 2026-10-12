@@ -31,6 +31,7 @@ node src/build.mjs --brand runwae --now 2026-11-05T00:00:00Z   # preview as of a
 node --test test/*.test.mjs
 python3 tools/assets.py runwae                   # after changing catalog images
 python3 tools/photos.py runwae all               # both photo looks (run off-box)
+node src/build.mjs --brand runwae --out preview --catalog digital    # the digital shop (catalog-digital.json)
 node src/build.mjs --brand runwae --out preview --look sketchbook   # whole shop in one look; taste.html compares both
 
 node tools/drop.mjs shipby 2026-11-15            # -> ship-by 2027-01-03 (49 days, conservative)

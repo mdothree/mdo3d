@@ -1,0 +1,200 @@
+{
+  "_note": "DIGITAL catalog (Principal 2026-10-12: digital products only). Draft, unpriced: price_proposed_cents is shown in preview only. Edition caps must be enforced in code before any sale. LB's own art only.",
+  "products": [
+    {
+      "id": "lookbook-issue-2",
+      "name": "Everybody Influences, Issue No. 2",
+      "line": "The Lookbook",
+      "format": "digital",
+      "kind": "lookbook",
+      "images": [
+        "digital/p-lookbook-issue-2.jpg"
+      ],
+      "description": "The Runwae Apparel lookbook: both lines shot in the Gallery and Sketchbook looks, with LB's notes on each design and the story of Issue No. 1.",
+      "includes": [
+        "Web edition",
+        "PDF edition",
+        "LB's notes on every design"
+      ],
+      "edition_cap": null,
+      "billing": "one-time",
+      "price_proposed_cents": 900,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "pack-fall21",
+      "name": "Fall '21 Wallpaper Pack",
+      "line": "Design Drops",
+      "format": "digital",
+      "kind": "pack",
+      "images": [
+        "digital/p-pack-fall21.jpg"
+      ],
+      "description": "The Fall '21 marks for your phone and desktop: the dripping-R seal and The Runwae Company.",
+      "includes": [
+        "Phone wallpapers",
+        "Desktop wallpapers"
+      ],
+      "edition_cap": null,
+      "billing": "one-time",
+      "price_proposed_cents": 400,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "pack-tlt",
+      "name": "The Little Things Wallpaper Pack",
+      "line": "Design Drops",
+      "format": "digital",
+      "kind": "pack",
+      "images": [
+        "digital/p-pack-tlt.jpg"
+      ],
+      "description": "The Little Things line art for your phone and desktop: the faces, the RWA monogram, and \"in life, it's all about the little things\".",
+      "includes": [
+        "Phone wallpapers",
+        "Desktop wallpapers"
+      ],
+      "edition_cap": null,
+      "billing": "one-time",
+      "price_proposed_cents": 400,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "drop-pass",
+      "name": "Design Drop Pass",
+      "line": "Design Drops",
+      "format": "digital",
+      "kind": "subscription",
+      "images": [
+        "digital/p-drop-pass.jpg"
+      ],
+      "description": "Every new Runwae Apparel wallpaper pack as it drops, once a month. Cancel anytime.",
+      "includes": [
+        "A new pack every month",
+        "Every past pack while you're a member"
+      ],
+      "edition_cap": null,
+      "billing": "monthly",
+      "price_proposed_cents": 500,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "edition-rwa",
+      "name": "RWA",
+      "line": "The Little Things, Digital Editions",
+      "format": "digital",
+      "kind": "edition",
+      "images": [
+        "digital/p-edition-rwa.jpg"
+      ],
+      "description": "The hand-drawn RWA monogram over THE LITTLE THINGS. A numbered digital edition.",
+      "includes": [
+        "Signed high-res art file",
+        "Numbered certificate (PDF)",
+        "Personal-use license"
+      ],
+      "edition_cap": 50,
+      "billing": "one-time",
+      "price_proposed_cents": 3000,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "edition-faces",
+      "name": "Faces",
+      "line": "The Little Things, Digital Editions",
+      "format": "digital",
+      "kind": "edition",
+      "images": [
+        "digital/p-edition-faces.jpg"
+      ],
+      "description": "Six of the line-drawn faces from The Little Things. A numbered digital edition.",
+      "includes": [
+        "Signed high-res art file",
+        "Numbered certificate (PDF)",
+        "Personal-use license"
+      ],
+      "edition_cap": 50,
+      "billing": "one-time",
+      "price_proposed_cents": 3000,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "edition-in-life",
+      "name": "In Life",
+      "line": "The Little Things, Digital Editions",
+      "format": "digital",
+      "kind": "edition",
+      "images": [
+        "digital/p-edition-in-life.jpg"
+      ],
+      "description": "\"In life, it's all about the little things.\" The line's statement piece. A numbered digital edition.",
+      "includes": [
+        "Signed high-res art file",
+        "Numbered certificate (PDF)",
+        "Personal-use license"
+      ],
+      "edition_cap": 50,
+      "billing": "one-time",
+      "price_proposed_cents": 3000,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "editions-set",
+      "name": "The Little Things, Set of 3",
+      "line": "The Little Things, Digital Editions",
+      "format": "digital",
+      "kind": "edition-set",
+      "images": [
+        "digital/p-editions-set.jpg"
+      ],
+      "description": "All three digital editions (RWA, Faces, In Life) with matching edition numbers where available.",
+      "includes": [
+        "Three signed high-res art files",
+        "Three numbered certificates",
+        "Personal-use license"
+      ],
+      "edition_cap": 50,
+      "billing": "one-time",
+      "price_proposed_cents": 7500,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    },
+    {
+      "id": "first-drop-bundle",
+      "name": "The First Drop",
+      "line": "Bundles",
+      "format": "digital",
+      "kind": "bundle",
+      "images": [
+        "digital/p-first-drop-bundle.jpg"
+      ],
+      "description": "The launch bundle: the Issue No. 2 lookbook, one wallpaper pack and one Little Things digital edition.",
+      "includes": [
+        "Lookbook (web + PDF)",
+        "One wallpaper pack",
+        "One digital edition"
+      ],
+      "edition_cap": null,
+      "billing": "one-time",
+      "price_proposed_cents": 3900,
+      "price_cents": null,
+      "status": "draft",
+      "rights_hold": null
+    }
+  ]
+}

@@ -32,6 +32,7 @@ export function sessionParams({ brand, products, drops }, body, { siteUrl, now =
   if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY) return { status: 400, error: `qty must be 1–${MAX_QTY}` };
   const p = products.find((x) => x.id === pid);
   if (!p) return { status: 404, error: 'unknown product' };
+  if (p.format === 'digital') return { status: 409, error: 'not available: digital checkout is not configured' };
   if (!p.sizes.includes(size)) return { status: 400, error: 'unknown size' };
   const buy = purchasable(p, drops, now);
   if (!buy.ok) return { status: 409, error: `not available: ${buy.reason}` };

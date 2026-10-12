@@ -18,6 +18,7 @@
 | Supplier | Unverified. No contact in years |
 | Accounts / keys | None handed over yet (Printful, Stripe, Shippo/EasyPost): `operator_setup.json` → group 4 `setup-apparel-pod` |
 | First drop | **Both** (Principal, #82-b, 2026-10-12): the Fall '21 re-release + The Little Things, with ads behind the spend check (`ADS_PLAN.md`) |
+| Digital shop preview | **Built** (2026-10-12): `catalog-digital.json`, 9 items (lookbook, 2 wallpaper packs + Drop Pass, 3 TLT editions + set, bundle), product images from LB's art, delivery/license terms. Preview: `http://latarence-xps-9320:8730/` (the held apparel shop is at `/physical/`) |
 | Aesthetic + photos | `AESTHETIC.md`: *Everybody Influences*. Two photo looks rendered from LB's real mockups (A Gallery / B Sketchbook, 26 photos) and **awaiting his taste call**. Private preview: `http://latarence-xps-9320:8730/taste.html` (tailnet) |
 | Storefront | **Built locally, not deployed** (2026-10-12): `storefront/` is one codebase for Runwae + GLB: static build, Stripe Checkout function (off by default, test keys only), drop toolkit CLI, 17 tests passing. All 13 Runwae products are `draft` with no price, so nothing is purchasable. See `storefront/README.md` |
 
@@ -143,3 +144,4 @@ Shippo/EasyPost label + packing-slip pipeline, tracking/delay emails, GA4 → St
   - **Preview:** served privately on the xps tailnet (`~/runwae-apparel/serve-preview.sh`).
   - **Tests:** 19/19, run on xps.
   - **AI generation:** no image API key is available to this lane, and the garment itself must never be generated, so AI stays limited to backgrounds (gated: key + spend).
+- **2026-10-12 (digital shop):** Holding page finished (absolute OG/canonical, Twitter card, strict CSP in its own `vercel.json`). Digital shop built with a `--catalog digital` build mode; checkout refuses digital items. `PHOTO_GEN_BRIEF.md` is the generated-photo brief (fal pending). Tests 23/23 on xps.
