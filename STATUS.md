@@ -1,5 +1,19 @@
 # Status
 
+## Summary (2026-10-12)
+
+- **Live URLs** (curl 2026-10-12): https://mdo3d.com **200** · guidance.mdo3d.com **200** · oracle / dreams / tarot / numerology / astrology / fengshui / pastlife / iching / runes .mdo3d.com **200** (all 9) · https://runwae.com **307** (→ /welcome.html) · https://rigor.design **200** · resume.rigor.design **200** · api.rigor.design **200** (but it serves the landing HTML; `/health` **404**) · https://mdothree.com **200**
+- **State:** divination (9) live/ok; Runwae live/warn; rigor.design resume tool building, other rigor.design and mdothree tool rows planned (Mission Control inventory). The Rigor paid link waits on a healthy api.rigor.design (#93/#94).
+- **Owner lane:** MDO (MDO3D window, `mdo3d` pane) + MDO builder.
+- **Open blockers:** 7 open rows in the fleet REPAIR_QUEUE (mdo3d-divination 4, mdothree 1, rigor-design 1, ronnascanner 1). Top 3:
+  - R-mdo3d-conv-1: guidance.mdo3d.com cards use relative hrefs (/oracle, /tarot, …) that 404 on that host
+  - R-mdo3d-conv-2: none of the 9 divination sites link privacy/terms, though they take payment and collect email/birth data
+  - R-ronnascanner-conv-1: leads.ronnascanner.com falls back to generated mock leads when the API fails (honesty fix)
+- **Operator-gated** (`~/jarvis/JARVIS QUESTIONS.md`): MDO GO #5, #73, #38; deploy runwae fdad811; deactivate the Rigor $9.99/mo payment link until api.rigor.design passes; MDO builder GO #63 (divination $5/$10) and #94 (rigor). Runwae Apparel holding page (Vercel token + GoDaddy DNS).
+- **Docs index:** [documentation/INDEX.md](documentation/INDEX.md) (this repo keeps docs in `documentation/`).
+
+---
+
 **Last updated:** 2026-08-17
 
 **Operating org:** [`Organization/README.md`](Organization/README.md) — the Chief of Staff seat (agent operator) that dispatches targets to the [`loops/`](loops/README.md) control plane or a specialist agent and keeps this file true. Tracked centrally by `~/latarence/docs/CHIEFS_OF_STAFF.md`.
