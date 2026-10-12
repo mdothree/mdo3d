@@ -186,7 +186,15 @@ g_b26() {  # Builder %26 cycle-8 P2/P3 (batch 1 + 2 + 3: A11Y-004/015/005, PERF-
            projects/mdo3d/landing projects/mdo3d/promptsforbusiness projects/ronnascanner/frontend landing/mdo3d-compare; do
     slug=$(git -C "$ROOT/$r" remote get-url origin | sed -E 's#^https://([^@]*@)?github.com/##; s#\.git$##')
     br=$(git -C "$ROOT/$r" rev-parse --abbrev-ref HEAD)
-    ( cd "$ROOT/$r" && git pull -q --rebase "https://mdothree@github.com/$slug.git" "$br" && git push -q "https://mdothree@github.com/$slug.git" "HEAD:$br" ) \
+    # Fold in the MDO pane's staged-but-unmerged origin/c9-staged commits (e.g. SURF-006 security.txt) so this
+    # push doesn't strand them (their FF-only merge script would then report NOT FF and skip). Abort on conflict.
+    ( cd "$ROOT/$r" && git pull -q --rebase "https://mdothree@github.com/$slug.git" "$br" \
+        && { git fetch -q "https://mdothree@github.com/$slug.git" "c9-staged:refs/remotes/c9/c9-staged" 2>/dev/null || true; } \
+        && { if git rev-parse -q --verify refs/remotes/c9/c9-staged >/dev/null; then
+               for c in $(git rev-list --reverse --cherry-pick --right-only --no-merges HEAD...refs/remotes/c9/c9-staged); do
+                 git cherry-pick -x "$c" >/dev/null 2>&1 || { git cherry-pick --abort; echo "  c9-staged $c conflicts in $r: left for the MDO pane" | tee -a "$LOG"; }
+               done; fi; } \
+        && git push -q "https://mdothree@github.com/$slug.git" "HEAD:$br" ) \
       && echo "  pushed $r ($slug@$(git -C "$ROOT/$r" log -1 --format=%h))" | tee -a "$LOG" || echo "  PUSH FAIL $r" | tee -a "$LOG"
   done
   # 2) CLI deploys for apps that live in the parent repo (rollback lines recorded by deploy())
