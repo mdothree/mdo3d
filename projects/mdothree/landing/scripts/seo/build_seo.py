@@ -33,7 +33,7 @@ def P(file, title, desc, kw, app=True, noindex=False, canonical=True):
 
 def pricing(tool):
     return P('pricing.html', f'{tool} Pricing — {BRAND}',
-             f'Compare the no-sign-up {tool} with mdothree Pro. Pro costs $4/month and adds unlimited file processing, batch operations, and premium tools.',
+             f'mdothree Pro for {tool}: unlimited file processing, batch operations and premium tools. See the plan and current price.',
              [f'{tool.lower()} pricing', 'mdothree pro', 'subscription', 'pricing', 'online tools'], app=False)
 
 def account(tool):
