@@ -50,8 +50,7 @@ class DreamInterpreterApp {
 
     async checkApiHealth() {
         try {
-            const health = await this.api.checkHealth();
-            console.log('API Status:', health.status);
+            await this.api.checkHealth();
         } catch (error) {
             console.error('API health check failed:', error);
             console.warn('Backend API may be offline. Premium features disabled.');
@@ -436,10 +435,6 @@ class DreamInterpreterApp {
     }
 
     trackShare() {
-        console.log('Share tracked:', {
-            symbols: this.detectedSymbols.map(s => s.symbol),
-            dreamLength: this.currentDream.length
-        });
         // TODO: Add Firebase Analytics tracking
     }
 

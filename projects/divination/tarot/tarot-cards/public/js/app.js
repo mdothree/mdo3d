@@ -41,8 +41,7 @@ class TarotApp {
 
     async checkApiHealth() {
         try {
-            const health = await this.api.checkHealth();
-            console.log('API Status:', health.status);
+            await this.api.checkHealth();
         } catch (error) {
             console.error('API health check failed:', error);
             console.warn('Backend API may be offline. Premium features disabled.');
@@ -336,11 +335,6 @@ class TarotApp {
     }
 
     trackShare() {
-        console.log('Share tracked:', {
-            spread: this.currentSpread,
-            cards: this.drawnCards.map(c => c.name),
-            question: this.question
-        });
         // TODO: Add Firebase Analytics tracking
     }
 

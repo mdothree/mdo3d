@@ -38,8 +38,7 @@ class OracleCardsApp {
 
     async checkApiHealth() {
         try {
-            const health = await this.api.checkHealth();
-            console.log('API Status:', health.status);
+            await this.api.checkHealth();
         } catch (error) {
             console.error('API health check failed:', error);
             console.warn('Backend API may be offline. Premium features disabled.');
@@ -91,10 +90,6 @@ class OracleCardsApp {
         });
 
         // Action buttons
-        document.getElementById('save-reading-btn')?.addEventListener('click', () => {
-            this.saveReading();
-        });
-
         document.getElementById('share-reading-btn')?.addEventListener('click', () => {
             this.shareReading();
         });
@@ -160,8 +155,6 @@ class OracleCardsApp {
     }
 
     onCardRevealed(index) {
-        console.log('Card revealed:', index, this.drawnCards[index]);
-
         // Check if all cards revealed
         const allRevealed = this.cardRenderer.cards.every(c => c.isRevealed);
         
@@ -362,13 +355,6 @@ class OracleCardsApp {
         };
         
         alert(`This spread requires a premium reading (${prices[spreadType]}). Upgrade to unlock all spreads and detailed AI interpretations!`);
-    }
-
-    saveReading() {
-        // TODO: Save to Firebase
-        console.log('Saving reading...');
-        // Saving isn't implemented yet — don't claim it succeeded.
-        alert('Saving readings is coming soon. For now, use Share to keep a copy.');
     }
 
     async shareReading() {
