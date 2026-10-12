@@ -714,3 +714,13 @@ footer {
 @media (max-width: 768px) {
     .nav-links a, .footer-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
+
+/* MOBILE-WARN: phone header. Logo and "How It Works" wrapped onto 2-3 lines and the
+   logo sat flush against the top edge (.container outranks nav, so nav vertical
+   padding was 0). Logo + links now fit one row; wrap stays as a fallback. */
+@media (max-width: 400px) {
+    header nav.container { padding-top: .25rem; padding-bottom: .25rem; flex-wrap: wrap; column-gap: .5rem; }
+    .logo h1 { font-size: 1.1rem; line-height: 1.3; white-space: nowrap; }
+    .nav-links { gap: .5rem; font-size: .8rem; }
+    .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+}
