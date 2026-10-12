@@ -882,3 +882,11 @@ footer {
 }
 .dream-input-section .field-error[hidden] { display: none; }
 .dream-input-section textarea[aria-invalid="true"] { border-color: #f87171; }
+
+/* A11Y-014: visible keyboard focus on dream input and symbol search */
+.dream-input-section textarea:focus-visible,
+.symbol-search input:focus-visible,
+.symbol-search button:focus-visible {
+    outline: 3px solid var(--primary-text);
+    outline-offset: 2px;
+}
