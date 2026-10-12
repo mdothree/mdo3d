@@ -47,6 +47,8 @@ h2.line{font:500 34px/1.1 ${t.fontDisplay};margin:56px 0 6px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:34px}
 .card{text-decoration:none;display:block}
 .frame{${frame}background:#f2f0ec}
+.photo img{width:100%;box-shadow:0 14px 30px rgba(0,0,0,.45)}
+.taste{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:10px 0 40px}.taste figure{margin:0}.taste figcaption{font-size:13px;color:var(--muted);margin-top:6px}
 .card h3{font:500 21px/1.2 ${t.fontDisplay};margin:14px 0 2px}
 .status{font-size:13px;color:var(--accent);letter-spacing:.04em}
 .product{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;padding:48px 0}.product>*{min-width:0}
@@ -92,14 +94,24 @@ function productStatus(p, drops, now) {
   return { label: 'Coming soon', buy };
 }
 
-function card(p, st, root) {
-  return `<a class="card" href="${root}products/${esc(p.id)}.html"><div class="frame"><img src="${root}assets/${esc(p.id)}-1.jpg" alt="${esc(p.name)}" loading="lazy" width="1000" height="1000"></div>
+// Styled photo for a product in the chosen look (tools/photos.py), or null -> flat mockup in a CSS frame.
+const styled = (photos, p) => (photos?.look && photos.has.has(`${p.id}-${photos.look}`) ? `photos/${p.id}-${photos.look}.jpg` : null);
+const LOOK_ALT = { gallery: 'framed on a gallery wall', sketchbook: 'taped into a sketchbook' };
+
+function card(p, st, root, photos) {
+  const s = styled(photos, p);
+  const img = s
+    ? `<div class="photo"><img src="${root}${s}" alt="${esc(p.name)}, ${LOOK_ALT[photos.look] ?? 'styled'}" loading="lazy" width="1080" height="1350"></div>`
+    : `<div class="frame"><img src="${root}assets/${esc(p.id)}-1.jpg" alt="${esc(p.name)}" loading="lazy" width="1000" height="1000"></div>`;
+  return `<a class="card" href="${root}products/${esc(p.id)}.html">${img}
 <h3>${esc(p.name)}</h3><div class="status">${esc(st.label)}</div></a>`;
 }
 
-function productPage(b, p, st) {
+function productPage(b, p, st, photos) {
   const root = '../';
-  const imgs = p.images.map((_, i) => `<div class="frame"><img src="${root}assets/${esc(p.id)}-${i + 1}.jpg" alt="${esc(p.name)}, view ${i + 1}" width="1000" height="1000"${i ? ' loading="lazy"' : ''}></div>`).join('');
+  const s = styled(photos, p);
+  const lead = s ? `<div class="photo"><img src="${root}${s}" alt="${esc(p.name)}, ${LOOK_ALT[photos.look] ?? 'styled'}" width="1080" height="1350"></div>` : '';
+  const imgs = lead + p.images.map((_, i) => `<div class="frame"><img src="${root}assets/${esc(p.id)}-${i + 1}.jpg" alt="${esc(p.name)}, view ${i + 1}" width="1000" height="1000"${i || s ? ' loading="lazy"' : ''}></div>`).join('');
   const { buy } = st;
   let action;
   if (buy.ok) {
@@ -118,6 +130,19 @@ ${sb ? `<div class="notice"><strong>Pre-order.</strong> Made to order after the 
   return layout({ brand: b, root, title: `${p.name} | ${b.name}`, body, description: p.description });
 }
 
+function tastePage(b, catalog) {
+  const row = (p) => `<h2 class="line">${esc(p.name)}</h2><p class="line-note">${esc(p.line)}</p><div class="taste">
+<figure><img src="photos/${esc(p.id)}-gallery.jpg" alt="${esc(p.name)}, look A" loading="lazy" width="1080" height="1350"><figcaption>A · The Gallery</figcaption></figure>
+<figure><img src="photos/${esc(p.id)}-sketchbook.jpg" alt="${esc(p.name)}, look B" loading="lazy" width="1080" height="1350"><figcaption>B · The Sketchbook</figcaption></figure></div>`;
+  const body = `<article class="prose"><h1>Product photos: your taste call</h1>
+<p>Two looks for ${esc(b.name)}. Both use LB's own mockups, cut out and placed exactly as drawn. Nothing about the designs is generated or redrawn.</p>
+<p><strong>A · The Gallery</strong> extends the 2021 <em>Everybody Influences</em> magazine: each piece hung as a work of art in a gilt frame on a lit charcoal wall, with a museum placard.<br>
+<strong>B · The Sketchbook</strong> comes from The Little Things' hand-drawn line: the piece laid on warm sketch paper with coral tape and a pencil caption.</p>
+<p>Pick <strong>A</strong>, <strong>B</strong>, or <strong>A for Fall '21 + B for The Little Things</strong>. Browse the whole shop in each look: <a href="index.html">A · Gallery</a> · <a href="sketchbook/index.html">B · Sketchbook</a>.</p></article>
+${catalog.map(row).join('')}`;
+  return layout({ brand: b, root: '', title: `Photo looks | ${b.name}`, body });
+}
+
 function policiesPage(b) {
   const body = `<article class="prose"><h1>Shipping &amp; Exchanges</h1>
 <h2>Pre-orders</h2><p>Pre-order pieces are made after their window closes, in the quantity ordered. Every pre-order page shows a <strong>ships-by date</strong>, and you're charged at checkout. If something will stop us shipping by that date, we'll email you <strong>before</strong> it passes with the new date and the option to cancel for a full refund.</p>
@@ -128,26 +153,31 @@ function policiesPage(b) {
   return layout({ brand: b, root: '', title: `Shipping & Exchanges | ${b.name}`, body });
 }
 
-function indexPage(b, catalog, drops, now) {
+function indexPage(b, catalog, drops, now, photos) {
   const lines = [...new Set(catalog.map((p) => p.line))];
   const notes = { "Fall '21": 'The original line, back in production.', 'The Little Things': "In life, it's all about the little things." };
-  const sections = lines.map((l) => `<h2 class="line">${esc(l)}</h2><p class="line-note">${esc(notes[l] ?? '')}</p><div class="grid">${catalog.filter((p) => p.line === l).map((p) => card(p, productStatus(p, drops, now), '')).join('')}</div>`).join('');
+  const sections = lines.map((l) => `<h2 class="line">${esc(l)}</h2><p class="line-note">${esc(notes[l] ?? '')}</p><div class="grid">${catalog.filter((p) => p.line === l).map((p) => card(p, productStatus(p, drops, now), '', photos)).join('')}</div>`).join('');
   const empty = catalog.length ? '' : '<p class="line-note empty">The first pieces are in the studio.</p>';
-  const body = `<section class="hero"><h1>${esc(b.name.split(' ')[0])}</h1><div class="bar"></div><p>${esc(b.tagline)}</p></section>${sections}${empty}`;
+  const body = `<section class="hero"><h1>${esc(b.name)}</h1><div class="bar"></div><p>${esc(b.tagline)}</p></section>${sections}${empty}`;
   return layout({ brand: b, root: '', title: `${b.name}: ${b.tagline}`, body });
 }
 
-export function buildBrand(id, outDir, now = new Date()) {
+export function buildBrand(id, outDir, now = new Date(), look = undefined) {
   const { dir, brand, catalog, drops } = loadBrand(id);
+  const pdir = join(dir, 'photos');
+  const photoFiles = existsSync(pdir) ? readdirSync(pdir).filter((f) => f.endsWith('.jpg')) : [];
+  const photos = { look: look ?? brand.photoStyle ?? null, has: new Set(photoFiles.map((f) => f.replace(/\.jpg$/, ''))) };
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(join(outDir, 'products'), { recursive: true });
   if (existsSync(join(dir, 'assets'))) cpSync(join(dir, 'assets'), join(outDir, 'assets'), { recursive: true });
+  if (photoFiles.length) cpSync(pdir, join(outDir, 'photos'), { recursive: true });
   writeFileSync(join(outDir, 'styles.css'), css(brand.theme));
   writeFileSync(join(outDir, 'buy.js'), BUY_JS);
-  writeFileSync(join(outDir, 'index.html'), indexPage(brand, catalog, drops, now));
+  writeFileSync(join(outDir, 'index.html'), indexPage(brand, catalog, drops, now, photos));
   writeFileSync(join(outDir, 'policies.html'), policiesPage(brand));
   writeFileSync(join(outDir, 'thanks.html'), layout({ brand, root: '', title: `Thank you | ${brand.name}`, body: '<article class="prose"><h1>Thank you.</h1><p>Your order is in. A receipt is on its way to your email, and you\'ll get tracking when it ships. Pre-orders ship by the date shown at checkout.</p><p><a href="index.html">Back to the shop</a></p></article>' }));
-  for (const p of catalog) writeFileSync(join(outDir, 'products', `${p.id}.html`), productPage(brand, p, productStatus(p, drops, now)));
+  for (const p of catalog) writeFileSync(join(outDir, 'products', `${p.id}.html`), productPage(brand, p, productStatus(p, drops, now), photos));
+  if (photoFiles.length) writeFileSync(join(outDir, 'taste.html'), tastePage(brand, catalog));
   writeFileSync(join(outDir, 'robots.txt'), brand.mode === 'preview' ? 'User-agent: *\nDisallow: /\n' : 'User-agent: *\nAllow: /\n');
   return { brand: id, pages: catalog.length + 3, out: outDir };
 }
@@ -155,10 +185,11 @@ export function buildBrand(id, outDir, now = new Date()) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : undefined; };
   const now = arg('--now') ? new Date(arg('--now')) : new Date();
+  const look = arg('--look');
   const only = arg('--brand') ?? process.env.BRAND;
   const brands = only ? [only] : readdirSync(join(ROOT, 'brands'));
   for (const id of brands) {
     const out = arg('--out') && only ? resolve(arg('--out')) : join(ROOT, 'dist', id);
-    console.log(buildBrand(id, out, now));
+    console.log(buildBrand(id, out, now, look));
   }
 }

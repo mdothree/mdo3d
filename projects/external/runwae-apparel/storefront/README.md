@@ -19,6 +19,7 @@ src/build.mjs              static build -> dist/<brand>/ (or --brand X --out pub
 api/checkout.mjs           POST {product,size,qty} -> Stripe Checkout Session URL
 tools/drop.mjs             drop CLI (below)
 tools/assets.py            design/ originals -> brands/<id>/assets/*.jpg
+tools/photos.py            styled product photos (looks: gallery | sketchbook) -> brands/<id>/photos/ (see ../AESTHETIC.md)
 test/                      node --test test/*.test.mjs  (17 tests)
 ```
 
@@ -28,6 +29,8 @@ node src/build.mjs                               # both brands -> dist/
 node src/build.mjs --brand runwae --now 2026-11-05T00:00:00Z   # preview as of a date
 node --test test/*.test.mjs
 python3 tools/assets.py runwae                   # after changing catalog images
+python3 tools/photos.py runwae all               # both photo looks (run off-box)
+node src/build.mjs --brand runwae --out preview --look sketchbook   # whole shop in one look; taste.html compares both
 
 node tools/drop.mjs shipby 2026-11-15            # -> ship-by 2027-01-03 (49 days, conservative)
 node tools/drop.mjs window runwae fall21-rerelease

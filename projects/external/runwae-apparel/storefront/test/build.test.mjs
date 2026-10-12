@@ -37,3 +37,24 @@ test('product pages escape catalog text', () => {
   assert.doesNotMatch(html, /<script>alert/);
   assert.match(html, /Fall &#39;21/);
 });
+
+test('Runwae Apparel: hero names the brand in full; styled photos + taste page', () => {
+  const out = mkdtempSync(join(tmpdir(), 'sf-look-'));
+  buildBrand('runwae', out, new Date('2026-10-12'));
+  const idx = readFileSync(join(out, 'index.html'), 'utf8');
+  assert.match(idx, /<h1>Runwae Apparel<\/h1>/);
+  assert.doesNotMatch(idx, /<h1>Runwae<\/h1>/);
+  assert.match(idx, /photos\/pave-hoodie-gallery\.jpg/);
+  assert.ok(existsSync(join(out, 'taste.html')));
+  const pdp = readFileSync(join(out, 'products', 'pave-hoodie.html'), 'utf8');
+  assert.match(pdp, /photos\/pave-hoodie-gallery\.jpg/);
+  assert.match(pdp, /assets\/pave-hoodie-1\.jpg/); // flat mockup still shown after the styled shot
+  const sk = mkdtempSync(join(tmpdir(), 'sf-sk-'));
+  buildBrand('runwae', sk, new Date('2026-10-12'), 'sketchbook');
+  assert.match(readFileSync(join(sk, 'index.html'), 'utf8'), /photos\/pave-hoodie-sketchbook\.jpg/);
+});
+
+test('every Runwae product has both styled looks', () => {
+  const { dir, catalog } = loadBrand('runwae');
+  for (const p of catalog) for (const l of ['gallery', 'sketchbook']) assert.ok(existsSync(join(dir, 'photos', `${p.id}-${l}.jpg`)), `${p.id}-${l}`);
+});

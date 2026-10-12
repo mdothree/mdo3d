@@ -12,7 +12,8 @@
 | Design source | Copied to `design/` (139 files, checksums verified; Downloads untouched). **Stays local, git-ignored** (decided #82-c, 2026-10-12) |
 | Supplier | Unverified. No contact in years |
 | Accounts / keys | None handed over yet (Printful, Stripe, Shippo/EasyPost): `operator_setup.json` → group 4 `setup-apparel-pod` |
-| First drop | Undetermined (most likely a Fall '21 re-release) |
+| First drop | **Both** (Principal, #82-b, 2026-10-12): the Fall '21 re-release + The Little Things, with ads behind the spend check (`ADS_PLAN.md`) |
+| Aesthetic + photos | `AESTHETIC.md`: *Everybody Influences*. Two photo looks rendered from LB's real mockups (A Gallery / B Sketchbook, 26 photos) and **awaiting his taste call**. Private preview: `http://latarence-xps-9320:8730/taste.html` (tailnet) |
 | Storefront | **Built locally, not deployed** (2026-10-12): `storefront/` is one codebase for Runwae + GLB: static build, Stripe Checkout function (off by default, test keys only), drop toolkit CLI, 17 tests passing. All 13 Runwae products are `draft` with no price, so nothing is purchasable. See `storefront/README.md` |
 
 ## Brand source material (real, pre-LLM)
@@ -87,7 +88,8 @@ logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site;
 - [ ] **Shopify domain fix** (Admin UI), or let the store lapse once the custom site is live. Until one of those happens the public domain stays broken.
 - [ ] **Supplier:** reconnect; get MOQ, price, lead time, methods/labels, deposit, air courier; pay for a 1–2 design sample run.
 - [x] **Commit playbook/STATUS/storefront** (no deploy, no keys): done (#82-a, 2026-10-12).
-- [ ] **First drop:** which pieces, and whether that's the split above. Was TLT ever released?
+- [x] **First drop:** both lines (#82-b, 2026-10-12).
+- [ ] **Photo look:** A Gallery / B Sketchbook / A for Fall '21 + B for TLT (taste call; preview link above).
 - [ ] **Old accounts:** are the Shopify/Etsy/Pinterest/social accounts in `GLBKeys.xlsx` still live? (reach)
 - [ ] **Shopify catalog export:** if wanted, export products CSV from Admin (or share the `*.myshopify.com` handle) so the catalog, prices and copy can seed the new store.
 - [ ] **Vector exports:** export print-ready art from the `.ai` masters (Illustrator is LB's machine/hands), or OK an agent to try a CLI export.
@@ -126,3 +128,12 @@ Shippo/EasyPost label + packing-slip pipeline, tracking/delay emails, GA4 → St
   - **#95** (Runwae *app* purple `#6259e8` / grey `#676c88`): verified it's in the pushed runwae tip `213606e` (from `fd07868`, the build #5 ships), so there was nothing to change. Leftovers aren't live: a CSS comment, and `main.min.css`, which no page links. One real one: the `email.html` template button is white on `#9389FF` (~3:1). That's app/email code, so it's handed to the MDO lane, not edited here.
   - **Still with the Principal:** #82-b (first drop), #82-d (birdcage art rights).
 - **2026-10-12 (#82-d answered):** The Principal said "drop the birdcage back print and go front only." Applied: catalog (one image, front-only copy, `rights_hold` cleared), the back-print asset removed, a test added so the art can't return, README and STATUS updated. **The only open decision is #82-b (first drop).** Tests now run off-box per doctrine.
+- **2026-10-12 (#82-b answered):** The Principal said: "if Frunwae Apparel you need to specify since different from runwae. Yes we can drop this and run adas agianst it. I want to see the shopping page we come up with. Hopefully someone can come up with an aesthetic to style ours and generate our photos". Done:
+  - **Naming:** the hero now reads "Runwae Apparel"; the copy sweep found no bare "Runwae".
+  - **Aesthetic:** `AESTHETIC.md`.
+  - **Photos:** `tools/photos.py` composites LB's real mockups into two looks (26 photos; designs untouched; $0; run on xps).
+  - **Shop:** the build supports `--look` and adds `taste.html`.
+  - **Ads:** `ADS_PLAN.md`, staged; the spend check fails 4/4 today, so there's no spend.
+  - **Preview:** served privately on the xps tailnet (`~/runwae-apparel/serve-preview.sh`).
+  - **Tests:** 19/19, run on xps.
+  - **AI generation:** no image API key is available to this lane, and the garment itself must never be generated, so AI stays limited to backgrounds (gated: key + spend).
