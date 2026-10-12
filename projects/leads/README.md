@@ -65,6 +65,8 @@ Customer profiles live in SQLite (created in the app, activated by Stripe checko
 | `GET /filings?state=&county=&filing_type=&entity_kind=&vertical=&q=&date_from=&date_to=&limit=&offset=` | signed in + paid |
 | `GET /filings/export.csv` (same filters) | signed in + paid |
 | `/profiles`, `/checkout`, `/redeem-code`, `/stripe-webhook` | as before |
+| `POST /profiles/{id}/run` → `202 {run_id, status_url}` | owner + paid + active; 1 per profile per 10 min (`429` + `Retry-After`) |
+| `GET /runs/{id}` → `queued \| running \| done \| error`, `leads`, `delivery` | owner |
 
 Entitlement = the states of the user's **paid** profiles (a profile without `states` covers FL). No paid profile →
 `402`; a state outside the bundle → `403`. Verticals match the entity **name** only, so the UI should say
@@ -74,5 +76,11 @@ Entitlement = the states of the user's **paid** profiles (a profile without `sta
 In production the scheduler container (`ops/scheduler/crontab`, America/New_York) runs:
 ingest 09:15 and 21:15 daily, the SQLite `.backup` at 03:30, and profile delivery at 08:00 **only if**
 `LEADS_ENABLE_DELIVERY=1` (outbound email needs the Principal's OK). See `docs/DEPLOYMENT.md`.
+
+**Manual runs:** `POST /profiles/{id}/run` only queues a row in `run_requests` (the API image has no pipeline
+code). The scheduler's 1-minute tick (`runner.py --run-requests`) filters the **stored** filings for the
+profile's states and date range (no source fetch, no email lookup unless `LEADS_RUN_EMAIL_LOOKUP=1`), saves the
+leads, and emails them **only if `LEADS_ENABLE_DELIVERY=1`**; otherwise the run ends `delivery=disabled`.
+Each run is capped by `LEADS_RUN_TIMEOUT_S` (900).
 For a plain host crontab instead: `python3 cron.d/generate_cron.py && cron.d/install_cron.sh`
 (replaces only lines tagged `# mdo3d-leads`).

@@ -33,6 +33,7 @@ rollbacks; only `docker compose down -v` deletes them.
 | when | job |
 |---|---|
 | 09:15 and 21:15 daily | `runner.py --ingest --states $LEADS_INGEST_STATES --lookback 3` (FL,CO) |
+| every minute | `runner.py --run-requests`: manual runs queued by `POST /profiles/{id}/run` (stored filings; email only if `LEADS_ENABLE_DELIVERY=1`) |
 | 03:30 daily | `sqlite3 .backup` → `PRAGMA integrity_check` → gzip → prune |
 | 08:00 daily | profile delivery, **only if `LEADS_ENABLE_DELIVERY=1`** (email needs the Principal's OK) |
 
@@ -89,7 +90,8 @@ paid profile.
 
 ## Database (`$LEADS_DB_PATH`, default `data/leads.db`; `/data/leads.db` in containers)
 `users`, `profiles`, `payments`, `leads` (per-profile delivered rows), `codes`, `code_redemptions`,
-**`filings`** (`UNIQUE(state, source_id)`) and **`ingest_runs`** (state, source_date, rows, new_rows, status).
+**`filings`** (`UNIQUE(state, source_id)`), **`ingest_runs`** (state, source_date, rows, new_rows, status) and
+**`run_requests`** (manual runs: queued → running → done/error, leads, delivery).
 
 ## Monitoring
 ```bash

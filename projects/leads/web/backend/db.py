@@ -8,12 +8,14 @@ Tables:
 - leads: per-profile delivered leads (legacy pipeline)
 - filings: state new-business filings from the state adapters, UNIQUE(state, source_id)
 - ingest_runs: one row per (state, source_date) ingest with its row counts
+- run_requests: manual profile runs queued by the API (POST /profiles/{id}/run), picked up by the
+  scheduler container (runner.py --run-requests on a 1-minute supercronic tick)
 
 DB location: $LEADS_DB_PATH, default <leads>/data/leads.db.
 """
 
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 from contextlib import contextmanager
@@ -209,6 +211,21 @@ CREATE TABLE IF NOT EXISTS ingest_runs (
     ran_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS run_requests (
+    id TEXT PRIMARY KEY,
+    profile_id TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'queued',   -- queued | running | done | error
+    requested_at TEXT NOT NULL DEFAULT (datetime('now')),
+    started_at TEXT,
+    finished_at TEXT,
+    leads INTEGER,
+    delivery TEXT,                 -- sent | disabled | none (set when the run finishes)
+    error TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_run_requests_profile ON run_requests(profile_id, requested_at);
+CREATE INDEX IF NOT EXISTS idx_run_requests_status ON run_requests(status, requested_at);
 CREATE INDEX IF NOT EXISTS idx_filings_state_date ON filings(state, filed_date);
 CREATE INDEX IF NOT EXISTS idx_filings_kind ON filings(entity_kind);
 CREATE INDEX IF NOT EXISTS idx_filings_county ON filings(county);
@@ -840,6 +857,92 @@ def get_all_active_profiles() -> dict:
             settings['paid'] = True
             result[f"customer_{row['id']}"] = settings
         return result
+
+
+# Manual runs (API enqueues, scheduler container executes)
+
+RUN_REQUEST_FIELDS = ("id", "profile_id", "status", "requested_at", "started_at", "finished_at",
+                      "leads", "delivery", "error")
+
+
+def _utc(dt: Optional[datetime] = None) -> str:
+    # Same text format as SQLite datetime('now') so comparisons in SQL are lexical-safe.
+    return (dt or datetime.utcnow()).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def create_run_request(profile_id: str, user_id: int, min_interval_s: int = 600) -> tuple[Optional[dict], int]:
+    """Queue a manual run unless one was requested for this profile in the last `min_interval_s`.
+
+    Returns (run, 0) on success, or (None, retry_after_seconds) when rate-limited. The check and the
+    insert share one IMMEDIATE transaction, so two concurrent requests cannot both pass.
+    """
+    from uuid import uuid4
+    now = datetime.utcnow()
+    with get_db() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+        last = conn.execute(
+            "SELECT MAX(requested_at) FROM run_requests WHERE profile_id = ?", (profile_id,)
+        ).fetchone()[0]
+        if last:
+            elapsed = (now - datetime.strptime(last, "%Y-%m-%d %H:%M:%S")).total_seconds()
+            if elapsed < min_interval_s:
+                return None, max(1, int(min_interval_s - elapsed + 0.999))
+        run_id = uuid4().hex
+        conn.execute(
+            "INSERT INTO run_requests (id, profile_id, user_id, status, requested_at) VALUES (?, ?, ?, 'queued', ?)",
+            (run_id, profile_id, user_id, _utc(now)),
+        )
+    return get_run_request(run_id), 0
+
+
+def get_run_request(run_id: str) -> Optional[dict]:
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM run_requests WHERE id = ?", (run_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def claim_next_run_request() -> Optional[dict]:
+    """Atomically move the oldest queued request to running and return it (None when the queue is empty)."""
+    with get_db() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+        row = conn.execute(
+            "SELECT id FROM run_requests WHERE status = 'queued' ORDER BY requested_at, rowid LIMIT 1"
+        ).fetchone()
+        if not row:
+            return None
+        conn.execute("UPDATE run_requests SET status = 'running', started_at = ? WHERE id = ?",
+                     (_utc(), row["id"]))
+    return get_run_request(row["id"])
+
+
+def finish_run_request(run_id: str, status: str, leads: Optional[int] = None,
+                       delivery: Optional[str] = None, error: Optional[str] = None):
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE run_requests SET status = ?, finished_at = ?, leads = ?, delivery = ?, error = ? WHERE id = ?",
+            (status, _utc(), leads, delivery, (error or None) and error[:500], run_id),
+        )
+
+
+def fail_stale_run_requests(older_than_s: int) -> int:
+    """Mark `running` requests started more than `older_than_s` ago as errors (worker died mid-run)."""
+    cutoff = _utc(datetime.utcnow() - timedelta(seconds=older_than_s))
+    with get_db() as conn:
+        cur = conn.execute(
+            "UPDATE run_requests SET status = 'error', finished_at = ?, error = 'worker stopped (stale run)' "
+            "WHERE status = 'running' AND started_at < ?", (_utc(), cutoff))
+        return cur.rowcount
+
+
+def filings_for_source_dates(states: list[str], source_dates: list[str]) -> list[dict]:
+    """Stored filing rows for these states and feed dates (YYYYMMDD), for runs that use the DB, not the sources."""
+    states = [s.upper() for s in states if s]
+    if not states or not source_dates:
+        return []
+    sql = (f"SELECT * FROM filings WHERE state IN ({', '.join('?' for _ in states)}) "
+           f"AND source_date IN ({', '.join('?' for _ in source_dates)}) ORDER BY state, source_id")
+    with get_db() as conn:
+        return [dict(r) for r in conn.execute(sql, [*states, *source_dates]).fetchall()]
 
 
 # Initialization

@@ -9,6 +9,8 @@ Usage:
     python runner.py --cron generate              # Generate crontab from profiles
     python runner.py --ingest --states FL,CO --lookback 3   # Ingest state filings into SQLite only
                                                   # (no profile filtering, no enrichment, no email)
+    python runner.py --run-requests               # Execute manual runs queued by the API
+                                                  # (stored filings only; email only if LEADS_ENABLE_DELIVERY=1)
 
 Date Range Options:
     python runner.py --last-week --force          # Last 7 workdays
@@ -404,6 +406,37 @@ def ingest_states(states: List[str], dates: List[str], store: bool = True) -> Di
         out[st] = dedupe(collected)
         log(f"[ingest] state={st} dates={dates[0] if dates else '-'}..{dates[-1] if dates else '-'} "
             f"total_rows={len(out[st])}")
+    return out
+
+
+def stored_filings(states: List[str], dates: List[str]) -> Dict[str, list]:
+    """{state: [Filing, ...]} from the SQLite `filings` table (what the scheduler's ingest stored), no fetch."""
+    from datetime import date as _date
+    from adapters import Address, Filing, dedupe
+
+    db = _backend_db()
+    states = [s.strip().upper() for s in states if s and s.strip()]
+    out: Dict[str, list] = {st: [] for st in states}
+    for r in db.filings_for_source_dates(states, dates):
+        filed = None
+        if r.get("filed_date"):
+            try:
+                filed = _date.fromisoformat(r["filed_date"])
+            except ValueError:
+                filed = None
+        out[r["state"]].append(Filing(
+            state=r["state"], source_id=r["source_id"], entity=r["entity"], filing_type=r.get("filing_type"),
+            entity_kind=r.get("entity_kind") or "other", filed_date=filed, status=r.get("status"),
+            active=None if r.get("active") is None else bool(r["active"]), county=r.get("county"),
+            registered_agent=r.get("registered_agent"),
+            principal_address=Address(line1=r.get("address_1"), line2=r.get("address_2"), city=r.get("city"),
+                                      state=r.get("address_state"), zip_code=r.get("zip_code")),
+            source_date=r.get("source_date"),
+        ))
+    for st in out:
+        out[st] = dedupe(out[st])
+        log(f"[stored] state={st} dates={dates[0] if dates else '-'}..{dates[-1] if dates else '-'} "
+            f"filings={len(out[st])}")
     return out
 
 
@@ -1002,8 +1035,20 @@ Please review the attached CSV for details including email addresses where found
     return results
 
 
-def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
-    result = {"profile": name, "leads": 0, "emails": 0, "sent": [], "errors": []}
+def delivery_enabled() -> bool:
+    """Outbound email is OFF unless LEADS_ENABLE_DELIVERY=1 (the Principal's OK)."""
+    return os.environ.get("LEADS_ENABLE_DELIVERY", "0") == "1"
+
+
+def process_profile(name: str, profile: dict, date_str: str, args=None, deliver: bool = True,
+                    source: str = "fetch") -> dict:
+    """Filter (+ optionally enrich) one profile's filings, deliver, persist to the leads table.
+
+    source="fetch" pulls from the state sources (CLI / scheduled delivery); source="db" filters the
+    filings the scheduler's ingest already stored (manual runs; a profile without `states` = FL).
+    deliver=False never sends email (result["delivery"] = "disabled").
+    """
+    result = {"profile": name, "leads": 0, "emails": 0, "sent": [], "errors": [], "delivery": "none"}
     log(f"[{name}] Starting...")
 
     try:
@@ -1022,15 +1067,18 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
             else:
                 dates = [date_str]
 
+        verb = "Reading stored" if source == "db" else "Downloading"
         if len(dates) > 1:
-            log(f"[{name}] Downloading {len(dates)} days of filings: {dates[0]} to {dates[-1]}")
+            log(f"[{name}] {verb} {len(dates)} days of filings: {dates[0]} to {dates[-1]}")
         else:
-            log(f"[{name}] Downloading filings for {dates[0]}")
+            log(f"[{name}] {verb} filings for {dates[0]}")
 
         states = profile.get("states")
+        if source == "db":
+            states = states or ["FL"]
         if states:
             # Adapter path (opt-in per profile): every state's filings are stored in `filings`.
-            by_state = ingest_states(states, dates)
+            by_state = stored_filings(states, dates) if source == "db" else ingest_states(states, dates)
             if not any(by_state.values()):
                 log(f"[{name}] No filings fetched for {states}", "WARN")
                 return result
@@ -1061,6 +1109,7 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
             log(f"[{name}] No leads, skipping")
             return result
         
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)  # /data/output does not exist on a fresh volume
         base_csv = OUTPUT_DIR / f"leads_{name}_{date_str}.csv"
         save_csv(leads, base_csv)
         
@@ -1106,12 +1155,17 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
             else:
                 log(f"[{name}] Skipping email lookup (disabled in profile)")
         
-        send_results = send_report(profile, base_csv, enriched_csv, date_str)
-        for r in send_results:
-            if r["success"]:
-                result["sent"].append(r["recipient"])
-            else:
-                result["errors"].append(f"{r['recipient']}: {r['error']}")
+        if deliver:
+            send_results = send_report(profile, base_csv, enriched_csv, date_str)
+            for r in send_results:
+                if r["success"]:
+                    result["sent"].append(r["recipient"])
+                else:
+                    result["errors"].append(f"{r['recipient']}: {r['error']}")
+            result["delivery"] = "sent" if result["sent"] else "none"
+        else:
+            result["delivery"] = "disabled"
+            log(f"[{name}] Delivery disabled (LEADS_ENABLE_DELIVERY!=1); nothing sent")
 
         # Persist leads to database for API access
         # Extract profile_id from profile key (e.g., "customer_abc123" -> "abc123")
@@ -1151,6 +1205,85 @@ def run(profile_name: str = None, force: bool = False, date_str: str = None, arg
         process_profile(name, profile, date_str, args)
 
     log("Done.")
+
+
+# ---------------------------------------------------------------------------
+# Manual runs queued by the API (POST /profiles/{id}/run -> run_requests table)
+# ---------------------------------------------------------------------------
+
+RUN_TIMEOUT_S = int(os.environ.get("LEADS_RUN_TIMEOUT_S", "900"))
+
+
+class RunTimeout(Exception):
+    pass
+
+
+def _manual_args(date: Optional[str] = None) -> argparse.Namespace:
+    # Same as scheduled delivery (--no-email-lookup) unless LEADS_RUN_EMAIL_LOOKUP=1.
+    return argparse.Namespace(
+        last_week=False, last_month=False, date_from=None, date_to=None, date=date,
+        no_email_lookup=os.environ.get("LEADS_RUN_EMAIL_LOOKUP", "0") != "1",
+        verify_mx=None, verify_smtp=None, guess_variants=None)
+
+
+def execute_run_request(req: dict, timeout_s: int = RUN_TIMEOUT_S) -> dict:
+    """Run one queued request against the stored filings and record the outcome on its row."""
+    db = _backend_db()
+    run_id, pid = req["id"], req["profile_id"]
+    profile = db.get_profile(pid)
+    # Re-check at execution time: the profile may have been deleted, unpaid or deactivated since.
+    if not profile or profile.user_id != req["user_id"] or not profile.paid or not profile.active:
+        db.finish_run_request(run_id, "error", error="profile no longer active and paid")
+        log(f"[run {run_id}] profile={pid} rejected (not active+paid)", "WARN")
+        return {"status": "error"}
+
+    settings = dict(profile.settings, name=profile.name, active=True, paid=True)
+    deliver = delivery_enabled()
+    log(f"[run {run_id}] profile=customer_{pid} start (delivery={'on' if deliver else 'off'})")
+
+    def on_alarm(signum, frame):
+        raise RunTimeout(f"run exceeded {timeout_s}s")
+
+    use_alarm = timeout_s > 0 and hasattr(signal, "SIGALRM")
+    if use_alarm:
+        old = signal.signal(signal.SIGALRM, on_alarm)
+        signal.alarm(timeout_s)
+    try:
+        res = process_profile(f"customer_{pid}", settings, get_workday_date(), _manual_args(),
+                              deliver=deliver, source="db")
+    except RunTimeout as e:  # raised outside process_profile's own try
+        res = {"leads": 0, "errors": [str(e)], "delivery": "none"}
+    finally:
+        if use_alarm:
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, old)
+
+    status = "error" if res.get("errors") else "done"
+    db.finish_run_request(run_id, status, leads=res.get("leads", 0), delivery=res.get("delivery"),
+                          error="; ".join(res.get("errors") or []) or None)
+    log(f"[run {run_id}] profile=customer_{pid} status={status} leads={res.get('leads', 0)} "
+        f"delivery={res.get('delivery')}")
+    return {"status": status, **res}
+
+
+def process_run_requests(max_runs: int = 5, timeout_s: int = RUN_TIMEOUT_S) -> int:
+    """Drain up to `max_runs` queued requests (the scheduler calls this every minute). Returns runs executed."""
+    db = _backend_db()
+    stale = db.fail_stale_run_requests(timeout_s + 300)
+    if stale:
+        log(f"[runs] marked {stale} stale running request(s) as error", "WARN")
+    n = 0
+    while n < max_runs:
+        req = db.claim_next_run_request()
+        if not req:
+            break
+        try:
+            execute_run_request(req, timeout_s)
+        except Exception as e:  # noqa: BLE001 - one bad request must not wedge the queue
+            db.finish_run_request(req["id"], "error", error=f"{type(e).__name__}: {e}")
+            log(f"[run {req['id']}] ERROR {type(e).__name__}: {e}", "ERROR")
+        n += 1
+    return n
 
 
 if __name__ == "__main__":
@@ -1194,7 +1327,14 @@ if __name__ == "__main__":
                         help="Comma-separated state codes for --ingest (default $LEADS_INGEST_STATES or FL)")
     parser.add_argument("--lookback", type=int, default=None,
                         help="--ingest: also re-fetch the previous N calendar days (upserts dedupe)")
+    parser.add_argument("--run-requests", action="store_true",
+                        help="Execute manual runs queued by the API (stored filings; email only if "
+                             "LEADS_ENABLE_DELIVERY=1)")
     args = parser.parse_args()
+
+    if args.run_requests:
+        process_run_requests()
+        sys.exit(0)
 
     if args.ingest:
         if args.lookback is not None:

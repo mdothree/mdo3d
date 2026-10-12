@@ -16,6 +16,8 @@ Endpoints:
 - GET /profiles - List user's profiles
 - POST /profiles - Create new profile
 - DELETE /profiles/{id} - Delete profile
+- POST /profiles/{id}/run - Queue a manual run (202 + run id; executed by the scheduler container)
+- GET /runs/{id} - Manual run status
 
 Auth: Firebase token verification + API key fallback
 """
@@ -60,7 +62,6 @@ ALLOWED_PRICE_IDS = {
 
 TOOLS_DIR = Path(__file__).parent.parent.parent
 PROFILES_PATH = TOOLS_DIR / "config" / "profiles.json"
-RUNNER_PATH = TOOLS_DIR / "src" / "runner.py"
 
 # Test runs must never reach live Stripe: under LEADS_TEST_MODE a live key is refused outright.
 if os.environ.get("LEADS_TEST_MODE") and STRIPE_SECRET_KEY.startswith(("sk_live_", "rk_live_")):
@@ -683,31 +684,54 @@ async def redeem_code(
     return {"ok": True, "message": message}
 
 
-@app.post("/profiles/{profile_id}/run")
+# Manual runs. The API container has no pipeline code (src/ lives in the scheduler image), so the API
+# only queues a request; the scheduler container's 1-minute tick (runner.py --run-requests) executes it
+# against the stored filings. Delivery stays gated by LEADS_ENABLE_DELIVERY in the scheduler: with it
+# off (the default) a manual run stores leads but sends no email.
+RUN_MIN_INTERVAL_S = int(os.environ.get("LEADS_RUN_MIN_INTERVAL_S", "600"))
+
+
+def _run_view(run: dict) -> dict:
+    out = {k: run.get(k) for k in db.RUN_REQUEST_FIELDS}
+    out["run_id"] = out.pop("id")
+    out["status_url"] = f"/runs/{out['run_id']}"
+    return out
+
+
+@app.post("/profiles/{profile_id}/run", status_code=202)
 async def run_pipeline(
     profile_id: str,
     user: db.User = Depends(get_or_create_user)
 ):
-    """Trigger pipeline run for a profile."""
+    """Queue a manual pipeline run for a profile (owner only, paid + active; 1 per profile per 10 min)."""
     profile = db.get_profile(profile_id)
     if not profile or profile.user_id != user.id:
         raise HTTPException(status_code=404, detail="Profile not found")
     if not profile.paid:
-        raise HTTPException(status_code=400, detail="Profile not paid")
+        raise HTTPException(status_code=402, detail="An active subscription or early-access code is required.")
     if not profile.active:
         raise HTTPException(status_code=400, detail="Profile not active")
 
-    # Run pipeline in background subprocess
-    venv_python = TOOLS_DIR / ".venv" / "bin" / "python"
-    cmd = [
-        str(venv_python),
-        str(RUNNER_PATH),
-        "--profile", f"customer_{profile_id}",
-        "--force"
-    ]
-    subprocess.Popen(cmd, cwd=TOOLS_DIR)
+    run, retry_after = db.create_run_request(profile_id, user.id, RUN_MIN_INTERVAL_S)
+    if run is None:
+        raise HTTPException(
+            status_code=429,
+            detail=f"A run for this profile was requested recently; try again in {retry_after}s.",
+            headers={"Retry-After": str(retry_after)},
+        )
+    return _run_view(run)
 
-    return {"ok": True, "message": "Pipeline started"}
+
+@app.get("/runs/{run_id}")
+async def get_run_status(
+    run_id: str,
+    user: db.User = Depends(get_or_create_user)
+):
+    """Status of a manual run: queued | running | done | error (owner only)."""
+    run = db.get_run_request(run_id)
+    if not run or run["user_id"] != user.id:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return _run_view(run)
 
 
 @app.get("/profiles/{profile_id}/leads")

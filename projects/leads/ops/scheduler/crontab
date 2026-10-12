@@ -7,6 +7,10 @@ CRON_TZ=America/New_York
 # Evening pass: FL posts some daily files late in the day.
 15 21 * * * /app/ops/scheduler/ingest.sh
 
+# Manual runs queued by the API (POST /profiles/{id}/run). Supercronic never overlaps a job with its
+# own previous run, so a long manual run just delays the next tick. Email only if LEADS_ENABLE_DELIVERY=1.
+* * * * * /app/ops/scheduler/run_requests.sh
+
 # Nightly SQLite .backup copy to the backups volume (keeps $LEADS_BACKUP_KEEP, default 14).
 30 3 * * * /app/ops/scheduler/backup_db.sh
 
