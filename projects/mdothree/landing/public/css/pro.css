@@ -132,3 +132,6 @@
       .pricing-grid { grid-template-columns: 1fr; }
       .compare-table th:nth-child(2), .compare-table td:nth-child(2) { display: none; }
     }
+
+/* #66b: billing toggle stays hidden while Pro checkout is closed */
+.billing-toggle[hidden] { display: none; }

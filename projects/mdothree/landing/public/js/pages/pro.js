@@ -2,7 +2,21 @@
 import { ensureAnonymousUser, onAuthChange, getFirebaseAuth } from '../config/config.js';
 import { withLoading, showToast as uiToast, showError } from '../utils/ui-helpers.js';
 import { initSubscription, isPro, onSubscriptionChange, refreshSubscription } from '../services/subscriptionService.js';
-import { STRIPE_CONFIG } from '../config/config.js';
+import { STRIPE_CONFIG, PRO_CHECKOUT_ENABLED } from '../config/config.js';
+
+// #66b: the static page says "coming soon" (no price, no checkout). Only when
+// PRO_CHECKOUT_ENABLED is on does it become a purchasable plan.
+if (PRO_CHECKOUT_ENABLED) {
+  document.getElementById('pro-eyebrow').textContent = '⭐ mdothree Pro';
+  document.getElementById('pro-sub').textContent = 'One subscription. Full access to every Pro feature across every mdothree.com utility — hash, password, color, and time tools.';
+  document.getElementById('billing-toggle').hidden = false;
+  document.getElementById('pro-label').textContent = 'Most popular';
+  document.getElementById('pro-price').innerHTML = '<sup>$</sup>4<sub>/mo</sub>';
+  document.getElementById('pro-billed').textContent = 'Billed monthly · cancel anytime';
+  const btn = document.getElementById('subscribe-btn');
+  btn.disabled = false; btn.removeAttribute('aria-disabled'); btn.textContent = 'Get Pro →';
+  document.getElementById('faq-buy-today')?.remove();
+}
 
 // ---- Auth + subscription init ----
     initSubscription();
@@ -110,12 +124,14 @@ import { STRIPE_CONFIG } from '../config/config.js';
 
     document.getElementById('subscribe-btn').addEventListener('click', async () => {
       if (isPro()) { window.open(STRIPE_CONFIG.portalUrl, '_blank'); return; }
+      if (!PRO_CHECKOUT_ENABLED) return;   // #66b: no checkout while Pro is coming soon
       document.getElementById('checkout-section').classList.add('visible');
       document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       await mountPayment();
     });
 
     async function mountPayment() {
+      if (!PRO_CHECKOUT_ENABLED) return;
       const submitBtn   = document.getElementById('checkout-submit');
       const submitLabel = document.getElementById('checkout-submit-label');
       const mountEl     = document.getElementById('payment-element');

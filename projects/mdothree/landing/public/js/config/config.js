@@ -131,6 +131,10 @@ export const STRIPE_CONFIG = {
 
 export const IS_TEST_MODE = STRIPE_CONFIG.publishableKey.startsWith('pk_test_');
 
+// #66b: Pro is not on sale until this is turned on (Vercel env PRO_CHECKOUT_ENABLED=true -> stripe-config meta).
+// Off: /pro shows "coming soon", no billing toggle, no checkout, no payment link.
+export const PRO_CHECKOUT_ENABLED = CONFIG.PRO_CHECKOUT_ENABLED === true || CONFIG.PRO_CHECKOUT_ENABLED === 'true';
+
 // ─────────────────────────────────────────────────────────────
 // 5. Re-export Firestore helpers so callers import from one place
 // ─────────────────────────────────────────────────────────────

@@ -58,12 +58,12 @@
 
     <!-- Hero -->
     <div class="pro-hero">
-      <div class="pro-eyebrow">⭐ mdothree Pro</div>
+      <div class="pro-eyebrow" id="pro-eyebrow">⭐ mdothree Pro · coming soon</div>
       <h1 class="pro-headline">Unlock every tool,<br /><em>no limits.</em></h1>
-      <p class="pro-sub">One subscription. Full access to every Pro feature across every mdothree.com utility — hash, password, color, and time tools.</p>
+      <p class="pro-sub" id="pro-sub">Pro isn't on sale yet, so there is nothing to buy today. When it opens: one subscription, full access to every Pro feature across every mdothree.com utility — hash, password, color, and time tools.</p>
 
       <!-- Billing toggle -->
-      <div class="billing-toggle">
+      <div class="billing-toggle" id="billing-toggle" hidden>
         <button class="billing-btn active" data-billing="monthly">Monthly</button>
         <button class="billing-btn" data-billing="yearly">
           Yearly <span class="save-pill">Save 25%</span>
@@ -94,10 +94,10 @@
 
       <!-- Pro -->
       <div class="pricing-card featured">
-        <div class="featured-label">Most popular</div>
+        <div class="featured-label" id="pro-label">Coming soon</div>
         <div class="plan-name" style="color:var(--emerald)">Pro</div>
-        <div class="plan-price" id="pro-price"><sup>$</sup>4<sub>/mo</sub></div>
-        <div class="plan-billed" id="pro-billed">Billed monthly · cancel anytime</div>
+        <div class="plan-price" id="pro-price">Soon</div>
+        <div class="plan-billed" id="pro-billed">Not on sale yet · no checkout open</div>
         <ul class="plan-features">
           <li class="plan-feature"><span class="feat-check">✓</span> Everything in Free</li>
           <li class="plan-feature"><span class="feat-check">✓</span> <strong>bcrypt, HMAC</strong> hashing</li>
@@ -111,7 +111,7 @@
           <li class="plan-feature"><span class="feat-check">✓</span> <strong>Bulk generate</strong> up to 50 passwords</li>
           <li class="plan-feature"><span class="feat-check">✓</span> Priority support</li>
         </ul>
-        <button class="plan-cta primary" id="subscribe-btn">Get Pro →</button>
+        <button class="plan-cta primary" id="subscribe-btn" disabled aria-disabled="true">Pro coming soon</button>
       </div>
     </div>
 
@@ -189,6 +189,10 @@
     <div class="faq-section">
       <div class="faq-title">Questions &amp; answers</div>
 
+      <div class="faq-item" id="faq-buy-today">
+        <button class="faq-q">Can I buy Pro today?</button>
+        <div class="faq-a">Not yet. Pro checkout isn't open, so nothing can be charged. The answers below describe how Pro will work once it opens.</div>
+      </div>
       <div class="faq-item">
         <button class="faq-q">Can I cancel anytime?</button>
         <div class="faq-a">Yes. Cancel from your billing portal at any time. Your Pro access continues until the end of the current billing period.</div>
