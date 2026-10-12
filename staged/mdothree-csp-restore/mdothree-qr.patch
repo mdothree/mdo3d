@@ -1,0 +1,46 @@
+diff --git a/public/batch.html b/public/batch.html
+index 0312181..c4ca443 100644
+--- a/public/batch.html
++++ b/public/batch.html
+@@ -67,7 +67,7 @@
+       </div>
+ 
+       <div class="alert alert-info animate-fade-up" id="freeBanner" style="margin-bottom:20px;">
+-        ℹ️ <strong>Free plan:</strong> Generate up to 5 QR codes at once. <a href="#" onclick="requirePremium('Batch QR generation','qr-batch');return false;" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade for 1,000+ →</a>
++        ℹ️ <strong>Free plan:</strong> Generate up to 5 QR codes at once. <a href="#" data-premium-reason="Batch QR generation" data-premium-feature="qr-batch" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade for 1,000+ →</a>
+       </div>
+       <div class="tool-layout animate-fade-up-2">
+         <div>
+diff --git a/public/js/stripe-paywall.js b/public/js/stripe-paywall.js
+index 7871759..3e01cfd 100644
+--- a/public/js/stripe-paywall.js
++++ b/public/js/stripe-paywall.js
+@@ -93,6 +93,13 @@ export function requirePremium(reason = 'This feature', feature = 'unknown') {
+ // Inline onclick="requirePremium(...)" handlers in the HTML run in global
+ // scope, where a module import is not visible. Expose it so they don't throw.
+ if (typeof window !== 'undefined') window.requirePremium = requirePremium;
++// CSP-safe replacement for inline onclick="requirePremium(...)" (no 'unsafe-inline' in script-src).
++if (typeof document !== 'undefined') document.addEventListener('click', (e) => {
++  const el = e.target.closest && e.target.closest('[data-premium-feature]');
++  if (!el) return;
++  e.preventDefault();
++  requirePremium(el.dataset.premiumReason, el.dataset.premiumFeature);
++});
+ 
+ // ── Stripe lazy loader ────────────────────────────────────────────────────
+ 
+diff --git a/vercel.json b/vercel.json
+index 3c67405..832e5f3 100644
+--- a/vercel.json
++++ b/vercel.json
+@@ -10,6 +10,10 @@
+     {
+       "source": "/(.*)",
+       "headers": [
++        {
++          "key": "Content-Security-Policy",
++          "value": "default-src 'self'; script-src 'self' https://js.stripe.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://www.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.cloudfunctions.net https://api.stripe.com https://mdothree.com https://*.mdothree.com https://cdn.jsdelivr.net https://www.google.com https://cloudflareinsights.com; frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com; worker-src 'self' blob: https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com"
++        },
+         {
+           "key": "X-Content-Type-Options",
+           "value": "nosniff"

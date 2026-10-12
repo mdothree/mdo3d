@@ -1,0 +1,46 @@
+diff --git a/public/convert.html b/public/convert.html
+index e0f9b9f..f6df964 100644
+--- a/public/convert.html
++++ b/public/convert.html
+@@ -70,7 +70,7 @@
+       </div>
+ 
+       <div class="alert alert-info animate-fade-up" id="freeBanner" style="margin-bottom:20px;">
+-        ℹ️ <strong>Free plan:</strong> Convert 1 image at a time. <a href="#" onclick="requirePremium('Batch image conversion','image-convert');return false;" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade to Pro →</a>
++        ℹ️ <strong>Free plan:</strong> Convert 1 image at a time. <a href="#" data-premium-reason="Batch image conversion" data-premium-feature="image-convert" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Upgrade to Pro →</a>
+       </div>
+       <div class="panel animate-fade-up-2">
+         <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Drop images here or click to browse">
+diff --git a/public/js/stripe-paywall.js b/public/js/stripe-paywall.js
+index 7871759..3e01cfd 100644
+--- a/public/js/stripe-paywall.js
++++ b/public/js/stripe-paywall.js
+@@ -93,6 +93,13 @@ export function requirePremium(reason = 'This feature', feature = 'unknown') {
+ // Inline onclick="requirePremium(...)" handlers in the HTML run in global
+ // scope, where a module import is not visible. Expose it so they don't throw.
+ if (typeof window !== 'undefined') window.requirePremium = requirePremium;
++// CSP-safe replacement for inline onclick="requirePremium(...)" (no 'unsafe-inline' in script-src).
++if (typeof document !== 'undefined') document.addEventListener('click', (e) => {
++  const el = e.target.closest && e.target.closest('[data-premium-feature]');
++  if (!el) return;
++  e.preventDefault();
++  requirePremium(el.dataset.premiumReason, el.dataset.premiumFeature);
++});
+ 
+ // ── Stripe lazy loader ────────────────────────────────────────────────────
+ 
+diff --git a/vercel.json b/vercel.json
+index 3c67405..832e5f3 100644
+--- a/vercel.json
++++ b/vercel.json
+@@ -10,6 +10,10 @@
+     {
+       "source": "/(.*)",
+       "headers": [
++        {
++          "key": "Content-Security-Policy",
++          "value": "default-src 'self'; script-src 'self' https://js.stripe.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://www.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.cloudfunctions.net https://api.stripe.com https://mdothree.com https://*.mdothree.com https://cdn.jsdelivr.net https://www.google.com https://cloudflareinsights.com; frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com; worker-src 'self' blob: https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com"
++        },
+         {
+           "key": "X-Content-Type-Options",
+           "value": "nosniff"
