@@ -1,16 +1,26 @@
 """
-Florida (Sunbiz) adapter #1 (DRAFT). Wraps the existing runner.py SFTP pull and fixed-width parsers
-so behaviour matches today's pipeline; runner.py is not changed or re-wired yet.
+Florida (Sunbiz) adapter #1. Wraps the runner.py SFTP pull and fixed-width parsers so its output
+matches the legacy pipeline.
 
 Source: Florida Division of Corporations public SFTP (free bulk data; credentials from env:
-SUNBIZ_SFTP_HOST / SUNBIZ_SFTP_USER / SUNBIZ_SFTP_PASS, as runner.py already reads them).
+SUNBIZ_SFTP_HOST / SUNBIZ_SFTP_USER / SUNBIZ_SFTP_PASS — the state publishes the public login).
 Files per date: doc/cor/<YYYYMMDD>c.txt (corporate) and doc/fic/<YYYYMMDD>f.txt (fictitious names).
 """
 from __future__ import annotations
 
 from pathlib import Path
 
-from .base import Address, Filing, RawBatch, parse_date
+from .base import Address, Filing, RawBatch, clean, parse_date
+
+# Sunbiz filing-type codes -> common entity kind. Unlisted codes map to "other".
+FL_TYPE_KIND = {
+    "FLAL": "llc", "FORL": "llc",
+    "DOMP": "corporation", "FORP": "corporation",
+    "DOMNP": "nonprofit", "FORNP": "nonprofit", "NPREG": "nonprofit",
+    "DOMLP": "partnership", "FORLP": "partnership", "LLP": "partnership", "FORLLP": "partnership",
+    "GENPAR": "partnership",
+    "FIC": "trade_name",
+}
 
 
 class FloridaAdapter:
@@ -47,40 +57,52 @@ class FloridaAdapter:
                 records.append({**r, "_kind": "fictitious"})
         return records
 
+    @staticmethod
+    def _active(status) -> bool | None:
+        s = clean(status)
+        if s is None:
+            return None
+        return s == "A"
+
     def normalize(self, record: dict) -> Filing:
         kind = record.get("_kind")
         if kind == "fictitious":
             return Filing(
                 state=self.state,
-                source_id=record.get("doc_number", ""),
-                entity=record.get("fic_name", ""),
+                source_id=clean(record.get("doc_number")) or "",
+                entity=clean(record.get("fic_name")) or "",
                 filing_type="FIC",
+                entity_kind="trade_name",
                 filed_date=parse_date(record.get("filing_date")),
-                status=record.get("status") or None,
-                county=record.get("county") or None,
+                status=clean(record.get("status")),
+                active=self._active(record.get("status")),
+                county=clean(record.get("county")),
                 principal_address=Address(
-                    line1=record.get("address_1") or None,
-                    city=record.get("city") or None,
-                    state=record.get("state") or None,
-                    zip_code=record.get("zip_code") or None,
+                    line1=clean(record.get("address_1")),
+                    city=clean(record.get("city")),
+                    state=clean(record.get("state")),
+                    zip_code=clean(record.get("zip_code")),
                 ),
                 raw=record,
             )
+        ftype = clean(record.get("filing_type"))
         return Filing(
             state=self.state,
-            source_id=record.get("doc_number", ""),
-            entity=record.get("corp_name", ""),
-            filing_type=record.get("filing_type") or None,
+            source_id=clean(record.get("doc_number")) or "",
+            entity=clean(record.get("corp_name")) or "",
+            filing_type=ftype,
+            entity_kind=FL_TYPE_KIND.get(ftype or "", "other"),
             filed_date=parse_date(record.get("file_date")),
-            status=record.get("status") or None,
+            status=clean(record.get("status")),
+            active=self._active(record.get("status")),
             county=None,  # the corporate file has no county field; never inferred from ZIP here
-            registered_agent=record.get("registered_agent") or None,
+            registered_agent=clean(record.get("registered_agent")),
             principal_address=Address(
-                line1=record.get("address_1") or None,
-                line2=record.get("address_2") or None,
-                city=record.get("city") or None,
-                state=record.get("state") or None,
-                zip_code=record.get("zip_code") or None,
+                line1=clean(record.get("address_1")),
+                line2=clean(record.get("address_2")),
+                city=clean(record.get("city")),
+                state=clean(record.get("state")),
+                zip_code=clean(record.get("zip_code")),
             ),
             raw=record,
         )

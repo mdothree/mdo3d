@@ -7,6 +7,8 @@ Usage:
     python runner.py --profile ridgefield         # Run specific profile
     python runner.py --force                      # Force run (ignore schedule)
     python runner.py --cron generate              # Generate crontab from profiles
+    python runner.py --ingest --states FL,CO --lookback 3   # Ingest state filings into SQLite only
+                                                  # (no profile filtering, no enrichment, no email)
 
 Date Range Options:
     python runner.py --last-week --force          # Last 7 workdays
@@ -23,6 +25,11 @@ Profile Settings (in profiles.json):
 
 Other Flags:
     --no-email-lookup                             # Skip email enrichment
+
+State adapters (src/adapters/, docs/STATE_ADAPTERS.md):
+    A profile with "states": ["FL", "CO"] runs through the adapters (fetch -> parse -> normalize),
+    stores every filing in the SQLite `filings` table (UNIQUE state, source_id) and logs per-state
+    row counts with the source date. A profile without "states" runs the legacy FL path unchanged.
 """
 
 import os
@@ -42,9 +49,9 @@ load_dotenv()
 
 TOOLS_DIR = Path(__file__).parent.parent
 CONFIG_DIR = TOOLS_DIR / "config"
-DATA_DIR = TOOLS_DIR / "data"
-OUTPUT_DIR = TOOLS_DIR / "output"
-LOG_DIR = TOOLS_DIR / "logs"
+DATA_DIR = Path(os.environ.get("LEADS_DATA_DIR") or (TOOLS_DIR / "data"))
+OUTPUT_DIR = Path(os.environ.get("LEADS_OUTPUT_DIR") or (TOOLS_DIR / "output"))
+LOG_DIR = Path(os.environ.get("LEADS_LOG_DIR") or (TOOLS_DIR / "logs"))
 
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", "")
 MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN", "")
@@ -100,7 +107,7 @@ STOP_FLAG = False
 def log(msg: str, level: str = "INFO"):
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{ts}] [{level}] {msg}")
-    LOG_DIR.mkdir(exist_ok=True)
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
     with open(LOG_DIR / "pipeline.log", "a") as f:
         f.write(f"[{ts}] [{level}] {msg}\n")
 
@@ -354,6 +361,106 @@ def parse_fic(filepath: Path) -> List[dict]:
     return filings
 
 
+# ---------------------------------------------------------------------------
+# State adapters (profile field "states": [...], or --ingest)
+# ---------------------------------------------------------------------------
+
+def _backend_db():
+    sys.path.insert(0, str(TOOLS_DIR / "web" / "backend"))
+    import db  # noqa: E402  (web/backend/db.py)
+    db.init_db()
+    return db
+
+
+def ingest_states(states: List[str], dates: List[str], store: bool = True) -> Dict[str, list]:
+    """Run each state's adapter for each date; store Filing rows in SQLite; log per-state counts.
+
+    Returns {state: [Filing, ...]} deduped on (state, source_id). One state's failure is logged and
+    recorded in ingest_runs; it does not stop the other states.
+    """
+    from adapters import dedupe, get_adapter, run_adapter
+
+    db = _backend_db() if store else None
+    out: Dict[str, list] = {}
+    for st in [s.strip().upper() for s in states if s and s.strip()]:
+        adapter = get_adapter(st)
+        workdir = DATA_DIR / st.lower()
+        collected = []
+        for ds in dates:
+            try:
+                filings = run_adapter(adapter, ds, workdir)
+            except Exception as e:  # noqa: BLE001 - logged + recorded, other states continue
+                log(f"[ingest] state={st} source_date={ds} ERROR {type(e).__name__}: {e}", "ERROR")
+                if db:
+                    db.record_ingest_run(st, ds, 0, 0, "error", f"{type(e).__name__}: {e}"[:500])
+                continue
+            new_rows = db.upsert_filings([f.to_row() for f in filings]) if db else 0
+            status = "ok" if filings else "empty"
+            log(f"[ingest] state={st} source_date={ds} rows={len(filings)} new={new_rows} status={status}",
+                "INFO" if filings else "WARN")
+            if db:
+                db.record_ingest_run(st, ds, len(filings), new_rows, status)
+            collected.extend(filings)
+        out[st] = dedupe(collected)
+        log(f"[ingest] state={st} dates={dates[0] if dates else '-'}..{dates[-1] if dates else '-'} "
+            f"total_rows={len(out[st])}")
+    return out
+
+
+# FL filing-type codes used in existing profiles -> common entity kinds, so a FL-style profile also
+# filters other states sensibly.
+def _profile_kinds(profile: dict) -> set:
+    from adapters import FL_TYPE_KIND
+    if profile.get("entity_kinds"):
+        return {k.lower() for k in profile["entity_kinds"]}
+    return {FL_TYPE_KIND[t] for t in profile.get("filing_types", []) if t in FL_TYPE_KIND}
+
+
+def filter_filings(filings: list, profile: dict) -> List[dict]:
+    """Adapter-path counterpart of filter_leads: Filing objects in, legacy lead rows out.
+
+    - active only (the state's own status says active / in good standing)
+    - FL filings: profile filing_types (FL codes) as today; nonprofit profiles keep FL doc numbers
+      starting with "N" as today. Other states: entity kind mapped from filing_types (or entity_kinds).
+    - keywords / exclude_keywords on the entity name.
+    - target_counties apply only where the state publishes a county; unknown county is not excluded
+      (counties are never inferred).
+    """
+    filing_types = profile.get("filing_types", [])
+    keywords = profile.get("keywords", [])
+    exclude = profile.get("exclude_keywords", [])
+    target_counties = [c.upper() for c in (profile.get("target_counties") or [])]
+    pname = profile.get("name", "").lower()
+    is_nonprofit = "nonprofit" in pname or "grassroots" in pname
+    kinds = _profile_kinds(profile)
+
+    leads = []
+    for f in filings:
+        if f.active is not True:
+            continue
+        if f.state == "FL":
+            if is_nonprofit:
+                if not f.source_id.startswith("N"):
+                    continue
+            elif filing_types and (f.filing_type or "") not in filing_types:
+                continue
+        else:
+            if is_nonprofit:
+                if f.entity_kind != "nonprofit":
+                    continue
+            elif kinds and f.entity_kind not in kinds:
+                continue
+        name = (f.entity or "").lower()
+        if exclude and any(k.lower() in name for k in exclude):
+            continue
+        if keywords and not any(k.lower() in name for k in keywords):
+            continue
+        if target_counties and f.county and f.county.upper() not in target_counties:
+            continue
+        leads.append(f.to_legacy_row())
+    return leads
+
+
 def filter_leads(filings: List[dict], profile: dict) -> List[dict]:
     filing_types = profile.get("filing_types", [])
     keywords = profile.get("keywords", [])
@@ -443,12 +550,10 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
     - skip_domains: list - Additional domains to skip (appended to default list)
     - verify_mx: bool - Verify emails have valid MX records (default: false)
     - verify_smtp: bool - Verify mailboxes exist via SMTP (default: false)
-    - guess_email_variants: bool - DISABLED by policy (never guess email addresses). Ignored if set;
-                               only emails actually published on the business's own site are kept.
-                               When an email passes MX/SMTP validation fails, generates variants
-                               of the local part (e.g., john.smith -> john_smith, jsmith) and
-                               re-validates them. Good for company emails.
-    - max_variant_attempts: int - Max variant mutations per email (default: 10)
+    - guess_email_variants: REMOVED by policy (never guess email addresses). A true value is logged
+                               and ignored; there is no code path that builds or tries guessed addresses.
+                               Only emails actually published on a page are kept; an email that fails
+                               MX/SMTP validation is dropped, never mutated.
     """
     profile = profile or {}
     email_config = profile.get("email_methods", {})
@@ -457,12 +562,10 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
     extra_skip_domains = email_config.get("skip_domains", [])
     verify_mx = email_config.get("verify_mx", False)
     verify_smtp = email_config.get("verify_smtp", False)
-    # Standing rule: never guess email addresses. Variant guessing is hard-disabled regardless of
-    # profile/CLI; a request to enable it is logged and ignored.
+    # Standing rule: never guess email addresses. The variant guesser has been removed; a profile
+    # asking for it is logged and ignored.
     if email_config.get("guess_email_variants", False):
-        log("guess_email_variants requested but disabled by policy (never guess emails)", "WARN")
-    guess_variants = False
-    max_variant_attempts = email_config.get("max_variant_attempts", 10)
+        log("guess_email_variants requested but removed by policy (never guess emails)", "WARN")
     
     import requests
     import re
@@ -560,53 +663,6 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
             return "MEDIUM"
         return "LOW"
 
-    def generate_local_part_variants(local_part: str) -> list[str]:
-        """Generate variations of an email local part.
-        
-        Examples:
-            'john.smith' -> ['john_smith', 'johnsmith', 'jsmith', 'j.smith', 'smith', 
-                             'john_s', 'j_smith', 'smithj', 'smith_j', 'john']
-        """
-        if not local_part:
-            return []
-        
-        local = local_part.lower().strip()
-        variants = set()
-        
-        parts = re.split(r'[._-]+', local)
-        if len(parts) >= 2:
-            first = parts[0]
-            last = parts[-1]
-            
-            if first and last:
-                variants.add(f"{first}_{last}")
-                variants.add(f"{first}{last}")
-                variants.add(f"{first[0]}{last}")
-                variants.add(f"{first[0]}.{last}")
-                variants.add(last)
-                
-                variants.add(f"{last}_{first}")
-                variants.add(f"{last}{first[0]}")
-                variants.add(f"{last}.{first[0]}")
-                
-                if len(first) > 1:
-                    variants.add(f"{first[0]}_{last}")
-                    variants.add(f"{first}_{last[0]}")
-        
-        variants.add(local.replace('.', '_'))
-        variants.add(local.replace('_', '.'))
-        variants.add(local.replace('.', ''))
-        variants.add(local.replace('_', ''))
-        
-        if len(local) <= 2:
-            return [v for v in variants if v and v != local]
-        
-        if len(local) > 3:
-            cleaned = local.replace('.', '').replace('_', '')
-            variants.add(cleaned)
-        
-        return [v for v in variants if v and v != local]
-
     from validate_email import verify_mx_record, verify_smtp as smtp_verify
 
     def search_web(query, max_results=5):
@@ -665,14 +721,8 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
             pass
         return list(set(emails))
 
-    def find_emails_for_entity(row, guess_variants=False, max_variant_attempts=10):
-        """Try multiple search strategies to find emails for an entity.
-        
-        Args:
-            row: Dictionary with entity data
-            guess_variants: If True, try email variants when validation fails
-            max_variant_attempts: Max number of variant mutations to try
-        """
+    def find_emails_for_entity(row):
+        """Try multiple search strategies to find emails published for an entity (never guessed)."""
         entity = row.get('corp_name', row.get('fic_name', ''))
         address = row.get('address_1', '')
         city = row.get('city', '')
@@ -754,72 +804,24 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
         unique_emails = list(set(all_emails))
         scored = [(e, score_email(e)) for e in unique_emails]
         
-        # Apply email validation + variant guessing
+        # Validate published emails; a failed check drops the email (it is never mutated or guessed).
         validated = []
-        attempted_variants = {}  # domain -> set of tried local parts
-        variant_attempts_remaining = max_variant_attempts if guess_variants else 0
-        
         for email, score in scored:
             domain = email.split('@')[-1].lower() if '@' in email else ''
-            local_part = email.rsplit('@', 1)[0] if '@' in email else ''
             valid = True
-            validation_failed = False
-            
             if verify_mx and domain:
                 mx_ok, _ = verify_mx_record(domain)
                 if not mx_ok:
-                    log(f"    MX validation failed for: {email}")
+                    log(f"    MX validation failed for: {email} (dropped)")
                     valid = False
-                    validation_failed = True
-            
             if valid and verify_smtp:
                 smtp_ok, _ = smtp_verify(email)
                 if not smtp_ok:
-                    log(f"    SMTP validation failed for: {email}")
+                    log(f"    SMTP validation failed for: {email} (dropped)")
                     valid = False
-                    validation_failed = True
-            
             if valid:
                 validated.append((email, score))
-            elif validation_failed and guess_variants and variant_attempts_remaining > 0 and domain and local_part:
-                # Try variants of the local part
-                if domain not in attempted_variants:
-                    attempted_variants[domain] = set()
-                
-                variants = generate_local_part_variants(local_part)
-                variants_tried = 0
-                
-                for variant_local in variants:
-                    if variant_local in attempted_variants[domain]:
-                        continue
-                    if variants_tried >= max_variant_attempts:
-                        break
-                    if variant_attempts_remaining <= 0:
-                        break
-                    
-                    attempted_variants[domain].add(variant_local)
-                    variant_email = f"{variant_local}@{domain}"
-                    variants_tried += 1
-                    variant_attempts_remaining -= 1
-                    
-                    log(f"    Trying variant: {variant_email}")
-                    
-                    variant_valid = True
-                    if verify_mx:
-                        mx_ok, _ = verify_mx_record(domain)
-                        if not mx_ok:
-                            variant_valid = False
-                    
-                    if variant_valid and verify_smtp:
-                        smtp_ok, _ = smtp_verify(variant_email)
-                        if not smtp_ok:
-                            variant_valid = False
-                    
-                    if variant_valid:
-                        validated.append((variant_email, "LOW"))
-                        log(f"    Variant validated: {variant_email}")
-                        break
-        
+
         scored = validated
         
         score_order = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
@@ -860,7 +862,7 @@ def find_emails_for_leads(csv_path: Path, output_path: Path, max_leads: int = 20
 
         log(f"  [{i+1}/{max_leads}] {entity[:50]}...")
 
-        emails, websites = find_emails_for_entity(row, guess_variants, max_variant_attempts)
+        emails, websites = find_emails_for_entity(row)
 
         if emails:
             found_count += 1
@@ -1025,19 +1027,33 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
         else:
             log(f"[{name}] Downloading filings for {dates[0]}")
 
-        corp_filings, fic_filings = download_and_parse(dates)
-        
-        if not corp_filings and not fic_filings:
-            log(f"[{name}] No files downloaded", "WARN")
-            return result
-        
-        leads = filter_leads(corp_filings, profile)
-        log(f"[{name}] Filtered: {len(leads)} corporate leads")
-        
-        fic_leads = filter_leads(fic_filings, profile)
-        if fic_leads:
-            log(f"[{name}] FIC leads: {len(fic_leads)}")
-            leads.extend(fic_leads)
+        states = profile.get("states")
+        if states:
+            # Adapter path (opt-in per profile): every state's filings are stored in `filings`.
+            by_state = ingest_states(states, dates)
+            if not any(by_state.values()):
+                log(f"[{name}] No filings fetched for {states}", "WARN")
+                return result
+            leads = []
+            for st, filings in by_state.items():
+                st_leads = filter_filings(filings, profile)
+                log(f"[{name}] {st}: {len(st_leads)} leads from {len(filings)} filings")
+                leads.extend(st_leads)
+        else:
+            # Legacy FL path (unchanged).
+            corp_filings, fic_filings = download_and_parse(dates)
+
+            if not corp_filings and not fic_filings:
+                log(f"[{name}] No files downloaded", "WARN")
+                return result
+
+            leads = filter_leads(corp_filings, profile)
+            log(f"[{name}] Filtered: {len(leads)} corporate leads")
+
+            fic_leads = filter_leads(fic_filings, profile)
+            if fic_leads:
+                log(f"[{name}] FIC leads: {len(fic_leads)}")
+                leads.extend(fic_leads)
         
         result["leads"] = len(leads)
         
@@ -1055,7 +1071,9 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
 
         # Apply CLI overrides to email_methods if provided
         effective_profile = profile
-        if args and (args.verify_mx is not None or args.verify_smtp is not None or args.guess_variants is not None):
+        if args and getattr(args, "guess_variants", None):
+            log(f"[{name}] --guess-variants ignored: email guessing is removed by policy", "WARN")
+        if args and (args.verify_mx is not None or args.verify_smtp is not None):
             import copy
             effective_profile = copy.deepcopy(profile)
             email_methods = effective_profile.get("email_methods", {})
@@ -1063,8 +1081,7 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
                 email_methods["verify_mx"] = args.verify_mx
             if args.verify_smtp is not None:
                 email_methods["verify_smtp"] = args.verify_smtp
-            if args.guess_variants is not None:
-                email_methods["guess_email_variants"] = args.guess_variants
+            email_methods["guess_email_variants"] = False  # policy: never guess emails
             effective_profile["email_methods"] = email_methods
             
             if args.verify_mx:
@@ -1075,10 +1092,6 @@ def process_profile(name: str, profile: dict, date_str: str, args=None) -> dict:
                 log(f"[{name}] SMTP validation enabled (CLI override)")
             elif args.verify_smtp is False:
                 log(f"[{name}] SMTP validation disabled (CLI override)")
-            if args.guess_variants:
-                log(f"[{name}] --guess-variants ignored: email guessing is disabled by policy", "WARN")
-            elif args.guess_variants is False:
-                log(f"[{name}] Email variant guessing disabled (CLI override)")
 
         if email_lookup and not skip_email:
             max_leads = profile.get("max_leads", 30)
@@ -1168,13 +1181,44 @@ if __name__ == "__main__":
 
     # Email variant guessing
     parser.add_argument("--guess-variants", dest="guess_variants", action="store_true", default=None,
-                        help="(disabled by policy: never guess email addresses; ignored)")
+                        help="(removed by policy: never guess email addresses; ignored)")
     parser.add_argument("--no-guess-variants", dest="guess_variants", action="store_false", default=None,
-                        help="Skip email variant guessing")
+                        help="(no-op: email guessing is removed)")
 
     parser.add_argument("--cron", "-c", choices=["generate", "install", "remove"], help="Manage cron")
+
+    # Ingest-only mode (the scheduler container runs this daily)
+    parser.add_argument("--ingest", action="store_true",
+                        help="Fetch + store state filings only (no profiles, no enrichment, no email)")
+    parser.add_argument("--states", default=os.environ.get("LEADS_INGEST_STATES", "FL"),
+                        help="Comma-separated state codes for --ingest (default $LEADS_INGEST_STATES or FL)")
+    parser.add_argument("--lookback", type=int, default=None,
+                        help="--ingest: also re-fetch the previous N calendar days (upserts dedupe)")
     args = parser.parse_args()
-    
+
+    if args.ingest:
+        if args.lookback is not None:
+            today = datetime.now()
+            dates = [(today - timedelta(days=i)).strftime("%Y%m%d") for i in range(args.lookback, -1, -1)]
+        elif args.date_from:
+            dates = get_date_range_between(args.date_from, args.date_to or datetime.now().strftime("%Y%m%d"))
+        else:
+            dates = [args.date or get_workday_date()]
+        states = [s for s in args.states.split(",") if s.strip()]
+        log(f"[ingest] states={states} dates={dates[0]}..{dates[-1]}")
+        results = ingest_states(states, dates)
+        status_path = DATA_DIR / "ingest_status.json"
+        try:
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            status_path.write_text(json.dumps({
+                "ran_at": datetime.now().isoformat(timespec="seconds"),
+                "dates": [dates[0], dates[-1]],
+                "rows": {st: len(fs) for st, fs in results.items()},
+            }))
+        except OSError as e:
+            log(f"[ingest] could not write {status_path}: {e}", "WARN")
+        sys.exit(0)
+
     if args.cron:
         profiles = load_profiles()
         DAY_MAP = {"monday": 1, "tuesday": 2, "wednesday": 3, "thursday": 4, "friday": 5}

@@ -5,6 +5,11 @@ Tables:
 - users: Firebase UID -> local user record
 - profiles: User lead profiles (synced to profiles.json)
 - payments: Stripe payment history
+- leads: per-profile delivered leads (legacy pipeline)
+- filings: state new-business filings from the state adapters, UNIQUE(state, source_id)
+- ingest_runs: one row per (state, source_date) ingest with its row counts
+
+DB location: $LEADS_DB_PATH, default <leads>/data/leads.db.
 """
 
 import sqlite3
@@ -14,8 +19,9 @@ from typing import Optional
 from contextlib import contextmanager
 from dataclasses import dataclass, asdict
 import json
+import os
 
-DB_PATH = Path(__file__).parent.parent.parent / "data" / "leads.db"
+DB_PATH = Path(os.environ.get("LEADS_DB_PATH") or (Path(__file__).parent.parent.parent / "data" / "leads.db"))
 
 
 @dataclass
@@ -165,6 +171,48 @@ CREATE TABLE IF NOT EXISTS code_redemptions (
     UNIQUE(code_id, profile_id)
 );
 
+CREATE TABLE IF NOT EXISTS filings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    state TEXT NOT NULL,
+    source_id TEXT NOT NULL,
+    entity TEXT NOT NULL,
+    filing_type TEXT,
+    entity_kind TEXT NOT NULL DEFAULT 'other',
+    filed_date TEXT,              -- ISO YYYY-MM-DD
+    status TEXT,
+    active INTEGER,               -- 1/0, NULL when the source status is unknown
+    county TEXT,
+    registered_agent TEXT,
+    address_1 TEXT,
+    address_2 TEXT,
+    city TEXT,
+    address_state TEXT,
+    zip_code TEXT,
+    naics_guess TEXT,
+    naics_basis TEXT,
+    contacts TEXT NOT NULL DEFAULT '[]',   -- JSON list of verified public contacts only
+    source_date TEXT,             -- feed date YYYYMMDD
+    raw TEXT,
+    first_seen TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(state, source_id)
+);
+
+CREATE TABLE IF NOT EXISTS ingest_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    state TEXT NOT NULL,
+    source_date TEXT NOT NULL,
+    rows INTEGER NOT NULL,
+    new_rows INTEGER NOT NULL,
+    status TEXT NOT NULL,          -- ok | empty | error
+    detail TEXT,
+    ran_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_filings_state_date ON filings(state, filed_date);
+CREATE INDEX IF NOT EXISTS idx_filings_kind ON filings(entity_kind);
+CREATE INDEX IF NOT EXISTS idx_filings_county ON filings(county);
+CREATE INDEX IF NOT EXISTS idx_ingest_runs_state ON ingest_runs(state, source_date);
 CREATE INDEX IF NOT EXISTS idx_users_firebase_uid ON users(firebase_uid);
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_payments_user_id ON payments(user_id);
@@ -611,6 +659,159 @@ def create_code(code: str, max_uses: int = 1, expires_at: str = None) -> Code:
             created_at=now,
             expires_at=expires_at
         )
+
+
+# Filings (state adapters)
+
+FILING_COLUMNS = (
+    "state", "source_id", "entity", "filing_type", "entity_kind", "filed_date", "status", "active",
+    "county", "registered_agent", "address_1", "address_2", "city", "address_state", "zip_code",
+    "naics_guess", "naics_basis", "contacts", "source_date", "raw",
+)
+
+
+def upsert_filings(rows: list[dict]) -> int:
+    """Insert or update filing rows keyed on (state, source_id). Returns the number of new rows.
+
+    Rows are the dicts from adapters.Filing.to_row(). An existing row is updated in place (status,
+    address, etc. may change between feed dates); `first_seen` is kept.
+    """
+    if not rows:
+        return 0
+    cols = ", ".join(FILING_COLUMNS)
+    marks = ", ".join("?" for _ in FILING_COLUMNS)
+    updates = ", ".join(f"{c} = excluded.{c}" for c in FILING_COLUMNS if c not in ("state", "source_id"))
+    sql = (f"INSERT INTO filings ({cols}) VALUES ({marks}) "
+           f"ON CONFLICT(state, source_id) DO UPDATE SET {updates}, updated_at = datetime('now')")
+    with get_db() as conn:
+        before = conn.execute("SELECT COUNT(*) FROM filings").fetchone()[0]
+        conn.executemany(sql, [tuple(r.get(c) for c in FILING_COLUMNS) for r in rows])
+        after = conn.execute("SELECT COUNT(*) FROM filings").fetchone()[0]
+    return after - before
+
+
+def record_ingest_run(state: str, source_date: str, rows: int, new_rows: int,
+                      status: str, detail: Optional[str] = None):
+    with get_db() as conn:
+        conn.execute(
+            "INSERT INTO ingest_runs (state, source_date, rows, new_rows, status, detail) VALUES (?, ?, ?, ?, ?, ?)",
+            (state, source_date, rows, new_rows, status, detail),
+        )
+
+
+def _filing_where(states=None, county=None, filing_type=None, entity_kind=None, keywords=None,
+                  exclude_keywords=None, must_contain=None, date_from=None, date_to=None, active_only=True):
+    where, params = [], []
+    if states is not None:
+        states = [s.upper() for s in states]
+        if not states:
+            return "1 = 0", []
+        where.append(f"state IN ({', '.join('?' for _ in states)})")
+        params.extend(states)
+    if county:
+        where.append("UPPER(county) = ?")
+        params.append(county.strip().upper())
+    if filing_type:
+        types = [t.strip().upper() for t in filing_type.split(",") if t.strip()]
+        where.append(f"UPPER(filing_type) IN ({', '.join('?' for _ in types)})")
+        params.extend(types)
+    if entity_kind:
+        kinds = [k.strip().lower() for k in entity_kind.split(",") if k.strip()]
+        where.append(f"entity_kind IN ({', '.join('?' for _ in kinds)})")
+        params.extend(kinds)
+    if keywords:
+        where.append("(" + " OR ".join("LOWER(entity) LIKE ?" for _ in keywords) + ")")
+        params.extend(f"%{k.lower()}%" for k in keywords)
+    if must_contain:
+        where.append("LOWER(entity) LIKE ?")
+        params.append(f"%{must_contain.lower()}%")
+    for k in exclude_keywords or []:
+        where.append("LOWER(entity) NOT LIKE ?")
+        params.append(f"%{k.lower()}%")
+    if date_from:
+        where.append("filed_date >= ?")
+        params.append(date_from)
+    if date_to:
+        where.append("filed_date <= ?")
+        params.append(date_to)
+    if active_only:
+        where.append("active = 1")
+    return (" AND ".join(where) or "1 = 1"), params
+
+
+PUBLIC_FILING_FIELDS = (
+    "state", "source_id", "entity", "filing_type", "entity_kind", "filed_date", "status", "county",
+    "registered_agent", "address_1", "address_2", "city", "address_state", "zip_code", "naics_guess",
+    "naics_basis", "contacts", "source_date",
+)
+
+
+def search_filings(limit: int = 50, offset: int = 0, **filters) -> tuple[list[dict], int]:
+    """Filtered filings, newest filed first. Returns (rows, total matching)."""
+    where, params = _filing_where(**filters)
+    fields = ", ".join(PUBLIC_FILING_FIELDS)
+    with get_db() as conn:
+        total = conn.execute(f"SELECT COUNT(*) FROM filings WHERE {where}", params).fetchone()[0]
+        rows = conn.execute(
+            f"SELECT {fields} FROM filings WHERE {where} "
+            "ORDER BY filed_date DESC, state, source_id LIMIT ? OFFSET ?",
+            [*params, limit, offset],
+        ).fetchall()
+    out = []
+    for r in rows:
+        d = dict(r)
+        d["contacts"] = json.loads(d.get("contacts") or "[]")
+        out.append(d)
+    return out, total
+
+
+def filings_coverage() -> list[dict]:
+    """Per-state counts and freshness (public: no filing content)."""
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT state, COUNT(*) AS filings, MAX(filed_date) AS latest_filed_date, "
+            "MAX(source_date) AS latest_source_date FROM filings GROUP BY state ORDER BY state"
+        ).fetchall()
+        runs = {
+            r["state"]: dict(r) for r in conn.execute(
+                "SELECT state, MAX(ran_at) AS last_ingest_at FROM ingest_runs GROUP BY state"
+            ).fetchall()
+        }
+    out = []
+    for r in rows:
+        d = dict(r)
+        d["last_ingest_at"] = runs.get(d["state"], {}).get("last_ingest_at")
+        out.append(d)
+    return out
+
+
+def latest_ingest_runs(limit: int = 20) -> list[dict]:
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT state, source_date, rows, new_rows, status, ran_at FROM ingest_runs "
+            "ORDER BY id DESC LIMIT ?", (limit,)
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+# Entitlements (paid-only: no free tier; promo codes are the early-access lever)
+
+DEFAULT_ENTITLED_STATES = ("FL",)  # a paid profile with no `states` field covers the original FL product
+
+
+def entitled_states(user_id: int) -> set[str]:
+    """States the user may search: the union of `states` over their PAID profiles.
+
+    A profile is paid only via a completed Stripe checkout (webhook) or a redeemed promo code.
+    No paid profile -> empty set -> the API refuses (fails closed).
+    """
+    states: set[str] = set()
+    for p in get_profiles_by_user(user_id):
+        if not p.paid:
+            continue
+        s = p.settings.get("states") or list(DEFAULT_ENTITLED_STATES)
+        states.update(x.strip().upper() for x in s if isinstance(x, str) and x.strip())
+    return states
 
 
 # Runner integration
