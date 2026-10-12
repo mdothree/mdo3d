@@ -79,13 +79,13 @@
       <div class="tool-layout animate-fade-up-2">
         <div class="panel">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div class="panel-title" style="border:none;margin:0;padding:0;">Input JSON</div>
+            <div class="panel-title" id="inputJsonLabel" style="border:none;margin:0;padding:0;">Input JSON</div>
             <div class="btn-group">
               <button class="btn btn-ghost" id="clearBtn" style="padding:6px 12px;font-size:0.78rem;">Clear</button>
               <button class="btn btn-ghost" id="sampleBtn" style="padding:6px 12px;font-size:0.78rem;">Sample</button>
             </div>
           </div>
-          <textarea class="form-textarea" id="inputJson" style="min-height:400px;font-size:0.82rem;" placeholder='{"paste": "your JSON here"}'></textarea>
+          <textarea aria-labelledby="inputJsonLabel" class="form-textarea" id="inputJson" style="min-height:400px;font-size:0.82rem;" placeholder='{"paste": "your JSON here"}'></textarea>
           <div class="btn-group mt-12">
             <button class="btn btn-primary" id="formatBtn">✨ Beautify</button>
             <button class="btn btn-secondary" id="minifyBtn">Minify</button>

@@ -75,12 +75,12 @@
 
       <div class="tool-layout animate-fade-up-2">
         <div class="panel">
-          <div class="panel-title">JSON A (original)</div>
-          <textarea class="form-textarea" id="jsonA" style="min-height:280px;font-size:0.82rem;" placeholder='{"name":"Alice","age":30}'></textarea>
+          <div class="panel-title" id="jsonALabel">JSON A (original)</div>
+          <textarea aria-labelledby="jsonALabel" class="form-textarea" id="jsonA" style="min-height:280px;font-size:0.82rem;" placeholder='{"name":"Alice","age":30}'></textarea>
         </div>
         <div class="panel">
-          <div class="panel-title">JSON B (modified)</div>
-          <textarea class="form-textarea" id="jsonB" style="min-height:280px;font-size:0.82rem;" placeholder='{"name":"Alice","age":31,"email":"alice@example.com"}'></textarea>
+          <div class="panel-title" id="jsonBLabel">JSON B (modified)</div>
+          <textarea aria-labelledby="jsonBLabel" class="form-textarea" id="jsonB" style="min-height:280px;font-size:0.82rem;" placeholder='{"name":"Alice","age":31,"email":"alice@example.com"}'></textarea>
         </div>
       </div>
 

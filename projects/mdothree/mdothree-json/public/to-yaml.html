@@ -74,8 +74,8 @@
 
       <div class="tool-layout animate-fade-up-2">
         <div class="panel">
-          <div class="panel-title">JSON Input</div>
-          <textarea class="form-textarea" id="inputJson" style="min-height:400px;font-size:0.82rem;" placeholder='{"paste": "JSON here"}'></textarea>
+          <div class="panel-title" id="inputJsonLabel">JSON Input</div>
+          <textarea aria-labelledby="inputJsonLabel" class="form-textarea" id="inputJson" style="min-height:400px;font-size:0.82rem;" placeholder='{"paste": "JSON here"}'></textarea>
           <button class="btn btn-primary mt-16" id="convertBtn">→ Convert to YAML</button>
         </div>
         <div class="panel">

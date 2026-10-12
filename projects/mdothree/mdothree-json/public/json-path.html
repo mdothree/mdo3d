@@ -84,10 +84,10 @@
         <div>
           <div class="panel">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-              <div class="panel-title" style="border:none;margin:0;padding:0;">JSON Input</div>
+              <div class="panel-title" id="jsonInputLabel" style="border:none;margin:0;padding:0;">JSON Input</div>
               <button class="btn btn-ghost" id="sampleBtn" style="padding:6px 12px;font-size:0.78rem;">Load sample</button>
             </div>
-            <textarea class="form-textarea" id="jsonInput" style="min-height:320px;font-size:0.82rem;" placeholder='{"store":{"books":[{"title":"Foo","price":8.99},{"title":"Bar","price":12.99}]}}'></textarea>
+            <textarea aria-labelledby="jsonInputLabel" class="form-textarea" id="jsonInput" style="min-height:320px;font-size:0.82rem;" placeholder='{"store":{"books":[{"title":"Foo","price":8.99},{"title":"Bar","price":12.99}]}}'></textarea>
           </div>
 
           <div class="panel mt-16">
