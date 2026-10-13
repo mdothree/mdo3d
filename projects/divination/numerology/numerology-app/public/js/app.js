@@ -12,6 +12,12 @@ const API_URL = window.location.hostname === 'localhost'
 
 let currentNumbers = null;
 let isPremium = false;
+// Set when the API refuses the stored purchase (402/403) so checkout is offered.
+let entitlementRejected = false;
+
+function hasPurchase() {
+  return !entitlementRejected && window.PremiumEntitlement?.has() === true;
+}
 // True once a reading has been shown in this session; input edits then keep the
 // on-screen result in sync (recalculate when valid, clear when not).
 let resultsShown = false;
@@ -63,8 +69,8 @@ function restorePendingReading() {
   try { sessionStorage.removeItem(PENDING_KEY); } catch (e) {}
   elements.nameInput.value = saved.name;
   elements.birthDateInput.value = saved.birthDate;
+  // showReading() delivers the paid reading itself when a credit exists.
   calculateNumbers();
-  handlePremiumPurchase();
 }
 
 function setupEventListeners() {
@@ -119,7 +125,7 @@ function setupEventListeners() {
 
 async function handlePremiumPurchase() {
   // A verified purchase (recorded by success.html) unlocks — no second charge.
-  if (window.PremiumEntitlement?.has()) {
+  if (hasPurchase()) {
     isPremium = true;
     hidePremiumModal();
     if (!currentNumbers) {
@@ -171,6 +177,13 @@ async function deliverPremiumReading() {
         sessionId: window.PremiumEntitlement?.activeSessionId()
       })
     });
+    if (res.status === 402 || res.status === 403) {
+      // The purchase on this device was used up or doesn't cover this reading.
+      entitlementRejected = true;
+      banner.remove();
+      showReading();
+      return;
+    }
     const data = await res.json();
     const r = data.reading || data;
     if (!r || !r.lifePathAnalysis) throw new Error('Empty reading');
@@ -302,6 +315,7 @@ function calculateNumbers(opts = {}) {
     return;
   }
 
+  entitlementRejected = false;
   currentNumbers = getAllNumbers(name, birthDate);
   currentNumbers.name = name;
   currentNumbers.birthDate = birthDate;
@@ -354,42 +368,23 @@ function showNumbers(scroll = true) {
   if (scroll) elements.numbersDisplay.scrollIntoView({ behavior: 'smooth' });
 }
 
+// Paid from first use (JARVIS #94): the numbers are arithmetic; their reading
+// is the paid AI interpretation. With a verified purchase it is delivered here;
+// without one, only the checkout prompt shows.
 function showReading() {
-  const lifePath = getLifePathMeaning(currentNumbers.lifePathNumber);
+  if (hasPurchase()) {
+    elements.numberMeanings.innerHTML = '';
+    elements.readingSection.style.display = 'block';
+    deliverPremiumReading();
+    return;
+  }
 
   elements.numberMeanings.innerHTML = `
-    <div class="reading-block primary-reading">
-      <div class="reading-header">
-        <div class="number-badge">${currentNumbers.lifePathNumber}</div>
-        <div>
-          <h3>Life Path: ${lifePath.title}</h3>
-          <div class="keywords">
-            ${lifePath.keywords.map(k => `<span class="keyword">${k}</span>`).join('')}
-          </div>
-        </div>
-      </div>
-      <p class="reading-brief">${lifePath.brief}</p>
-      <p class="reading-meaning">${lifePath.meaning}</p>
-      <div class="traits-grid">
-        <div class="traits strengths">
-          <h4>Strengths</h4>
-          <ul>
-            ${lifePath.strengths.map(s => `<li>${s}</li>`).join('')}
-          </ul>
-        </div>
-        <div class="traits challenges">
-          <h4>Growth Areas</h4>
-          <ul>
-            ${lifePath.challenges.map(c => `<li>${c}</li>`).join('')}
-          </ul>
-        </div>
-      </div>
-    </div>
-
     <div class="premium-upsell">
       <h4>Unlock Your Full Numerology Chart</h4>
       <p>Get detailed interpretations of all your numbers, including:</p>
       <ul>
+        <li>Life Path - Your purpose, strengths and growth areas</li>
         <li>Expression Number - Your natural talents and abilities</li>
         <li>Soul Urge Number - Your deepest desires</li>
         <li>Personality Number - How others see you</li>
@@ -397,7 +392,7 @@ function showReading() {
         <li>Lucky numbers, days, and colors</li>
       </ul>
       <button class="premium-btn" onclick="showPremiumModal()">
-        Get Premium Reading - $4.99
+        Get Premium Reading - <span data-price="core-numbers">${window.MdoPricing ? window.MdoPricing.price('core-numbers') : ''}</span>
       </button>
     </div>
   `;

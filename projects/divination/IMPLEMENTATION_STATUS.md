@@ -270,14 +270,16 @@ divination/
 
 ## Pricing Configuration
 
-| Service | Free Tier | Premium Options |
-|---------|-----------|-----------------|
-| I Ching | Basic hexagram meaning | Single Premium ($2.99), Changing Lines ($4.99), Monthly ($9.99) |
-| Runes | Basic rune meaning | Single Premium ($2.99), Three Rune ($4.99), Five Rune ($7.99), Monthly ($9.99) |
-| Astrology | Basic chart | Birth Chart ($4.99), Compatibility ($7.99), Transit ($5.99), Monthly ($12.99) |
-| Feng Shui | Basic tips | Single Room ($4.99), Full Home ($12.99), Office ($9.99), Monthly ($14.99) |
-| Past Lives | Quick glimpse | Single Life ($5.99), Multiple Lives ($9.99), Deep Dive ($14.99), Monthly ($12.99) |
-| Numerology | Life path only | Core Numbers ($4.99), Full Chart ($9.99), Compatibility ($7.99), Monthly ($11.99) |
+Source of truth: `shared/pricing.json` (synced by `shared/sync-pricing.mjs`; the APIs charge from it). Paid from the first reading, no monthly tiers (JARVIS #63/#63b/#94).
+
+| Service | Readings |
+|---------|----------|
+| I Ching | Single Premium ($5), Changing Lines ($10) |
+| Runes | Single Premium ($5), Three Rune ($10), Five Rune ($10) |
+| Astrology | Birth Chart ($5), Compatibility ($10), Transit ($5) |
+| Feng Shui | Single Room ($5), Full Home ($10), Office ($5) |
+| Past Lives | Single Life ($5), Multiple Lives ($10), Deep Dive ($10) |
+| Numerology | Core Numbers ($5), Full Chart ($10), Compatibility ($10) |
 
 ---
 

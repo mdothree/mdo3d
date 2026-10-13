@@ -5,6 +5,7 @@ import { ClaudeReadingService } from './services/claudeReadingService.js';
 import { StripeService } from './services/stripeService.js';
 import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -33,9 +34,9 @@ app.use((req, res, next) => {
 // Checkout readingTypes that may redeem a premium reading of each spread size.
 const SPREAD_ORDER = ['single', 'three', 'celtic'];
 const SPREAD_ENTITLEMENTS = {
-  single: ['single-premium', 'three', 'celtic', 'monthly'],
-  three: ['three', 'celtic', 'monthly'],
-  celtic: ['celtic', 'monthly']
+  single: ['single-premium', 'three', 'celtic'],
+  three: ['three', 'celtic'],
+  celtic: ['celtic']
 };
 
 // Routes
@@ -46,7 +47,7 @@ const SPREAD_ENTITLEMENTS = {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { cards, question, spreadType, premium } = req.body;
+    const { cards, question, spreadType } = req.body;
 
     if (!Array.isArray(cards) || cards.length === 0) {
       return res.status(400).json({ error: 'Cards required' });
@@ -55,20 +56,8 @@ app.post('/api/reading/generate', async (req, res) => {
       return res.status(400).json({ error: 'Too many cards' });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          cards: cards.map(card => ({
-            name: card.name,
-            meaning: card.upright.brief,
-            guidance: card.upright.guidance
-          }))
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Cards: [cards, 20000] });
     if (lengthError) {
@@ -127,6 +116,15 @@ app.post('/api/reading/quick-insight', freeAiLimiter, async (req, res) => {
       return res.status(413).json({ success: false, error: lengthError });
     }
 
+    // Paid from first use (JARVIS #94): an insight is a reading, so it needs a
+    // verified paid session that covers a single card (no session -> 402).
+    {
+      const denied = await checkPaidSession(stripeService, req.body.sessionId, {
+        allowedTypes: SPREAD_ENTITLEMENTS.single
+      });
+      if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
+    }
+
     const insight = await claudeService.generateQuickInsight(card, question);
 
     res.json({
@@ -158,15 +156,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const pricingConfig = {
-      'single-premium': { price: 2.99, name: 'Premium Single Card Reading', desc: 'Detailed AI-powered oracle card reading' },
-      'three': { price: 4.99, name: 'Three Card Spread Reading', desc: 'Past, Present, Future spread with AI insights' },
-      'celtic': { price: 9.99, name: 'Celtic Cross Reading', desc: 'Complete 10-card Celtic Cross spread with deep analysis' },
-      'monthly': { price: 9.99, name: 'Monthly Subscription', desc: 'Unlimited premium readings for 30 days' }
-    };
-
-    const config = pricingConfig[readingType];
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63). Unknown type -> 400 below, never a default.
+    const config = priceFor(readingType);
     if (!config) {
       return res.status(400).json({
         success: false,
@@ -176,9 +168,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
 
     // Create Stripe checkout session
     const result = await stripeService.createCheckoutSession({
-      productName: config.name,
-      description: config.desc,
-      priceUSD: config.price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
@@ -194,7 +186,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: config.price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -360,9 +353,14 @@ app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Oracle Cards API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Oracle Cards API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };

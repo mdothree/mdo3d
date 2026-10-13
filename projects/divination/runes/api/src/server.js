@@ -5,6 +5,7 @@ import { ClaudeRunesService } from './services/claudeRunesService.js';
 import { StripeService } from './services/stripeService.js';
 import { checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -33,9 +34,9 @@ app.use((req, res, next) => {
 // Checkout readingTypes that may redeem a premium reading of each spread size.
 const SPREAD_ORDER = ['single', 'three', 'five'];
 const SPREAD_ENTITLEMENTS = {
-  single: ['single-premium', 'three', 'five', 'monthly'],
-  three: ['three', 'five', 'monthly'],
-  five: ['five', 'monthly']
+  single: ['single-premium', 'three', 'five'],
+  three: ['three', 'five'],
+  five: ['five']
 };
 
 // Routes
@@ -46,7 +47,7 @@ const SPREAD_ENTITLEMENTS = {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { runes, question, spreadType, premium } = req.body;
+    const { runes, question, spreadType } = req.body;
 
     if (!Array.isArray(runes) || runes.length === 0) {
       return res.status(400).json({ error: 'Runes required' });
@@ -63,21 +64,8 @@ app.post('/api/reading/generate', async (req, res) => {
       });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          runes: runes.map(rune => ({
-            name: rune.name,
-            symbol: rune.symbol,
-            meaning: rune.meaning,
-            guidance: rune.upright?.guidance || rune.guidance
-          }))
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Runes: [runes, 10000] });
     if (lengthError) {
@@ -137,15 +125,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const pricingConfig = {
-      'single-premium': { price: 2.99, name: 'Premium Single Rune Reading', desc: 'Detailed AI-powered rune interpretation' },
-      'three': { price: 4.99, name: 'Three Rune Spread', desc: 'Past, Present, Future spread with AI insights' },
-      'five': { price: 7.99, name: 'Five Rune Spread', desc: 'Comprehensive spread with higher guidance' },
-      'monthly': { price: 9.99, name: 'Monthly Subscription', desc: 'Unlimited premium readings for 30 days' }
-    };
-
-    const config = pricingConfig[readingType];
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63). Unknown type -> 400 below, never a default.
+    const config = priceFor(readingType);
     if (!config) {
       return res.status(400).json({
         success: false,
@@ -154,9 +136,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
     }
 
     const result = await stripeService.createCheckoutSession({
-      productName: config.name,
-      description: config.desc,
-      priceUSD: config.price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
@@ -172,7 +154,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: config.price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -338,9 +321,14 @@ app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Runes API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Runes API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };

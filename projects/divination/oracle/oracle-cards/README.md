@@ -31,20 +31,16 @@ Digital oracle card readings with AI-powered personalized interpretations.
 
 ## Revenue Model
 
-**Pay-per-Reading:**
-- Single card premium: $2.99
-- Three card spread: $4.99
-- Celtic Cross (10 cards): $9.99
-
-**Monthly Subscription:**
-- Unlimited readings: $9.99/month
+**Pay-per-Reading** (prices from `projects/divination/shared/pricing.json`; no monthly tier):
+- Single card premium: $5
+- Three card spread: $10
+- Celtic Cross (10 cards): $10
 
 **Target Conversion:**
 - 1,000 daily visitors
 - 30% try free reading
 - 5% upgrade to premium
 - 15 premium readings/day = $45/day = $1,350/month
-- Plus subscriptions
 
 ## Quick Start
 

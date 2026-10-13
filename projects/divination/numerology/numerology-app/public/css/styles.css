@@ -539,3 +539,23 @@ input[aria-invalid="true"] { border-color: #ff8a8a; }
 @media (max-width: 768px) {
     footer p a { display: inline-block; padding: 14px 4px; margin: -14px -4px; } /* layout-neutral hit area */
 }
+
+/* Form controls inherit the site font (browsers default them to the UA font, e.g. Arial 13.33px). */
+button, input, select, textarea { font-family: inherit; }
+
+/* ── Light/dark theme (MDOThree template: theme-init.js sets html[data-theme] from the saved choice or the OS) ──
+   Numerology is dark-native: the rules above ARE the dark theme. Light theme: tokens + the hard-coded dark bits.
+   AA (light): text #0F172A on #F8FAFC 17:1; muted #475569 7.2:1; indigo text #4338CA 7.9:1; error #B91C1C 6.4:1. */
+html[data-theme="light"] {
+    --background: #F8FAFC;
+    --surface: #FFFFFF;
+    --surface-light: #EEF2FF;
+    --text: #0F172A;
+    --text-muted: #475569;
+}
+html[data-theme="light"] .error-message,
+html[data-theme="light"] .field-error { color: #B91C1C; }
+html[data-theme="light"] input[aria-invalid="true"] { border-color: #B91C1C; }
+/* Display-settings bar above the title: the theme toggle, innermost/rightmost */
+.site-nav { display: flex; justify-content: flex-end; align-items: center; padding: 0.75rem 0 0; }
+html[data-theme="light"] footer a { color: #4338CA; }

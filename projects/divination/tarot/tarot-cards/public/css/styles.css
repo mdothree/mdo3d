@@ -725,6 +725,30 @@ footer {
     .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
 
-/* Paid spreads hidden until checkout is verified (decided 2026-10-12; wired in with wave63). */
-.spread-option[hidden], .spread-detail[hidden] { display: none !important; }
-.spread-soon { margin-top: .75rem; font-size: .9rem; opacity: .85; }
+/* Form controls inherit the site font (browsers default them to the UA font, e.g. Arial 13.33px). */
+button, input, select, textarea { font-family: inherit; }
+
+/* ── Light/dark theme (MDOThree template: theme-init.js sets html[data-theme] from the saved choice or the OS) ──
+   The tarot design is dark-native: the rules above ARE the dark theme. The light theme below swaps the tokens and the
+   few hard-coded dark surfaces. AA (light): text #1E1533 on #FAF7FF 16:1; muted #4B5563 7.2:1; purple text #5B21B6
+   8.9:1; pink price #BE185D 6.1:1; badge text #1E1533 on #F59E0B 9.3:1. */
+html[data-theme="light"] {
+    --bg-dark: #F3EEFC;
+    --bg-darker: #FAF7FF;
+    --text-light: #1E1533;
+    --text-muted: #4B5563;
+    --primary-text: #5B21B6;
+    --border: rgba(107, 70, 193, 0.28);
+    --card-bg: rgba(255, 255, 255, 0.94);
+}
+html[data-theme="light"] header { background: rgba(250, 247, 255, 0.94); }
+html[data-theme="light"] .stars { display: none; }
+html[data-theme="light"] .nav-links a:hover,
+html[data-theme="light"] .spread-price { color: #BE185D; }
+html[data-theme="light"] .spread-badge { color: #1E1533; }
+html[data-theme="light"] .keyword { background: rgba(107, 70, 193, 0.14); }
+html[data-theme="light"] .card-front { box-shadow: 0 10px 30px rgba(30, 21, 51, 0.12); }
+html[data-theme="light"] .section-light { background: rgba(107, 70, 193, 0.04); }
+html[data-theme="light"] .question-section textarea { background: #FFFFFF; }
+.nav-links { align-items: center; }
+@media (min-width: 401px) { header nav.container { padding-top: .5rem; padding-bottom: .5rem; } } /* room around the 44px theme toggle */

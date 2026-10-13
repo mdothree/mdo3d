@@ -5,6 +5,7 @@ import { ClaudePastLifeService } from './services/claudePastLifeService.js';
 import { StripeService } from './services/stripeService.js';
 import { freeAiLimiter, checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -38,7 +39,7 @@ app.use((req, res, next) => {
  */
 app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
   try {
-    const { birthData, question, premium } = req.body;
+    const { birthData, question } = req.body;
 
     if (!birthData || !birthData.birthDate) {
       return res.status(400).json({ error: 'Birth date required' });
@@ -49,30 +50,15 @@ app.post('/api/reading/generate', freeAiLimiter, async (req, res) => {
       return res.status(413).json({ success: false, error: lengthError });
     }
 
-    // For free tier, return basic glimpse
-    if (!premium) {
-      const quickInsight = await claudeService.generateQuickInsight(
-        birthData.birthDate,
-        question,
-        birthData
-      );
-
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          glimpse: quickInsight,
-          message: 'Unlock a full past life reading for deeper insights into your soul journey.'
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     // For premium, generate full AI reading
     // Premium requires a verified, paid Stripe session from this service — prevents
     // a free reading via premium:true. Every past life product covers a single reading.
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['single-life', 'multiple-lives', 'deep-dive', 'monthly']
+        allowedTypes: ['single-life', 'multiple-lives', 'deep-dive']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
@@ -121,11 +107,11 @@ app.post('/api/reading/multiple-lives', async (req, res) => {
     }
 
     // Same paid-session guard as /api/reading/generate — `premium: true` alone
-    // must not unlock a paid reading — and the session must be for the $9.99
-    // multiple-lives product or a tier above it (a $5.99 single-life session is refused).
+    // must not unlock a paid reading — and the session must be for the $10
+    // multiple-lives product or a tier above it (a $5 single-life session is refused).
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['multiple-lives', 'deep-dive', 'monthly']
+        allowedTypes: ['multiple-lives', 'deep-dive']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
@@ -151,7 +137,7 @@ app.post('/api/reading/multiple-lives', async (req, res) => {
 
 // POST /api/reading/quick-insight was removed: it made unauthenticated Claude
 // calls and no frontend used it. ClaudePastLifeService.generateQuickInsight
-// still backs the free tier of /api/reading/generate.
+// remains but is unused since readings became paid from first use (JARVIS #94).
 
 /**
  * POST /api/payment/create-checkout
@@ -168,15 +154,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const pricingConfig = {
-      'single-life': { price: 5.99, name: 'Single Past Life Reading', desc: 'Detailed exploration of one significant past life' },
-      'multiple-lives': { price: 9.99, name: 'Multiple Lives Reading', desc: 'Glimpses into 3 past lives with soul theme' },
-      'deep-dive': { price: 14.99, name: 'Deep Soul Journey', desc: 'Comprehensive past life exploration with healing guidance' },
-      'monthly': { price: 12.99, name: 'Monthly Subscription', desc: 'Unlimited past life readings for 30 days' }
-    };
-
-    const config = pricingConfig[readingType];
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63). Unknown type -> 400 below, never a default.
+    const config = priceFor(readingType);
     if (!config) {
       return res.status(400).json({
         success: false,
@@ -185,9 +165,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
     }
 
     const result = await stripeService.createCheckoutSession({
-      productName: config.name,
-      description: config.desc,
-      priceUSD: config.price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
@@ -203,7 +183,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: config.price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -369,9 +350,14 @@ app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Past Lives API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Past Lives API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };

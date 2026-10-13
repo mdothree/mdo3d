@@ -1,3 +1,4 @@
+import { createNamesRouter } from './routes/namesReport.js';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -5,6 +6,7 @@ import { ClaudeNumerologyService } from './services/claudeNumerologyService.js';
 import { StripeService } from './services/stripeService.js';
 import { checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -16,6 +18,7 @@ const claudeService = new ClaudeNumerologyService();
 const stripeService = new StripeService('Numerology Insights');
 
 // Middleware
+app.use('/api/names', createNamesRouter()); // MDO-001 Baby Name Oracle report; own CORS (names.mdo3d.com) + JSON, so it sits before the app-wide cors()
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:8080',
   credentials: true
@@ -74,7 +77,7 @@ app.post('/api/calculate', async (req, res) => {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { name, birthDate, question, premium } = req.body;
+    const { name, birthDate, question } = req.body;
 
     if (!name || !birthDate) {
       return res.status(400).json({ error: 'Name and birth date required' });
@@ -96,24 +99,15 @@ app.post('/api/reading/generate', async (req, res) => {
       birthdayNumber: ClaudeNumerologyService.calculateBirthdayNumber(birthDate)
     };
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          numbers: numerologyData,
-          basicMeaning: getBasicLifePathMeaning(numerologyData.lifePathNumber)
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     // For premium, generate AI reading
     // Premium requires a verified, paid Stripe session from this service, bought
     // for a numbers reading (compatibility sessions have no reading here yet).
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-        allowedTypes: ['core-numbers', 'full-chart', 'monthly']
+        allowedTypes: ['core-numbers', 'full-chart']
       });
       if (denied) return res.status(denied.status).json({ success: false, error: denied.error });
     }
@@ -156,15 +150,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const pricingConfig = {
-      'core-numbers': { price: 4.99, name: 'Core Numbers Reading', desc: 'Life Path, Expression, Soul Urge analysis' },
-      'full-chart': { price: 9.99, name: 'Full Numerology Chart', desc: 'Complete chart with all numbers and cycles' },
-      'compatibility': { price: 7.99, name: 'Compatibility Reading', desc: 'Numerology compatibility analysis' },
-      'monthly': { price: 11.99, name: 'Monthly Subscription', desc: 'Unlimited numerology readings for 30 days' }
-    };
-
-    const config = pricingConfig[readingType];
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63). Unknown type -> 400 below, never a default.
+    const config = priceFor(readingType);
     if (!config) {
       return res.status(400).json({
         success: false,
@@ -173,9 +161,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
     }
 
     const result = await stripeService.createCheckoutSession({
-      productName: config.name,
-      description: config.desc,
-      priceUSD: config.price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
@@ -191,7 +179,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: config.price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -351,35 +340,20 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Helper function for basic life path meanings
-function getBasicLifePathMeaning(number) {
-  const meanings = {
-    1: { title: 'The Leader', brief: 'Independent, pioneering, ambitious. You are here to develop individuality and leadership.' },
-    2: { title: 'The Peacemaker', brief: 'Diplomatic, sensitive, cooperative. You are here to create harmony and partnerships.' },
-    3: { title: 'The Creative', brief: 'Expressive, artistic, optimistic. You are here to inspire through creativity and joy.' },
-    4: { title: 'The Builder', brief: 'Practical, disciplined, hardworking. You are here to create stable foundations.' },
-    5: { title: 'The Freedom Seeker', brief: 'Adventurous, versatile, dynamic. You are here to embrace change and freedom.' },
-    6: { title: 'The Nurturer', brief: 'Responsible, caring, harmonious. You are here to love, heal, and serve others.' },
-    7: { title: 'The Seeker', brief: 'Analytical, spiritual, introspective. You are here to seek truth and wisdom.' },
-    8: { title: 'The Achiever', brief: 'Ambitious, authoritative, successful. You are here to master material success.' },
-    9: { title: 'The Humanitarian', brief: 'Compassionate, generous, wise. You are here to serve humanity.' },
-    11: { title: 'The Intuitive Illuminator', brief: 'Highly intuitive, inspirational, visionary. Master number with spiritual gifts.' },
-    22: { title: 'The Master Builder', brief: 'Powerful manifestor, visionary leader. Master number that turns dreams into reality.' },
-    33: { title: 'The Master Teacher', brief: 'Selfless love, healing presence. Master number of pure compassion.' }
-  };
-
-  return meanings[number] || { title: 'Unknown', brief: 'Calculate your full reading for insights.' };
-}
-
 // JSON 404/405 for unmatched routes, then JSON error mapping (malformed JSON
 // -> 400, oversized body -> 413, everything else -> generic 500). Must stay last.
 app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Numerology API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Numerology API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };

@@ -60,7 +60,7 @@
       ]
     }
     </script>
-    <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme-init.js"></script><link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="/css/theme-toggle.css" />
 <style>.skip-link{position:absolute;left:-9999px;top:8px;z-index:10000;padding:8px 16px;background:#111111;color:#ffffff;font-weight:600;text-decoration:none;border-radius:4px}.skip-link:focus{left:8px;top:8px}</style>
   <script src="/js/consent.js" defer></script>
 </head>
@@ -78,7 +78,7 @@
                 <a href="#symbols">Symbols</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#journal">Journal</a>
-            </div>
+            <button type="button" class="mdo-theme" data-mdo-theme aria-label="Switch theme" title="Switch theme"><svg class="mdo-i mdo-i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="mdo-i mdo-i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div>
         </nav>
     </header>
 
@@ -136,17 +136,16 @@
 
                 <!-- Premium Upsell -->
                 <div class="premium-upsell" id="premium-upsell">
-                    <h4>Want Deeper Insights?</h4>
-                    <p>Unlock AI-powered personalized dream analysis</p>
+                    <h4>Unlock Your Full Reading</h4>
+                    <p>Your dream interpretation is the paid AI analysis, personalized to the dream you describe</p>
                     <ul class="premium-features">
                         <li>✨ Personalized AI interpretation of your dream</li>
                         <li>✨ Psychological & spiritual insights</li>
                         <li>✨ Hidden symbol connections revealed</li>
                         <li>✨ Actionable guidance for your life</li>
-                        <li>✨ Save to your dream journal</li>
                     </ul>
                     <button class="btn-premium">
-                        Get Premium Analysis - $4.99
+                        Get Premium Analysis - <span data-price="dream-analysis">$5</span>
                     </button>
                 </div>
 
@@ -187,8 +186,8 @@
                     </div>
                     <div class="step">
                         <div class="step-icon">🔍</div>
-                        <h3>We Analyze Symbols</h3>
-                        <p>Our AI identifies key symbols and themes in your dream</p>
+                        <h3>We Match Symbols</h3>
+                        <p>We match the words in your dream against our dream symbol library</p>
                     </div>
                     <div class="step">
                         <div class="step-icon">✨</div>
@@ -253,31 +252,17 @@
             <div class="container">
                 <h2>Pricing</h2>
                 <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">$0</div>
-                        <ul>
-                            <li>Basic dream interpretation</li>
-                            <li>Symbol database access</li>
-                            <li>Symbol search</li>
-                            <li>Unlimited dream entries</li>
-                        </ul>
-                        <button class="btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                            Get Started
-                        </button>
-                    </div>
                     <div class="pricing-card featured">
                         <div class="badge">Most Popular</div>
                         <h3>Premium Analysis</h3>
-                        <div class="price">$4.99</div>
+                        <div class="price" data-price="dream-analysis">$5</div>
                         <ul>
-                            <li>Everything in Basic</li>
+                            <li>Symbol database and search</li>
                             <li>AI-powered personalized analysis</li>
                             <li>Psychological insights</li>
                             <li>Spiritual meanings</li>
                             <li>Symbol connections</li>
                             <li>Actionable guidance</li>
-                            <li>Dream journal storage</li>
                         </ul>
                         <button class="btn-premium">Get Premium Analysis</button>
                     </div>
@@ -289,7 +274,7 @@
         <section id="journal" class="journal-section section-light">
             <div class="container">
                 <h2>Your Dream Journal</h2>
-                <p class="subtitle">Track patterns and recurring themes in your dreams</p>
+                <p class="subtitle">Track patterns and recurring themes in your dreams. Your journal is saved in this browser on this device only: each saved dream keeps its text and detected symbols, plus the interpretation if you bought one.</p>
                 
                 <div class="journal-entries" id="journal-entries">
                     <p class="empty-state">No dreams saved yet. Interpret your first dream to start your journal!</p>
@@ -308,13 +293,14 @@
                 <a href="https://guidance.mdo3d.com/">More Readings</a>
                 <a href="https://mdo3d.com/">MDO3D</a>
             </div>
-            <p class="footer-copy">&copy; 2026 Dream Interpreter. For reflection and entertainment.</p>
+            <p class="footer-copy">&copy; 2026 Dream Interpreter. For reflection and entertainment; not professional advice.</p>
         </div>
     </footer>
 
     <!-- Firebase is optional and lazy-loaded by js/config/firebase.js (off by default). -->
 
+    <script src="js/price-display.js"></script>
     <script src="js/entitlement.js"></script>
     <script src="js/app.js" type="module"></script>
-</body>
+<script src="/js/theme-toggle.js" defer></script></body>
 </html>

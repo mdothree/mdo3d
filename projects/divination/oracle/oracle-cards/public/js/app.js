@@ -51,11 +51,6 @@ class OracleCardsApp {
             this.showCardSection();
         });
 
-        // Pricing "Try Free" had no handler — start the free reading flow
-        document.getElementById('try-free-btn')?.addEventListener('click', () => {
-            this.showCardSection();
-        });
-
         // Question input character count
         const questionInput = document.getElementById('user-question');
         questionInput?.addEventListener('input', (e) => {
@@ -68,12 +63,9 @@ class OracleCardsApp {
         document.querySelectorAll('.spread-option').forEach(option => {
             option.addEventListener('click', (e) => {
                 const spreadType = e.currentTarget.dataset.spread;
-                
-                // Check if premium spread
-                if (spreadType !== 'single' && !this.isPremiumUser()) {
-                    this.showPremiumPrompt(spreadType);
-                    return;
-                }
+
+                // Every spread is a paid reading (JARVIS #94); the checkout prompt
+                // after the draw is priced for the chosen spread.
 
                 // Update selection
                 document.querySelectorAll('.spread-option').forEach(opt => {
@@ -81,6 +73,7 @@ class OracleCardsApp {
                 });
                 e.currentTarget.classList.add('active');
                 this.selectedSpread = spreadType;
+                this.updatePremiumPrice();
             });
         });
 
@@ -100,6 +93,20 @@ class OracleCardsApp {
 
         // Pass the clicked button so it gets the loading state
         document.querySelectorAll('.btn-premium').forEach(b => b.addEventListener('click', () => this.upgradeToPremium(b)));
+    }
+
+    // Checkout readingType for the selected spread (matches the API's pricing.json).
+    readingTypeForSpread() {
+        return this.selectedSpread === 'single' ? 'single-premium' : this.selectedSpread;
+    }
+
+    // Upsell price from js/config/pricing.json, the file the API charges from
+    // (JARVIS #63): shown price == charged price.
+    updatePremiumPrice() {
+        const el = document.getElementById('premium-price');
+        if (!el) return;
+        el.dataset.price = this.readingTypeForSpread();
+        if (window.MdoPricing) el.textContent = window.MdoPricing.price(el.dataset.price, el.textContent);
     }
 
     showCardSection() {
@@ -126,6 +133,7 @@ class OracleCardsApp {
         cardDisplay.style.display = 'block';
 
         // Draw random cards
+        this.entitlementRejected = false;
         this.drawnCards = drawCards(cardCount);
 
         // Initialize 3D card renderer
@@ -183,14 +191,14 @@ class OracleCardsApp {
         this.displayDrawnCards();
 
         // Generate and display reading
+        const paid = this.isPremiumUser();
         await this.generateReading();
 
-        // Show premium upsell for free tier
-        if (!this.isPremiumUser() && this.selectedSpread === 'single') {
-            document.getElementById('premium-upsell').style.display = 'block';
-        } else {
-            document.getElementById('premium-upsell').style.display = 'none';
-        }
+        // Paid from first use (JARVIS #94): without a verified purchase (or when
+        // the API refused it) the checkout prompt, priced for this spread, is the
+        // next step; after a delivered reading it stays hidden.
+        this.updatePremiumPrice();
+        document.getElementById('premium-upsell').style.display = paid && !this.entitlementRejected ? 'none' : 'block';
 
         // Scroll to reading
         readingDisplay.scrollIntoView({ behavior: 'smooth' });
@@ -238,46 +246,15 @@ class OracleCardsApp {
 
     async generateReading() {
         const readingContent = document.getElementById('reading-content');
-        readingContent.innerHTML = '<div class="loading">✨ Channeling your reading...</div>';
 
-        // For free tier, show basic interpretation
-        if (!this.isPremiumUser() && this.selectedSpread === 'single') {
-            setTimeout(() => {
-                this.displayFreeReading();
-            }, 1500);
+        // Paid from first use (JARVIS #94): no reading without a verified purchase.
+        if (!this.isPremiumUser()) {
+            readingContent.innerHTML = '';
             return;
         }
 
-        setTimeout(() => {
-            this.displayPremiumReading();
-        }, 2000);
-    }
-
-    displayFreeReading() {
-        const card = this.drawnCards[0];
-        const readingContent = document.getElementById('reading-content');
-
-        readingContent.innerHTML = `
-            <div class="reading-section">
-                <h3>Card Meaning</h3>
-                <p>${card.upright.brief}</p>
-            </div>
-
-            <div class="reading-section">
-                <h3>Message for You</h3>
-                <p>${card.upright.meaning}</p>
-            </div>
-
-            <div class="reading-section">
-                <h3>Guidance</h3>
-                <p>${card.upright.guidance}</p>
-            </div>
-
-            <div class="reading-section">
-                <h3>Keywords</h3>
-                <p>${card.keywords.map(k => `<span style="background: #F3E8FF; padding: 0.25rem 0.75rem; border-radius: 20px; margin: 0.25rem; display: inline-block;">${k}</span>`).join('')}</p>
-            </div>
-        `;
+        readingContent.innerHTML = '<div class="loading">✨ Channeling your reading...</div>';
+        await this.displayPremiumReading();
     }
 
     async displayPremiumReading() {
@@ -293,6 +270,15 @@ class OracleCardsApp {
             if (!reading || !reading.interpretation) throw new Error('Empty reading');
         } catch (e) {
             console.error('Premium reading error:', e);
+            if (e && (e.status === 402 || e.status === 403)) {
+                // The purchase on this device doesn't cover this spread (or was
+                // used up): offer checkout for this spread instead.
+                this.entitlementRejected = true;
+                readingContent.innerHTML = '';
+                this.updatePremiumPrice();
+                document.getElementById('premium-upsell').style.display = 'block';
+                return;
+            }
             readingContent.innerHTML = `
                 <div class="reading-section">
                     <h3>✨ Your Premium Reading</h3>
@@ -334,7 +320,7 @@ class OracleCardsApp {
             ${reading.affirmation ? `
             <div class="reading-section">
                 <h3>🌟 Affirmation</h3>
-                <p style="font-size: 1.25rem; font-style: italic; text-align: center; padding: 1.5rem; background: #F3E8FF; border-radius: 12px;">
+                <p style="font-size: 1.25rem; font-style: italic; text-align: center; padding: 1.5rem; background: #F3E8FF; color: #2E1065; border-radius: 12px;">
                     "${esc(reading.affirmation)}"
                 </p>
             </div>` : ''}
@@ -342,17 +328,9 @@ class OracleCardsApp {
     }
 
     isPremiumUser() {
-        // Unlocked this session, or an unconsumed verified purchase exists.
-        return this.premiumUnlocked === true || window.PremiumEntitlement?.has() === true;
-    }
-
-    showPremiumPrompt(spreadType) {
-        const prices = {
-            'three': '$4.99',
-            'celtic': '$9.99'
-        };
-        
-        alert(`This spread requires a premium reading (${prices[spreadType]}). Upgrade to unlock all spreads and detailed AI interpretations!`);
+        // An unconsumed verified purchase exists (and the API hasn't refused it).
+        if (this.entitlementRejected) return false;
+        return window.PremiumEntitlement?.has() === true;
     }
 
     async shareReading() {
@@ -407,11 +385,10 @@ class OracleCardsApp {
         const originalLabel = upgradeBtn ? upgradeBtn.innerHTML : null;
         try {
             // Already paid (verified by /success): unlock and deliver — never charge twice.
-            if (window.PremiumEntitlement?.has()) {
+            if (this.isPremiumUser()) {
                 // Do not consume() here: displayPremiumReading() calls the paid-session-verified
                 // API (/api/reading/generate) and consumes the credit only after a real reading
                 // renders. Keeping the credit here prevents a re-charge on a second click.
-                this.premiumUnlocked = true;
                 // No cards drawn yet (e.g. clicked a pricing button from the hero):
                 // open the setup so the paid reading is delivered after the draw,
                 // instead of rendering an empty reading in a hidden section.
@@ -432,7 +409,7 @@ class OracleCardsApp {
 
             // Determine reading type based on current spread
             // (was this.spreadType, which is never defined -> readingType undefined -> API 400)
-            const readingType = this.selectedSpread === 'single' ? 'single-premium' : this.selectedSpread;
+            const readingType = this.readingTypeForSpread();
 
             // Show loading state on the button that was clicked
             this.checkoutInFlight = true;

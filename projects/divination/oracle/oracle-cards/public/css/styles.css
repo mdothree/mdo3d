@@ -572,6 +572,12 @@ nav {
     color: #6B7280;
 }
 
+/* The amount itself (filled from js/config/pricing.json) keeps the big price style. */
+.pricing-card .price span[data-price] {
+    font-size: inherit;
+    color: inherit;
+}
+
 .pricing-card ul {
     list-style: none;
     margin: 2rem 0;
@@ -646,3 +652,53 @@ footer {
     .nav-links { gap: .35rem; font-size: .75rem; }
     .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
+
+/* Form controls inherit the site font (browsers default them to the UA font, e.g. Arial 13.33px). */
+button, input, select, textarea { font-family: inherit; }
+
+/* ── Light/dark theme (MDOThree template: theme-init.js sets html[data-theme] from the saved choice or the OS) ──
+   Oracle is light-native: the rules above ARE the light theme. Dark theme: tokens + every hard-coded white
+   surface / #6B7280 text. AA (dark): text #F3F4F6 on #0F0B1A 17:1; muted #B4B4C6 9.6:1 on #0F0B1A, 8.4:1 on the
+   #1A1428 cards; purple text #C4B5FD 10:1; badge white on #7C3AED 5.7:1. */
+html[data-theme="dark"] {
+    --dark: #F3F4F6;
+    --light: #0F0B1A;
+    --border: #3B3354;
+    --primary-text: #C4B5FD;
+}
+html[data-theme="dark"] .pricing-card .badge { background: #7C3AED; }
+html[data-theme="dark"] header { background: #171226; box-shadow: 0 1px 0 #3B3354; }
+html[data-theme="dark"] .hero { background: linear-gradient(180deg, #171226 0%, #221A3A 100%); }
+html[data-theme="dark"] .spreads-section { background: linear-gradient(180deg, #221A3A 0%, #0F0B1A 100%); }
+html[data-theme="dark"] .section-light { background: #140F22; }
+html[data-theme="dark"] .btn-secondary,
+html[data-theme="dark"] .oracle-card.revealed,
+html[data-theme="dark"] .drawn-card-img,
+html[data-theme="dark"] .reading-content,
+html[data-theme="dark"] .spread-detail,
+html[data-theme="dark"] .pricing-card { background: #1A1428; }
+html[data-theme="dark"] .spread-option.active { background: linear-gradient(180deg, #1A1428 0%, #2A1F4A 100%); }
+html[data-theme="dark"] .question-input textarea { background: #1A1428; color: var(--dark); }
+html[data-theme="dark"] .subtitle,
+html[data-theme="dark"] .daily-note,
+html[data-theme="dark"] .indicator .label,
+html[data-theme="dark"] .char-count,
+html[data-theme="dark"] .spread-desc,
+html[data-theme="dark"] .card-front .card-element,
+html[data-theme="dark"] .draw-instruction,
+html[data-theme="dark"] .reading-date,
+html[data-theme="dark"] .drawn-card-keywords,
+html[data-theme="dark"] .pricing-card .price span { color: #B4B4C6; }
+html[data-theme="dark"] .pricing-card .price span[data-price] { color: inherit; }
+html[data-theme="dark"] .reading-section h3,
+html[data-theme="dark"] .spread-detail .price,
+html[data-theme="dark"] .pricing-card .price { color: #C4B5FD; }
+html[data-theme="dark"] .nav-links a:hover { color: #C4B5FD; }
+html[data-theme="dark"] footer { background: #0A0712; color: #F3F4F6; border-top: 1px solid #3B3354; }
+.nav-links { align-items: center; }
+@media (min-width: 401px) { header nav.container { padding-top: .5rem; padding-bottom: .5rem; } } /* room around the 44px theme toggle */
+
+/* Paid from first use: the reading card is empty until the paid reading is delivered.
+   Never render an empty card; the upsell below says what unlocks it. */
+.reading-content:empty { display: none; }
+.premium-upsell .upsell-note { margin: 0 0 1rem; }

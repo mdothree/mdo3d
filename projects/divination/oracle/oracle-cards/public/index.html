@@ -60,7 +60,7 @@
       ]
     }
     </script>
-    <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme-init.js"></script><link rel="stylesheet" href="css/styles.css?v=cards1"><link rel="stylesheet" href="/css/theme-toggle.css" />
 <style>.skip-link{position:absolute;left:-9999px;top:8px;z-index:10000;padding:8px 16px;background:#111111;color:#ffffff;font-weight:600;text-decoration:none;border-radius:4px}.skip-link:focus{left:8px;top:8px}</style>
   <script src="/js/consent.js" defer></script>
 </head>
@@ -75,7 +75,7 @@
                 <a href="#how-it-works">How It Works</a>
                 <a href="#spreads">Card Spreads</a>
                 <a href="#pricing">Pricing</a>
-            </div>
+            <button type="button" class="mdo-theme" data-mdo-theme aria-label="Switch theme" title="Switch theme"><svg class="mdo-i mdo-i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="mdo-i mdo-i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div>
         </nav>
     </header>
 
@@ -92,13 +92,13 @@
                         Draw Your Cards
                         <span class="sparkle">✨</span>
                     </button>
-                    <p class="daily-note">Daily card draw • No signup required</p>
+                    <p class="daily-note">Draw your cards • Readings from <span data-price="single-premium">$5</span></p>
                 </div>
 
                 <div class="trust-indicators">
                     <div class="indicator">
-                        <div class="number">1</div>
-                        <div class="label">Daily Draw</div>
+                        <div class="number"><span data-price="single-premium">$5</span></div>
+                        <div class="label">Per Reading</div>
                     </div>
                     <div class="indicator">
                         <div class="number">44</div>
@@ -136,19 +136,19 @@
                                 <div class="spread-icon">🃏</div>
                                 <div class="spread-name">Single Card</div>
                                 <div class="spread-desc">Daily guidance</div>
-                                <div class="spread-badge">BASIC</div>
+                                <div class="spread-badge" data-price="single-premium">$5</div>
                             </div>
                             <div class="spread-option" data-spread="three">
                                 <div class="spread-icon">🃏🃏🃏</div>
                                 <div class="spread-name">Three Card</div>
                                 <div class="spread-desc">Past, Present, Future</div>
-                                <div class="spread-badge premium">$4.99</div>
+                                <div class="spread-badge premium" data-price="three">$10</div>
                             </div>
                             <div class="spread-option" data-spread="celtic">
                                 <div class="spread-icon">🃏✨🃏</div>
                                 <div class="spread-name">Celtic Cross</div>
                                 <div class="spread-desc">Deep insight (10 cards)</div>
-                                <div class="spread-badge premium">$9.99</div>
+                                <div class="spread-badge premium" data-price="celtic">$10</div>
                             </div>
                         </div>
                     </div>
@@ -179,9 +179,7 @@
                         <!-- Revealed cards will appear here -->
                     </div>
 
-                    <div class="reading-content" id="reading-content">
-                        <!-- AI-generated reading will appear here -->
-                    </div>
+                    <div class="reading-content" id="reading-content"></div>
 
                     <div class="reading-actions">
                         <button class="btn-secondary" id="share-reading-btn">
@@ -194,14 +192,15 @@
 
                     <!-- Premium Upsell -->
                     <div class="premium-upsell" id="premium-upsell">
-                        <h3>Want a Deeper Reading?</h3>
+                        <h3>Unlock Your Full Reading</h3>
+                        <p class="upsell-note">Your card interpretation is the paid AI reading, personalized to your question</p>
                         <div class="upsell-features">
                             <div class="feature">✓ Personalized AI interpretation</div>
                             <div class="feature">✓ Detailed guidance for your specific question</div>
                             <div class="feature">✓ Action steps and affirmations</div>
                         </div>
                         <button class="btn-premium">
-                            Unlock Full Reading - $2.99
+                            Unlock Full Reading - <span id="premium-price" data-price="single-premium">$5</span>
                         </button>
                     </div>
                 </div>
@@ -245,17 +244,17 @@
                     <div class="spread-detail">
                         <h3>Single Card Draw</h3>
                         <p>Perfect for daily guidance and quick insights</p>
-                        <div class="price">BASIC</div>
+                        <div class="price" data-price="single-premium">$5</div>
                     </div>
                     <div class="spread-detail featured">
                         <h3>Three Card Spread</h3>
                         <p>Past, Present, Future - see the timeline of your situation</p>
-                        <div class="price">$4.99</div>
+                        <div class="price" data-price="three">$10</div>
                     </div>
                     <div class="spread-detail">
                         <h3>Celtic Cross</h3>
                         <p>10-card deep dive into complex questions</p>
-                        <div class="price">$9.99</div>
+                        <div class="price" data-price="celtic">$10</div>
                     </div>
                 </div>
             </div>
@@ -266,21 +265,10 @@
             <div class="container">
                 <h2>Pricing</h2>
                 <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">$0</div>
-                        <ul>
-                            <li>1 card daily</li>
-                            <li>Basic interpretation</li>
-                            <li>44 oracle cards</li>
-                            <li>Card meanings</li>
-                        </ul>
-                        <button class="btn-secondary" id="try-free-btn">Draw a Card</button>
-                    </div>
                     <div class="pricing-card featured">
                         <div class="badge">Popular</div>
                         <h3>Premium Reading</h3>
-                        <div class="price">$2.99<span>/reading</span></div>
+                        <div class="price"><span data-price="single-premium">$5</span><span>/reading</span></div>
                         <ul>
                             <li>Personalized AI interpretation</li>
                             <li>Detailed guidance</li>
@@ -289,18 +277,6 @@
                         </ul>
                         <button class="btn-premium">Get Reading</button>
                     </div>
-                    <div class="pricing-card">
-                        <h3>Monthly</h3>
-                        <div class="price">$9.99<span>/month</span></div>
-                        <ul>
-                            <li>Unlimited readings</li>
-                            <li>All card spreads</li>
-                            <li>Reading history</li>
-                            <li>Priority support</li>
-                            <li>Early access to new cards</li>
-                        </ul>
-                        <button class="btn-secondary">Subscribe</button>
-                    </div>
                 </div>
             </div>
         </section>
@@ -308,7 +284,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Oracle Cards. For entertainment and reflection purposes.</p>
+            <p>&copy; 2026 Oracle Cards. For reflection and entertainment; not professional advice.</p>
             <div class="footer-links">
                 <a href="mailto:hello@mdo3d.com">Contact</a>
             </div>
@@ -326,7 +302,8 @@
     }
     </script>
 
+    <script src="js/price-display.js"></script>
     <script src="js/entitlement.js"></script>
     <script src="js/app.js" type="module"></script>
-</body>
+<script src="/js/theme-toggle.js" defer></script></body>
 </html>

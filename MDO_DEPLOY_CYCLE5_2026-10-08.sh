@@ -230,7 +230,7 @@ g_c8qw() {  # cycle-8 QW3 C7-010 entertainment disclaimer + QW4 C7-002/003/016/0
   for d in divination/tarot/tarot-cards divination/numerology/numerology-app divination/dreams/dream-interpreter divination/astrology/astrology divination/iching/iching divination/runes/runes divination/fengshui/feng-shui-analyzer divination/pastlives/past-life-insights jarvisbee/babynames/baby-name-oracle; do deploy projects/$d; done
   for a in astrology dreams fengshui iching numerology oracle pastlives runes tarot; do deploy projects/divination/$a/api; done
   for h in tarot numerology astrology iching runes fengshui pastlife names; do
-    check "$h disclaimer (C7-010)" "curl -s https://$h.mdo3d.com/ | grep -c 'For entertainment and reflection purposes'" "1"; done
+    check "$h disclaimer (C7-010)" "curl -s https://$h.mdo3d.com/ | grep -c -E 'For entertainment and reflection purposes|For reflection and entertainment; not professional advice'" "1"; done  # C7-010 wording unified 2026-10-13 (guidance ec11078)
   check "pastlife birth date/time labelled (A11Y-001)" "curl -s https://pastlife.mdo3d.com/ | grep -o 'for=\"pl-birth\(Date\|Time\)\"' | wc -l | tr -d ' '" "2"
   check "tarot health ping /api/health (C7-016)" "curl -s https://tarot.mdo3d.com/js/config/api.js | grep -c \"request('/api/health')\"" "1"
   for u in tarot-cards-api.vercel.app dream-interpreter-api-delta.vercel.app oracle-cards-api.vercel.app pastlives-api.vercel.app; do
