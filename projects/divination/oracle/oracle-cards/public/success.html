@@ -45,6 +45,10 @@
              border-top-color:#a78bfa; border-radius:50%; animation:spin 0.8s linear infinite; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .hidden { display:none; }
+  .got { font-size:0.95rem; }
+  .next { margin:1.25rem 0 0; font-size:0.95rem; }
+  .next a { color:#c4b5fd; font-weight:600; }
+  html[data-theme="light"] .next a { color:#5b21b6; }
 </style>
 <style>.skip-link{position:absolute;left:-9999px;top:8px;z-index:10000;padding:8px 16px;background:#111111;color:#ffffff;font-weight:600;text-decoration:none;border-radius:4px}.skip-link:focus{left:8px;top:8px}</style>
   <script src="/js/consent.js" defer></script>
@@ -63,7 +67,9 @@
     <div class="icon">🔮</div>
     <h1>Payment confirmed</h1>
     <p>Your premium reading is unlocked. Return to the app and your credit will be applied automatically.</p>
+    <p class="got"><strong>What you got:</strong> one AI oracle reading: a personalized interpretation of your draw, detailed guidance and action steps (saved in this browser on this device).</p>
     <a class="btn" href="/">Continue to your reading →</a>
+    <p class="next">Next step: <a href="https://tarot.mdo3d.com/">try Tarot &rarr;</a></p>
   </div>
   <div id="failed" class="hidden">
     <div class="icon">⚠️</div>
