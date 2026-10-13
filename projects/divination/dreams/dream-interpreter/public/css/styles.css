@@ -910,3 +910,31 @@ footer {
 
 /* Form controls inherit the site font (browsers default them to the UA font, e.g. Arial 13.33px). */
 button, input, select, textarea { font-family: inherit; }
+
+/* ── Light/dark theme (MDOThree template: theme-init.js sets html[data-theme] from the saved choice or the OS) ──
+   The dream design is dark-native: the rules above ARE the dark theme. The light theme below swaps the tokens and
+   the hard-coded dark surfaces. AA (light): text #1E1533 on #FAF7FF 16:1; muted #4B5563 7.2:1; purple text #5B21B6
+   8.9:1; error #B91C1C 6.2:1. */
+html[data-theme="light"] {
+    --bg-dark: #FAF7FF;
+    --bg-darker: #F3EEFC;
+    --text-light: #1E1533;
+    --text-muted: #4B5563;
+    --primary-text: #5B21B6;
+    --border: rgba(124, 58, 237, 0.28);
+    --card-bg: rgba(255, 255, 255, 0.94);
+}
+html[data-theme="light"] header { background: rgba(250, 247, 255, 0.94); }
+html[data-theme="light"] .dream-bg { opacity: 0.5; }
+html[data-theme="light"] .nav-links a:hover { color: #BE185D; }
+html[data-theme="light"] .symbol-search input { background: #FFFFFF; }
+html[data-theme="light"] .section-light { background: rgba(124, 58, 237, 0.04); }
+html[data-theme="light"] .symbol-modal { background: rgba(30, 21, 51, 0.55); }
+html[data-theme="light"] .char-count.at-limit,
+html[data-theme="light"] .dream-input-section .field-error { color: #B91C1C; }
+html[data-theme="light"] .dream-input-section textarea[aria-invalid="true"] { border-color: #B91C1C; }
+.nav-links { align-items: center; }
+/* Category tabs used the UA control size (13.33px); give them the site type scale and a visible pill edge. */
+.tab { font-size: 0.95rem; font-weight: 500; line-height: 1.2; min-height: 44px; border-color: rgba(167, 139, 250, 0.45); }
+html[data-theme="light"] .tab { border-color: rgba(91, 33, 182, 0.4); }
+@media (min-width: 401px) { header nav.container { padding-top: .5rem; padding-bottom: .5rem; } } /* room around the 44px theme toggle */

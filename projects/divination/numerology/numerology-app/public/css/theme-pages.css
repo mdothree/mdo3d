@@ -1,0 +1,23 @@
+/* theme-pages.css — divination status pages (404 / success / cancel): the site link + theme toggle bar, and the
+   light theme for their inline (dark-native) styles. Loaded after the page's own <style>. AA contrast:
+   light: text #1E1533 on #FAF7FF = 16:1, muted #4B5563 on #FAF7FF = 7.2:1, link ring #6B46C1 (non-text) = 6.0:1
+   dark: unchanged page styles; bar text #F1F5F9 on #111827 = 16:1 */
+.mdo-mini-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1200px; margin: 0 auto; padding: 0; }
+.mdo-mini-nav > a { display: inline-flex; align-items: center; min-height: 44px; color: var(--mdo-c-fg); font-weight: 700; font-size: 1.05rem; text-decoration: none; }
+.mdo-mini-nav > a:focus-visible { outline: 3px solid var(--mdo-c-focus); outline-offset: 2px; border-radius: 6px; }
+header.mdo-mini:not(.mdo-mini-static) {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 10px 16px;
+  background: var(--mdo-c-bg); border-bottom: 1px solid var(--mdo-c-border); backdrop-filter: none;
+}
+body:has(> header.mdo-mini:not(.mdo-mini-static)) { padding-top: 72px; }
+
+html[data-theme="light"] body { background: #FAF7FF; color: #1E1533; }
+html[data-theme="light"] header.mdo-mini-static a { color: #1E1533; }
+html[data-theme="light"] p { color: #4B5563; }
+html[data-theme="light"] footer { color: #4B5563; }
+html[data-theme="light"] .btn.alt { color: #1E1533; box-shadow: inset 0 0 0 2px #6B46C1; }
+html[data-theme="light"] .btn:focus-visible { outline-color: #1E1533; }
+html[data-theme="light"] main.card { background: #FFFFFF; border-color: rgba(107, 70, 193, 0.28); box-shadow: 0 10px 30px rgba(30, 21, 51, 0.08); }
+html[data-theme="light"] .spinner { border-color: rgba(107, 70, 193, 0.2); border-top-color: #6B46C1; }
+/* cancel.html keeps its gradient card (white text) in both themes; its page background follows styles.css */
+html[data-theme="light"] .cancel-container p { color: rgba(255, 255, 255, 0.95); }

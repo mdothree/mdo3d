@@ -62,8 +62,8 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <script src="/js/theme-init.js"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="/css/theme-toggle.css" />
 <style>.skip-link{position:absolute;left:-9999px;top:8px;z-index:10000;padding:8px 16px;background:#111111;color:#ffffff;font-weight:600;text-decoration:none;border-radius:4px}.skip-link:focus{left:8px;top:8px}</style>
   <script src="/js/consent.js" defer></script>
 </head>
@@ -71,6 +71,7 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="container">
     <header>
+      <nav class="site-nav" aria-label="Display settings"><button type="button" class="mdo-theme" data-mdo-theme aria-label="Switch theme" title="Switch theme"><svg class="mdo-i mdo-i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="mdo-i mdo-i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></nav>
       <h1>Numerology</h1>
       <p class="subtitle">Discover the hidden meaning of your numbers</p>
     </header>
@@ -203,5 +204,5 @@
   <script src="js/price-display.js"></script>
   <script src="js/entitlement.js"></script>
   <script type="module" src="js/app.js"></script>
-</body>
+<script src="/js/theme-toggle.js" defer></script></body>
 </html>
