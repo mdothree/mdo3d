@@ -1,0 +1,15 @@
+{
+  "name": "Guidance · MDO3D",
+  "short_name": "Guidance",
+  "description": "AI reading tools from MDO3D: oracle, dreams, tarot, numerology, astrology, feng shui, past life, runes and I Ching.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#03020a",
+  "theme_color": "#03020a",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
