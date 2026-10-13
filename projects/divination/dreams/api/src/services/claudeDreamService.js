@@ -90,7 +90,7 @@ export class ClaudeDreamService {
 
     let symbolList = '';
     if (detectedSymbols.length > 0) {
-      symbolList = `\n\n**Detected Symbols:**\n${detectedSymbols.map(s => `- ${s.name} (${s.category})`).join('\n')}`;
+      symbolList = `\n\n**Detected Symbols:**\n${detectedSymbols.map(s => (typeof s === 'string' ? `- ${s}` : `- ${s.name || s.symbol} (${s.category})`)).join('\n')}`;
     }
 
     const prompt = `${systemContext}
