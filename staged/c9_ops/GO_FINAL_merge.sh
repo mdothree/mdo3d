@@ -17,7 +17,7 @@ set -uo pipefail
 # owner/repo:prod-branch:go-ref
 REPOS="mdothree/rigor-resume:main:go-final-r4 mdothree/rigor-cover:main:go-final-r4 mdothree/rigor-interview:main:go-final-r4
 mdothree/rigor-linkedin:main:go-final-r4 mdothree/rigor-networking:main:go-final-r4 mdothree/rigor-portfolio:main:go-final-r4
-mdothree/rigor-salary:main:go-final-r4 mdothree/rigor-landing:main:go-final-r2 mdothree/runwae:master:go-final-r8
+mdothree/rigor-salary:main:go-final-r4 mdothree/rigor-landing:main:go-final-r2 mdothree/runwae:master:go-final-r9
 mdothree/ronnascanner-companies:main:main mdothree/ronnascanner-contacts:main:main mdothree/ronnascanner-emails:main:main
 mdothree/ronnascanner-leads:main:main mdothree/ronnascanner-prospects:main:main mdothree/ronnascanner-landing:main:go-final-r2
 mdothree/mdothree-text:main:go-final-r4 mdothree/mdothree-pdf:main:go-final-r4 mdothree/mdothree-qr:main:go-final-r4
