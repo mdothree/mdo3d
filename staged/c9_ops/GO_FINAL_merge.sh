@@ -26,7 +26,7 @@ mdothree/mdothree-timestamp:main:go-final-r5 mdothree/mdothree-image:main:go-fin
 mdothree/iching:master:go-final mdothree/runes:master:go-final mdothree/feng-shui-analyzer:main:go-final
 mdothree/past-life-insights:main:go-final mdothree/baby-name-oracle:main:go-final mdothree/mdo3d-landing:main:go-final-r2
 mdothree/promptsforbusiness:main:go-final-r2 mdothree/layoffleads:main:go-final mdothree/mdo3d-compare:master:go-final
-Latarence/dailyaitoll:main:go-final"
+Latarence/dailyaitoll:main:go-final-r2"
 LOG=~/mdo3d/GO_FINAL_merge.log
 CRED=(-c credential.helper= -c 'credential.helper=!gh auth git-credential')
 trap 'gh auth switch -u buttstech >/dev/null 2>&1' EXIT
