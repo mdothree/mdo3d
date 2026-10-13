@@ -15,9 +15,9 @@ git merge-base --is-ancestor ec11078 HEAD && echo "has ec11078"
 cd projects/mdo3d/guidance
 ```
 
-## 1. Record the current production deployment (rollback target)
+## 1. Record the current production deployment (information only)
 ```bash
-vercel ls guidance-mdo3d --prod --scope mdothrees-projects | head -5   # note the current Ready prod URL as PREV
+vercel ls guidance-mdo3d --prod --scope mdothrees-projects | head -5   # information only: note the current Ready prod URL in the report. Not a rollback target.
 ```
 
 ## 2. Link and deploy (the one deploy)
@@ -46,8 +46,9 @@ Browser pass (xps harness, `~/latarence/coordination/evidence/2026-10-13/guidanc
 1280 + 390, dark + light: axe 0, console 0, CSP 0, `scrollWidth == 390` at 390, 0 dead in-page anchors, toggle persists.
 Card links go to absolute `https://<x>.mdo3d.com` hosts (R-mdo3d-conv-1).
 
-## 4. Rollback (only on a failed verify, then report to Bridge)
-```bash
-vercel rollback <PREV-deployment-url> --scope mdothrees-projects
-```
+## 4. On a failed verify
+**STOP and report to the Bridge, no rollback.** Do not run `vercel rollback`, promote an older deployment, revert, or check out anything old:
+the Principal's standing rule (2026-10-13) is "do not revert anything or check out anything old without my permission".
+Report the failing check, the new deployment URL and the step-1 URL (information only), then wait.
+
 Pre-deploy local QA (copy at ec11078): `~/latarence/coordination/evidence/2026-10-13/guidance/qa.json`.
