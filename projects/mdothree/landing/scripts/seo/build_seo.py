@@ -320,7 +320,6 @@ def jsonld(site, p, url):
         graph.append({"@type": "WebApplication", "name": p['title'].split(' — ')[0], "url": url,
                       "description": p['desc'], "applicationCategory": site['category'],
                       "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript",
-                      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
                       "publisher": {"@type": "Organization", "name": BRAND, "url": "https://mdothree.com/"}})
     elif p['file'] != 'index.html':
         graph.append({"@type": "WebPage", "name": p['title'], "url": url, "description": p['desc'],
