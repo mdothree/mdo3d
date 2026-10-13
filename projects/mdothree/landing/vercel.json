@@ -3,6 +3,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/thanks",
+      "destination": "/success",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
