@@ -28,19 +28,6 @@ class ResumeAnalyzerApp {
         
         // Initialize event listeners
         this.initializeEventListeners();
-        
-        // Check API health
-        this.checkApiHealth();
-    }
-
-    async checkApiHealth() {
-        try {
-            const health = await this.api.checkHealth();
-            console.log('API Status:', health.status);
-        } catch (error) {
-            console.error('API health check failed:', error);
-            console.warn('Backend API may be offline. Some features may not work.');
-        }
     }
 
     initializeEventListeners() {

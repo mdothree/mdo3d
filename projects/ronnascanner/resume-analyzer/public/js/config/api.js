@@ -15,8 +15,7 @@ export const API_CONFIG = {
     analyze: '/api/analyze',
     analyzePremium: '/api/analyze/premium',
     emailReport: '/api/email/report',
-    createCheckout: '/api/payment/create-checkout',
-    health: '/api/health'
+    createCheckout: '/api/payment/create-checkout'
   },
 
   timeout: 30000 // 30 seconds
@@ -89,11 +88,6 @@ export class ApiClient {
       throw new Error('Failed to create checkout');
     }
 
-    return await response.json();
-  }
-
-  async checkHealth() {
-    const response = await fetch(`${this.baseURL}${API_CONFIG.endpoints.health}`);
     return await response.json();
   }
 }
