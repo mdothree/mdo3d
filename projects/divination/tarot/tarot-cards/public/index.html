@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Tarot Reading — Tarot Readings</title>
-    <meta name="description" content="Draw cards from the full 78-card tarot deck in single-card readings, read each card's meaning, and get an optional AI reading.">
+    <meta name="description" content="Draw from the full 78-card tarot deck in single-card, three-card or Celtic Cross spreads and get a personalized AI reading of your cards.">
     <meta name="keywords" content="tarot reading, tarot cards, tarot card meanings, celtic cross, three card spread, online tarot">
     <link rel="canonical" href="https://tarot.mdo3d.com/">
     <meta name="theme-color" content="#6b46c1">
@@ -15,7 +15,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Tarot Readings · MDO3D Guidance">
     <meta property="og:title" content="Online Tarot Reading — Tarot Readings">
-    <meta property="og:description" content="Draw cards from the full 78-card tarot deck in single-card readings, read each card's meaning, and get an optional AI reading.">
+    <meta property="og:description" content="Draw from the full 78-card tarot deck in single-card, three-card or Celtic Cross spreads and get a personalized AI reading of your cards.">
     <meta property="og:url" content="https://tarot.mdo3d.com/">
     <meta property="og:image" content="https://tarot.mdo3d.com/og-image.png">
     <meta property="og:image:type" content="image/png">
@@ -25,7 +25,7 @@
     <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Online Tarot Reading — Tarot Readings">
-    <meta name="twitter:description" content="Draw cards from the full 78-card tarot deck in single-card readings, read each card's meaning, and get an optional AI reading.">
+    <meta name="twitter:description" content="Draw from the full 78-card tarot deck in single-card, three-card or Celtic Cross spreads and get a personalized AI reading of your cards.">
     <meta name="twitter:image" content="https://tarot.mdo3d.com/og-image.png">
     <meta name="twitter:image:alt" content="Tarot Readings — Draw from the full 78-card tarot deck. Part of MDO3D Guidance.">
     <script type="application/ld+json">
@@ -37,7 +37,7 @@
           "@id": "https://tarot.mdo3d.com/#website",
           "url": "https://tarot.mdo3d.com/",
           "name": "Tarot Readings",
-          "description": "Draw cards from the full 78-card tarot deck in single-card readings, read each card's meaning, and get an optional AI reading.",
+          "description": "Draw from the full 78-card tarot deck in single-card, three-card or Celtic Cross spreads and get a personalized AI reading of your cards.",
           "inLanguage": "en",
           "publisher": {
             "@type": "Organization",
@@ -49,7 +49,7 @@
           "@id": "https://tarot.mdo3d.com/#app",
           "name": "Tarot Readings",
           "url": "https://tarot.mdo3d.com/",
-          "description": "Draw cards from the full 78-card tarot deck in single-card readings, read each card's meaning, and get an optional AI reading.",
+          "description": "Draw from the full 78-card tarot deck in single-card, three-card or Celtic Cross spreads and get a personalized AI reading of your cards.",
           "applicationCategory": "LifestyleApplication",
           "operatingSystem": "Any (web browser)",
           "image": "https://tarot.mdo3d.com/og-image.png",
@@ -107,22 +107,21 @@
                             <div class="spread-badge">BASIC</div>
                             <h4>Single Card</h4>
                             <p>Quick daily guidance</p>
-                            <span class="price">Basic</span>
+                            <span class="price" data-price="single">$5</span>
                         </div>
-                        <div class="spread-option" data-spread="three" hidden>
+                        <div class="spread-option" data-spread="three">
                             <div class="spread-badge premium">PREMIUM</div>
                             <h4>Three Card</h4>
                             <p>Past • Present • Future</p>
-                            <span class="price">$4.99</span>
+                            <span class="price" data-price="three">$10</span>
                         </div>
-                        <div class="spread-option" data-spread="celtic" hidden>
+                        <div class="spread-option" data-spread="celtic">
                             <div class="spread-badge premium">PREMIUM</div>
                             <h4>Celtic Cross</h4>
                             <p>Deep 10-card insight</p>
-                            <span class="price">$9.99</span>
+                            <span class="price" data-price="celtic">$10</span>
                         </div>
                     </div>
-                    <p class="spread-soon">Three-card and Celtic Cross readings are coming soon.</p>
                 </div>
 
                 <!-- Draw Button -->
@@ -166,7 +165,7 @@
                             <li>✨ Custom affirmation</li>
                         </ul>
                         <button class="btn-premium">
-                            Get Premium Reading - <span id="premium-price">$2.99</span>
+                            Get Premium Reading - <span id="premium-price" data-price="single">$5</span>
                         </button>
                     </div>
 
@@ -220,17 +219,17 @@
                     <div class="spread-detail">
                         <h3>Single Card</h3>
                         <p>Perfect for daily guidance or quick answers. One card drawn from the 78-card deck provides focused insight.</p>
-                        <span class="spread-price">Basic</span>
+                        <span class="spread-price" data-price="single">$5</span>
                     </div>
-                    <div class="spread-detail" hidden>
+                    <div class="spread-detail">
                         <h3>Three Card Spread</h3>
                         <p>Past influences, present situation, and future potential revealed through three cards.</p>
-                        <span class="spread-price">$4.99</span>
+                        <span class="spread-price" data-price="three">$10</span>
                     </div>
-                    <div class="spread-detail" hidden>
+                    <div class="spread-detail">
                         <h3>Celtic Cross</h3>
                         <p>The most comprehensive 10-card spread covering all aspects of your situation.</p>
-                        <span class="spread-price">$9.99</span>
+                        <span class="spread-price" data-price="celtic">$10</span>
                     </div>
                 </div>
             </div>
@@ -241,24 +240,12 @@
             <div class="container">
                 <h2>Pricing</h2>
                 <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">$0</div>
-                        <ul>
-                            <li>Single card draws</li>
-                            <li>Basic card meanings</li>
-                            <li>Unlimited single-card readings</li>
-                            <li>Share your readings</li>
-                        </ul>
-                        <button class="btn-secondary" onclick="document.getElementById('draw-btn').scrollIntoView({behavior: 'smooth'})">
-                            Draw a Card
-                        </button>
-                    </div>
                     <div class="pricing-card featured">
                         <h3>Pay Per Reading</h3>
-                        <div class="price">$2.99</div>
+                        <div class="price"><span data-price="single">$5</span> - <span data-price="celtic">$10</span></div>
                         <ul>
                             <li>AI-powered interpretations</li>
+                            <li>Single card, three-card and Celtic Cross spreads</li>
                             <li>Deep personalized insights</li>
                             <li>Actionable guidance</li>
                             <li>Custom affirmations</li>
@@ -281,6 +268,7 @@
 
     <!-- Firebase is optional and lazy-loaded by js/config/firebase.js (off by default). -->
 
+    <script src="js/price-display.js"></script>
     <script src="js/entitlement.js"></script>
     <script src="js/app.js" type="module"></script>
 </body>

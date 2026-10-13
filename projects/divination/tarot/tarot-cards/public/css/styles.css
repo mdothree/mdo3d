@@ -724,7 +724,3 @@ footer {
     .nav-links { gap: .5rem; font-size: .8rem; }
     .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
-
-/* Paid spreads hidden until checkout is verified (decided 2026-10-12; wired in with wave63). */
-.spread-option[hidden], .spread-detail[hidden] { display: none !important; }
-.spread-soon { margin-top: .75rem; font-size: .9rem; opacity: .85; }

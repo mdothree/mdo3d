@@ -1,0 +1,48 @@
+{
+  "_comment": "Single source of truth for MDO3D divination prices (JARVIS #63: $5 single / $10 deep, shown price == charged price). Edit here, then run `node projects/divination/shared/sync-pricing.mjs` to copy each product slice into its api/src/pricing.json and frontend pricing.json. `--check` fails on drift. JARVIS #63b (Principal, 2026-10-12): no monthly tiers (none was a Stripe subscription); astrology/numerology compatibility $10, astrology transit $5, fengshui office $5.",
+  "currency": "usd",
+  "products": {
+    "astrology": {
+      "birth-chart":   { "amount_cents": 500,  "label": "Premium Birth Chart Reading", "description": "Detailed AI-powered natal chart interpretation" },
+      "compatibility": { "amount_cents": 1000, "label": "Compatibility Reading", "description": "In-depth synastry analysis for two charts" },
+      "transit":       { "amount_cents": 500,  "label": "Transit Reading", "description": "Current planetary influences on your chart" }
+    },
+    "dreams": {
+      "dream-analysis": { "amount_cents": 500, "label": "Premium Dream Analysis", "description": "AI-powered deep dream interpretation with psychological and spiritual insights" }
+    },
+    "fengshui": {
+      "single-room": { "amount_cents": 500,  "label": "Single Room Analysis", "description": "Detailed Feng Shui analysis for one room" },
+      "full-home":   { "amount_cents": 1000, "label": "Full Home Analysis", "description": "Comprehensive analysis of your entire home" },
+      "office":      { "amount_cents": 500,  "label": "Office/Workspace Analysis", "description": "Optimize your workspace for success" }
+    },
+    "iching": {
+      "single-premium": { "amount_cents": 500,  "label": "Premium Hexagram Reading", "description": "Detailed AI-powered I Ching interpretation" },
+      "changing-lines": { "amount_cents": 1000, "label": "Changing Lines Reading", "description": "Full reading with changing lines analysis" }
+    },
+    "numerology": {
+      "core-numbers":  { "amount_cents": 500,  "label": "Core Numbers Reading", "description": "Life Path, Expression, Soul Urge analysis" },
+      "full-chart":    { "amount_cents": 1000, "label": "Full Numerology Chart", "description": "Complete chart with all numbers and cycles" },
+      "compatibility": { "amount_cents": 1000, "label": "Compatibility Reading", "description": "Numerology compatibility analysis" }
+    },
+    "oracle": {
+      "single-premium": { "amount_cents": 500,  "label": "Premium Single Card Reading", "description": "Detailed AI-powered oracle card reading" },
+      "three":          { "amount_cents": 1000, "label": "Three Card Spread Reading", "description": "Past, Present, Future spread with AI insights" },
+      "celtic":         { "amount_cents": 1000, "label": "Celtic Cross Reading", "description": "Complete 10-card Celtic Cross spread with deep analysis" }
+    },
+    "pastlives": {
+      "single-life":    { "amount_cents": 500,  "label": "Single Past Life Reading", "description": "Detailed exploration of one significant past life" },
+      "multiple-lives": { "amount_cents": 1000, "label": "Multiple Lives Reading", "description": "Glimpses into 3 past lives with soul theme" },
+      "deep-dive":      { "amount_cents": 1000, "label": "Deep Soul Journey", "description": "Comprehensive past life exploration with healing guidance" }
+    },
+    "runes": {
+      "single-premium": { "amount_cents": 500,  "label": "Premium Single Rune Reading", "description": "Detailed AI-powered rune interpretation" },
+      "three":          { "amount_cents": 1000, "label": "Three Rune Spread", "description": "Past, Present, Future spread with AI insights" },
+      "five":           { "amount_cents": 1000, "label": "Five Rune Spread", "description": "Comprehensive spread with higher guidance" }
+    },
+    "tarot": {
+      "single": { "amount_cents": 500,  "label": "Premium Single Card Reading", "description": "Detailed AI-powered tarot card reading" },
+      "three":  { "amount_cents": 1000, "label": "Three Card Spread Reading", "description": "Past, Present, Future spread with deep insights" },
+      "celtic": { "amount_cents": 1000, "label": "Celtic Cross Reading", "description": "Complete 10-card Celtic Cross spread with comprehensive analysis" }
+    }
+  }
+}

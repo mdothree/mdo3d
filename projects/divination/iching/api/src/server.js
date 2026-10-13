@@ -5,6 +5,7 @@ import { ClaudeIChingService } from './services/claudeIChingService.js';
 import { StripeService } from './services/stripeService.js';
 import { checkoutLimiter, tooLong, checkPaidSession, rateLimit } from './security.js';
 import { notFoundOrMethodNotAllowed, jsonErrorHandler } from './httpErrors.js';
+import { priceFor } from './pricing.js';
 
 dotenv.config();
 
@@ -38,28 +39,14 @@ app.use((req, res, next) => {
  */
 app.post('/api/reading/generate', async (req, res) => {
   try {
-    const { hexagram, question, changingLines, premium } = req.body;
+    const { hexagram, question, changingLines } = req.body;
 
     if (!hexagram) {
       return res.status(400).json({ error: 'Hexagram data required' });
     }
 
-    // For free tier, return basic reading
-    if (!premium) {
-      return res.json({
-        success: true,
-        reading: {
-          type: 'basic',
-          hexagram: {
-            id: hexagram.id,
-            name: hexagram.name,
-            chinese: hexagram.chinese,
-            meaning: hexagram.upper?.meaning || hexagram.meaning,
-            guidance: hexagram.upper?.guidance || hexagram.guidance
-          }
-        }
-      });
-    }
+    // Paid from first use (JARVIS #94): there is no unpaid reading tier, so every
+    // request goes through the paid-session check below (no session -> 402).
 
     const lengthError = tooLong({ Question: [question, 1000], Hexagram: [hexagram, 5000], 'Changing lines': [changingLines, 200] });
     if (lengthError) {
@@ -71,7 +58,7 @@ app.post('/api/reading/generate', async (req, res) => {
     // Any I Ching product covers this reading: the app only sells single-premium
     // and that reading already includes the changing lines.
     const denied = await checkPaidSession(stripeService, req.body.sessionId, {
-      allowedTypes: ['single-premium', 'changing-lines', 'monthly']
+      allowedTypes: ['single-premium', 'changing-lines']
     });
     if (denied) {
       return res.status(denied.status).json({ success: false, error: denied.error });
@@ -119,14 +106,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
       });
     }
 
-    // Pricing configuration
-    const pricingConfig = {
-      'single-premium': { price: 2.99, name: 'Premium Hexagram Reading', desc: 'Detailed AI-powered I Ching interpretation' },
-      'changing-lines': { price: 4.99, name: 'Changing Lines Reading', desc: 'Full reading with changing lines analysis' },
-      'monthly': { price: 9.99, name: 'Monthly Subscription', desc: 'Unlimited premium readings for 30 days' }
-    };
-
-    const config = pricingConfig[readingType];
+    // The amount comes only from ./pricing.json, a synced slice of
+    // shared/pricing.json (JARVIS #63). Unknown type -> 400 below, never a default.
+    const config = priceFor(readingType);
     if (!config) {
       return res.status(400).json({
         success: false,
@@ -135,9 +117,9 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
     }
 
     const result = await stripeService.createCheckoutSession({
-      productName: config.name,
-      description: config.desc,
-      priceUSD: config.price,
+      productName: config.label,
+      description: config.description,
+      amountCents: config.amount_cents,
       email: email,
       userId: userId,
       metadata: {
@@ -153,7 +135,8 @@ app.post('/api/payment/create-checkout', checkoutLimiter, async (req, res) => {
         success: true,
         sessionId: result.sessionId,
         checkoutUrl: result.url,
-        price: config.price
+        price: config.amount_cents / 100,
+        amount_cents: config.amount_cents
       });
     } else {
       res.status(500).json({
@@ -319,9 +302,14 @@ app.use(notFoundOrMethodNotAllowed(app));
 app.use(jsonErrorHandler);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`I Ching API running on port ${PORT}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
-});
+// Tests import the app without binding a port (DIVINATION_API_NO_LISTEN=1).
+if (process.env.DIVINATION_API_NO_LISTEN !== '1') {
+  app.listen(PORT, () => {
+    console.log(`I Ching API running on port ${PORT}`);
+    console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  });
+}
 
 export default app;
+// Exposed for tests (stub the Stripe client; no network).
+export { stripeService };
