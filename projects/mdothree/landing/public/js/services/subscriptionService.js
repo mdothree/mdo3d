@@ -1,7 +1,7 @@
 // services/subscriptionService.js
 // Checks whether the current Firebase user has an active Pro subscription.
 // The source of truth is a Firestore doc written by the Stripe webhook Cloud Function.
-// Falls back gracefully (free tier) if Firebase or Firestore is unavailable.
+// Falls back gracefully (no Pro) if Firebase or Firestore is unavailable.
 
 import { getFirebaseAuth, getDB, onAuthChange } from '../config/config.js';
 
@@ -14,17 +14,17 @@ let _listeners    = [];
 // ---- Internal fetch ----
 async function fetchSubscriptionStatus(user) {
   const uid = user?.uid;
-  if (!uid) return { isPro: false, plan: 'free' };
+  if (!uid) return { isPro: false, plan: 'none' };
   // Guest (anonymous) sessions are never Pro: their uid is per browser and per
   // subdomain, and the API refuses to sell Pro to one (createSetupIntent).
-  if (user.isAnonymous) return { isPro: false, plan: 'free', reason: 'guest' };
+  if (user.isAnonymous) return { isPro: false, plan: 'none', reason: 'guest' };
   try {
     // Dynamic import to avoid hard crash if firebase isn't loaded yet
     const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const db   = getDB();
     const ref  = doc(db, SUBSCRIPTIONS_COL, uid);
     const snap = await getDoc(ref);
-    if (!snap.exists()) return { isPro: false, plan: 'free' };
+    if (!snap.exists()) return { isPro: false, plan: 'none' };
 
     const data = snap.data();
     const now  = Date.now();
@@ -36,7 +36,7 @@ async function fetchSubscriptionStatus(user) {
 
     return {
       isPro:             active,
-      plan:              active ? 'pro' : 'free',
+      plan:              active ? 'pro' : 'none',
       status:            data.status,
       periodEnd:         new Date(periodEnd),
       stripeCustomerId:  data.stripeCustomerId ?? null,
@@ -44,7 +44,7 @@ async function fetchSubscriptionStatus(user) {
     };
   } catch (e) {
     console.warn('[subscriptionService] fetch failed:', e.message);
-    return { isPro: false, plan: 'free' };
+    return { isPro: false, plan: 'none' };
   }
 }
 
@@ -60,7 +60,7 @@ export function initSubscription() {
     if (user) {
       _cachedStatus = await fetchSubscriptionStatus(user);
     } else {
-      _cachedStatus = { isPro: false, plan: 'free' };
+      _cachedStatus = { isPro: false, plan: 'none' };
     }
     _listeners.forEach(cb => cb(_cachedStatus));
   });
@@ -79,7 +79,7 @@ export function onSubscriptionChange(cb) {
 
 /**
  * Synchronously check Pro status from cache.
- * Returns false if not yet loaded (safe default = free tier).
+ * Returns false if not yet loaded (safe default = no Pro).
  */
 export function isPro() {
   return _cachedStatus?.isPro === true;
@@ -109,7 +109,7 @@ export async function isProAsync() {
  * Get full subscription details.
  */
 export function getSubscriptionStatus() {
-  return _cachedStatus ?? { isPro: false, plan: 'free' };
+  return _cachedStatus ?? { isPro: false, plan: 'none' };
 }
 
 /**
