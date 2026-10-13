@@ -29,6 +29,8 @@ DOMAIN=api.rigor.design; ZONE=rigor.design
 TOOLS="resume cover interview linkedin networking portfolio salary"
 PAID_REF=q7/paid-path                        # rigor-api + 7 tools (contains #94 paid-first-use + go-final)
 API_SHA=${API_SHA:-0d7459d}                  # rigor-api q7/paid-path tip 2026-10-13 (/health reports environment)
+# 7 tools: q7/paid-path tips after the 2026-10-13 fold-forward (go-final-r4 + main merged in, so stage 8 fast-forwards main).
+TOOL_PINS=${TOOL_PINS:-"resume:30d2dab cover:b667a20 interview:7e37e9f linkedin:17de643 networking:ad882d9 portfolio:805239c salary:e1d89ab"}
 PLINK_ID=plink_1TEwCoCRLa19N9qBx7eNHK7D      # Rigor Pro link (buy.stripe.com/…8k804). NEVER paused or modified here.
 PRO_PRICE=price_1TEwCiCRLa19N9qBTxS4Oo0K     # what the link sells; must equal STRIPE_PRO_PRICE_IDS
 EXPECT_CENTS=999; EXPECT_CURRENCY=usd; EXPECT_INTERVAL=month
@@ -125,7 +127,8 @@ chk "rigor-api $PAID_REF = $API_SHA" "$AS" "$API_SHA"
 declare_tool_sha(){ printf -v "TS_$1" '%s' "$2"; }; tool_sha(){ local n="TS_$1"; printf '%s' "${!n:-}"; }
 for t in $TOOLS; do
   s=$(git ls-remote "https://github.com/mdothree/rigor-$t.git" "refs/heads/$PAID_REF" | cut -c1-7)
-  declare_tool_sha "$t" "$s"; chk "rigor-$t $PAID_REF pushed" "${s:+yes}" yes && log "    rigor-$t @ $s"
+  pin=$(printf '%s\n' $TOOL_PINS | sed -n "s/^$t://p")
+  declare_tool_sha "$t" "$s"; chk "rigor-$t $PAID_REF = ${pin:-<unpinned>}" "$s" "$pin" && log "    rigor-$t @ $s"
 done
 log "  live now: $DOMAIN/health=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 https://$DOMAIN/health)"
 

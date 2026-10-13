@@ -104,3 +104,8 @@ endpoint behind it.
   this fix they get Pro by verifying their email on their rigor account, or by opening `/success?session_id=<their
   session>`. If they have no rigor account, refund them.
 - Taste: the Stripe checkout shows the account's personal display name, with statement descriptor `MDO3D.COM`.
+
+### 2026-10-13 fold-forward (main fast-forwards to the deploy ref)
+Each tool's `q7/paid-path` now merges `go-final-r4` (which contains `main`), conflicts resolved to the paid-path side
+(tree unchanged). Pinned in RIGOR_GO.sh `TOOL_PINS`: resume 30d2dab, cover b667a20, interview 7e37e9f, linkedin 17de643,
+networking ad882d9, portfolio 805239c, salary e1d89ab. rigor-api `q7/paid-path` @ 0d7459d already contained `main` (863d3f2).
