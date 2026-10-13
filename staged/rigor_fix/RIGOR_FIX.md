@@ -111,3 +111,6 @@ Each tool's `q7/paid-path` now merges `go-final-r4` (which contains `main`), con
 networking ad882d9, portfolio 805239c, salary e1d89ab. rigor-api `q7/paid-path` @ 0d7459d already contained `main` (863d3f2).
 Re-folded after the h13 form-control font fix landed on go-final-r4 (no conflicts; the font fix is in): resume 40592a3,
 cover 0214dd9, interview 4ea1677, linkedin 0c58981, networking 17c2122, portfolio 019ba1a, salary d149932.
+Re-folded after the light/dark theme toggle landed on go-final-r4 (conflicts in success.html/sw.js resolved to the
+paid-path side, then the toggle re-applied and the SW cache bumped): resume cf19597, cover c37cb2b, interview 7cb2ef0,
+linkedin 1e83b96, networking 808bc71, portfolio 49bad4d, salary c279a21. Verified on xps (tog_qa, kp3 + real CSP): 56/56.
