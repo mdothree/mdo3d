@@ -9,7 +9,7 @@ or a session he authorizes. After they're done, the lane runs `bash staged/rigor
 | Host | Now | Root cause | What fixes it |
 |---|---|---|---|
 | `api.rigor.design` | `/` 200 (the landing page), `/health` and `/api/*` 404 (`x-vercel-error: NOT_FOUND`) | The DNS, TLS and domain are already correct. The record is DNS only → `cname.vercel-dns.com`, the Let's Encrypt cert for `CN=api.rigor.design` was issued 2026-10-12 17:39Z, and the host serves byte-identical content to `rigor-psi.vercel.app` (project `rigor`). The fault is that project `rigor` is git-linked to the **rigor-landing** repo. Its production deployment is a landing build, so no API is deployed. | The env below, then `RIGOR_GO.sh go`: unlink the landing repo, deploy rigor-api `q7/paid-path` @ `0d7459d`, then verify. |
-| `api.ronnascanner.com` | 525 on every path (`server: cloudflare`) | The record is **proxied** (it resolves to CF 104.21.9.65 / 172.67.159.50), and Cloudflare's TLS handshake to the origin fails. The Vercel edge has **no certificate** for this name: an SNI probe to 76.76.21.21 gets "no peer certificate". A control `leads.ronnascanner.com` gets `CN=leads.ronnascanner.com`. So the hostname isn't attached to any Vercel project, because no Ronna backend is deployed (S8). SSL mode isn't the cause: Full works for the attached siblings, and Flexible would only turn the 525 into a redirect loop or a 404. No frontend calls `api.ronnascanner.com`: the 5 subs use same-origin `API_URL ""`. | Decision S8 first. If a backend is built, deploy it to a Vercel project, attach `api.ronnascanner.com`, and set the env below. If it's "coming soon", delete or park the DNS record so the host stops returning 525 (that needs a CF token with DNS edit). |
+| `api.ronnascanner.com` | 525 on every path (`server: cloudflare`) | The record is **proxied** (it resolves to CF 104.21.9.65 / 172.67.159.50), and Cloudflare's TLS handshake to the origin fails. The Vercel edge has **no certificate** for this name: an SNI probe to 76.76.21.21 gets "no peer certificate". A control `leads.ronnascanner.com` gets `CN=leads.ronnascanner.com`. So the hostname isn't attached to any Vercel project, because no Ronna backend is deployed (S8). SSL mode isn't the cause: Full works for the attached siblings, and Flexible would only turn the 525 into a redirect loop or a 404. No frontend calls `api.ronnascanner.com`: the 5 subs use same-origin `API_URL ""`. | S8 = (c) coming-soon now. When the backend is built, deploy it to a Vercel project, attach `api.ronnascanner.com`, and set the env below. If it's "coming soon", delete or park the DNS record so the host stops returning 525 (that needs a CF token with DNS edit). |
 
 ## A. rigor API: Vercel project `rigor` (prj_6XVgXk8RuUT56AlmiMHA6oHGOHFm), target **Production**
 
@@ -53,23 +53,24 @@ Do this **only after** `RIGOR_GO.sh go` passes step [5] (the API is verified):
 - Optional, same screen: turn on "Allow promotion codes" (for the early-access promo codes).
 - **Don't** pause or deactivate the link. It stays active (`RIGOR_GO.sh` checks `active=true` before and after).
 
-## C. Ronna API (`api.ronnascanner.com`): only if S8 = build the backend
+## C. Ronna API (`api.ronnascanner.com`): for the backend build after coming-soon (S8 = (c))
 
 The backend repo is `projects/ronnascanner/ronnascanner-api` (Vercel functions: `leads/scan`, `emails/find`,
 `payment/*`). No Vercel project is linked yet. The deploy plan is the other agent's `staged/ronna_api/AUDIT.md`
-(not written yet at 2026-10-13 16:40Z). The env names its code reads:
+§2/§7/§8 (written 2026-10-13; it reaches the same 525 diagnosis). S8 is decided as (c): coming-soon + waitlist now,
+the backend next. The env names its code reads (they agree with the AUDIT):
 
 | Env name | Secret? | Source |
 |---|---|---|
-| `FIREBASE_PROJECT_ID` | no | The Firebase project chosen for Ronna in S7 (not chosen yet) |
+| `FIREBASE_PROJECT_ID` | no | `mdo3d-leads` (per AUDIT §For the Principal; confirm in S7) |
 | `FIREBASE_CLIENT_EMAIL` / `FIREBASE_PRIVATE_KEY` | yes | A new key for that project's `firebase-adminsdk` service account |
-| `STRIPE_SECRET_KEY` | yes | The MDO3 live account, same as rigor (or a restricted key) |
+| `STRIPE_SECRET_KEY` | yes | The MDO3 account, **test mode first** (AUDIT), and live only at launch |
 | `STRIPE_WEBHOOK_SECRET` | yes | A new live endpoint `https://api.ronnascanner.com/api/payment/webhook` (events as in A) |
 | `STRIPE_PRO_PRICE_IDS` / `STRIPE_TEAM_PRICE_IDS` | no | Ronna prices **don't exist yet**. They're a price decision (S8/S10), then a Stripe write. |
 | `APOLLO_API_KEY` | yes | An Apollo.io account (none on file). This is the lead data source the backend needs. |
 | `HUNTER_API_KEY` | yes | A Hunter.io account (none on file). Used for email finding. |
 
 Then: attach `api.ronnascanner.com` to that Vercel project, which removes the 525 because Vercel issues the cert.
-Leave the Cloudflare record proxied, or set it DNS only the way rigor did. Until S8 is decided, the honest
+Leave the Cloudflare record proxied, or set it DNS only the way rigor did. Until the backend exists, the honest
 non-deploy fix is to delete the `api.ronnascanner.com` DNS record. It needs a Cloudflare token with
 Zone → DNS → Edit on `ronnascanner.com`, and no client references the host.
