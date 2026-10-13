@@ -33,7 +33,7 @@ def P(file, title, desc, kw, app=True, noindex=False, canonical=True):
 
 def pricing(tool):
     return P('pricing.html', f'{tool} Pricing — {BRAND}',
-             f'Compare the free plan with mdothree Pro for {tool}. Pro costs $4.99/month and adds unlimited file processing, batch operations, and premium tools.',
+             f'Compare the no-sign-up {tool} with mdothree Pro. Pro costs $4/month and adds unlimited file processing, batch operations, and premium tools.',
              [f'{tool.lower()} pricing', 'mdothree pro', 'subscription', 'pricing', 'online tools'], app=False)
 
 def account(tool):
@@ -51,7 +51,7 @@ SITES = [
        tagline='Everyday utility tools for files, text and code',
        tagline2='PDF · Image · QR · JSON · Hash · Time · Color · Text · Password',
        category='UtilitiesApplication', home=True, pages=[
-    P('index.html', 'Free Browser Utility Tools — mdothree',
+    P('index.html', 'Browser Utility Tools — mdothree',
       'Simple browser tools for everyday tasks: merge and split PDFs, resize images, format JSON, generate hashes, QR codes, and passwords, and convert timestamps.',
       ['online tools', 'browser tools', 'pdf tools', 'image tools', 'json formatter', 'hash generator', 'qr code generator', 'password generator'], app=False),
     P('pro.html', 'Upgrade to Pro — mdothree',
@@ -67,7 +67,7 @@ SITES = [
       'Your mdothree Pro payment went through. Return to any mdothree tool to start using the Pro features that are included with your new subscription.',
       ['mdothree pro', 'payment', 'subscription', 'upgrade', 'success'], app=False, noindex=True),
     P('404.html', 'Page Not Found — mdothree',
-      'The page you were looking for on mdothree could not be found. Head back to the home page to browse the full set of free browser utility tools.',
+      'The page you were looking for on mdothree could not be found. Head back to the home page to browse the full set of browser utility tools.',
       ['404', 'page not found', 'missing page', 'mdothree', 'online tools'], app=False, noindex=True, canonical=False),
   ]),
   dict(dir='mdothree-color', domain='color.mdothree.com', name='Color Tools', short='Color Tools', glyph='RGB',
@@ -167,7 +167,7 @@ SITES = [
   dict(dir='mdothree-json', domain='json.mdothree.com', name='JSON Tools', short='JSON Tools', glyph='{ }',
        tagline='Format, validate, convert and diff JSON', category='DeveloperApplication', pages=[
     P('index.html', 'JSON Formatter, Validator & Converter — mdothree',
-      'Free JSON tools: format and validate JSON, convert it to YAML, CSV, XML, or TypeScript, compare two documents, encode Base64, and run JSONPath queries.',
+      'JSON tools in your browser: format and validate JSON, convert it to YAML, CSV, XML, or TypeScript, compare two documents, encode Base64, and run JSONPath queries.',
       ['json formatter', 'json validator', 'json to yaml', 'json to csv', 'json diff', 'jsonpath', 'json tools']),
     P('format.html', 'JSON Formatter & Beautifier — mdothree',
       'Beautify or minify JSON with syntax highlighting and adjustable indentation, then copy the result or download it as a .json file from your browser.',
@@ -201,7 +201,7 @@ SITES = [
   dict(dir='mdothree-text', domain='text.mdothree.com', name='Text Tools', short='Text Tools', glyph='TXT',
        tagline='Count, convert, compare and clean up text', category='UtilitiesApplication', pages=[
     P('index.html', 'Text Tools: Word Counter, Diff & More — mdothree',
-      'Free text utilities in your browser: word counter, case converter, text diff, find and replace, line sorter, URL extractor, and lorem ipsum generator.',
+      'Text utilities that run in your browser: word counter, case converter, text diff, find and replace, line sorter, URL extractor, and lorem ipsum generator.',
       ['text tools', 'word counter', 'case converter', 'text diff', 'find and replace', 'lorem ipsum']),
     P('word-counter.html', 'Word Counter — mdothree',
       'Count words, characters, sentences, and paragraphs and estimate reading time, with real-time stats and a top word frequency list as you type or paste.',
@@ -229,16 +229,16 @@ SITES = [
   dict(dir='mdothree-pdf', domain='pdf.mdothree.com', name='PDF Tools', short='PDF Tools', glyph='PDF',
        tagline='Merge, split, compress and convert PDFs', category='UtilitiesApplication', pages=[
     P('index.html', 'PDF Tools: Merge, Split & Compress — mdothree',
-      'Free PDF tools to merge, split, and compress PDFs, convert pages to images, and extract text. Processing is client-side, so files never leave your browser.',
+      'PDF tools to merge, split, and compress PDFs, convert pages to images, and extract text. Processing is client-side, so files never leave your browser.',
       ['pdf tools', 'merge pdf', 'split pdf', 'compress pdf', 'pdf to jpg', 'extract text from pdf']),
     P('merge.html', 'Merge PDF Files — mdothree',
-      'Combine multiple PDF files into a single document right in your browser. Drag files to reorder them before merging. Free for up to 3 files at a time.',
+      'Combine multiple PDF files into a single document right in your browser. Drag files to reorder them before merging. Without Pro, it merges up to 3 files at a time.',
       ['merge pdf', 'combine pdf', 'join pdf files', 'pdf merger', 'merge pdf online']),
     P('split.html', 'Split PDF — mdothree',
       'Split a PDF by page range, extract specific pages, or save every page as a separate file. Processing happens in your browser with no file upload.',
       ['split pdf', 'extract pdf pages', 'pdf splitter', 'separate pdf pages', 'page range']),
     P('compress.html', 'Compress PDF — mdothree',
-      'Reduce PDF file size with adjustable quality settings and optional metadata removal, all in your browser. Free for PDF files up to 10MB in size.',
+      'Reduce PDF file size with adjustable quality settings and optional metadata removal, all in your browser. Without Pro, it handles PDF files up to 10MB.',
       ['compress pdf', 'reduce pdf size', 'pdf compressor', 'shrink pdf', 'remove pdf metadata']),
     P('pdf-to-images.html', 'PDF to JPG & PNG Converter — mdothree',
       'Convert PDF pages to JPG or PNG images with your choice of DPI and quality, and preview each page instantly before downloading the images.',
@@ -254,7 +254,7 @@ SITES = [
   dict(dir='mdothree-image', domain='image.mdothree.com', name='Image Tools', short='Image Tools', glyph='IMG',
        tagline='Resize, convert, compress and crop images', category='MultimediaApplication', pages=[
     P('index.html', 'Image Tools: Resize, Convert & Compress — mdothree',
-      'Free image tools that run in your browser: resize, convert, compress, crop, rotate and flip images, and remove solid-color backgrounds from pictures.',
+      'Image tools that run in your browser: resize, convert, compress, crop, rotate and flip images, and remove solid-color backgrounds from pictures.',
       ['image tools', 'resize image', 'convert image', 'compress image', 'crop image', 'remove background']),
     P('resize.html', 'Resize Image — mdothree',
       'Resize images by percentage or to exact pixel dimensions with a live preview. Supports JPG, PNG, and WebP, and all processing happens in your browser.',
