@@ -724,3 +724,6 @@ footer {
     .nav-links { gap: .5rem; font-size: .8rem; }
     .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
+
+/* Form controls inherit the site font (browsers default them to the UA font, e.g. Arial 13.33px). */
+button, input, select, textarea { font-family: inherit; }

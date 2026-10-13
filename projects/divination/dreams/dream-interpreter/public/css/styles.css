@@ -907,3 +907,6 @@ footer {
     .nav-links { width: 100%; justify-content: space-between; gap: .25rem; }
     .nav-links a { white-space: nowrap; }
 }
+
+/* Form controls inherit the site font (browsers default them to the UA font, e.g. Arial 13.33px). */
+button, input, select, textarea { font-family: inherit; }
