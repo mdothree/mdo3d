@@ -29,8 +29,8 @@ DOMAIN=api.rigor.design; ZONE=rigor.design
 TOOLS="resume cover interview linkedin networking portfolio salary"
 PAID_REF=q7/paid-path                        # rigor-api + 7 tools (contains #94 paid-first-use + go-final)
 API_SHA=${API_SHA:-0d7459d}                  # rigor-api q7/paid-path tip 2026-10-13 (/health reports environment)
-# 7 tools: q7/paid-path tips after the 2026-10-13 fold-forwards (go-final-r4 incl. h13 font fix + theme toggle, main merged in; stage 8 FFs main).
-TOOL_PINS=${TOOL_PINS:-"resume:cf19597 cover:c37cb2b interview:7cb2ef0 linkedin:1e83b96 networking:808bc71 portfolio:49bad4d salary:c279a21"}
+# 7 tools: q7/paid-path tips after the 2026-10-13 fold-forwards (go-final-r4 incl. h13 font fix + theme toggle + footer legal links, main merged in; stage 8 FFs main).
+TOOL_PINS=${TOOL_PINS:-"resume:37fe661 cover:ba783b0 interview:c49b813 linkedin:afabbcc networking:c7b673e portfolio:6071055 salary:43aa8ff"}
 PLINK_ID=plink_1TEwCoCRLa19N9qBx7eNHK7D      # Rigor Pro link (buy.stripe.com/…8k804). NEVER paused or modified here.
 PRO_PRICE=price_1TEwCiCRLa19N9qBTxS4Oo0K     # what the link sells; must equal STRIPE_PRO_PRICE_IDS
 EXPECT_CENTS=999; EXPECT_CURRENCY=usd; EXPECT_INTERVAL=month

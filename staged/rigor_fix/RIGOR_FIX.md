@@ -114,3 +114,6 @@ cover 0214dd9, interview 4ea1677, linkedin 0c58981, networking 17c2122, portfoli
 Re-folded after the light/dark theme toggle landed on go-final-r4 (conflicts in success.html/sw.js resolved to the
 paid-path side, then the toggle re-applied and the SW cache bumped): resume cf19597, cover c37cb2b, interview 7cb2ef0,
 linkedin 1e83b96, networking 808bc71, portfolio 49bad4d, salary c279a21. Verified on xps (tog_qa, kp3 + real CSP): 56/56.
+Re-folded after the footer legal links (Privacy, Terms; `/privacy` and `/terms` 307 to mdo3d.com via vercel.json) landed on
+go-final-r4 (no conflicts): resume 37fe661, cover ba783b0, interview c49b813, linkedin afabbcc, networking c7b673e,
+portfolio 6071055, salary 43aa8ff. Verified on xps (kp3 + real CSP, 1280/390, r4 + q7): 28/28, axe 0, console 0, CSP 0.
