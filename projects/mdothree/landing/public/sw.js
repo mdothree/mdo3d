@@ -1,7 +1,7 @@
 // sw.js — Service Worker (generated — do not edit directly)
 // Cache-first for assets, network-first for HTML navigation.
 
-const CACHE_NAME = 'landing-v7';
+const CACHE_NAME = 'landing-v8';
 
 const PRECACHE_URLS = [
   '/',
@@ -12,7 +12,11 @@ const PRECACHE_URLS = [
   '/css/dark-mode.css',
   '/css/pro.css',
   '/js/app.js',
-  '/js/pages/pro.js'
+  '/js/pages/pro.js',
+  '/css/site-chrome.css',
+  '/js/theme-init.js',
+  '/js/site-chrome.js',
+  '/js/auth-nav.js'
 ];
 
 self.addEventListener('install', event => {

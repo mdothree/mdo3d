@@ -47,11 +47,16 @@ if (PRO_CHECKOUT_ENABLED) {
     }
 
     // ---- Header auth state ----
-    const headerAuth = document.getElementById('header-auth');
+    const headerAuth = document.querySelector('.mdo-actions');   // shared nav cluster (site-chrome)
     onSubscriptionChange(status => {
       if (status.isPro) {
         // Header badge
-        headerAuth.innerHTML = '<span style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border-radius:99px;padding:4px 12px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em">★ Pro Active</span>';
+        if (headerAuth && !headerAuth.querySelector('.pro-badge')) {
+          const badge = document.createElement('span');
+          badge.className = 'pro-badge';
+          badge.textContent = '★ Pro active';
+          headerAuth.insertBefore(badge, headerAuth.querySelector('[data-mdo-account]'));
+        }
 
         // Update subscribe button
         const subscribeBtn = document.getElementById('subscribe-btn');

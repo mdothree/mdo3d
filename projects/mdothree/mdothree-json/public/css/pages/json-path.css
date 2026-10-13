@@ -55,3 +55,6 @@
   font-size: 0.7rem;
   color: var(--slate-600);
 }
+
+/* Visual gate: emerald code on the light chip was 4.44:1; the darker emerald is 6.4:1 on #E2E8F0 */
+html[data-theme="light"] .path-example code { color: #065F46; }

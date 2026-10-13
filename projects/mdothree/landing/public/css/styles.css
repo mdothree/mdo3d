@@ -5,7 +5,7 @@
    ============================================================ */
 
 :root {
-  --emerald: #047857; /* A11Y-003: 5.5:1 on white (was #10B981 2.5:1); body.dark restores the bright emerald */
+  --emerald: #047857; /* A11Y-003: 5.5:1 on white (was #10B981 2.5:1); the dark theme uses #34D399 */
   --emerald-dark: #059669;
   --emerald-light: #34D399;
   --slate-900: #0F172A;
@@ -72,8 +72,7 @@ body {
 }
 
 .logo .dot { color: #047857; } /* A11Y-003: wordmark 5.5:1 on white (was #10B981 2.5:1); dark mode keeps emerald */
-body.dark { --emerald: #10B981; }
-body.dark .logo .dot { color: var(--emerald); }
+html[data-theme="dark"] .logo .dot { color: #34D399; }
 
 .main-nav {
   display: flex;
@@ -354,3 +353,43 @@ body.dark .logo .dot { color: var(--emerald); }
 
 /* A11Y-013: legal/pro footer links get a 44px-tall tap target (were 15px) */
 .site-footer a { display: inline-block; padding: 12px 2px; }
+
+/* ============================================================
+   MDOThree shared template: dark theme + nav cluster
+   html[data-theme] is set before paint by /js/theme-init.js (saved choice, else the OS) and switched by the
+   nav toggle (/js/site-chrome.js). Light stays the palette above. Dark (WCAG AA):
+     text #F1F5F9 on #0B1120 = 17:1 · muted #A8B5C7 on #111827 = 8.3:1 · emerald text #34D399 on #111827 = 9.3:1
+     emerald fills keep dark text: #022C22 on #34D399 = 9.6:1
+   ============================================================ */
+html[data-theme="dark"] {
+  --emerald: #34D399;
+  --emerald-dark: #6EE7B7;
+  --bg: #0B1120;
+  --surface: #1E293B;
+  --text-primary: #F1F5F9;
+  --text-secondary: #A8B5C7;
+  --border: #334155;
+  --card-bg: #111827;
+  --header-bg: rgba(11, 17, 32, 0.9);
+}
+html[data-theme="dark"] .plan-cta.primary,
+html[data-theme="dark"] #subscribe-btn,
+html[data-theme="dark"] .featured-label,
+html[data-theme="dark"] .save-pill,
+html[data-theme="dark"] .checkout-submit { color: #022C22; }
+html[data-theme="dark"] .footer-bottom p { color: #A8B5C7; }
+.site-header .mdo-actions { margin-left: auto; }
+.mdo-actions:has(.pro-badge) .mdo-pro { display: none; }
+@media (max-width: 640px) {
+  .site-header { padding-left: 16px; padding-right: 16px; }
+  .header-inner, .site-header { gap: 12px; }
+}
+.mdo-actions--float { position: absolute; top: 12px; right: 16px; z-index: 50; }
+/* The upgrade dialog (paywallUI.js) is a light card in both themes: pin its body text dark so it never
+   inherits the dark theme's light text (#0F172A on #FFF = 17:1; legal/muted #475569 = 7.6:1). */
+.pw-modal { color: #0F172A; }
+.pw-modal .pw-legal { color: #475569; }
+/* Legal pages (inline styles use raw light slates): dark-theme text */
+html[data-theme="dark"] .legal-page h1, html[data-theme="dark"] .legal-page h2 { color: var(--text-primary); }
+html[data-theme="dark"] .legal-page .updated { color: var(--text-secondary); }
+html[data-theme="dark"] .legal-page p, html[data-theme="dark"] .legal-page li { color: #CBD5E1; }

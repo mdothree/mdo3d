@@ -27,6 +27,10 @@ const PRECACHE = [
   '/manifest.json',
   '/favicon.svg',
   '/404.html',
+  '/css/site-chrome.css',
+  '/js/theme-init.js',
+  '/js/site-chrome.js',
+  '/js/auth-nav.js',
 ];
 
 // CDN resources to cache on first use
