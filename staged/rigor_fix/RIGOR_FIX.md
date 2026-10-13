@@ -1,5 +1,15 @@
 # Rigor paid path: Q7 fix (staged, not run)
 
+> **Rev 2026-10-13 (supersedes the GO order below where they differ):** `RIGOR_GO.sh` now writes **no secret
+> and no Stripe object**. The env is set first by the Principal (see `SECRETS_NEEDED.md`), and the preflight refuses
+> to deploy while any required env name is missing from project `rigor`. Stages: unlink rigor-landing → domain
+> (already attached; cert issued 2026-10-12) → DNS only (already) → deploy rigor-api `q7/paid-path` @ `0d7459d` →
+> verify (`/health` 200 + `environment: production`, unsigned webhook 400, anon 401s, link `active=true` by
+> read-only GET) → 7 tools → verify (`/`, `/success`, `/cancel` 200, checkout on, price 999) → fast-forward main.
+> On a failed verify it **stops and reports, with no rollback**. Live root cause on 2026-10-13: `api.rigor.design` is
+> 404, not 525. DNS/TLS/domain are fine; project `rigor`'s production deployment is a rigor-landing git build.
+
+
 Principal decision Q7: *"for the rigor link thing, it sounds like the answer is to fix it, not take it down"*.
 The Stripe Payment Link (`buy.stripe.com/…8k804`, Rigor Pro $9.99/mo) is **not paused**. This change makes paying
 work end to end. One script runs it: `staged/rigor_fix/RIGOR_GO.sh` (needs the Principal's GO).
