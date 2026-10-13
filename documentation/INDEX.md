@@ -8,6 +8,7 @@ Index of `documentation/` (refreshed 2026-10-12). Current state is in [`../STATU
 
 | Doc | Purpose |
 |---|---|
+| [ROLLBACK_RUNBOOK.md](ROLLBACK_RUNBOOK.md) | Rollback runbook for every MDO product (deploy path, Vercel project, rollback, verify) + preview proof |
 | [DIVINATION_PAYMENTS_DEPLOYMENT.md](DIVINATION_PAYMENTS_DEPLOYMENT.md) | Deployment record and runbook for payments on the 9 divination services |
 | [FIREBASE_BEST_PRACTICES.md](FIREBASE_BEST_PRACTICES.md) | Firebase assessment, server-side enforcement, rules and remediation plan |
 | [STRIPE_CONFIGURATION.md](STRIPE_CONFIGURATION.md) | Stripe configuration guide |
