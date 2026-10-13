@@ -1,3 +1,4 @@
+import { createNamesRouter } from './routes/namesReport.js';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -17,6 +18,7 @@ const claudeService = new ClaudeNumerologyService();
 const stripeService = new StripeService('Numerology Insights');
 
 // Middleware
+app.use('/api/names', createNamesRouter()); // MDO-001 Baby Name Oracle report; own CORS (names.mdo3d.com) + JSON, so it sits before the app-wide cors()
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:8080',
   credentials: true
