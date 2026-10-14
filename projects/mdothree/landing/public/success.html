@@ -91,6 +91,7 @@
   </style>
   <script src="/js/consent.js" defer></script>
   <link rel="stylesheet" href="/css/site-chrome.css" />
+  <meta name="firebase-config" content='{"apiKey":"AIzaSyBkNK59CoXyS9qn65c2mbWiBVT_KUOgul4","authDomain":"mdo3d-utilities.firebaseapp.com","projectId":"mdo3d-utilities","storageBucket":"mdo3d-utilities.firebasestorage.app","messagingSenderId":"699798570384","appId":"1:699798570384:web:aa658f6732f1db10e31f15"}'>
 </head>
 <body>
   <div class="mdo-actions mdo-actions--float">
@@ -103,45 +104,19 @@
     <div class="icon" id="success-icon" style="display:none;">🎉</div>
     <div class="icon error" id="error-icon" style="display:none;">❌</div>
     
-    <h1 id="title">Verifying Payment...</h1>
-    <p class="message" id="message">Please wait while we confirm your payment.</p>
+    <h1 id="title">Checking your payment…</h1>
+    <p class="message" id="message" role="status">Please wait while we confirm Pro on your account.</p>
     
     <div id="success-actions" class="hidden">
       <a href="/pro" class="btn">Go to Pro →</a>
     </div>
     
     <div id="error-actions" class="hidden">
-      <a href="/pro" class="btn">Try Again</a>
+      <a href="mailto:hello@mdothree.com?subject=mdothree%20Pro%20payment" class="btn">Contact hello@mdothree.com</a>
     </div>
   </div>
 
-  <script type="module">
-    // Pro is granted ONLY by the Stripe webhook (mdothree-api functions/stripe/webhook.js
-    // writes subscriptions/{uid} with the Admin SDK; firestore.rules deny client writes).
-    // This page used to write subscriptions/{uid} from the browser (and imported a
-    // missing /js/firebase.js, so it never loaded). It now only confirms the redirect.
-    const sessionId = new URLSearchParams(window.location.search).get('session_id');
-
-    function showSuccess() {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('success-icon').style.display = 'block';
-      document.getElementById('title').textContent = 'Payment received';
-      document.getElementById('message').textContent = 'Thanks! Pro unlocks on your account as soon as Stripe confirms the payment, usually within a minute. Reload any mdothree tool to see it.';
-      document.getElementById('success-actions').style.display = 'block';
-    }
-
-    function showError(msg) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error-icon').style.display = 'block';
-      document.getElementById('title').textContent = 'No payment found';
-      document.getElementById('title').style.color = '#EF4444';
-      document.getElementById('message').textContent = msg;
-      document.getElementById('error-actions').style.display = 'block';
-    }
-
-    if (sessionId && /^cs_[A-Za-z0-9_]+$/.test(sessionId)) showSuccess();
-    else showError('No checkout session was found. If you completed a payment, contact us and we will sort it out.');
-  </script>
+  <script type="module" src="/js/pages/success.js"></script>
   <script src="/js/site-chrome.js" defer></script>
   <script type="module" src="/js/auth-nav.js"></script>
 </body>
