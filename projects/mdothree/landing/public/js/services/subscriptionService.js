@@ -3,7 +3,7 @@
 // The source of truth is a Firestore doc written by the Stripe webhook Cloud Function.
 // Falls back gracefully (no Pro) if Firebase or Firestore is unavailable.
 
-import { getFirebaseAuth, getDB, onAuthChange } from '../config/config.js';
+import { getFirebaseAuth, getDB, onAuthChange } from '../config/config.js?v=395f277a60';
 
 const SUBSCRIPTIONS_COL = 'subscriptions';
 

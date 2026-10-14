@@ -61,7 +61,7 @@ for (const dir of dirs) {
     const syn = spawnSync(process.execPath, ['--input-type=module', '--check'], { input: fs.readFileSync(f), encoding: 'utf8' });
     if (syn.status !== 0) { console.log(`SYNTAX ERROR  ${f}\n${(syn.stderr || '').split('\n').slice(0, 5).join('\n')}`); problems++; continue; }
     for (const { spec, names } of importsOf(f)) {
-      const target = path.resolve(path.dirname(f), spec);
+      const target = path.resolve(path.dirname(f), spec.split(/[?#]/)[0]); // ?v= cache-bust (stamp-versions.mjs)
       if (!fs.existsSync(target)) { console.log(`MISSING FILE  ${f} -> ${spec}`); problems++; continue; }
       const ex = exportsOf(target);
       for (const n of names) if (!ex.has(n)) { console.log(`MISSING EXPORT ${path.relative(dir, f)} imports '${n}' from ${spec}`); problems++; }

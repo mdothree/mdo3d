@@ -1,12 +1,12 @@
 // js/pages/pro.js — Pro upgrade page logic
-import { ensureAnonymousUser, onAuthChange, getFirebaseAuth } from '../config/config.js';
-import { withLoading, showToast as uiToast, showError } from '../utils/ui-helpers.js';
-import { initSubscription, isPro, onSubscriptionChange, refreshSubscription } from '../services/subscriptionService.js';
-import { STRIPE_CONFIG, PRO_CHECKOUT_ENABLED } from '../config/config.js';
+import { ensureAnonymousUser, onAuthChange, getFirebaseAuth } from '../config/config.js?v=395f277a60';
+import { withLoading, showToast as uiToast, showError } from '../utils/ui-helpers.js?v=395f277a60';
+import { initSubscription, isPro, onSubscriptionChange, refreshSubscription } from '../services/subscriptionService.js?v=395f277a60';
+import { STRIPE_CONFIG, PRO_CHECKOUT_ENABLED } from '../config/config.js?v=395f277a60';
 // mdothree-api client (hardened API 883dbfc): Bearer Firebase ID token, guests refused, no uid in bodies.
 // createCheckoutSession ties the Stripe session to the signed-in account (the webhook grants Pro by uid);
 // the old Stripe Payment Links carried no uid, so /pro no longer links to them.
-import { createCheckout, signedInUser, ProApiError, proErrorMessage } from '../pro-api.js';
+import { createCheckout, signedInUser, ProApiError, proErrorMessage } from '../pro-api.js?v=395f277a60';
 
 // #66b: the static page says "coming soon" (no price, no checkout). Only when
 // PRO_CHECKOUT_ENABLED is on does it become a purchasable plan.
@@ -164,7 +164,7 @@ if (PRO_CHECKOUT_ENABLED) {
         if (!signedInUser(auth)) {
           // Sign in or create an account (js/auth-ui.js, loaded now). The guest session on this page is
           // linked to the new account, so the purchase lands on that account.
-          const { openSignIn } = await import('../auth-nav.js');
+          const { openSignIn } = await import('../auth-nav.js?v=395f277a60');
           const signed = await openSignIn({ reason: 'Pro belongs to your mdothree account. Sign in or create one, then continue to checkout.' }).catch(() => null);
           if (signed && signedInUser(auth)) {
             const status = await refreshSubscription();

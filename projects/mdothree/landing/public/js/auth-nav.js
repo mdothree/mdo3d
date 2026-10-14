@@ -11,7 +11,7 @@ const chromeReady = () => window.mdoChrome
   : new Promise(res => document.addEventListener('mdo-chrome-ready', () => res(window.mdoChrome), { once: true }));
 
 async function getAuthInstance() {
-  const cfg = await import('./config/config.js');
+  const cfg = await import('./config/config.js?v=395f277a60');
   return cfg.getFirebaseAuth();
 }
 
@@ -20,7 +20,7 @@ async function getAuthInstance() {
  * @param {{ mode?: 'signin'|'signup'|'reset', reason?: string }} [opts]
  */
 export async function openSignIn(opts = {}) {
-  const ui = await import('./auth-ui.js');
+  const ui = await import('./auth-ui.js?v=395f277a60');
   return ui.openAuthDialog({ ...opts, getAuth: getAuthInstance });
 }
 
@@ -28,7 +28,7 @@ chromeReady().then(async chrome => {
   if (!document.querySelector('meta[name="firebase-config"]')) { chrome.setUser(null); return; }
   try {
     const [cfg, { signOut }] = await Promise.all([
-      import('./config/config.js'),
+      import('./config/config.js?v=395f277a60'),
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js'),
     ]);
     if (cfg.PRO_CHECKOUT_ENABLED) chrome.setCheckout({ enabled: true, href: '/pro' });

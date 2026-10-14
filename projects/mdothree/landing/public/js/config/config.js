@@ -157,4 +157,4 @@ export {
 //    reach PLANS and proFeatureLabel without a second import path.
 // ─────────────────────────────────────────────────────────────
 
-export { PLANS, proFeatureLabel, PRO_FEATURES, requiresPro } from './stripe.js';
+export { PLANS, proFeatureLabel, PRO_FEATURES, requiresPro } from './stripe.js?v=395f277a60';

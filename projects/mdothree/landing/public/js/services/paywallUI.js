@@ -2,9 +2,9 @@
 // Renders an upgrade modal with embedded Stripe Elements (Payment Element).
 // Also exports proGate() — call before any Pro feature to check and prompt.
 
-import { isPro, isProAsync, onSubscriptionChange, refreshSubscription } from './subscriptionService.js';
-import { STRIPE_CONFIG, PLANS, proFeatureLabel } from '../config/config.js';
-import { getFirebaseAuth, ensureAnonymousUser } from '../config/config.js';
+import { isPro, isProAsync, onSubscriptionChange, refreshSubscription } from './subscriptionService.js?v=395f277a60';
+import { STRIPE_CONFIG, PLANS, proFeatureLabel } from '../config/config.js?v=395f277a60';
+import { getFirebaseAuth, ensureAnonymousUser } from '../config/config.js?v=395f277a60';
 
 // ---- Stripe.js lazy-load ----
 let _stripe = null;
@@ -26,7 +26,7 @@ async function loadStripe() {
 // ── Stripe test mode banner ──────────────────────────────────
 // Shows a visible yellow banner when using test-mode keys so
 // developers don't accidentally go live with test credentials.
-import { IS_TEST_MODE, IS_CONFIGURED } from '../config/config.js';
+import { IS_TEST_MODE, IS_CONFIGURED } from '../config/config.js?v=395f277a60';
 
 function injectTestModeBanner() {
   if (!IS_TEST_MODE && IS_CONFIGURED) return;
