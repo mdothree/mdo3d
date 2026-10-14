@@ -12,18 +12,18 @@ class AuthService {
     async initialize() {
         if (this.initialized) return;
 
+        // HID-011: storage can be blocked (private browsing, blocked site data). Sign-in is optional, so the
+        // reading keeps working; the save/journal actions tell the visitor when nothing can be kept.
         try {
-            // Check for existing session in localStorage
             const savedUser = localStorage.getItem('dream_user');
             if (savedUser) {
                 this.currentUser = JSON.parse(savedUser);
             }
-
-            this.initialized = true;
+            this.storageAvailable = true;
         } catch (error) {
-            console.error('Auth initialization failed:', error);
-            this.initialized = true;
+            this.storageAvailable = false;
         }
+        this.initialized = true;
     }
 
     getCurrentUser() {
@@ -43,13 +43,13 @@ class AuthService {
         };
 
         this.currentUser = user;
-        localStorage.setItem('dream_user', JSON.stringify(user));
+        try { localStorage.setItem('dream_user', JSON.stringify(user)); } catch (e) { this.storageAvailable = false; }
         return user;
     }
 
     async signOut() {
         this.currentUser = null;
-        localStorage.removeItem('dream_user');
+        try { localStorage.removeItem('dream_user'); } catch (e) { /* storage blocked: nothing stored */ }
     }
 }
 

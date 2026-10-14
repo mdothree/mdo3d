@@ -310,16 +310,20 @@ export class CardRenderer3D {
 
   animate() {
     requestAnimationFrame(() => this.animate());
+    // HID-005: no ambient drift (particles, camera sway) under prefers-reduced-motion; the scene still renders.
+    const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Rotate particles
-    if (this.particles) {
+    if (this.particles && !still) {
       this.particles.rotation.y += 0.001;
       this.particles.rotation.x += 0.0005;
     }
 
     // Subtle camera movement
-    this.camera.position.x = Math.sin(Date.now() * 0.0002) * 0.1;
-    this.camera.position.y = Math.cos(Date.now() * 0.0003) * 0.1;
+    if (!still) {
+      this.camera.position.x = Math.sin(Date.now() * 0.0002) * 0.1;
+      this.camera.position.y = Math.cos(Date.now() * 0.0003) * 0.1;
+    }
     this.camera.lookAt(0, 0, 0);
 
     this.renderer.render(this.scene, this.camera);

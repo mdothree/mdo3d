@@ -317,6 +317,16 @@ class DreamInterpreterApp {
 
         // Show results section
         resultsSection.style.display = 'block';
+        const names = this.detectedSymbols.map(s => s.symbol);
+        this.announce(`Found ${names.length} dream symbol${names.length === 1 ? '' : 's'}: ${names.join(', ')}.`);
+    }
+
+    // HID-003: results and notices are announced through a polite live region.
+    announce(msg) {
+        const el = document.getElementById('a11y-status');
+        if (!el) return;
+        el.textContent = '';
+        setTimeout(() => { el.textContent = msg; }, 50);
     }
 
     hasPurchase() {
@@ -505,10 +515,12 @@ class DreamInterpreterApp {
         };
         
         this.dreamJournal.unshift(entry);
-        this.saveJournal();
+        const saved = this.saveJournal();
         this.displayJournal();
-        
-        alert('Dream saved to your journal!');
+        // HID-011: only say "saved" when it was; otherwise explain why and what still works.
+        this.journalNotice(saved
+            ? 'Dream saved to your journal (in this browser on this device).'
+            : 'Saving isn\u2019t possible in this browser right now (private browsing or blocked site data), so this dream is kept only until you close the tab. Your interpretation still works; copy the text if you want to keep it.');
     }
 
     loadJournal() {
@@ -516,7 +528,8 @@ class DreamInterpreterApp {
             const saved = localStorage.getItem('dreamJournal');
             return saved ? JSON.parse(saved) : [];
         } catch (error) {
-            console.error('Error loading journal:', error);
+            // HID-011: storage blocked (SecurityError) or unreadable; the journal starts empty and says why on save.
+            this.journalStorageBlocked = error && error.name === 'SecurityError';
             return [];
         }
     }
@@ -524,13 +537,23 @@ class DreamInterpreterApp {
     saveJournal() {
         try {
             localStorage.setItem('dreamJournal', JSON.stringify(this.dreamJournal));
+            return true;
         } catch (error) {
-            console.error('Error saving journal:', error);
+            this.journalStorageBlocked = true;
+            return false;
         }
+    }
+
+    journalNotice(msg) {
+        const el = document.getElementById('journal-notice');
+        if (el) el.textContent = msg;
     }
 
     displayJournal() {
         const journalEntries = document.getElementById('journal-entries');
+        if (this.journalStorageBlocked && this.dreamJournal.length === 0) {
+            this.journalNotice('Your journal can\u2019t be saved in this browser (private browsing or blocked site data). Interpreting and the symbol library still work.');
+        }
         
         if (this.dreamJournal.length === 0) {
             journalEntries.innerHTML = '<p class="empty-state">No dreams saved yet. Interpret your first dream to start your journal!</p>';
@@ -574,7 +597,7 @@ class DreamInterpreterApp {
     deleteJournalEntry(id) {
         if (confirm('Are you sure you want to delete this dream?')) {
             this.dreamJournal = this.dreamJournal.filter(entry => entry.id !== id);
-            this.saveJournal();
+            if (!this.saveJournal()) this.journalNotice('Removed for now, but this browser is blocking storage, so the change can\u2019t be kept.');
             this.displayJournal();
         }
     }

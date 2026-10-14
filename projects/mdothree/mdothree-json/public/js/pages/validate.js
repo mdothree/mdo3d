@@ -12,6 +12,14 @@ import { lossyNumberWarning } from '../services/jsonFormatter.js';
       catch { inputJson.style.borderColor = 'var(--danger)'; }
     });
 
+    // HID-003: results are announced through a polite live region (the result panels only toggle visibility).
+    function announce(msg) {
+      const el = document.getElementById('a11yStatus');
+      if (!el) return;
+      el.textContent = '';
+      setTimeout(() => { el.textContent = msg; }, 50);
+    }
+
     document.getElementById('validateBtn').addEventListener('click', () => {
       // Validate the untrimmed text so reported line numbers match the textarea.
       const text = inputJson.value;
@@ -21,6 +29,7 @@ import { lossyNumberWarning } from '../services/jsonFormatter.js';
 
       if (!text.trim()) {
         document.getElementById('emptyState').style.display = 'flex';
+        announce('Paste some JSON first, then click Validate.');
         return;
       }
 
@@ -45,6 +54,7 @@ import { lossyNumberWarning } from '../services/jsonFormatter.js';
           document.getElementById('structSummary').appendChild(w);
         }
         document.getElementById('validResult').classList.remove('hidden');
+        announce('Valid JSON — no syntax errors found.');
       } else {
         const where = result.line ? ` (line ${result.line}, column ${result.column})` : '';
         document.getElementById('errorMsg').textContent = result.error + where + (result.hint ? ' — ' + result.hint : '');
@@ -61,5 +71,10 @@ import { lossyNumberWarning } from '../services/jsonFormatter.js';
         }
         document.getElementById('errorContext').innerHTML = html;
         document.getElementById('invalidResult').classList.remove('hidden');
+        announce('Invalid JSON — ' + document.getElementById('errorMsg').textContent);
       }
     });
+
+// HID-017: the page starts with "Loading tool…" and disabled actions; release them now that the handlers are bound.
+document.querySelectorAll('[data-mdo-wait]').forEach(el => { el.disabled = false; el.removeAttribute('aria-busy'); el.removeAttribute('data-mdo-wait'); });
+document.getElementById('mdoLoadStatus')?.remove();

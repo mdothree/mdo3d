@@ -112,6 +112,7 @@
         </section>
 
         <!-- Interpretation Results (Hidden initially) -->
+        <p id="a11y-status" class="sr-only" role="status" aria-live="polite"></p>
         <section class="results-section" id="results-section" style="display: none;">
             <div class="container">
                 <h3 class="section-title">Your Dream Interpretation</h3>
@@ -128,7 +129,7 @@
                 <div class="free-interpretation" id="free-interpretation">
                     <div class="interpretation-card">
                         <h4>Basic Interpretation</h4>
-                        <div id="basic-meaning">
+                        <div id="basic-meaning" aria-live="polite">
                             <!-- Populated by JavaScript -->
                         </div>
                     </div>
@@ -276,6 +277,7 @@
                 <h2>Your Dream Journal</h2>
                 <p class="subtitle">Track patterns and recurring themes in your dreams. Your journal is saved in this browser on this device only: each saved dream keeps its text and detected symbols, plus the interpretation if you bought one.</p>
                 
+                <p id="journal-notice" class="storage-notice" role="status" aria-live="polite"></p>
                 <div class="journal-entries" id="journal-entries">
                     <p class="empty-state">No dreams saved yet. Interpret your first dream to start your journal!</p>
                 </div>

@@ -207,6 +207,10 @@ html:not([data-theme="dark"]) .mdo-i-sun { display: none; }
 .sigil-ring-3 { inset: 24px; border-color: rgba(147,51,234,0.2); animation: spin 12s linear infinite; }
 .sigil-center { font-size: 2rem; z-index: 1; animation: breathe 4s ease-in-out infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+/* HID-005: honour prefers-reduced-motion (sigil rings, pulses, fade-ins and transitions stop) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
 @keyframes breathe {
   0%, 100% { opacity: 0.7; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.08); }
@@ -722,7 +726,11 @@ const canvas = document.getElementById('cosmos');
 const ctx = canvas.getContext('2d');
 let W, H;
 function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-resize(); window.addEventListener('resize', resize);
+// HID-005: under prefers-reduced-motion the starfield is drawn once (static) and redrawn only on resize/theme change.
+const reduceMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+let cosmosRaf = 0;
+function redrawStatic() { if (reduceMotion.matches) { cancelAnimationFrame(cosmosRaf); cosmosRaf = requestAnimationFrame(draw); } }
+resize(); window.addEventListener('resize', () => { resize(); redrawStatic(); });
 
 const stars = Array.from({ length: 220 }, () => ({
   x: Math.random(), y: Math.random(),
@@ -764,9 +772,11 @@ function draw(ts) {
     ctx.fill();
   });
 
-  requestAnimationFrame(draw);
+  if (!reduceMotion.matches) cosmosRaf = requestAnimationFrame(draw);
 }
-requestAnimationFrame(draw);
+cosmosRaf = requestAnimationFrame(draw);
+if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', () => { cancelAnimationFrame(cosmosRaf); cosmosRaf = requestAnimationFrame(draw); });
+new MutationObserver(redrawStatic).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
 // FADE IN
 const obs = new IntersectionObserver(entries => {

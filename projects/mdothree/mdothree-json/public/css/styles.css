@@ -1176,3 +1176,16 @@ html[data-theme="light"] input[type="range"] {
 @media (max-width: 420px) {
   .nav-logo > span[style] { display: none; }   /* the "/ tool" suffix: the page title already names the tool */
 }
+
+/* HID-017: "Loading tool…" + disabled actions until the page script has bound its handlers (slow connections) */
+.mdo-load-status{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:.85rem;color:var(--slate-500,#8391A7)}
+.mdo-load-status::before{content:"";flex:none;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:mdo-spin .8s linear infinite}
+@keyframes mdo-spin{to{transform:rotate(360deg)}}
+[data-mdo-wait]{cursor:progress;opacity:.6}
+/* HID-005: honour reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .mdo-load-status::before{animation:none;border-right-color:currentColor;opacity:.5}
+}
+
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

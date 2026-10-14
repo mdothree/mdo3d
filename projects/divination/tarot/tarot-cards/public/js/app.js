@@ -174,6 +174,10 @@ class TarotApp {
         
         // Show card display
         cardDisplay.style.display = 'block';
+        // HID-003: announce the draw (the cards render as visuals).
+        const names = this.drawnCards.map((c, i) => c.name + (this.isReversed[i] ? ' (reversed)' : ''));
+        const st = document.getElementById('a11y-status');
+        if (st) { st.textContent = ''; setTimeout(() => { st.textContent = `Cards drawn: ${names.join(', ')}.`; }, 50); }
         
         // Animate cards in
         setTimeout(() => {

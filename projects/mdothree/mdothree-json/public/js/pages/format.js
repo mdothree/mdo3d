@@ -45,7 +45,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
         lastFormatted = minify ? minifyJSON(text) : formatJSON(text, indent);
         jsonOutput.innerHTML = syntaxHighlight(lastFormatted);
         const bytes = new Blob([lastFormatted]).size;
-        sizeInfo.textContent = `${bytes.toLocaleString()} bytes`;
+        sizeInfo.textContent = `${minify ? 'Minified' : 'Formatted'} · ${bytes.toLocaleString()} bytes`; // HID-003: announced (role=status)
         await saveToHistory('json-format', { action: minify ? 'minify' : 'format', sizeBytes: bytes });
         document.getElementById('downloadBtn').style.display = 'inline-flex';
       } catch (e) {
@@ -75,3 +75,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
       const a = document.createElement('a'); a.href = url; a.download = 'formatted.json'; a.click();
       URL.revokeObjectURL(url);
     });
+
+// HID-017: the page starts with "Loading tool…" and disabled actions; release them now that the handlers are bound.
+document.querySelectorAll('[data-mdo-wait]').forEach(el => { el.disabled = false; el.removeAttribute('aria-busy'); el.removeAttribute('data-mdo-wait'); });
+document.getElementById('mdoLoadStatus')?.remove();

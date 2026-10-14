@@ -702,3 +702,8 @@ html[data-theme="dark"] footer { background: #0A0712; color: #F3F4F6; border-top
    Never render an empty card; the upsell below says what unlocks it. */
 .reading-content:empty { display: none; }
 .premium-upsell .upsell-note { margin: 0 0 1rem; }
+
+/* HID-005: honour prefers-reduced-motion (stop decorative animation and transitions) */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}

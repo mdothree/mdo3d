@@ -68,6 +68,7 @@
     <h1>Payment confirmed</h1>
     <p>Your premium reading is unlocked. Return to the app and your credit will be applied automatically.</p>
     <p class="got"><strong>What you got:</strong> one AI tarot interpretation: a personalized reading of your card, deeper insights, actionable guidance and a custom affirmation (saved in this browser on this device).</p>
+    <p id="storage-notice" role="alert" hidden style="margin:12px 0;padding:10px 14px;border:1px solid currentColor;border-radius:8px;font-size:.9rem"></p>
     <a class="btn" href="/">Continue to your reading →</a>
     <p class="next">Next step: <a href="https://oracle.mdo3d.com/">try Oracle Cards &rarr;</a></p>
   </div>
@@ -99,10 +100,15 @@
     body: JSON.stringify({ sessionId: sessionId })
   }).then(function(r){ return r.json(); }).then(function(data){
     if (data.success && data.paid) {
-      window.PremiumEntitlement.grant({
+      var kept = window.PremiumEntitlement.grant({
         readingType: (data.metadata && data.metadata.readingType) || 'premium',
         sessionId: sessionId
       });
+      if (kept === false) {
+        // HID-011: say so plainly instead of claiming the unlock is saved.
+        var n = document.getElementById('storage-notice');
+        if (n) { n.hidden = false; } if (n) n.textContent = 'This browser is blocking site storage (private browsing or blocked site data), so the unlock cannot be saved here. Allow site data for ' + location.hostname + ', then reload this page: the payment is checked again and you are not charged twice.';
+      }
       show('confirmed');
     } else { show('failed'); }
   }).catch(function(){ show('failed'); });

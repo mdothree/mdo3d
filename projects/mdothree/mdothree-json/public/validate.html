@@ -81,7 +81,9 @@
         <div class="panel">
           <div class="panel-title" id="inputJsonLabel">Input JSON</div>
           <textarea aria-labelledby="inputJsonLabel" class="form-textarea" id="inputJson" style="min-height:420px;font-size:0.82rem;" placeholder='Paste JSON to validate...'></textarea>
-          <button class="btn btn-primary mt-16" id="validateBtn">✅ Validate</button>
+          <button class="btn btn-primary mt-16" id="validateBtn" disabled aria-busy="true" data-mdo-wait>✅ Validate</button>
+          <p id="a11yStatus" class="sr-only" role="status" aria-live="polite"></p>
+          <p class="mdo-load-status" id="mdoLoadStatus" role="status">Loading tool…</p>
         </div>
 
         <div>

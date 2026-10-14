@@ -77,6 +77,7 @@
         <p>Beautify or minify JSON with syntax highlighting.</p>
       </div>
 
+      <p class="mdo-load-status" id="mdoLoadStatus" role="status">Loading tool…</p>
       <div class="alert alert-info animate-fade-up" id="freeBanner" style="margin-bottom:20px;">
         ℹ️ <strong>Without Pro:</strong> Format JSON up to 50KB. <a href="/pricing" style="color:var(--emerald);text-decoration:none;margin-left:8px;">Pro (coming soon) →</a>
       </div>
@@ -91,8 +92,8 @@
           </div>
           <textarea aria-labelledby="inputJsonLabel" class="form-textarea" id="inputJson" style="min-height:400px;font-size:0.82rem;" placeholder='{"paste": "your JSON here"}'></textarea>
           <div class="btn-group mt-12">
-            <button class="btn btn-primary" id="formatBtn">✨ Beautify</button>
-            <button class="btn btn-secondary" id="minifyBtn">Minify</button>
+            <button class="btn btn-primary" id="formatBtn" disabled aria-busy="true" data-mdo-wait>✨ Beautify</button>
+            <button class="btn btn-secondary" id="minifyBtn" disabled aria-busy="true" data-mdo-wait>Minify</button>
             <div class="form-group" style="margin:0;display:flex;align-items:center;gap:8px;">
               <label class="form-label" style="margin:0;white-space:nowrap;" for="indent">Indent</label>
               <select class="form-select" id="indent" style="width:80px;">
@@ -111,7 +112,7 @@
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
               <div class="panel-title" style="border:none;margin:0;padding:0;">Output</div>
               <div class="btn-group">
-                <span class="text-xs text-muted text-mono" id="sizeInfo"></span>
+                <span class="text-xs text-muted text-mono" id="sizeInfo" role="status" aria-live="polite"></span>
                 <button class="btn btn-ghost" id="downloadBtn" style="padding:6px 12px;font-size:0.78rem;display:none;">⬇️ .json</button>
                 <button class="btn btn-ghost" id="copyBtn" style="padding:6px 12px;font-size:0.78rem;">Copy</button>
               </div>
