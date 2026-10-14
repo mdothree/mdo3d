@@ -1,5 +1,5 @@
 {
-  "_note": "Ridgefield capsule from ~/Downloads/ridgefield_shop_concepts (ChatGPT renders, captioned Concept render). The chevron on the garments is a render placeholder; final pieces use the Ridgefield square mark. No performance or material claims (waterproof, heavyweight, durable): specs are unconfirmed. Render prices are not used.",
+  "_note": "Ridgefield capsule from ~/ridgefield/design/store_concepts_2026-10-14 (ChatGPT renders, captioned Concept render). The chevron on the garments is a render placeholder; final pieces use the Ridgefield square mark. No performance or material claims (waterproof, heavyweight, durable): specs are unconfirmed. Render prices are not used.",
   "products": [
     {
       "id": "hoodie", "ref": "RF-01", "name": "Hoodie", "line": "Capsule 01", "category": "apparel", "type": "Hoodie",

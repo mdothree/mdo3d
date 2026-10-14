@@ -1,4 +1,4 @@
-// Girls Love Butts layout. Direction from the 7 GLB concept boards (~/Downloads/glb): bright pink / yellow /
+// Girls Love Butts layout. Direction from the 7 GLB concept boards (~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14): bright pink / yellow /
 // blue on cream, hand-drawn marker type, stickers, body-positive. Playful and confident, never crude.
 // TAGLINES ARE PROVISIONAL (pending the Principal's identity call): "They own it." / "Every body is worth
 // drawing." Board copy reused: "Clothes for every body", "Real bodies, brighter days".

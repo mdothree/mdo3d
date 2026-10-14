@@ -109,15 +109,18 @@ test('Butts Studios: approved scope only, tagline in sans, bag never purchasable
   assert.match(catalog.find((p) => p.id === 'plaid-flannel').summary, /No logo on the front/);
 });
 
-test('Runwae Apparel: story first, collection revealed at chapter 06; owner art leads; archive = real Fall 21 pieces', async () => {
+test('Runwae Apparel: photography first, no featured bare sketch, collection after the story; archive = real Fall 21 pieces', async () => {
   const out = await build('runwae');
+  const pages = pagesOf(out).map((f) => readFileSync(join(out, f), 'utf8')).join('\n');
+  assert.doesNotMatch(pages, /assets\/sketch-/, 'the bare sketches are not shown as pictures (Principal 2026-10-14)');
+  assert.ok(!readdirSync(join(out, 'assets')).some((f) => f.startsWith('sketch-')));
   const idx = readFileSync(join(out, 'index.html'), 'utf8');
-  const ch = [...idx.matchAll(/<p class="rw-chap"><span>(\d\d)<\/span>/g)].map((m) => m[1]);
-  assert.deepEqual(ch, ['00', '01', '02', '03', '04', '05', '06', '07']);
-  assert.ok(idx.indexOf('<a class="rw-card') > idx.indexOf('<span>06</span>'), 'no product cards before chapter 06');
   const main = idx.slice(idx.indexOf('<main'));
-  assert.ok(main.indexOf('sketch-01') < main.indexOf('drawn-figure-hoodie'), 'the drawing comes before the garment');
-  assert.match(idx, /Ideas\. People\. Places\. Progress\./);
+  assert.match(main.slice(0, 1500), /class="rw-hero"/);
+  assert.match(main.slice(0, 2500), /drawn-figure-hoodie/, 'the hero leads with photography of the drawn pieces');
+  assert.ok(main.indexOf('<a class="rw-card') > main.indexOf('id="everyone"'), 'product cards come after the story panels');
+  assert.match(idx, /Ideas\. People\.<br>Places\. Progress\./);
+  assert.ok((idx.match(/class="rw-ptag">Concept</g) ?? []).length >= 8, 'concept photography is captioned');
   const { catalog } = loadBrand('runwae');
   for (const p of catalog.filter((x) => x.status === 'archive')) { assert.equal(p.archive_year, 2021); assert.equal(p.line, "Fall '21"); }
   assert.doesNotMatch(idx + readFileSync(join(out, 'shop.html'), 'utf8'), /museum|gallery wall|exhibit/i);

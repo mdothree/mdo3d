@@ -1,10 +1,10 @@
 {
- "_note": "GLB concept renders from ~/Downloads/glb (AI-generated, captioned 'Concept render'; low resolution, so layouts cap display size) plus LB's own sketchbook line art (~/Downloads/Butts_Studios/GLB/Design). The cap/dad hat is never cropped. IMG_3206 and the 2022 screenshot in that folder are third-party and unused.",
+ "_note": "GLB concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (AI-generated, captioned 'Concept render'; low resolution, so layouts cap display size) plus LB's own sketchbook line art (~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design). The cap/dad hat is never cropped. IMG_3206 and the 2022 screenshot in that folder are third-party and unused.",
  "sources": {
-  "home": "~/Downloads/glb/5012cf0a-631d-463f-a536-0c86d6d400c6.png",
-  "pdp": "~/Downloads/glb/37791f90-3c0c-469b-af64-b88fbe6c8581.png",
-  "sketch6": "~/Downloads/Butts_Studios/GLB/Design/66969223584__F71501C5-4E4C-4FA5-A66D-CB8A5495F878.JPG",
-  "sketch1": "~/Downloads/Butts_Studios/GLB/Design/66817852402__A8E496D6-14A6-46A6-A87D-4A5990D9F736.JPG"
+  "home": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/5012cf0a-631d-463f-a536-0c86d6d400c6.png",
+  "pdp": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/37791f90-3c0c-469b-af64-b88fbe6c8581.png",
+  "sketch6": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66969223584__F71501C5-4E4C-4FA5-A66D-CB8A5495F878.JPG",
+  "sketch1": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66817852402__A8E496D6-14A6-46A6-A87D-4A5990D9F736.JPG"
  },
  "crops": [
   {

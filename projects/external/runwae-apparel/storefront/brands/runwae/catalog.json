@@ -1,5 +1,5 @@
 {
- "_note": "Runwae Apparel shop (developer handoff 2026-10-14). Shown now: one focus piece (pre-order), The Little Things next drop, the Drawn Series as concepts (owner sketches; AI concept renders are captioned). Archive: real Fall '21 pieces only. Poison and Pave hoodies are removed for good. images[].file: an assets/manifest.json key, or a pre-seed file name. source_images: originals under ../design for tools/assets.py.",
+ "_note": "Runwae Apparel shop (developer handoff 2026-10-14). Shown now: one focus piece (pre-order), The Little Things next drop, the Drawn Series as concepts (AI concept photography of the owner's drawings on garments, captioned Concept; bare sketches are not featured, Principal 2026-10-14). Archive: real Fall '21 pieces only. Poison and Pave hoodies are removed for good. images[].file: an assets/manifest.json key, or a pre-seed file name. source_images: originals under ../design for tools/assets.py.",
  "products": [
   {
    "id": "tlt-neighbor-hoodie",
@@ -201,16 +201,21 @@
      "concept": true
     },
     {
-     "file": "sketch-01",
-     "alt": "Sketch 01: full-body standing figure, dark line on lime",
-     "caption": "Source drawing · Sketch 01"
+     "file": "ed-green-back",
+     "alt": "The forest figure hoodie, seen from behind against a concrete wall",
+     "concept": true
+    },
+    {
+     "file": "ed-cream-detail",
+     "alt": "A small version of the figure drawing on an ivory hoodie chest",
+     "concept": true
     }
    ],
    "summary": "The standing-figure sketch, drawn large across the back of a forest hoodie.",
    "details": [
     [
      "Status",
-     "A concept for the Drawn Series, from the owner's own sketches. Fabric, print method and fit are still open."
+     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
     ]
    ],
    "rights_hold": null
@@ -243,18 +248,13 @@
      "file": "drawn-sketch-hoodie",
      "alt": "Black hoodie with the crowded portrait sketch in cream line",
      "concept": true
-    },
-    {
-     "file": "sketch-03",
-     "alt": "Sketch 03: illustrated portrait, crowded composition",
-     "caption": "Source drawing · Sketch 03"
     }
    ],
    "summary": "The crowded portrait sketch in cream line on washed black.",
    "details": [
     [
      "Status",
-     "A concept for the Drawn Series, from the owner's own sketches. Fabric, print method and fit are still open."
+     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
     ]
    ],
    "rights_hold": null
@@ -294,16 +294,16 @@
      "concept": true
     },
     {
-     "file": "sketch-02",
-     "alt": "Sketch 02: expressive face and head study",
-     "caption": "Source drawing · Sketch 02"
+     "file": "ed-cream-back",
+     "alt": "The ivory hoodie worn, the drawing across the back",
+     "concept": true
     }
    ],
    "summary": "The head study in dark line on warm ivory.",
    "details": [
     [
      "Status",
-     "A concept for the Drawn Series, from the owner's own sketches. Fabric, print method and fit are still open."
+     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
     ]
    ],
    "rights_hold": null
@@ -336,18 +336,13 @@
      "file": "drawn-buttondown",
      "alt": "Ivory button-down with a small plant drawing on the chest",
      "concept": true
-    },
-    {
-     "file": "sketch-04",
-     "alt": "Sketch 04: paired figures and plant",
-     "caption": "Source drawing · Sketch 04"
     }
    ],
    "summary": "A quiet ivory button-down with one small plant drawing on the chest.",
    "details": [
     [
      "Status",
-     "A concept for the Drawn Series, from the owner's own sketches. Fabric, print method and fit are still open."
+     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
     ]
    ],
    "rights_hold": null
@@ -382,16 +377,16 @@
      "concept": true
     },
     {
-     "file": "sketch-04",
-     "alt": "Sketch 04: paired figures and plant",
-     "caption": "Source drawing · Sketch 04"
+     "file": "ed-green-shirt",
+     "alt": "Green overshirt laid flat with plant line work",
+     "concept": true
     }
    ],
    "summary": "The paired figures and plant across the back of an olive overshirt.",
    "details": [
     [
      "Status",
-     "A concept for the Drawn Series, from the owner's own sketches. Fabric, print method and fit are still open."
+     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
     ]
    ],
    "rights_hold": null

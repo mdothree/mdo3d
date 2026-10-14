@@ -1,9 +1,9 @@
 {
-  "_note": "All sources are concept renders from the developer handoff (~/Downloads/Butts_Studios_Developer_Handoff). They are moodboards, not product photography: every image is captioned 'Concept render' on the site. 06_latest_site_concept_NOT_APPROVED is deliberately unused. Flannel crops come only from 03 (the no-front-logo flannel). Cap, tote, backpack, button-up and the duffel are never cropped.",
+  "_note": "All sources are concept renders from the developer handoff (~/buttsstudios/design/apparel_handoff_2026-10-14). They are moodboards, not product photography: every image is captioned 'Concept render' on the site. 06_latest_site_concept_NOT_APPROVED is deliberately unused. Flannel crops come only from 03 (the no-front-logo flannel). Cap, tote, backpack, button-up and the duffel are never cropped.",
   "sources": {
-    "c02": "~/Downloads/Butts_Studios_Developer_Handoff/images/concept_iterations/02_made_of_story_first_pass.png",
-    "c03": "~/Downloads/Butts_Studios_Developer_Handoff/images/concept_iterations/03_refined_beanie_flannel.png",
-    "look": "~/Downloads/Butts_Studios_Developer_Handoff/Rust Trails_ Alpine Outdoor Lookbook.png"
+    "c02": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/02_made_of_story_first_pass.png",
+    "c03": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/03_refined_beanie_flannel.png",
+    "look": "~/buttsstudios/design/apparel_handoff_2026-10-14/Rust Trails_ Alpine Outdoor Lookbook.png"
   },
   "crops": [
     {"out": "rust-hoodie", "src": "c02", "x": 920, "y": 2, "w": 326, "h": 392},

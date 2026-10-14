@@ -1,64 +1,26 @@
 {
- "_note": "Owner art (01_original_artwork), owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used.",
+ "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops).",
  "sources": {
-  "sk1": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 19_.PNG",
-  "sk2": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 18_.PNG",
-  "sk3": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 12_.PNG",
-  "sk4": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 16_.PNG",
-  "rwa": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/Artboard 1 copy 4(1).png",
-  "trc": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/Artboard 1 copy 9.png",
-  "company": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/Artboard 1 copy 2.png",
-  "badge": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/emblem.png",
-  "card": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/runwaeapparelbusinesscardback.png",
-  "p_black": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/IMG_5595(1).jpeg",
-  "p_tee": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/A4C76011-B802-4A77-AFB3-4B2F9FD392C9(1).jpeg",
-  "p_tlt": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/3DA1BCC5-C2B6-4BE4-A990-F605574A8B66(1).jpeg",
-  "p_label": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/B8CFAB7F-A9BC-42CF-AACA-4A940F1E7C6F.jpeg",
-  "p_green": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/Artboard 1 copy 6.png",
-  "ad1": "~/Downloads/RUNWAE_Ad_Concept_Crops/01_figure_hoodie_forest.png",
-  "ad2": "~/Downloads/RUNWAE_Ad_Concept_Crops/02_cream_hoodie_back.png",
-  "ad4": "~/Downloads/RUNWAE_Ad_Concept_Crops/04_figure_overshirt.png",
-  "ad5": "~/Downloads/RUNWAE_Ad_Concept_Crops/05_botanical_buttondown.png",
-  "ad6": "~/Downloads/RUNWAE_Ad_Concept_Crops/06_sketch_black_hoodie.png",
-  "ad3": "~/Downloads/RUNWAE_Ad_Concept_Crops/03_illustrated_cream_hoodie.png"
+  "rwa": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 4(1).png",
+  "trc": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 9.png",
+  "company": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 2.png",
+  "badge": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/emblem.png",
+  "card": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/runwaeapparelbusinesscardback.png",
+  "p_black": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/03_user_apparel_and_photography/IMG_5595(1).jpeg",
+  "p_tee": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/03_user_apparel_and_photography/A4C76011-B802-4A77-AFB3-4B2F9FD392C9(1).jpeg",
+  "p_tlt": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/03_user_apparel_and_photography/3DA1BCC5-C2B6-4BE4-A990-F605574A8B66(1).jpeg",
+  "p_label": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/03_user_apparel_and_photography/B8CFAB7F-A9BC-42CF-AACA-4A940F1E7C6F.jpeg",
+  "p_green": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/03_user_apparel_and_photography/Artboard 1 copy 6.png",
+  "ad1": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/01_figure_hoodie_forest.png",
+  "ad2": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/02_cream_hoodie_back.png",
+  "ad4": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/04_figure_overshirt.png",
+  "ad5": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/05_botanical_buttondown.png",
+  "ad6": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/06_sketch_black_hoodie.png",
+  "ad3": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/03_illustrated_cream_hoodie.png",
+  "ed": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/a_clean_editorial_product_catalog_style_layout_i.png",
+  "cj": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/runwae_apparel_a_continuing_journey.png"
  },
  "crops": [
-  {
-   "out": "sketch-01",
-   "src": "sk1",
-   "widths": [
-    540
-   ]
-  },
-  {
-   "out": "sketch-02",
-   "src": "sk2",
-   "widths": [
-    540
-   ]
-  },
-  {
-   "out": "sketch-03",
-   "src": "sk3",
-   "widths": [
-    540
-   ]
-  },
-  {
-   "out": "sketch-04",
-   "src": "sk4",
-   "widths": [
-    540
-   ]
-  },
-  {
-   "out": "sketch-03-detail",
-   "src": "sk3",
-   "x": 330,
-   "y": 300,
-   "w": 520,
-   "h": 520
-  },
   {
    "out": "mark-rwa",
    "src": "rwa",
@@ -174,6 +136,78 @@
    "widths": [
     640
    ]
+  },
+  {
+   "out": "ed-green-back",
+   "src": "ed",
+   "x": 292,
+   "y": 0,
+   "w": 473,
+   "h": 640
+  },
+  {
+   "out": "ed-cream-detail",
+   "src": "ed",
+   "x": 771,
+   "y": 0,
+   "w": 408,
+   "h": 377
+  },
+  {
+   "out": "ed-rust-shirt",
+   "src": "ed",
+   "x": 1186,
+   "y": 0,
+   "w": 350,
+   "h": 640
+  },
+  {
+   "out": "ed-black-tee",
+   "src": "ed",
+   "x": 771,
+   "y": 384,
+   "w": 408,
+   "h": 334
+  },
+  {
+   "out": "ed-cream-back",
+   "src": "ed",
+   "x": 1,
+   "y": 647,
+   "w": 360,
+   "h": 377
+  },
+  {
+   "out": "ed-green-shirt",
+   "src": "ed",
+   "x": 368,
+   "y": 647,
+   "w": 397,
+   "h": 377
+  },
+  {
+   "out": "ed-black-hood",
+   "src": "ed",
+   "x": 771,
+   "y": 723,
+   "w": 408,
+   "h": 301
+  },
+  {
+   "out": "cj-cream-hood",
+   "src": "cj",
+   "x": 924,
+   "y": 0,
+   "w": 311,
+   "h": 307
+  },
+  {
+   "out": "cj-rust-button",
+   "src": "cj",
+   "x": 1031,
+   "y": 631,
+   "w": 204,
+   "h": 194
   }
  ]
 }
