@@ -1,18 +1,53 @@
 /**
  * Server-side checks that a Stripe Checkout Session is a real, paid purchase of
- * the Baby Name Oracle report ($2.99 Payment Link). READ-ONLY: it only calls
- * checkout.sessions.retrieve / checkout.sessions.list. It never writes to Stripe.
+ * the Baby Name Oracle report ($3 Payment Link; the original link stays valid).
+ * READ-ONLY: it only calls checkout.sessions.retrieve / checkout.sessions.list.
+ * It never writes to Stripe.
  *
  * The stripe client is injected so tests can pass a stub.
  */
+import { createRequire } from 'node:module';
 
+const require = createRequire(import.meta.url);
+const LINKS_FILE = require('./links.json');
+
+// Floor for a session that can't be matched to a known link (line-item name
+// fallback): the lowest list price any names link has ever had.
 export const MIN_PRICE_CENTS = 299;
 
-// The Payment Link id (plink_...) of https://buy.stripe.com/eVqeVc6l20HL1hW97Z8k802.
-// Fill in NAMES_PAYMENT_LINK_ID (env) once the operator reads it from the
-// Stripe dashboard. Until then, sessions are matched by line-item name instead.
-// Read per call (not at import) so dotenv / Vercel env changes apply.
-export const namesPaymentLinkId = () => (process.env.NAMES_PAYMENT_LINK_ID || '').trim();
+const PLINK_RE = /^plink_[A-Za-z0-9]+$/;
+
+/**
+ * The Payment Links that sell the report: [{ id, amount_cents, price_id? }].
+ * From src/names/links.json (filled in by the pricing GO script; placeholder
+ * entries are skipped) plus NAMES_PAYMENT_LINK_ID / NAMES_PAYMENT_LINK_IDS
+ * (env, comma-separated; amount unknown -> MIN_PRICE_CENTS floor).
+ * Read per call (not at import) so dotenv / Vercel env changes apply.
+ */
+export function namesLinks(file = LINKS_FILE) {
+  const out = [];
+  for (const l of file?.links || []) {
+    if (l && PLINK_RE.test(l.id || '') && Number.isInteger(l.amount_cents) && l.amount_cents > 0) {
+      out.push({ id: l.id, amount_cents: l.amount_cents, price_id: /^price_/.test(l.price_id || '') ? l.price_id : null });
+    }
+  }
+  const env = [process.env.NAMES_PAYMENT_LINK_ID, process.env.NAMES_PAYMENT_LINK_IDS].filter(Boolean).join(',');
+  for (const id of env.split(',').map(x => x.trim()).filter(x => PLINK_RE.test(x))) {
+    if (!out.some(l => l.id === id)) out.push({ id, amount_cents: null, price_id: null });
+  }
+  return out;
+}
+
+// Back-compat: the first configured link id ('' when none).
+export const namesPaymentLinkId = () => (namesLinks()[0]?.id || '');
+
+// opts.links (array) wins; else opts.plinkId (string: '' = no link matching,
+// 'plink_...' = that one link, amount floor); else the configured links.
+function linksFrom(opts = {}) {
+  if (Array.isArray(opts.links)) return opts.links;
+  if (typeof opts.plinkId === 'string') return opts.plinkId ? [{ id: opts.plinkId, amount_cents: null, price_id: null }] : [];
+  return namesLinks();
+}
 
 const PRODUCT_NAME_RE = /name/i;
 const SESSION_ID_RE = /^cs_(live|test)_[A-Za-z0-9]{10,250}$/;
@@ -26,16 +61,23 @@ function lineItemNames(session) {
   return items.map(li => li.description || li.price?.product?.name || '').filter(Boolean);
 }
 
+function sessionLinkId(session) {
+  return typeof session.payment_link === 'string' ? session.payment_link : session.payment_link?.id;
+}
+
 /**
  * Returns null when the session is a valid paid purchase, else a reason string.
  *
- * Amount: checked on amount_subtotal (the price before discounts), because the
- * MDOEARLY50 promo code takes 50% off at checkout (amount_total ~ 150). A
- * session fully covered by a promotion code (payment_status
+ * Amount: amount_subtotal (the price before discounts) must be at least the
+ * list price of the link the session came from ($3 link: 300; original link:
+ * 299). Promo codes only lower amount_total, so MDOEARLY50 (50% off, total 150)
+ * passes. A session fully covered by a promotion code (payment_status
  * 'no_payment_required') is accepted only when its subtotal is the full price
- * and a discount was applied.
+ * and a discount was applied. With no link configured, sessions match by
+ * line-item name and the MIN_PRICE_CENTS floor.
  */
-export function sessionProblem(session, { plinkId = namesPaymentLinkId() } = {}) {
+export function sessionProblem(session, opts = {}) {
+  const links = linksFrom(opts);
   if (!session || session.object !== 'checkout.session') return 'not a checkout session';
   if (session.mode && session.mode !== 'payment') return 'not a one-time payment';
   if (session.status && session.status !== 'complete') return 'checkout not complete';
@@ -44,13 +86,16 @@ export function sessionProblem(session, { plinkId = namesPaymentLinkId() } = {})
   if (!paid) return 'not paid';
   if ((session.currency || '').toLowerCase() !== 'usd') return 'wrong currency';
   const subtotal = session.amount_subtotal ?? session.amount_total ?? 0;
-  if (subtotal < MIN_PRICE_CENTS) return 'amount too low';
-  if (plinkId) {
-    const link = typeof session.payment_link === 'string' ? session.payment_link : session.payment_link?.id;
-    if (link !== plinkId) return 'different product';
-  } else if (!lineItemNames(session).some(n => PRODUCT_NAME_RE.test(n))) {
-    return 'different product';
+  if (links.length) {
+    const link = links.find(l => l.id === sessionLinkId(session));
+    if (!link) return 'different product';
+    const prices = (session.line_items?.data || []).map(li => li.price?.id).filter(Boolean);
+    if (link.price_id && prices.length && !prices.includes(link.price_id)) return 'different product';
+    if (subtotal < (link.amount_cents ?? MIN_PRICE_CENTS)) return 'amount too low';
+    return null;
   }
+  if (subtotal < MIN_PRICE_CENTS) return 'amount too low';
+  if (!lineItemNames(session).some(n => PRODUCT_NAME_RE.test(n))) return 'different product';
   return null;
 }
 
@@ -93,7 +138,7 @@ function cardLast4(session) {
  * Returns { ok: true, session } or { ok: false, status, error }.
  */
 export async function findPaidSessionByEmail(stripe, email, last4, opts = {}) {
-  const plinkId = opts.plinkId ?? namesPaymentLinkId();
+  const links = linksFrom(opts);
   const notFound = {
     ok: false, status: 402,
     error: 'We could not find a paid report for that email and card. Use the email you entered at checkout and the last 4 digits of the card you paid with.',
@@ -102,24 +147,27 @@ export async function findPaidSessionByEmail(stripe, email, last4, opts = {}) {
 
   const emails = [...new Set([email.trim(), email.trim().toLowerCase()])];
   const sessions = [];
+  const linkIds = links.length ? links.map(l => l.id) : [null];
   try {
     for (const e of emails) {
-      const params = {
-        customer_details: { email: e },
-        status: 'complete',
-        limit: 20,
-        expand: ['data.line_items', 'data.payment_intent.latest_charge'],
-      };
-      if (plinkId) params.payment_link = plinkId;
-      const page = await stripe.checkout.sessions.list(params);
-      for (const s of page?.data || []) if (!sessions.some(x => x.id === s.id)) sessions.push(s);
+      for (const linkId of linkIds) {
+        const params = {
+          customer_details: { email: e },
+          status: 'complete',
+          limit: 20,
+          expand: ['data.line_items', 'data.payment_intent.latest_charge'],
+        };
+        if (linkId) params.payment_link = linkId;
+        const page = await stripe.checkout.sessions.list(params);
+        for (const s of page?.data || []) if (!sessions.some(x => x.id === s.id)) sessions.push(s);
+      }
     }
   } catch (err) {
     console.error('names email lookup: stripe list failed:', err && err.message);
     return { ok: false, status: 502, error: 'Could not reach the payment processor. Please try again shortly.' };
   }
   const valid = sessions
-    .filter(s => !sessionProblem(s, { plinkId }) && cardLast4(s) === last4)
+    .filter(s => !sessionProblem(s, { links }) && cardLast4(s) === last4)
     .sort((a, b) => (b.created || 0) - (a.created || 0));
   return valid.length ? { ok: true, session: valid[0] } : notFound;
 }

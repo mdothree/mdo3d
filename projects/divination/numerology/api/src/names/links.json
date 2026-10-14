@@ -1,0 +1,7 @@
+{
+  "_comment": "Baby Name Oracle Payment Links whose paid sessions unlock the report (MDO-NAMES-PRICE (a), 2026-10-14). amount_cents is the link's list price; verify.js checks a session's amount_subtotal (before promo codes) against it, so MDOEARLY50 (50% off: total 150 on 300) is accepted. ~/mdo3d/staged/pricing/PRICING_GO.sh fills the __...__ placeholders from out/new_ids.json before deploy; an entry whose id is not a plink_ id is ignored. The old link stays active in Stripe (never paused), so its buyers keep getting their report.",
+  "links": [
+    { "key": "names-3usd-2026-10-14", "id": "__NAMES_PAYMENT_LINK_ID__", "price_id": "__NAMES_PRICE_ID__", "amount_cents": 300, "url": "__NAMES_PAYMENT_LINK_URL__" },
+    { "key": "names-original", "id": "__NAMES_OLD_PAYMENT_LINK_ID__", "amount_cents": 299, "url": "https://buy.stripe.com/eVqeVc6l20HL1hW97Z8k802" }
+  ]
+}

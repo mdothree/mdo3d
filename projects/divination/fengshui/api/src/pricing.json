@@ -4,17 +4,17 @@
   "currency": "usd",
   "types": {
     "single-room": {
-      "amount_cents": 500,
+      "amount_cents": 300,
       "label": "Single Room Analysis",
       "description": "Detailed Feng Shui analysis for one room"
     },
     "full-home": {
-      "amount_cents": 1000,
+      "amount_cents": 900,
       "label": "Full Home Analysis",
       "description": "Comprehensive analysis of your entire home"
     },
     "office": {
-      "amount_cents": 500,
+      "amount_cents": 300,
       "label": "Office/Workspace Analysis",
       "description": "Optimize your workspace for success"
     }

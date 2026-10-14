@@ -4,17 +4,17 @@
   "currency": "usd",
   "types": {
     "single-premium": {
-      "amount_cents": 500,
+      "amount_cents": 300,
       "label": "Premium Single Rune Reading",
       "description": "Detailed AI-powered rune interpretation"
     },
     "three": {
-      "amount_cents": 1000,
+      "amount_cents": 500,
       "label": "Three Rune Spread",
       "description": "Past, Present, Future spread with AI insights"
     },
     "five": {
-      "amount_cents": 1000,
+      "amount_cents": 900,
       "label": "Five Rune Spread",
       "description": "Comprehensive spread with higher guidance"
     }

@@ -4,12 +4,12 @@
   "currency": "usd",
   "types": {
     "single-premium": {
-      "amount_cents": 500,
+      "amount_cents": 300,
       "label": "Premium Hexagram Reading",
       "description": "Detailed AI-powered I Ching interpretation"
     },
     "changing-lines": {
-      "amount_cents": 1000,
+      "amount_cents": 500,
       "label": "Changing Lines Reading",
       "description": "Full reading with changing lines analysis"
     }

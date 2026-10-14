@@ -4,7 +4,7 @@
   "currency": "usd",
   "types": {
     "dream-analysis": {
-      "amount_cents": 500,
+      "amount_cents": 300,
       "label": "Premium Dream Analysis",
       "description": "AI-powered deep dream interpretation with psychological and spiritual insights"
     }

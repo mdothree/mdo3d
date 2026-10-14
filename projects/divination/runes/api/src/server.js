@@ -83,7 +83,7 @@ app.post('/api/reading/generate', async (req, res) => {
 
     // For premium, generate AI reading
     // Premium requires a verified, paid Stripe session from this service, bought
-    // for this spread size or larger (a $2.99 single session can't unlock five runes).
+    // for this spread size or larger (a $3 single session can't unlock five runes).
     {
       let tier = runes.length > 3 ? 'five' : runes.length > 1 ? 'three' : 'single';
       if (SPREAD_ORDER.indexOf(spreadType) > SPREAD_ORDER.indexOf(tier)) tier = spreadType;

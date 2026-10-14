@@ -4,7 +4,7 @@
  *   POST /api/names/report           {session_id, name, surname?, siblings?[], sex?, filters?}
  *   POST /api/names/report-by-email  {email, card_last4, name, surname?, siblings?[], sex?, filters?}
  *
- * The $2.99 report is sold through a Stripe Payment Link; this route verifies
+ * The $3 report is sold through a Stripe Payment Link; this route verifies
  * the purchase server-side (read-only Stripe calls) and returns the
  * deterministic report from src/names/report.js. Unknown or unpaid -> 402.
  *
@@ -25,10 +25,10 @@ export const NAMES_ORIGINS = ['https://names.mdo3d.com'];
 // limiter); it never writes to Stripe.
 export const MAX_REPORTS_PER_SESSION = 5;
 
-export function createNamesRouter({ stripe, plinkId, maxReports = MAX_REPORTS_PER_SESSION, limits = {} } = {}) {
+export function createNamesRouter({ stripe, plinkId, links, maxReports = MAX_REPORTS_PER_SESSION, limits = {} } = {}) {
   let client = stripe || null;
   const getStripe = () => (client ||= new Stripe(process.env.STRIPE_SECRET_KEY));
-  const opts = () => (plinkId !== undefined ? { plinkId } : {});
+  const opts = () => (links !== undefined ? { links } : plinkId !== undefined ? { plinkId } : {});
   const used = new Map(); // session id -> Set(name keys)
 
   const router = express.Router();

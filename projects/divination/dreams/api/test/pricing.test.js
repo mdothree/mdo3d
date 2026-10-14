@@ -78,11 +78,12 @@ test('pricing.json has the expected product and only positive integer cents', ()
   }
 });
 
-test('JARVIS #63 ladder: every type is $5 single or $10 deep', () => {
+test('MDO-S10 ladder: every type is $3 single, $5 three/two-person or $9 full spread (no *.99)', () => {
   for (const [type, e] of Object.entries(pricing.types)) {
-    assert.ok([500, 1000].includes(e.amount_cents), `${type} = ${e.amount_cents}`);
+    assert.ok([300, 500, 900].includes(e.amount_cents), `${type} = ${e.amount_cents}`);
+    assert.notEqual(e.amount_cents % 100, 99, `${type} is a *.99 price`);
   }
-  assert.equal(pricing.types[CASES.singleType].amount_cents, 500);
+  assert.equal(pricing.types[CASES.singleType].amount_cents, 300);
 });
 
 test('JARVIS #63b: no monthly tier (none is a Stripe subscription) and "monthly" checkout is refused', async () => {

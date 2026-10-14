@@ -116,8 +116,8 @@ app.post('/api/reading/multiple-lives', async (req, res) => {
     }
 
     // Same paid-session guard as /api/reading/generate — `premium: true` alone
-    // must not unlock a paid reading — and the session must be for the $10
-    // multiple-lives product or a tier above it (a $5 single-life session is refused).
+    // must not unlock a paid reading — and the session must be for the $5
+    // multiple-lives product or a tier above it (a $3 single-life session is refused).
     {
       const denied = await checkPaidSession(stripeService, req.body.sessionId, {
         allowedTypes: ['multiple-lives', 'deep-dive']
