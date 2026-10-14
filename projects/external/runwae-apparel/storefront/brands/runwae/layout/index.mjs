@@ -127,10 +127,9 @@ ${wornAs(kit, 'globe-hoodie', 'Globe Hoodie', true)}</div>
 <dl class="rw5-beliefs">${BELIEFS.map(([w, l]) => `<div><dt>${w}</dt><dd>${l}</dd></div>`).join('')}</dl>
 </div></section>
 
-<section class="rw5-art" aria-labelledby="art-t"><div class="rw-wrap rw5-art-grid">
+<section class="rw5-art" aria-label="The art behind the clothes"><div class="rw-wrap rw5-art-grid">
 ${panel(kit, 'drawn-overshirt', { alt: 'A man in the olive Figure Overshirt seen from behind, the paired figures and plant drawn in cream line across the back', href: kit.href.product('drawn-overshirt'), label: 'Figure Overshirt', sizes: '(max-width: 820px) 100vw, 40vw', cls: ' rw5-art-photo' })}
 <div class="rw5-art-copy"><p class="rw4-num"><span>03</span> The art behind the clothes</p>
-<h2 id="art-t" class="rw4-h2">Drawn first. Then made.</h2><span class="rw4-rule" aria-hidden="true"></span>
 <p class="rw5-body">Figures, faces, plants and the places in between, drawn by hand and kept as they were drawn. Then the quiet parts: a woven label, a drawn button, a line of embroidery.</p>
 <p class="rw-note">Concept renders. Fabric and print method are confirmed with the maker before anything opens.</p>
 ${wornAs(kit, 'drawn-overshirt', 'Figure Overshirt')}
