@@ -143,8 +143,9 @@ if (PRO_CHECKOUT_ENABLED) {
 
       // Use Stripe Payment Links for simple checkout (no server needed)
       const paymentLinkUrl = selectedBilling === 'yearly'
-        ? 'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w'
-        : 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v';
+        ? STRIPE_CONFIG.paymentLinkYearly
+        : STRIPE_CONFIG.paymentLinkMonthly;
+      if (!/^https:\/\/buy\.stripe\.com\//.test(paymentLinkUrl || '')) return;   // #66b: no link configured -> no checkout
 
       submitBtn.disabled = true;
       submitLabel.textContent = 'Redirecting to secure checkout…';

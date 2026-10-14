@@ -127,6 +127,9 @@ export const STRIPE_CONFIG = {
   priceIdMonthly: CONFIG.priceIdMonthly || CONFIG.STRIPE_PRICE_ID_MONTHLY || '',
   priceIdYearly:  CONFIG.priceIdYearly  || CONFIG.STRIPE_PRICE_ID_YEARLY  || '',
   portalUrl:      CONFIG.portalUrl      || CONFIG.STRIPE_CUSTOMER_PORTAL_URL || '#',
+  // #66b: empty unless the build emitted them (PRO_CHECKOUT_ENABLED=true). Never hardcoded here.
+  paymentLinkMonthly: CONFIG.paymentLinkMonthly || '',
+  paymentLinkYearly:  CONFIG.paymentLinkYearly  || '',
 };
 
 export const IS_TEST_MODE = STRIPE_CONFIG.publishableKey.startsWith('pk_test_');

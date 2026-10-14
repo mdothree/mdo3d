@@ -56,13 +56,16 @@ const firebaseConfig = fbKeys.every(k => process.env[k]) ? JSON.stringify({
 }) : null;
 
 // Publishable key only (never a secret key). Empty when unset: Stripe() then fails and checkout fails closed.
+// #66b (Bridge #66(b)=A): no payment link reaches the page while Pro is unwired. The links are emitted only when
+// PRO_CHECKOUT_ENABLED is exactly 'true', and only from env (STRIPE_PAYMENT_LINK_MONTHLY / _YEARLY); no hardcoded default.
+const PRO_ON = process.env.PRO_CHECKOUT_ENABLED === 'true';
 const stripeConfig = JSON.stringify({
   publishableKey: process.env.STRIPE_PUBLISHABLE_KEY       || '',
-  paymentLinkMonthly: process.env.STRIPE_PAYMENT_LINK_MONTHLY || 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v',
-  paymentLinkYearly: process.env.STRIPE_PAYMENT_LINK_YEARLY || 'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w',
+  paymentLinkMonthly: PRO_ON ? (process.env.STRIPE_PAYMENT_LINK_MONTHLY || '') : '',
+  paymentLinkYearly:  PRO_ON ? (process.env.STRIPE_PAYMENT_LINK_YEARLY  || '') : '',
   portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || '',
   // #66b: Pro checkout stays closed (coming-soon copy, no payment link) unless this is exactly 'true'.
-  PRO_CHECKOUT_ENABLED: process.env.PRO_CHECKOUT_ENABLED === 'true',
+  PRO_CHECKOUT_ENABLED: PRO_ON,
 });
 
 // ── Find all HTML files in public/ ───────────────────────────

@@ -13,8 +13,8 @@ function loadStripeConfig() {
   }
   return {
     publishableKey: '',   // set via <meta name="stripe-config">; empty = checkout fails closed
-    paymentLinkMonthly: 'https://buy.stripe.com/3cIbJ05gY1LP1hWfwn8k80v',
-    paymentLinkYearly:  'https://buy.stripe.com/dRmeVcgZGdux9Os97Z8k80w',
+    paymentLinkMonthly: '', // #66b: set via <meta name="stripe-config"> only when PRO_CHECKOUT_ENABLED
+    paymentLinkYearly:  '',
     portalUrl:      '', // customer portal link
   };
 }
