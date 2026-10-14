@@ -3,7 +3,9 @@
 *Updated 2026-10-12 (decision wave) by the C2 Studios/Runwae pane. Plan of record: [`APPAREL_PLAYBOOK.md`](./APPAREL_PLAYBOOK.md)
 (replaced 2026-10-08 with the dispatch version of 2026-10-07). Nothing has been published, listed, posted, ordered or charged.*
 
-> **⏸ PHYSICAL ON HOLD (2026-10-12 ~18:22 ET):** the Principal said "we dont want to sell phyiscal products". Printful,
+> **⚠ SUPERSEDED 2026-10-13 (Principal, verbatim):** "its not everything is didigtal only. we ahve apparel stores. take that rule out. that was taken the rwrong way at some point. thats not law. jsut an approaach lossely  internally". Physical apparel is back on; digital point of sale is a loose approach, not a rule.
+>
+> ~~**⏸ PHYSICAL ON HOLD (2026-10-12 ~18:22 ET):**~~ the Principal said "we dont want to sell phyiscal products". Printful,
 > the supplier, the shipping kit, the physical pre-order checkout and the drop ads are **paused** until he confirms the
 > Runwae Apparel call in JARVIS §3. Brand work continues: aesthetic, photos, holding page, shop design, and the
 > **digital offer draft** (`DIGITAL_OFFER.md`).
@@ -67,7 +69,7 @@ artwork exported from the `.ai` masters.
 logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site; reference only, not the new storefront) ·
 `design/inspiration/`, `design/photo_pose_inspiration/` (shoot references).
 
-**GLB (sibling), catalogued 2026-10-12:** `~/Downloads/Butts_Studios/GLB/`.
+**GLB (sibling), catalogued 2026-10-12:** `~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/`.
 - `Design/`: **6 usable line drawings**, single-line figure studies (back views, one sheet of six), shot as phone
   photos of paper. They need a clean scan or vectorising before any mockup (shadows, paper texture). Also: one
   "Brain Dead" notebook doodle, the birdcage illustration (third-party, not used; see above), and a screenshot
@@ -102,7 +104,7 @@ logo) · `~/buttsstudios/clients/runwae_template/` (old Firebase/Bootstrap site;
 - [x] **Versioning `design/`:** stays local-only (#82-c, 2026-10-12).
 - [x] **Birdcage illustration:** dropped; the wordmark tee is front-only (#82-d, 2026-10-12).
 - [ ] **⏸ Accounts/keys (physical, ON HOLD):** Printful, Shippo/EasyPost, PO box, label printer. Stripe is still needed for any digital offer.
-- [ ] **Digital vs physical:** JARVIS §3 "Runwae Apparel vs digital-only"; options in `DIGITAL_OFFER.md`.
+- [x] **Digital vs physical:** resolved 2026-10-13: physical apparel is on; digital offers (`DIGITAL_OFFER.md`) are an add-on, not a replacement.
 
 ## Agent-doable
 **Done 2026-10-12 (no accounts needed):**
@@ -145,3 +147,11 @@ Shippo/EasyPost label + packing-slip pipeline, tracking/delay emails, GA4 → St
   - **Tests:** 19/19, run on xps.
   - **AI generation:** no image API key is available to this lane, and the garment itself must never be generated, so AI stays limited to backgrounds (gated: key + spend).
 - **2026-10-12 (digital shop):** Holding page finished (absolute OG/canonical, Twitter card, strict CSP in its own `vercel.json`). Digital shop built with a `--catalog digital` build mode; checkout refuses digital items. `PHOTO_GEN_BRIEF.md` is the generated-photo brief (fal pending). Tests 23/23 on xps.
+
+
+## 2026-10-14 · Butts Studios joins as the third apparel brand (Principal)
+> "i want  to sell apparel for butts studios also. thats 3 - BS, Runwae appearl, and GLB."
+- **Task (local, ungated):** add `storefront/brands/buttsstudios/` alongside runwae + glb, using the C5 logo
+  (Archivo Bold + square-X; spec in `~/buttsstudios/design/DESIGN_DIRECTIONS.md`), black/bone/gold palette, and
+  placeholder-free product list (empty until designs exist). Same Printful + Stripe Checkout path, test keys only.
+- **Platform:** stays custom (one codebase, three brand configs). Shopify ×3 only if the Principal overrides.

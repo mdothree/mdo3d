@@ -86,7 +86,7 @@ covers long-tail designs. Hero pieces and cut-and-sew go through the Pakistan pr
 - **Pricing:** worked back from the supplier quote, duty, packaging and postage.
 
 ## Brand source material (all pre-LLM, all real)
-- **Design source:** `~/Downloads/RunwaeApparel/` (108 files).
+- **Design source:** `~/mdo3d/projects/external/runwae-apparel/design/` (108 files).
   - **Fall '21 line:** True Grit tee + hoodie, Crafting, the wordmark tee, Poison, Pave.
   - **Marks:** the dripping-R emblem, "The Runwae Company" / TRC.
   - **Illustrator sources:** `Fall 21/all_products.ai`, `finaldesigns.ai`, `TLT/RWAline.ai`.
@@ -94,7 +94,7 @@ covers long-tail designs. Hero pieces and cut-and-sew go through the Pakistan pr
   magazine cover "Everybody Influences", Issue No. 1.
 - **Old site template:** `~/buttsstudios/clients/runwae_template/`.
 - **Brand naming:** "Runwae Apparel" is the brand (a Butts Studios subsidiary); TRC is a secondary mark.
-- **GLB source:** `~/Downloads/Butts_Studios/GLB/` (line-art figure drawings + branding inspiration). GLB is
+- **GLB source:** `~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/` (line-art figure drawings + branding inspiration). GLB is
   an apparel brand built from the line art. **No apparel mockups exist yet** for the GLB drawings, so they're
   the first concrete design task: vectorize/clean the line drawings, then run them through Printful's Mockup
   Generator on tees and hoodies. The finished artwork is LB's call; generation is for mockups only.
