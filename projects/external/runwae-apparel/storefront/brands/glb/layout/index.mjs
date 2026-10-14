@@ -3,7 +3,7 @@
 // TAGLINES ARE PROVISIONAL (pending the Principal's identity call): "They own it." / "Every body is worth
 // drawing." Board copy reused: "Clothes for every body", "Real bodies, brighter days".
 // Not reused from the boards: prices, star ratings/review counts, "ethically made"/"premium comfort" claims,
-// the dad hat, Afterpay.
+// Afterpay. Hats and the tote are GLB products (the cap/tote bans were Butts Studios only).
 
 const heart = '<svg class="g-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.5C5.5 16 3.2 12.6 3.6 9.4 4 6.4 7.4 4.6 10 6.4c.8.5 1.5 1.3 2 2.1.5-.8 1.2-1.6 2-2.1 2.6-1.8 6-.1 6.4 3 .4 3.2-1.9 6.6-8.4 11.1Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 const logo = (kit, cls = '') => `<a class="g-logo${cls}" href="${kit.href.home()}" aria-label="Girls Love Butts, home"><span class="g-logo-glb">GLB${heart}</span><span class="g-logo-sub">Girls Love Butts</span></a>`;
@@ -59,7 +59,7 @@ export const pages = {
 
 <section class="g-featured" aria-labelledby="feat-t"><div class="g-wrap">
 <div class="g-sec-head"><h2 id="feat-t" class="g-h2">The goods</h2><span class="g-rule" aria-hidden="true"></span><a class="g-see" href="${kit.href.shop()}">See all <span aria-hidden="true">→</span></a></div>
-<div class="g-row">${shown.map((p, i) => card(kit, p, i)).join('')}</div>
+<div class="g-row">${shown.slice(0, 10).map((p, i) => card(kit, p, i)).join('')}</div>
 </div></section>
 
 <section class="g-band" aria-labelledby="band-t"><div class="g-wrap g-band-grid">
@@ -79,7 +79,7 @@ ${kit.figure('band-friends', { concept: true, caption: 'Illustration', sizes: '(
   },
 
   collection({ kit, shown }) {
-    const cats = [['tees', 'Tees'], ['crews', 'Crews'], ['hoodies', 'Hoodies']].filter(([c]) => shown.some((p) => p.category === c));
+    const cats = [['tees', 'Tees'], ['hoodies', 'Hoodies'], ['baby-tees', 'Baby Tees'], ['shorts', 'Shorts'], ['sweatshirts', 'Sweatshirts'], ['hats', 'Hats'], ['accessories', 'Accessories']].filter(([c]) => shown.some((p) => p.category === c));
     return {
       title: 'Shop | Girls Love Butts',
       body: `<section class="g-shop-hero"><div class="g-wrap"><h1 class="g-h1 g-h1--shop">Shop GLB ${heart}</h1><p class="g-sub">Clothes for every body. Product images are concept renders while the first drop is made.</p>
@@ -89,17 +89,15 @@ ${kit.figure('band-friends', { concept: true, caption: 'Illustration', sizes: '(
   },
 
   product({ kit }, p) {
-    const [main, ...more] = p.images;
+    const media = (imgs, ci) => { const [main, ...more] = imgs; return `<div class="g-pdp-main">${kit.figure(main, { sizes: '(max-width: 820px) 100vw, 50vw', eager: ci === 0 })}</div>
+${more.length ? `<div class="g-pdp-more">${more.map((im) => kit.figure(im, { sizes: '(max-width: 820px) 50vw, 25vw' })).join('')}</div>` : ''}`; };
     return `<section class="g-wrap g-pdp">
-<div class="g-pdp-media">
-<div class="g-pdp-main">${kit.figure(main, { sizes: '(max-width: 820px) 100vw, 50vw', eager: true })}</div>
-${more.length ? `<div class="g-pdp-more">${more.map((im) => kit.figure(im, { sizes: '(max-width: 820px) 50vw, 25vw' })).join('')}</div>` : ''}
-</div>
+<div class="g-pdp-media">${kit.colorGalleries(p, media)}</div>
 <div class="g-pdp-panel">
 <p class="g-crumb"><a href="${kit.href.shop()}">Shop</a> / ${kit.esc(p.type)}</p>
 <h1 class="g-h1 g-h1--pdp">${kit.esc(p.name)} ${heart}</h1>
 <p class="g-lede">${kit.esc(p.summary)}</p>
-${kit.buyBox(p)}
+${kit.colorSwitch(p)}${kit.buyBox(p)}
 <ul class="g-values" aria-label="What GLB stands for"><li>${heart}<span>Body positive, always</span></li><li>${heart}<span>Drawn by hand</span></li><li>${heart}<span>A brighter, kinder world</span></li></ul>
 <div class="g-pdp-details">${kit.details(p, { open: 1 })}</div>
 </div></section>`;

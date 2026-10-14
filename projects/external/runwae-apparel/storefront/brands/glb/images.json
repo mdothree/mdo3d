@@ -1,10 +1,11 @@
 {
- "_note": "GLB concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (AI-generated, captioned 'Concept render'; low resolution, so layouts cap display size) plus LB's own sketchbook line art (~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design). The cap/dad hat is never cropped. IMG_3206 and the 2022 screenshot in that folder are third-party and unused.",
+ "_note": "GLB concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (AI-generated, captioned 'Concept render'; low resolution, so layouts cap display size) plus LB's own sketchbook line art (~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design). Hats and the tote are allowed for GLB (the bans were Butts Studios only). IMG_3206 and the 2022 screenshot in that folder are third-party and unused.",
  "sources": {
   "home": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/5012cf0a-631d-463f-a536-0c86d6d400c6.png",
   "pdp": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/37791f90-3c0c-469b-af64-b88fbe6c8581.png",
   "sketch6": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66969223584__F71501C5-4E4C-4FA5-A66D-CB8A5495F878.JPG",
-  "sketch1": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66817852402__A8E496D6-14A6-46A6-A87D-4A5990D9F736.JPG"
+  "sketch1": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66817852402__A8E496D6-14A6-46A6-A87D-4A5990D9F736.JPG",
+  "shop": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/4a224517-9cd3-4d71-9c66-2437aa778ebb.png"
  },
  "crops": [
   {
@@ -110,6 +111,94 @@
     640,
     1000
    ]
+  },
+  {
+   "out": "sh-crew-love",
+   "src": "shop",
+   "x": 241,
+   "y": 539,
+   "w": 221,
+   "h": 206
+  },
+  {
+   "out": "sh-brighter-black",
+   "src": "shop",
+   "x": 483,
+   "y": 539,
+   "w": 221,
+   "h": 206
+  },
+  {
+   "out": "sh-good-views",
+   "src": "shop",
+   "x": 724,
+   "y": 539,
+   "w": 221,
+   "h": 206
+  },
+  {
+   "out": "sh-chill-shorts",
+   "src": "shop",
+   "x": 966,
+   "y": 539,
+   "w": 221,
+   "h": 206
+  },
+  {
+   "out": "sh-low-key-hat",
+   "src": "shop",
+   "x": 1208,
+   "y": 539,
+   "w": 216,
+   "h": 206
+  },
+  {
+   "out": "sh-more-good-days",
+   "src": "shop",
+   "x": 241,
+   "y": 816,
+   "w": 221,
+   "h": 202
+  },
+  {
+   "out": "sh-all-shapes",
+   "src": "shop",
+   "x": 483,
+   "y": 816,
+   "w": 221,
+   "h": 202
+  },
+  {
+   "out": "sh-nicer-world",
+   "src": "shop",
+   "x": 724,
+   "y": 816,
+   "w": 221,
+   "h": 202
+  },
+  {
+   "out": "sh-little-booty",
+   "src": "shop",
+   "x": 966,
+   "y": 816,
+   "w": 221,
+   "h": 202
+  },
+  {
+   "out": "sh-good-energy-tote",
+   "src": "shop",
+   "x": 1208,
+   "y": 816,
+   "w": 216,
+   "h": 202
+  },
+  {
+   "out": "dad-hat",
+   "src": "home",
+   "x": 1180,
+   "y": 504,
+   "w": 206,
+   "h": 196
   }
  ]
 }

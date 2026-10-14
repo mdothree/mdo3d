@@ -127,5 +127,114 @@
   ],
   "w": 1000,
   "h": 1000
+ },
+ "sh-crew-love": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 206
+ },
+ "sh-brighter-black": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 206
+ },
+ "sh-good-views": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 206
+ },
+ "sh-chill-shorts": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 206
+ },
+ "sh-low-key-hat": {
+  "widths": [
+   216
+  ],
+  "w": 216,
+  "h": 206
+ },
+ "sh-more-good-days": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 202
+ },
+ "sh-all-shapes": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 202
+ },
+ "sh-nicer-world": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 202
+ },
+ "sh-little-booty": {
+  "widths": [
+   221
+  ],
+  "w": 221,
+  "h": 202
+ },
+ "sh-good-energy-tote": {
+  "widths": [
+   216
+  ],
+  "w": 216,
+  "h": 202
+ },
+ "dad-hat": {
+  "widths": [
+   206
+  ],
+  "w": 206,
+  "h": 196
+ },
+ "nicer-world-tee-back": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "nicer-world-tee-front": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "more-good-days-back": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "more-good-days-front": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
  }
 }

@@ -1,3 +1,4 @@
+import './_cleanup.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { addLine, setQty, removeLine, cartCount, normaliseCart, lineKey, summarise, shipNotice, checkoutBody, CART_LIMITS } from '../core/cart.mjs';

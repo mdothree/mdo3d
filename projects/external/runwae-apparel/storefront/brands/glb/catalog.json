@@ -1,5 +1,5 @@
 {
- "_note": "GLB first shop. Images are AI concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (captioned Concept) plus photos of the owner's own sketchbook line art. Concept boards show prices, reviews and a dad hat: none of that is used (no invented prices or reviews, no cap). Playful, confident, never crude.",
+ "_note": "GLB first shop. Images are AI concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (captioned Concept) plus photos of the owner's own sketchbook line art. Concept boards show prices and reviews: not used (no invented prices or reviews, no cap). Playful, confident, never crude. Full board range added 2026-10-14 (Principal). Hats and the tote are allowed for GLB.",
  "products": [
   {
    "id": "icon-tee",
@@ -197,7 +197,7 @@
    "id": "logo-crew",
    "name": "Mini Logo Crew",
    "line": "In the sketchbook",
-   "category": "crews",
+   "category": "sweatshirts",
    "type": "Crewneck",
    "channel": "preorder",
    "status": "in_development",
@@ -261,16 +261,28 @@
      "id": "pink",
      "name": "Pink",
      "hex": "#ff9fca"
+    },
+    {
+     "id": "black",
+     "name": "Black",
+     "hex": "#141414"
     }
    ],
    "images": [
     {
      "file": "brighter-hoodie",
      "alt": "Pink hoodie with GOOD BUTTS BRIGHTER DAYS hand lettering",
-     "concept": true
+     "concept": true,
+     "color": "pink"
+    },
+    {
+     "file": "sh-brighter-black",
+     "alt": "Black hoodie, back: BRIGHTER DAYS with line-drawn figures",
+     "concept": true,
+     "color": "black"
     }
    ],
-   "summary": "GOOD BUTTS BRIGHTER DAYS, hand-lettered on pink.",
+   "summary": "GOOD BUTTS BRIGHTER DAYS, hand-lettered across the back. Pink, or black with line-drawn figures.",
    "details": [
     [
      "Status",
@@ -284,6 +296,524 @@
      "size": "full_back"
     }
    ]
+  },
+  {
+   "id": "crew-love-tee",
+   "name": "Crew Love Tee",
+   "line": "Next drop",
+   "category": "tees",
+   "type": "Tee",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "white",
+     "name": "White",
+     "hex": "#ffffff"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-crew-love",
+     "alt": "White tee with a medium GLB heart mark on the chest",
+     "concept": true
+    }
+   ],
+   "summary": "A clean white tee with a medium GLB heart mark on the chest.",
+   "print": [
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Opening date to be announced."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "good-views-tee",
+   "name": "Good Views Tee",
+   "line": "Next drop",
+   "category": "tees",
+   "type": "Tee",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "yellow",
+     "name": "Sunny yellow",
+     "hex": "#ffe24d"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-good-views",
+     "alt": "Yellow tee with a blue GLB chest mark",
+     "concept": true
+    }
+   ],
+   "summary": "Sunny yellow, with a blue GLB mark at the chest.",
+   "print": [
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Opening date to be announced."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "nicer-world-tee",
+   "name": "Nicer World Tee",
+   "line": "Next drop",
+   "category": "tees",
+   "type": "Tee",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "white",
+     "name": "White",
+     "hex": "#ffffff"
+    }
+   ],
+   "images": [
+    {
+     "file": "nicer-world-tee-back",
+     "alt": "Back: BUTTS MAKE THE WORLD NICER, hand-lettered, full size",
+     "concept": true,
+     "caption": "Back placement mockup"
+    },
+    {
+     "file": "nicer-world-tee-front",
+     "alt": "Front: a medium GLB chest mark",
+     "concept": true,
+     "caption": "Front placement mockup"
+    },
+    {
+     "file": "sh-nicer-world",
+     "alt": "The concept board showing the lettering on the front",
+     "concept": true,
+     "caption": "Board view, art shown on the front"
+    }
+   ],
+   "summary": "BUTTS MAKE THE WORLD NICER, hand-lettered big on the back. A medium GLB mark on the front.",
+   "print": [
+    {
+     "placement": "back",
+     "size": "full_back"
+    },
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Opening date to be announced."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "little-booty-tee",
+   "name": "Little Booty Tee",
+   "line": "In the sketchbook",
+   "category": "tees",
+   "type": "Tee",
+   "channel": "preorder",
+   "status": "in_development",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "black",
+     "name": "Black",
+     "hex": "#141414"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-little-booty",
+     "alt": "Black tee with a small line-drawn booty and heart on the chest",
+     "concept": true
+    }
+   ],
+   "summary": "A small line-drawn booty and heart on black, at the chest.",
+   "print": [
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Not yet available."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "more-good-days-baby-tee",
+   "name": "More Good Days Baby Tee",
+   "line": "Next drop",
+   "category": "baby-tees",
+   "type": "Baby tee",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL"
+   ],
+   "colors": [
+    {
+     "id": "cream",
+     "name": "Cream",
+     "hex": "#f8ecd8"
+    }
+   ],
+   "images": [
+    {
+     "file": "more-good-days-back",
+     "alt": "Back: the More Good Days illustration, full size",
+     "concept": true,
+     "caption": "Back placement mockup"
+    },
+    {
+     "file": "more-good-days-front",
+     "alt": "Front: a medium GLB chest mark",
+     "concept": true,
+     "caption": "Front placement mockup"
+    },
+    {
+     "file": "sh-more-good-days",
+     "alt": "The concept board showing the illustration on the front",
+     "concept": true,
+     "caption": "Board view, art shown on the front"
+    }
+   ],
+   "summary": "A fitted baby tee: the More Good Days illustration big on the back, a medium GLB mark on the front.",
+   "print": [
+    {
+     "placement": "back",
+     "size": "full_back"
+    },
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Opening date to be announced."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "all-shapes-hoodie",
+   "name": "All Shapes Hoodie",
+   "line": "Next drop",
+   "category": "hoodies",
+   "type": "Hoodie",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "blue",
+     "name": "Electric blue",
+     "hex": "#1f4bff"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-all-shapes",
+     "alt": "Electric blue hoodie with a medium GLB chest mark",
+     "concept": true
+    }
+   ],
+   "summary": "Electric blue hoodie with a medium GLB mark on the chest.",
+   "print": [
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Opening date to be announced."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "chill-shorts",
+   "name": "Chill Shorts",
+   "line": "Next drop",
+   "category": "shorts",
+   "type": "Shorts",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "pink",
+     "name": "Pink",
+     "hex": "#ff9fca"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-chill-shorts",
+     "alt": "Pink sweat shorts with a small GLB mark on the leg",
+     "concept": true
+    }
+   ],
+   "summary": "Pink sweat shorts with a drawstring and a small GLB mark on the leg.",
+   "print": [
+    {
+     "placement": "leg",
+     "size": "patch_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Opening date to be announced."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "low-key-hat",
+   "name": "Low Key Hat",
+   "line": "In the sketchbook",
+   "category": "hats",
+   "type": "Cap",
+   "channel": "preorder",
+   "status": "in_development",
+   "price_cents": null,
+   "sizes": [
+    "One size"
+   ],
+   "colors": [
+    {
+     "id": "black",
+     "name": "Black",
+     "hex": "#141414"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-low-key-hat",
+     "alt": "Black cap with a small line-drawn booty on the front",
+     "concept": true
+    }
+   ],
+   "summary": "Black cap with a small line drawing on the front panel.",
+   "print": [
+    {
+     "placement": "front_panel",
+     "size": "patch_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Not yet available."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "dad-hat",
+   "name": "GLB Dad Hat",
+   "line": "In the sketchbook",
+   "category": "hats",
+   "type": "Dad hat",
+   "channel": "preorder",
+   "status": "in_development",
+   "price_cents": null,
+   "sizes": [
+    "One size"
+   ],
+   "colors": [
+    {
+     "id": "black",
+     "name": "Black",
+     "hex": "#141414"
+    }
+   ],
+   "images": [
+    {
+     "file": "dad-hat",
+     "alt": "Black dad hat with GLB embroidered on the front",
+     "concept": true
+    }
+   ],
+   "summary": "Black dad hat with GLB on the front.",
+   "print": [
+    {
+     "placement": "front_panel",
+     "size": "patch_medium"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Not yet available."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
+  },
+  {
+   "id": "good-energy-tote",
+   "name": "Good Energy Tote",
+   "line": "In the sketchbook",
+   "category": "accessories",
+   "type": "Tote",
+   "channel": "preorder",
+   "status": "in_development",
+   "price_cents": null,
+   "sizes": [
+    "One size"
+   ],
+   "colors": [
+    {
+     "id": "natural",
+     "name": "Natural",
+     "hex": "#efe4cc"
+    }
+   ],
+   "images": [
+    {
+     "file": "sh-good-energy-tote",
+     "alt": "Natural canvas tote with line-drawn booties and CARRY GOOD ENERGY",
+     "concept": true
+    }
+   ],
+   "summary": "Natural canvas tote: line-drawn booties and CARRY GOOD ENERGY.",
+   "print": [
+    {
+     "placement": "front_panel",
+     "size": "half_front"
+    }
+   ],
+   "details": [
+    [
+     "Status",
+     "Not yet available."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null
   }
  ]
 }

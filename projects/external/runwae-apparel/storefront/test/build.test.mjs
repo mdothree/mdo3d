@@ -1,3 +1,4 @@
+import './_cleanup.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, cpSync } from 'node:fs';
@@ -73,12 +74,12 @@ for (const id of BRANDS) {
     assert.doesNotMatch(all, /poison|pave/i);
     assert.doesNotMatch(all, /digital only|long game|what['’]s next|higher ground|more than apparel/i);
     assert.doesNotMatch(all, /\bAHL\b|Anne Huntington/);
-    assert.doesNotMatch(all, /\btote\b|dad hat|ball cap|baseball cap|\bcap\b/i);
+    if (id !== 'glb') assert.doesNotMatch(all, /\btote\b|dad hat|ball cap|baseball cap|\bcap\b/i, 'caps/totes are banned outside GLB');
     assert.doesNotMatch(all, /third_party|04_third_party|internal_only/i);
     assert.doesNotMatch(all, /\$\d/, 'no prices are set, so no dollar amounts render');
     assert.doesNotMatch(all, /\d(\.\d)? ?\(\d[\d.,]*k? reviews\)|★/i, 'no fake reviews');
     const assets = readdirSync(join(out, 'assets'));
-    assert.ok(assets.every((a) => !/poison|pave|tote|cap-|backpack-flap/i.test(a)), assets.join(','));
+    assert.ok(assets.every((a) => !/poison|pave|backpack-flap/i.test(a) && (id === 'glb' || !/tote|cap-/i.test(a))), assets.join(','));
   });
 }
 
@@ -141,6 +142,17 @@ test('Runwae catalog edits (Principal 2026-10-14): removals gone, merges done, o
   const shop = readFileSync(join(out, 'shop.html'), 'utf8');
   for (const l of ['The Little Things', 'Essentials', 'The Drawn Series', "Archive · Fall '21"]) assert.ok(shop.includes(l), l);
   assert.doesNotMatch(JSON.parse(readFileSync(join(ROOT, 'brands', 'runwae', 'catalog.json'), 'utf8')).products.map((p) => JSON.stringify(p.images)).join(), /FB2/, 'third-party back art (#82-d)');
+});
+
+test('GLB: the full concept-board range, grouped like the board; big art on the back', async () => {
+  const out = await build('glb');
+  const shop = readFileSync(join(out, 'shop.html'), 'utf8');
+  for (const n of ['Crew Love Tee', 'Good Views Tee', 'Nicer World Tee', 'Little Booty Tee', 'More Good Days Baby Tee', 'All Shapes Hoodie', 'Chill Shorts', 'Low Key Hat', 'GLB Dad Hat', 'Good Energy Tote']) assert.ok(shop.includes(n), n);
+  const cats = [...shop.matchAll(/id="cat-([a-z-]+)" aria/g)].map((m) => m[1]);
+  assert.deepEqual(cats, ['tees', 'hoodies', 'baby-tees', 'shorts', 'sweatshirts', 'hats', 'accessories']);
+  for (const id of ['nicer-world-tee', 'more-good-days-baby-tee', 'line-art-tee', 'nice-butts-tee']) assert.match(readFileSync(join(out, 'products', `${id}.html`), 'utf8'), /Back placement mockup/, id);
+  const bd = readFileSync(join(out, 'products', 'brighter-days-hoodie.html'), 'utf8');
+  assert.match(bd, /data-color-group="black"/);
 });
 
 test('GLB: provisional taglines present; playful, never crude copy guard', async () => {

@@ -34,6 +34,40 @@
    "color": "#ffe24d",
    "bg": "#dfe6ff",
    "chestText": "GLB"
+  },
+  {
+   "out": "nicer-world-tee-back",
+   "view": "back",
+   "color": "#ffffff",
+   "bg": "#ffd6e8",
+   "art": "assets/sh-nicer-world-221.jpg",
+   "artFit": 0.62,
+   "artTop": 150,
+   "ink": "#141414"
+  },
+  {
+   "out": "nicer-world-tee-front",
+   "view": "front",
+   "color": "#ffffff",
+   "bg": "#ffd6e8",
+   "chestText": "GLB"
+  },
+  {
+   "out": "more-good-days-back",
+   "view": "back",
+   "color": "#f8ecd8",
+   "bg": "#dfe6ff",
+   "art": "assets/sh-more-good-days-221.jpg",
+   "artFit": 0.66,
+   "artTop": 140,
+   "keep": "colour"
+  },
+  {
+   "out": "more-good-days-front",
+   "view": "front",
+   "color": "#f8ecd8",
+   "bg": "#dfe6ff",
+   "chestText": "GLB"
   }
  ]
 }

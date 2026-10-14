@@ -21,7 +21,7 @@ import { fmtDay } from './cart.mjs';
 //  1. Shirt-sized art goes on the BACK ("if the art is large like the size of the shirt it should be on the back").
 //  2. Chest icons are MEDIUM ("chest icons should be medium sized, not overly large").
 // item.print: one {placement, size} or an array of them ([] = unbranded). Archive pieces are historical and exempt.
-export const PRINT_PLACEMENTS = Object.freeze({ back: 'Back', front_chest: 'Chest', sleeve: 'Sleeve', neck: 'Neck', cuff: 'Cuff', pocket: 'Pocket', front_panel: 'Front panel', hood: 'Hood' });
+export const PRINT_PLACEMENTS = Object.freeze({ back: 'Back', front_chest: 'Chest', sleeve: 'Sleeve', neck: 'Neck', cuff: 'Cuff', pocket: 'Pocket', front_panel: 'Front panel', hood: 'Hood', leg: 'Leg' });
 export const PRINT_SIZES = Object.freeze({ full_back: 'full size', back_medium: 'medium', chest_medium: 'medium', patch_medium: 'medium patch', panel_medium: 'medium', half_front: 'half front', label: 'label' });
 export const printList = (p) => (p.print == null ? [] : Array.isArray(p.print) ? p.print : [p.print]);
 export function printLabel(x) {

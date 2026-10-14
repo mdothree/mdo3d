@@ -56,7 +56,7 @@ a{text-underline-offset:3px}
 .g-card-media{display:block;position:relative;border:2.5px solid var(--c-fg);border-radius:20px;overflow:hidden;background:#fff;transition:transform .2s}
 .g-card:hover .g-card-media{transform:rotate(-1.5deg) translateY(-3px)}
 .g-card--pink .g-card-media{background:var(--c-pink-soft)}.g-card--yellow .g-card-media{background:#fff6c4}.g-card--blue .g-card-media{background:#dfe6ff}
-.g-card-media img{width:100%;aspect-ratio:1;object-fit:cover;mix-blend-mode:multiply}
+.g-card-media img{width:100%;aspect-ratio:1;object-fit:cover}
 .g-card-tag{position:absolute;left:10px;top:10px;background:var(--c-fg);color:var(--c-cream);font:700 10px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;padding:5px 8px;border-radius:999px}
 .g-card-name{display:block;font:700 15px/1.2 var(--f-body);letter-spacing:.08em;text-transform:uppercase;margin-top:14px}
 .g-card-meta{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:14px;margin-top:4px}
