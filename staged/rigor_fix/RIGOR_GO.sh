@@ -30,7 +30,9 @@ TOOLS="resume cover interview linkedin networking portfolio salary"
 PAID_REF=q7/paid-path                        # rigor-api + 7 tools (contains #94 paid-first-use + go-final)
 API_SHA=${API_SHA:-0d7459d}                  # rigor-api q7/paid-path tip 2026-10-13 (/health reports environment)
 # 7 tools: q7/paid-path tips after the 2026-10-13 fold-forwards (go-final-r4 incl. h13 font fix + theme toggle + footer legal links, main merged in; stage 8 FFs main).
-TOOL_PINS=${TOOL_PINS:-"resume:2114428 cover:ec404c3 interview:7c3555f linkedin:2c7b09a networking:91dc1cc portfolio:3cfef19 salary:6b66358"}
+TOOL_PINS=${TOOL_PINS:-"resume:9d0df05 cover:ced9a39 interview:1649bed linkedin:da14a73 networking:e16bfdf portfolio:af1b4a1 salary:4ea2de0"}
+# 2026-10-14 window-4 split: q7/paid-path now defaults PRO_CHECKOUT_ENABLED to "false" (the tools ship alone in
+# WINDOW slot w4_rigor_tools before the API is verified). Step [6] flips the default to "true" in the deployed copy only.
 PLINK_ID=plink_1TEwCoCRLa19N9qBx7eNHK7D      # Rigor Pro link (buy.stripe.com/…8k804). NEVER paused or modified here.
 PRO_PRICE=price_1TEwCiCRLa19N9qBTxS4Oo0K     # what the link sells; must equal STRIPE_PRO_PRICE_IDS
 EXPECT_CENTS=999; EXPECT_CURRENCY=usd; EXPECT_INTERVAL=month
@@ -172,6 +174,10 @@ deploy_ref() {  # deploy_ref <repo> <ref> <projectId> <expected short sha> → 0
   got=$(git -C "$d" rev-parse --short=7 HEAD); log "  $repo@$ref = $got"
   [ -z "$want" ] || [ "$got" = "$want" ] || { log "  $repo moved since preflight ($want → $got): not deploying"; return 1; }
   rm -rf "$d/.git"; mkdir -p "$d/.vercel"; printf '{"projectId":"%s","orgId":"%s"}' "$pid" "$TEAM" > "$d/.vercel/project.json"
+  if [ "${CHECKOUT_ON:-0}" = 1 ]; then  # tools only, after the API verified in [5]
+    sed -i.bak 's|env("VITE_PRO_CHECKOUT_ENABLED", "false")|env("VITE_PRO_CHECKOUT_ENABLED", "true")|' "$d/public/js/config/env.js" && rm -f "$d/public/js/config/env.js.bak"
+    grep -q 'VITE_PRO_CHECKOUT_ENABLED", "true"' "$d/public/js/config/env.js" || { log "  $repo: checkout-on flip failed"; return 1; }
+  fi
   for t in 1 2 3; do out=$(cd "$d" && vercel deploy --prod --yes --archive=tgz --token "$VT" 2>&1 | grep -E 'Production:|Error' | tail -1); [[ $out == *Production:* ]] && break; sleep 10; done
   log "  $repo :: $out"; [[ $out == *Production:* ]]
 }
@@ -207,7 +213,7 @@ log "[6] deploy 7 tools @$PAID_REF (checkout on)"
 for t in $TOOLS; do
   pid=$(vget "/v9/projects/rigor-$t" | jq -r '.id // empty')
   if [ -z "$pid" ]; then chk "Vercel project rigor-$t" none exists; continue; fi
-  deploy_ref "rigor-$t" "$PAID_REF" "$pid" "$(tool_sha $t)" || chk "rigor-$t deploy" failed ok
+  CHECKOUT_ON=1 deploy_ref "rigor-$t" "$PAID_REF" "$pid" "$(tool_sha $t)" || chk "rigor-$t deploy" failed ok
 done
 [ "$failn" = 0 ] || stop_report "[6] tool deploys"
 
