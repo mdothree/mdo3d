@@ -1,98 +1,345 @@
 {
-  "_note": "Approved scope only (developer handoff §2): rust hoodie, black hoodie, olive/black windbreaker, dark plaid flannel (no front logo), black knit beanie. The bag is in rework: in_development, never purchasable. Removed and never listed: cap, tote, flap backpack, orange printed button-up. Every image is a concept render. Prices, materials and specs are unconfirmed, so none are stated.",
-  "products": [
+ "_note": "Approved scope only (developer handoff §2): rust hoodie, black hoodie, olive/black windbreaker, dark plaid flannel (no front logo), black knit beanie. The bag is in rework: in_development, never purchasable. Removed and never listed: cap, tote, flap backpack, orange printed button-up. Every image is a concept render. Prices, materials and specs are unconfirmed, so none are stated.",
+ "products": [
+  {
+   "id": "contour-hoodie-rust",
+   "no": "01",
+   "name": "Contour Hoodie",
+   "line": "First run",
+   "category": "apparel",
+   "type": "Hoodie",
+   "channel": "preorder",
+   "status": "preorder",
+   "price_cents": null,
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
     {
-      "id": "contour-hoodie-rust", "no": "01", "name": "Contour Hoodie", "line": "First run", "category": "apparel", "type": "Hoodie",
-      "channel": "preorder", "status": "preorder", "price_cents": null,
-      "sizes": ["S", "M", "L", "XL", "2XL"],
-      "colors": [{ "id": "rust", "name": "Rust", "hex": "#b4532d" }],
-      "images": [
-        { "file": "rust-hoodie", "alt": "Rust hoodie, back, with contour-line artwork and the Butts Studios mark", "concept": true },
-        { "file": "look-rust-back", "alt": "Close view of the contour artwork on the rust hoodie", "concept": true },
-        { "file": "contour", "alt": "Contour-line artwork with Made of Story.", "concept": true }
-      ],
-      "summary": "Rust hoodie with the contour-line artwork across the back.",
-      "details": [
-        ["Design", "Contour-line artwork on the back, drawn in the studio. The lines are an illustration, not a map of a real place."],
-        ["Materials and fit", "To be confirmed with the maker before the pre-order opens."],
-        ["Care", "Care instructions ship with the final spec."],
-        ["Shipping", "Pre-order. Made after the window closes; the ship-by date shows here and at checkout."]
-      ],
-      "rights_hold": null
-    },
-    {
-      "id": "contour-hoodie-black", "no": "02", "name": "Contour Hoodie", "line": "Next drop", "category": "apparel", "type": "Hoodie",
-      "channel": "preorder", "status": "next_drop", "price_cents": null,
-      "sizes": ["S", "M", "L", "XL", "2XL"],
-      "colors": [{ "id": "black", "name": "Black", "hex": "#151514" }],
-      "images": [
-        { "file": "black-hoodie-back", "alt": "Black hoodie, back, with contour-line artwork", "concept": true },
-        { "file": "black-hoodie-front", "alt": "Black hoodie, front, with a small studio mark on the chest", "concept": true },
-        { "file": "look-black-back", "alt": "The black hoodie worn, seen from behind", "concept": true }
-      ],
-      "summary": "Black hoodie. Contour artwork on the back, a small mark on the chest.",
-      "details": [
-        ["Design", "Back contour illustration with restrained studio typography; small square-and-X mark on the chest."],
-        ["Materials and fit", "To be confirmed with the maker."]
-      ],
-      "rights_hold": null
-    },
-    {
-      "id": "windbreaker", "no": "03", "name": "Windbreaker", "line": "Next drop", "category": "apparel", "type": "Jacket",
-      "channel": "preorder", "status": "next_drop", "price_cents": null,
-      "sizes": ["S", "M", "L", "XL", "2XL"],
-      "colors": [{ "id": "olive-black", "name": "Olive / Black", "hex": "linear-gradient(135deg,#5f6344 50%,#151514 50%)" }],
-      "images": [
-        { "file": "windbreaker", "alt": "Olive and black colour-blocked windbreaker, front", "concept": true },
-        { "file": "look-window", "alt": "The windbreaker worn indoors by a window", "concept": true },
-        { "file": "look-zip", "alt": "Zip pull with the studio mark", "concept": true },
-        { "file": "look-label", "alt": "Woven studio label on the olive panel", "concept": true }
-      ],
-      "summary": "Olive and black colour-blocked windbreaker with a rust zip pull.",
-      "details": [
-        ["Design", "Olive and black blocking, refined utility detailing, small mark on the chest."],
-        ["Materials", "Fabric and any weather performance are unconfirmed until the maker's spec is in."]
-      ],
-      "rights_hold": null
-    },
-    {
-      "id": "plaid-flannel", "no": "04", "name": "Plaid Flannel", "line": "Next drop", "category": "apparel", "type": "Shirt",
-      "channel": "preorder", "status": "next_drop", "price_cents": null,
-      "sizes": ["S", "M", "L", "XL", "2XL"],
-      "colors": [{ "id": "dark-plaid", "name": "Dark plaid", "hex": "repeating-linear-gradient(90deg,#1b1a17 0 6px,#4a3a2c 6px 8px)" }],
-      "images": [
-        { "file": "flannel", "alt": "Dark plaid flannel shirt, front, with no logo", "concept": true },
-        { "file": "look-flannel", "alt": "The flannel laid on a leather chair", "concept": true },
-        { "file": "detail-flannel", "alt": "Close view of the plaid weave", "concept": true }
-      ],
-      "summary": "Dark, understated plaid. No logo on the front; a small label inside the neck.",
-      "details": [
-        ["Design", "No front logo. A small inside neck label only."],
-        ["Materials and fit", "To be confirmed with the maker."]
-      ],
-      "rights_hold": null
-    },
-    {
-      "id": "knit-beanie", "no": "05", "name": "Knit Beanie", "line": "Next drop", "category": "accessories", "type": "Beanie",
-      "channel": "preorder", "status": "next_drop", "price_cents": null,
-      "sizes": ["One size"],
-      "colors": [{ "id": "black", "name": "Black", "hex": "#151514" }],
-      "images": [
-        { "file": "beanie", "alt": "Black ribbed knit beanie with a woven square-and-X patch", "concept": true },
-        { "file": "look-beanie", "alt": "The beanie worn", "concept": true },
-        { "file": "look-knit", "alt": "Close view of the knit and patch", "concept": true }
-      ],
-      "summary": "Black rib-knit beanie with a woven square-and-X patch.",
-      "details": [["Materials", "Yarn and knit spec to be confirmed with the maker."]],
-      "rights_hold": null
-    },
-    {
-      "id": "studio-bag", "no": "06", "name": "Studio Bag", "line": "In rework", "category": "accessories", "type": "Bag",
-      "channel": "preorder", "status": "in_development", "price_cents": null,
-      "sizes": [], "colors": [], "images": [],
-      "summary": "One bag for the studio, the commute and travel. The design is being reworked and is shown here as a direction only.",
-      "details": [["Status", "Not approved. Silhouette and materials are still open."]],
-      "rights_hold": null
+     "id": "rust",
+     "name": "Rust",
+     "hex": "#b4532d"
     }
-  ]
+   ],
+   "images": [
+    {
+     "file": "rust-hoodie",
+     "alt": "Rust hoodie, back, with contour-line artwork and the Butts Studios mark",
+     "concept": true
+    },
+    {
+     "file": "look-rust-back",
+     "alt": "Close view of the contour artwork on the rust hoodie",
+     "concept": true
+    },
+    {
+     "file": "contour",
+     "alt": "Contour-line artwork with Made of Story.",
+     "concept": true
+    }
+   ],
+   "summary": "Rust hoodie with the contour-line artwork across the back.",
+   "details": [
+    [
+     "Design",
+     "Contour-line artwork on the back, drawn in the studio. The lines are an illustration, not a map of a real place."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker before the pre-order opens."
+    ],
+    [
+     "Care",
+     "Care instructions ship with the final spec."
+    ],
+    [
+     "Shipping",
+     "Pre-order. Made after the window closes; the ship-by date shows here and at checkout."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
+    {
+     "placement": "back",
+     "size": "full_back"
+    },
+    {
+     "placement": "neck",
+     "size": "label"
+    }
+   ]
+  },
+  {
+   "id": "contour-hoodie-black",
+   "no": "02",
+   "name": "Contour Hoodie",
+   "line": "Next drop",
+   "category": "apparel",
+   "type": "Hoodie",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "black",
+     "name": "Black",
+     "hex": "#151514"
+    }
+   ],
+   "images": [
+    {
+     "file": "black-hoodie-back",
+     "alt": "Black hoodie, back, with contour-line artwork",
+     "concept": true
+    },
+    {
+     "file": "black-hoodie-front",
+     "alt": "Black hoodie, front, with a small studio mark on the chest",
+     "concept": true
+    },
+    {
+     "file": "look-black-back",
+     "alt": "The black hoodie worn, seen from behind",
+     "concept": true
+    }
+   ],
+   "summary": "Black hoodie. Contour artwork on the back, a small mark on the chest.",
+   "details": [
+    [
+     "Design",
+     "Back contour illustration with restrained studio typography; small square-and-X mark on the chest."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
+    {
+     "placement": "back",
+     "size": "full_back"
+    },
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ]
+  },
+  {
+   "id": "windbreaker",
+   "no": "03",
+   "name": "Windbreaker",
+   "line": "Next drop",
+   "category": "apparel",
+   "type": "Jacket",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "olive-black",
+     "name": "Olive / Black",
+     "hex": "linear-gradient(135deg,#5f6344 50%,#151514 50%)"
+    }
+   ],
+   "images": [
+    {
+     "file": "windbreaker",
+     "alt": "Olive and black colour-blocked windbreaker, front",
+     "concept": true
+    },
+    {
+     "file": "look-window",
+     "alt": "The windbreaker worn indoors by a window",
+     "concept": true
+    },
+    {
+     "file": "look-zip",
+     "alt": "Zip pull with the studio mark",
+     "concept": true
+    },
+    {
+     "file": "look-label",
+     "alt": "Woven studio label on the olive panel",
+     "concept": true
+    }
+   ],
+   "summary": "Olive and black colour-blocked windbreaker with a rust zip pull.",
+   "details": [
+    [
+     "Design",
+     "Olive and black blocking, refined utility detailing, small mark on the chest."
+    ],
+    [
+     "Materials",
+     "Fabric and any weather performance are unconfirmed until the maker's spec is in."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    },
+    {
+     "placement": "neck",
+     "size": "label"
+    }
+   ]
+  },
+  {
+   "id": "plaid-flannel",
+   "no": "04",
+   "name": "Plaid Flannel",
+   "line": "Next drop",
+   "category": "apparel",
+   "type": "Shirt",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "dark-plaid",
+     "name": "Dark plaid",
+     "hex": "repeating-linear-gradient(90deg,#1b1a17 0 6px,#4a3a2c 6px 8px)"
+    }
+   ],
+   "images": [
+    {
+     "file": "flannel",
+     "alt": "Dark plaid flannel shirt, front, with no logo",
+     "concept": true
+    },
+    {
+     "file": "look-flannel",
+     "alt": "The flannel laid on a leather chair",
+     "concept": true
+    },
+    {
+     "file": "detail-flannel",
+     "alt": "Close view of the plaid weave",
+     "concept": true
+    }
+   ],
+   "summary": "Dark, understated plaid. No logo on the front; a small label inside the neck.",
+   "details": [
+    [
+     "Design",
+     "No front logo. A small inside neck label only."
+    ],
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
+    {
+     "placement": "neck",
+     "size": "label"
+    }
+   ]
+  },
+  {
+   "id": "knit-beanie",
+   "no": "05",
+   "name": "Knit Beanie",
+   "line": "Next drop",
+   "category": "accessories",
+   "type": "Beanie",
+   "channel": "preorder",
+   "status": "next_drop",
+   "price_cents": null,
+   "sizes": [
+    "One size"
+   ],
+   "colors": [
+    {
+     "id": "black",
+     "name": "Black",
+     "hex": "#151514"
+    }
+   ],
+   "images": [
+    {
+     "file": "beanie",
+     "alt": "Black ribbed knit beanie with a woven square-and-X patch",
+     "concept": true
+    },
+    {
+     "file": "look-beanie",
+     "alt": "The beanie worn",
+     "concept": true
+    },
+    {
+     "file": "look-knit",
+     "alt": "Close view of the knit and patch",
+     "concept": true
+    }
+   ],
+   "summary": "Black rib-knit beanie with a woven square-and-X patch.",
+   "details": [
+    [
+     "Materials",
+     "Yarn and knit spec to be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
+    {
+     "placement": "cuff",
+     "size": "patch_medium"
+    }
+   ]
+  },
+  {
+   "id": "studio-bag",
+   "no": "06",
+   "name": "Studio Bag",
+   "line": "In rework",
+   "category": "accessories",
+   "type": "Bag",
+   "channel": "preorder",
+   "status": "in_development",
+   "price_cents": null,
+   "sizes": [],
+   "colors": [],
+   "images": [],
+   "summary": "One bag for the studio, the commute and travel. The design is being reworked and is shown here as a direction only.",
+   "details": [
+    [
+     "Status",
+     "Not approved. Silhouette and materials are still open."
+    ]
+   ],
+   "rights_hold": null,
+   "print": []
+  }
+ ]
 }

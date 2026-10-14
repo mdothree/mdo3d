@@ -49,6 +49,24 @@ function initMenu() {
   window.matchMedia('(min-width: 821px)').addEventListener('change', function (m) { if (m.matches) set(false); });
 }
 
+// ---------- colour galleries (kit.colorGalleries) ----------
+function showColor(id) {
+  var groups = document.querySelectorAll('[data-color-group]');
+  if (!groups.length) return;
+  groups.forEach(function (g) { g.hidden = g.getAttribute('data-color-group') !== id; });
+}
+function initColors() {
+  var first = document.querySelector('input[name="color"]:checked, input[name="view-color"]:checked');
+  if (first) showColor(first.value);
+  document.querySelectorAll('input[name="color"], input[name="view-color"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      showColor(r.value);
+      var t = r.closest('fieldset') && r.closest('fieldset').querySelector('[data-color-name]');
+      if (t) t.textContent = r.getAttribute('data-name');
+    });
+  });
+}
+
 // ---------- add to bag ----------
 function initAdd() {
   document.querySelectorAll('form[data-add]').forEach(function (f) {
@@ -181,5 +199,5 @@ function initLookup() {
   });
 }
 
-function init() { initMenu(); initAdd(); initNotify(); initCart(); initLookup(); paintCount(); }
+function init() { initColors(); initMenu(); initAdd(); initNotify(); initCart(); initLookup(); paintCount(); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

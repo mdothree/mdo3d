@@ -27,13 +27,6 @@
   "w": 240,
   "h": 240
  },
- "icon-tee-card": {
-  "widths": [
-   206
-  ],
-  "w": 206,
-  "h": 196
- },
  "logo-crew": {
   "widths": [
    206
@@ -83,13 +76,6 @@
   "w": 440,
   "h": 248
  },
- "band-shorts": {
-  "widths": [
-   290
-  ],
-  "w": 290,
-  "h": 190
- },
  "sketchbook-six": {
   "widths": [
    640,
@@ -109,5 +95,37 @@
   "w": 1050,
   "h": 1400,
   "rotated": true
+ },
+ "line-art-tee-back": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "line-art-tee-front": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "nice-butts-tee-back": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "nice-butts-tee-front": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
  }
 }

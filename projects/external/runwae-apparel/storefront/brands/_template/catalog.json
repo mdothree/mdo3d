@@ -1,21 +1,47 @@
 {
-  "_readme": "3 to 8 items. status: available | preorder | next_drop | in_development | archive | sold_out (sold_out needs an internal sales_record {channel, note} or sold_count >= stock). price_cents null shows Price TBA. images[].file = an asset key from assets/manifest.json (tools/images.mjs). Mark AI or mock imagery concept: true.",
-  "products": [
+ "_readme": "3 to 8 items. status: available | preorder | next_drop | in_development | archive | sold_out (sold_out needs an internal sales_record {channel, note} or sold_count >= stock). price_cents null shows Price TBA. images[].file = an asset key from assets/manifest.json (tools/images.mjs). Mark AI or mock imagery concept: true. print: {placement, size} or a list ([] = unbranded). Shirt-sized art: placement back, size full_back. Chest marks: front_chest + chest_medium.",
+ "products": [
+  {
+   "id": "example-tee",
+   "name": "Example Tee",
+   "line": "First drop",
+   "category": "apparel",
+   "type": "tee",
+   "channel": "preorder",
+   "status": "preorder",
+   "price_cents": null,
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ],
+   "colors": [
     {
-      "id": "example-tee",
-      "name": "Example Tee",
-      "line": "First drop",
-      "category": "apparel",
-      "type": "tee",
-      "channel": "preorder",
-      "status": "preorder",
-      "price_cents": null,
-      "sizes": ["S", "M", "L", "XL"],
-      "colors": [{ "id": "black", "name": "Black", "hex": "#111111" }],
-      "images": [],
-      "summary": "One line, verified facts only.",
-      "details": [["Materials", "To be confirmed with the maker."]],
-      "rights_hold": null
+     "id": "black",
+     "name": "Black",
+     "hex": "#111111"
     }
-  ]
+   ],
+   "images": [],
+   "summary": "One line, verified facts only.",
+   "details": [
+    [
+     "Materials",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
+    {
+     "placement": "back",
+     "size": "full_back"
+    },
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
+    }
+   ]
+  }
+ ]
 }

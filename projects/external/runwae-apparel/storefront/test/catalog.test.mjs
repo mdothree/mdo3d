@@ -78,3 +78,30 @@ test('a sold_out item with a sales_record builds, shows "Sold out" and hides the
   writeFileSync(join(root, 'brands', 'demo', 'catalog.json'), JSON.stringify(cat));
   await assert.rejects(buildBrand('demo', join(root, 'out2'), { root }), /sold_out needs a sales_record/);
 });
+
+import { printErrors, printLabel } from '../core/catalog.mjs';
+
+test('design rules: shirt-sized art goes on the back; chest marks are medium; specs render as a Print line', () => {
+  const it = (print, extra = {}) => ({ id: 'x', status: 'next_drop', print, ...extra });
+  assert.deepEqual(printErrors(it([{ placement: 'back', size: 'full_back' }, { placement: 'front_chest', size: 'chest_medium' }])), []);
+  assert.match(printErrors(it({ placement: 'front_chest', size: 'full_front' })).join(), /shirt-sized art must be on the back/);
+  assert.match(printErrors(it({ placement: 'front_panel', size: 'full_back' })).join(), /must be on the back/);
+  assert.match(printErrors(it({ placement: 'front_chest', size: 'chest_large' })).join(), /chest marks must be chest_medium/);
+  assert.match(printErrors(it(undefined)).join(), /print spec missing/);
+  assert.deepEqual(printErrors(it(undefined, { status: 'archive' })), [], 'archive pieces are historical');
+  assert.equal(printLabel({ placement: 'back', size: 'full_back' }), 'Back print · full size');
+  assert.equal(printLabel({ placement: 'front_chest', size: 'chest_medium' }), 'Chest mark · medium');
+  assert.throws(() => validateCatalog([{ ...base, status: 'next_drop', print: { placement: 'front_chest', size: 'full_front' } }]), /must be on the back/);
+});
+
+test('every real catalog follows the print rules and every product page shows its Print line', async () => {
+  for (const id of ['buttsstudios', 'runwae', 'glb', 'ridgefield']) {
+    const cat = JSON.parse(readFileSync(join(ROOT, 'brands', id, 'catalog.json'), 'utf8')).products;
+    for (const p of cat) assert.deepEqual(printErrors(p), [], `${id}/${p.id}`);
+    const out = mkdtempSync(join(tmpdir(), `sf-pr-${id}-`));
+    await buildBrand(id, out, { now: new Date('2026-10-14') });
+    for (const p of cat.filter((x) => x.listed !== false && x.status !== 'archive' && (x.print ?? []).length)) {
+      assert.match(readFileSync(join(out, 'products', `${p.id}.html`), 'utf8'), /class="seed-print"/, `${id}/${p.id}`);
+    }
+  }
+});

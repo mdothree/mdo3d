@@ -81,7 +81,7 @@ ${L.footer(ctx)}
 /** Build one brand into outDir. */
 export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, env = process.env } = {}) {
   const { dir, brand, catalog, drops, manifest } = readBrandDir(join(root, 'brands', id));
-  validateCatalog(catalog, drops);
+  validateCatalog(catalog, drops, brand.palette ?? null);
   const L = await import(pathToFileURL(join(dir, 'layout', 'index.mjs')).href);
   const listed = catalog.filter((p) => p.listed !== false);
   const views = Object.fromEntries(listed.map((p) => [p.id, productView(p, drops, now)]));

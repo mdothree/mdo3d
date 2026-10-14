@@ -110,3 +110,6 @@ main:focus{outline:none}
 .seed-details[open] summary::after{content:"−"}
 .seed-details p{margin:0 0 16px;color:var(--c-muted);font-size:15px}
 .seed-gallery{display:grid;gap:16px}
+.seed-print{font-size:13px;letter-spacing:.04em;color:var(--c-muted);margin:10px 0 0}.seed-print span{text-transform:uppercase;letter-spacing:.1em;font-size:11px;margin-right:6px;color:var(--c-fg)}
+.seed-color-group[hidden]{display:none}
+.seed-colorswitch .seed-swatches{margin-top:18px}

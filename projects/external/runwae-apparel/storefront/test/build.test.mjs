@@ -87,7 +87,7 @@ test('concept renders are captioned as concepts', async () => {
     const out = await build(id);
     const { catalog } = loadBrand(id);
     for (const p of catalog.filter((x) => x.listed !== false && (x.images ?? []).some((i) => i.concept))) {
-      assert.match(readFileSync(join(out, 'products', `${p.id}.html`), 'utf8'), /Concept render/, `${id}/${p.id}`);
+      assert.match(readFileSync(join(out, 'products', `${p.id}.html`), 'utf8'), /Concept render|Mockup · /, `${id}/${p.id}`);
     }
   }
 });
@@ -116,14 +116,33 @@ test('Runwae Apparel: photography first, no featured bare sketch, collection aft
   assert.ok(!readdirSync(join(out, 'assets')).some((f) => f.startsWith('sketch-')));
   const idx = readFileSync(join(out, 'index.html'), 'utf8');
   const main = idx.slice(idx.indexOf('<main'));
-  assert.match(main.slice(0, 1500), /class="rw-hero"/);
+  assert.match(main.slice(0, 2500), /class="rw3-hero"/);
   assert.match(main.slice(0, 2500), /drawn-figure-hoodie/, 'the hero leads with photography of the drawn pieces');
-  assert.ok(main.indexOf('<a class="rw-card') > main.indexOf('id="everyone"'), 'product cards come after the story panels');
-  assert.match(idx, /Ideas\. People\.<br>Places\. Progress\./);
+  assert.match(main, /<h1 class="rw3-wordmark"><span>Runwae<\/span><span>Apparel<\/span><\/h1>/, 'typeset wordmark (provisional)');
+  for (const t of ['A continuing journey', 'Built on<br>Ideas, People,<br>Places, Progress.', 'A more<br>curious world', 'Art in every detail.', 'The Archive']) assert.ok(main.includes(t), t);
+  assert.ok(main.indexOf('<a class="rw-card') > main.indexOf('id="built"'), 'product cards come after the story panels');
+  assert.doesNotMatch(main, /tote/i);
   assert.ok((idx.match(/class="rw-ptag">Concept</g) ?? []).length >= 8, 'concept photography is captioned');
   const { catalog } = loadBrand('runwae');
   for (const p of catalog.filter((x) => x.status === 'archive')) { assert.equal(p.archive_year, 2021); assert.equal(p.line, "Fall '21"); }
   assert.doesNotMatch(idx + readFileSync(join(out, 'shop.html'), 'utf8'), /museum|gallery wall|exhibit/i);
+});
+
+test('Runwae catalog edits (Principal 2026-10-14): removals gone, merges done, off-limits sources unused', async () => {
+  const out = await build('runwae');
+  const files = pagesOf(out).map((f) => readFileSync(join(out, f), 'utf8')).join('\n') + readFileSync(join(out, 'catalog.js'), 'utf8');
+  for (const n of ['True Grit Tee', 'Crafting Tee', 'The Little Things Tee', 'Luv Thy Neighbor Tee', 'RWA Sweatpants', 'RWA Tee', 'Head Study Hoodie']) assert.ok(!files.includes(n), n);
+  assert.ok(!readdirSync(join(out, 'assets')).some((f) => /^(true-grit-tee|crafting-tee|tlt-face-tee|tlt-neighbor-tee|tlt-rwa-sweatpants|tlt-rwa-tee)-/.test(f)));
+  for (const n of ['Sketch Hoodie', 'Chest-Drawing Hoodie', 'Runwae Company Hoodie', 'Knit Polo', 'Field Jacket', 'Garden Shirt', 'Rust Corduroy Shirt', 'The Runwae Company Tee', 'Luv Thy Neighbor Hoodie']) assert.ok(files.includes(n), n);
+  const fig = readFileSync(join(out, 'products', 'drawn-figure-hoodie.html'), 'utf8');
+  assert.match(fig, /data-color-group="forest"/); assert.match(fig, /data-color-group="ivory"/); assert.match(fig, /name="view-color"/);
+  assert.match(readFileSync(join(out, 'products', 'drawn-portrait-hoodie.html'), 'utf8'), /Mockup · original drawing/);
+  assert.match(readFileSync(join(out, 'products', 'drawn-overshirt.html'), 'utf8'), /Mockup · original drawing/);
+  const shop = readFileSync(join(out, 'shop.html'), 'utf8');
+  for (const l of ['The Little Things', 'Essentials', 'The Drawn Series', "Archive · Fall '21"]) assert.ok(shop.includes(l), l);
+  const spec = readFileSync(join(ROOT, 'brands', 'runwae', 'images.json'), 'utf8');
+  assert.doesNotMatch(spec.replace(/"_note"[^\n]*/, ''), /90209e16/, 'the 90209e16 sheet is off-limits');
+  assert.doesNotMatch(JSON.parse(readFileSync(join(ROOT, 'brands', 'runwae', 'catalog.json'), 'utf8')).products.map((p) => JSON.stringify(p.images)).join(), /FB2/, 'third-party back art (#82-d)');
 });
 
 test('GLB: provisional taglines present; playful, never crude copy guard', async () => {
@@ -174,4 +193,14 @@ test('the template builds (a copied brand works with no code changes)', async ()
 test('core never names a brand', () => {
   const files = ['core/build.mjs', 'core/kit.mjs', 'core/catalog.mjs', 'core/cart.mjs', 'core/checkout.mjs', 'core/drop.mjs', 'core/base.css', 'core/client/seed.js'];
   for (const f of files) assert.doesNotMatch(readFileSync(join(ROOT, f), 'utf8'), /runwae|girls love|\bglb\b|butts ?studios|ridgefield/i, f);
+});
+
+test('Runwae cohesive palette: current items use forest / ivory / washed black / rust only; originals captioned', async () => {
+  const { brand, catalog } = loadBrand('runwae');
+  assert.deepEqual(brand.palette, ['forest', 'ivory', 'washed-black', 'rust']);
+  for (const p of catalog.filter((x) => x.status !== 'archive' && x.listed !== false)) for (const c of p.colors) assert.ok(brand.palette.includes(c.id), `${p.id}: ${c.id}`);
+  const out = await build('runwae');
+  for (const id of ['runwae-apparel-hoodie', 'trc-hoodie', 'runwae-company-hoodie']) assert.match(readFileSync(join(out, 'products', `${id}.html`), 'utf8'), /Original 2021/, id);
+  const trc = readFileSync(join(out, 'products', 'trc-hoodie.html'), 'utf8');
+  assert.match(trc, /not used \(#82-d\)/, 'the third-party back illustration is not reissued');
 });

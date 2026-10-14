@@ -1,0 +1,39 @@
+{
+ "_note": "Back-placement mockups (design rule: shirt-sized art on the back; front = medium GLB chest mark). Art is lifted from the GLB concept renders; output is a concept image, captioned as such.",
+ "mockups": [
+  {
+   "out": "line-art-tee-back",
+   "view": "back",
+   "color": "#f6ead6",
+   "bg": "#fff1a8",
+   "art": "assets/line-art-tee-206.jpg",
+   "artFit": 0.82,
+   "artTop": 130,
+   "ink": "#141414"
+  },
+  {
+   "out": "line-art-tee-front",
+   "view": "front",
+   "color": "#f6ead6",
+   "bg": "#fff1a8",
+   "chestText": "GLB"
+  },
+  {
+   "out": "nice-butts-tee-back",
+   "view": "back",
+   "color": "#ffe24d",
+   "bg": "#dfe6ff",
+   "art": "assets/nice-butts-tee-206.jpg",
+   "artFit": 0.82,
+   "artTop": 130,
+   "ink": "#1f4bff"
+  },
+  {
+   "out": "nice-butts-tee-front",
+   "view": "front",
+   "color": "#ffe24d",
+   "bg": "#dfe6ff",
+   "chestText": "GLB"
+  }
+ ]
+}

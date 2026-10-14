@@ -17,6 +17,32 @@ import { join } from 'node:path';
 import { shipBy, windowState, isoDay, purchasable } from './drop.mjs';
 import { fmtDay } from './cart.mjs';
 
+// Print placement (design rules, Principal 2026-10-14; see SEED.md):
+//  1. Shirt-sized art goes on the BACK ("if the art is large like the size of the shirt it should be on the back").
+//  2. Chest icons are MEDIUM ("chest icons should be medium sized, not overly large").
+// item.print: one {placement, size} or an array of them ([] = unbranded). Archive pieces are historical and exempt.
+export const PRINT_PLACEMENTS = Object.freeze({ back: 'Back', front_chest: 'Chest', sleeve: 'Sleeve', neck: 'Neck', cuff: 'Cuff', pocket: 'Pocket', front_panel: 'Front panel', hood: 'Hood' });
+export const PRINT_SIZES = Object.freeze({ full_back: 'full size', back_medium: 'medium', chest_medium: 'medium', patch_medium: 'medium patch', panel_medium: 'medium', half_front: 'half front', label: 'label' });
+export const printList = (p) => (p.print == null ? [] : Array.isArray(p.print) ? p.print : [p.print]);
+export function printLabel(x) {
+  const where = x.placement === 'back' ? 'Back print' : x.placement === 'front_chest' ? 'Chest mark' : x.placement === 'front_panel' ? 'Front panel print' : `${PRINT_PLACEMENTS[x.placement] ?? x.placement} ${x.size === 'label' ? '' : 'mark'}`.trim();
+  return x.size === 'label' ? `${PRINT_PLACEMENTS[x.placement] ?? x.placement} label` : `${where} · ${PRINT_SIZES[x.size] ?? x.size}`;
+}
+/** Errors for one item's print spec (empty = ok). */
+export function printErrors(p) {
+  const errs = [];
+  if (p.status === 'archive') return errs;
+  if (p.listed !== false && p.print === undefined) errs.push(`${p.id}: print spec missing (print: {placement, size}, or [] if unbranded)`);
+  for (const x of printList(p)) {
+    if (!PRINT_PLACEMENTS[x?.placement]) errs.push(`${p.id}: unknown print placement "${x?.placement}"`);
+    if (/^full/.test(x?.size ?? '') && x.placement !== 'back') errs.push(`${p.id}: shirt-sized art must be on the back (placement "back")`);
+    else if (!PRINT_SIZES[x?.size]) errs.push(`${p.id}: print size "${x?.size}" not allowed (chest marks must be chest_medium)`);
+    if (x?.size === 'half_front' && x.placement !== 'front_panel') errs.push(`${p.id}: half_front art belongs on a front_panel`);
+    if (x?.placement === 'front_chest' && x.size !== 'chest_medium') errs.push(`${p.id}: chest marks must be chest_medium, not "${x.size}"`);
+  }
+  return errs;
+}
+
 export const STATUSES = Object.freeze(['available', 'preorder', 'next_drop', 'in_development', 'archive', 'sold_out', 'live', 'draft']);
 
 export function readBrandDir(dir) {
@@ -35,9 +61,14 @@ export function soldOutBacked(p) {
   return Number.isInteger(p.stock) && p.stock >= 0 && Number.isInteger(p.sold_count) && p.sold_count >= p.stock;
 }
 
-/** Throws on catalog data the shop must never render. */
-export function validateCatalog(products, drops = []) {
+/** Throws on catalog data the shop must never render. palette (brand.json `palette`, optional): the only colour
+ *  ids current items may use; archive pieces keep their original colours. */
+export function validateCatalog(products, drops = [], palette = null) {
   const errors = [];
+  if (Array.isArray(palette)) for (const p of products) {
+    if (p.status === 'archive' || p.listed === false) continue;
+    for (const c of p.colors ?? []) if (!palette.includes(c.id)) errors.push(`${p.id}: colour "${c.id}" is off-palette (${palette.join(', ')})`);
+  }
   const ids = new Set();
   for (const p of products) {
     if (!p.id || !/^[a-z0-9-]+$/.test(p.id)) errors.push(`bad id: ${p.id}`);
@@ -47,6 +78,7 @@ export function validateCatalog(products, drops = []) {
     if (p.status === 'sold_out' && !soldOutBacked(p)) errors.push(`${p.id}: sold_out needs a sales_record or sold_count >= stock`);
     if (p.status === 'archive' && !Number.isInteger(p.archive_year)) errors.push(`${p.id}: archive needs archive_year (pieces that really existed only)`);
     if (p.status === 'preorder' && !drops.some((d) => d.products.includes(p.id))) errors.push(`${p.id}: preorder needs a drop in drops.json`);
+    errors.push(...printErrors(p));
     if (p.price_cents != null && (!Number.isInteger(p.price_cents) || p.price_cents <= 0)) errors.push(`${p.id}: price_cents must be a positive integer or null`);
   }
   if (errors.length) throw new Error(`catalog invalid:\n  ${errors.join('\n  ')}`);

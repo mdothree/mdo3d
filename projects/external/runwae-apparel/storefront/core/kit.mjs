@@ -3,6 +3,7 @@
 // data-menu-toggle. Class names are BEM-ish (`seed-*`) so brand CSS can restyle without touching logic.
 // CSP rule (vercel.json: style-src/script-src 'self'): no inline style="" and no inline <script>.
 import { fmtDay } from './cart.mjs';
+import { printList, printLabel } from './catalog.mjs';
 
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 export const money = (c) => (Number.isInteger(c) ? `$${(c / 100).toFixed(2)}` : 'Price TBA');
@@ -42,7 +43,8 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
   k.figure = (ref, opts = {}) => {
     const r = typeof ref === 'string' ? { file: ref } : ref;
     const concept = opts.concept ?? r.concept;
-    const cap = [concept ? 'Concept render' : '', opts.caption ?? r.caption ?? ''].filter(Boolean).join(' · ');
+    const own = opts.caption ?? r.caption ?? '';
+    const cap = [concept && !/^Mockup/.test(own) ? 'Concept render' : '', own].filter(Boolean).join(' · ');
     return `<figure class="seed-fig${opts.cls ? ` ${esc(opts.cls)}` : ''}">${k.img(r, opts)}${cap && opts.caption !== false ? `<figcaption>${esc(cap)}</figcaption>` : ''}</figure>`;
   };
   k.productImage = (p, i = 0) => (p.images ?? [])[i];
@@ -76,10 +78,25 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
 <div class="seed-notify-row"><input id="notify-${esc(p.id)}" type="email" name="email" autocomplete="email" placeholder="you@example.com" required><button type="submit">${esc(label)}</button></div>
 <p class="seed-msg" role="status" aria-live="polite"></p></form>`;
 
+  /** Per-colour galleries: images carry `color` (a colour id). Returns one block per colour, each wrapped in
+   *  data-color-group; seed.js shows the selected colour's block. With JS off every block shows. Images with no
+   *  `color` belong to every colour. render(imgs, i) -> HTML for one colour's images. */
+  k.colorGalleries = (p, render) => {
+    const cs = p.colors ?? [];
+    const tagged = (p.images ?? []).some((im) => im.color);
+    if (cs.length < 2 || !tagged) return render(p.images ?? [], 0);
+    return cs.map((c, i) => `<div class="seed-color-group" data-color-group="${esc(c.id)}">${render((p.images ?? []).filter((im) => !im.color || im.color === c.id), i)}</div>`).join('');
+  };
+  /** Colour switcher for items without a buy form (concepts, next drop): switches the galleries only. */
+  k.colorSwitch = (p) => ((p.colors ?? []).length > 1 && !views[p.id].canAdd ? `<div class="seed-colorswitch">${k.swatches(p, { legend: 'Colour', name: 'view-color' })}</div>` : '');
+
+  /** "Print: Back print · full size · Chest mark · medium" from item.print. */
+  k.printLine = (p) => { const l = printList(p).map(printLabel); return l.length ? `<p class="seed-print"><span>Print</span> ${esc(l.join(' · '))}</p>` : ''; };
+
   /** The buy box: status, price, ship-by note, variants, add to bag or Notify me. */
   k.buyBox = (p, { addLabel = 'Add to bag', preorderLabel = 'Pre-order', showStatus = true } = {}) => {
     const v = views[p.id];
-    const head = `<div class="seed-buy-head">${k.price(p)}${showStatus ? k.status(p) : ''}</div>${v.note ? `<p class="seed-note">${esc(v.note)}</p>` : ''}`;
+    const head = `<div class="seed-buy-head">${k.price(p)}${showStatus ? k.status(p) : ''}</div>${v.note ? `<p class="seed-note">${esc(v.note)}</p>` : ''}${k.printLine(p)}`;
     if (v.canAdd) {
       return `<div class="seed-buy">${head}<form class="seed-add" data-add data-product="${esc(p.id)}" novalidate>${k.swatches(p)}${k.sizes(p)}
 <button class="seed-add-btn" type="submit">${esc(v.preorder ? preorderLabel : addLabel)}</button>

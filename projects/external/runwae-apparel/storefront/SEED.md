@@ -60,6 +60,23 @@ shipped to the browser) or `sold_count >= stock`. Without one the build fails. N
 `brand.mode` is `live` and `CHECKOUT_ENABLED=true` (and the server only accepts Stripe test keys unless
 `ALLOW_LIVE_STRIPE=true`).
 
+## Design rules (every brand inherits these; the build enforces them)
+
+Principal, 2026-10-14, verbatim:
+1. "if the art is large like the size of the shirt it should be on the back of the shirt"
+2. "across all designs, chest icons should be medium sized, not overly large"
+
+Every listed item carries `print`: one `{placement, size}` or a list (`[]` = unbranded).
+- Placements: `back`, `front_chest`, `sleeve`, `neck`, `cuff`, `pocket`, `front_panel`, `hood`.
+- Sizes: `full_back` (shirt-sized art, **back only**), `back_medium`, `chest_medium` (**the only chest size**),
+  `patch_medium`, `panel_medium`, `half_front` (front_panel only), `label`.
+- Any `full_*` size off the back, or a chest mark that isn't `chest_medium`, fails the build. Archive pieces are
+  historical and exempt. Product pages show the spec as a Print line ("Back print · full size · Chest mark · medium").
+- When a render shows art in the wrong place, lead with a placement mockup (`tools/placement_mockup.mjs`) and caption it.
+  Never redraw the owner's art: mockups use the real lines only (`tools/runwae_line_mockups.sh`).
+- Colourways of one design are one product with `colors` and per-colour `images[].color`; the product page gets a
+  colour switcher (`kit.colorGalleries`, `kit.colorSwitch`).
+
 ## Cart and orders
 
 - Cart lives in `localStorage` per brand (`seed-cart:<id>`), lines `{product, size, color, qty}`, max 5 per line,

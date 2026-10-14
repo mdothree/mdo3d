@@ -193,5 +193,238 @@
   ],
   "w": 204,
   "h": 194
+ },
+ "bk-concrete": {
+  "widths": [
+   222
+  ],
+  "w": 222,
+  "h": 334
+ },
+ "bk-doorway": {
+  "widths": [
+   241
+  ],
+  "w": 241,
+  "h": 334
+ },
+ "bk-plaid": {
+  "widths": [
+   266
+  ],
+  "w": 266,
+  "h": 322
+ },
+ "bk-fog": {
+  "widths": [
+   242
+  ],
+  "w": 242,
+  "h": 322
+ },
+ "bk-olive-zip": {
+  "widths": [
+   265
+  ],
+  "w": 265,
+  "h": 322
+ },
+ "bk-terrace-tree": {
+  "widths": [
+   287
+  ],
+  "w": 287,
+  "h": 344
+ },
+ "bk-rust-concrete": {
+  "widths": [
+   307
+  ],
+  "w": 307,
+  "h": 344
+ },
+ "bk-flannel-concrete": {
+  "widths": [
+   272
+  ],
+  "w": 272,
+  "h": 344
+ },
+ "bk-terrace-sea": {
+  "widths": [
+   312
+  ],
+  "w": 312,
+  "h": 305
+ },
+ "bk-rust-macro": {
+  "widths": [
+   299
+  ],
+  "w": 299,
+  "h": 305
+ },
+ "bk-knit": {
+  "widths": [
+   266
+  ],
+  "w": 266,
+  "h": 342
+ },
+ "bk-pool": {
+  "widths": [
+   281
+  ],
+  "w": 281,
+  "h": 342
+ },
+ "cu-embroidery": {
+  "widths": [
+   110
+  ],
+  "w": 110,
+  "h": 122
+ },
+ "fl-sketch-hoodie": {
+  "widths": [
+   308
+  ],
+  "w": 308,
+  "h": 344
+ },
+ "fl-garden-shirt": {
+  "widths": [
+   308
+  ],
+  "w": 308,
+  "h": 276
+ },
+ "fl-knit-polo": {
+  "widths": [
+   320
+  ],
+  "w": 320,
+  "h": 276
+ },
+ "fl-field-jacket": {
+  "widths": [
+   328
+  ],
+  "w": 328,
+  "h": 276
+ },
+ "fl-embroidery": {
+  "widths": [
+   390
+  ],
+  "w": 390,
+  "h": 244
+ },
+ "ed-plant-panel": {
+  "widths": [
+   200
+  ],
+  "w": 200,
+  "h": 374
+ },
+ "mock-portrait-hoodie": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "mock-figure-overshirt": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "re-ra-ivory": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "re-ra-forest": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "re-trc-front": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "re-trc-back": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "re-co-ivory": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "re-co-forest": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 1000
+ },
+ "orig-ra-cream": {
+  "widths": [
+   640,
+   1080,
+   1400
+  ],
+  "w": 1400,
+  "h": 1613
+ },
+ "orig-trc-red": {
+  "widths": [
+   640,
+   1080,
+   1400
+  ],
+  "w": 1400,
+  "h": 2007
+ },
+ "orig-company-blue": {
+  "widths": [
+   640,
+   1080,
+   1400
+  ],
+  "w": 1400,
+  "h": 2100
+ },
+ "orig-company-bagged": {
+  "widths": [
+   640,
+   1080,
+   1400
+  ],
+  "w": 1400,
+  "h": 1867
  }
 }

@@ -60,7 +60,7 @@ test('every real brand catalog has nothing purchasable (unpriced) and no Poison/
     for (const p of real.products) {
       assert.equal(p.price_cents, null, `${id}/${p.id} must stay unpriced until the Principal sets a price`);
       assert.doesNotMatch(p.id, /poison|pave/);
-      if (p.sizes?.length) assert.equal(sessionParams(real, { product: p.id, size: p.sizes[0] }, opts).status, 409, `${id}/${p.id}`);
+      if (p.sizes?.length) assert.equal(sessionParams(real, { product: p.id, size: p.sizes[0], color: p.colors?.[0]?.id }, opts).status, 409, `${id}/${p.id}`);
     }
   }
   const rw = loadCatalog('runwae', ROOT);
@@ -151,7 +151,7 @@ test('handler: valid request posts form params to Stripe with the test key', asy
     Object.assign(process.env, { CHECKOUT_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_abc', BRAND: 'runwae', SITE_URL: 'https://x.test' });
     process.chdir(ROOT);
     const res = fakeRes();
-    await handler({ method: 'POST', body: JSON.stringify({ product: 'crafting-tee', size: 'M' }) }, res);
+    await handler({ method: 'POST', body: JSON.stringify({ product: 'tlt-face-hoodie', size: 'M' }) }, res);
     // the real catalog is all draft -> 409, and Stripe is never called
     assert.equal(res.statusCode, 409);
     assert.equal(seen, undefined);

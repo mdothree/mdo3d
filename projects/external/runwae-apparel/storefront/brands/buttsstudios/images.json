@@ -1,32 +1,178 @@
 {
-  "_note": "All sources are concept renders from the developer handoff (~/buttsstudios/design/apparel_handoff_2026-10-14). They are moodboards, not product photography: every image is captioned 'Concept render' on the site. 06_latest_site_concept_NOT_APPROVED is deliberately unused. Flannel crops come only from 03 (the no-front-logo flannel). Cap, tote, backpack, button-up and the duffel are never cropped.",
-  "sources": {
-    "c02": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/02_made_of_story_first_pass.png",
-    "c03": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/03_refined_beanie_flannel.png",
-    "look": "~/buttsstudios/design/apparel_handoff_2026-10-14/Rust Trails_ Alpine Outdoor Lookbook.png"
+ "_note": "All sources are concept renders from the developer handoff (~/buttsstudios/design/apparel_handoff_2026-10-14). They are moodboards, not product photography: every image is captioned 'Concept render' on the site. 06_latest_site_concept_NOT_APPROVED is deliberately unused. Flannel crops come only from 03 (the no-front-logo flannel). Cap, tote, backpack, button-up and the duffel are never cropped.",
+ "sources": {
+  "c02": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/02_made_of_story_first_pass.png",
+  "c03": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/03_refined_beanie_flannel.png",
+  "look": "~/buttsstudios/design/apparel_handoff_2026-10-14/Rust Trails_ Alpine Outdoor Lookbook.png"
+ },
+ "crops": [
+  {
+   "out": "rust-hoodie",
+   "src": "c02",
+   "x": 920,
+   "y": 2,
+   "w": 326,
+   "h": 392
   },
-  "crops": [
-    {"out": "rust-hoodie", "src": "c02", "x": 920, "y": 2, "w": 326, "h": 392},
-    {"out": "black-hoodie-back", "src": "c03", "x": 918, "y": 2, "w": 322, "h": 392},
-    {"out": "black-hoodie-front", "src": "c02", "x": 1252, "y": 2, "w": 284, "h": 392},
-    {"out": "windbreaker", "src": "c03", "x": 1246, "y": 2, "w": 290, "h": 392},
-    {"out": "windbreaker-back", "src": "c02", "x": 388, "y": 402, "w": 364, "h": 356},
-    {"out": "flannel", "src": "c03", "x": 2, "y": 402, "w": 464, "h": 356},
-    {"out": "beanie", "src": "c03", "x": 474, "y": 402, "w": 386, "h": 174},
-    {"out": "detail-label", "src": "c03", "x": 0, "y": 766, "w": 272, "h": 258},
-    {"out": "detail-flannel", "src": "c03", "x": 278, "y": 766, "w": 176, "h": 258},
-    {"out": "detail-zip", "src": "c03", "x": 460, "y": 766, "w": 198, "h": 258},
-    {"out": "detail-neck", "src": "c03", "x": 663, "y": 766, "w": 168, "h": 258},
-    {"out": "contour", "src": "c03", "x": 838, "y": 766, "w": 312, "h": 258},
-    {"out": "hero-wearer", "src": "c03", "x": 440, "y": 0, "w": 472, "h": 394},
-    {"out": "look-rust-back", "src": "look", "x": 386, "y": 0, "w": 242, "h": 366},
-    {"out": "look-black-back", "src": "look", "x": 634, "y": 0, "w": 264, "h": 366},
-    {"out": "look-window", "src": "look", "x": 905, "y": 0, "w": 282, "h": 366},
-    {"out": "look-flannel", "src": "look", "x": 1193, "y": 0, "w": 343, "h": 366},
-    {"out": "look-beanie", "src": "look", "x": 0, "y": 373, "w": 256, "h": 288},
-    {"out": "look-reader", "src": "look", "x": 0, "y": 666, "w": 478, "h": 358},
-    {"out": "look-knit", "src": "look", "x": 485, "y": 666, "w": 231, "h": 358},
-    {"out": "look-label", "src": "look", "x": 943, "y": 666, "w": 201, "h": 358},
-    {"out": "look-zip", "src": "look", "x": 1271, "y": 373, "w": 265, "h": 288}
-  ]
+  {
+   "out": "black-hoodie-back",
+   "src": "c03",
+   "x": 918,
+   "y": 2,
+   "w": 322,
+   "h": 392
+  },
+  {
+   "out": "black-hoodie-front",
+   "src": "c02",
+   "x": 1252,
+   "y": 2,
+   "w": 284,
+   "h": 392
+  },
+  {
+   "out": "windbreaker",
+   "src": "c03",
+   "x": 1246,
+   "y": 2,
+   "w": 290,
+   "h": 392
+  },
+  {
+   "out": "flannel",
+   "src": "c03",
+   "x": 2,
+   "y": 402,
+   "w": 464,
+   "h": 356
+  },
+  {
+   "out": "beanie",
+   "src": "c03",
+   "x": 474,
+   "y": 402,
+   "w": 386,
+   "h": 174
+  },
+  {
+   "out": "detail-label",
+   "src": "c03",
+   "x": 0,
+   "y": 766,
+   "w": 272,
+   "h": 258
+  },
+  {
+   "out": "detail-flannel",
+   "src": "c03",
+   "x": 278,
+   "y": 766,
+   "w": 176,
+   "h": 258
+  },
+  {
+   "out": "detail-zip",
+   "src": "c03",
+   "x": 460,
+   "y": 766,
+   "w": 198,
+   "h": 258
+  },
+  {
+   "out": "detail-neck",
+   "src": "c03",
+   "x": 663,
+   "y": 766,
+   "w": 168,
+   "h": 258
+  },
+  {
+   "out": "contour",
+   "src": "c03",
+   "x": 838,
+   "y": 766,
+   "w": 312,
+   "h": 258
+  },
+  {
+   "out": "hero-wearer",
+   "src": "c03",
+   "x": 440,
+   "y": 0,
+   "w": 472,
+   "h": 394
+  },
+  {
+   "out": "look-rust-back",
+   "src": "look",
+   "x": 386,
+   "y": 0,
+   "w": 242,
+   "h": 366
+  },
+  {
+   "out": "look-black-back",
+   "src": "look",
+   "x": 634,
+   "y": 0,
+   "w": 264,
+   "h": 366
+  },
+  {
+   "out": "look-window",
+   "src": "look",
+   "x": 905,
+   "y": 0,
+   "w": 282,
+   "h": 366
+  },
+  {
+   "out": "look-flannel",
+   "src": "look",
+   "x": 1193,
+   "y": 0,
+   "w": 343,
+   "h": 366
+  },
+  {
+   "out": "look-beanie",
+   "src": "look",
+   "x": 0,
+   "y": 373,
+   "w": 256,
+   "h": 288
+  },
+  {
+   "out": "look-reader",
+   "src": "look",
+   "x": 0,
+   "y": 666,
+   "w": 478,
+   "h": 358
+  },
+  {
+   "out": "look-knit",
+   "src": "look",
+   "x": 485,
+   "y": 666,
+   "w": 231,
+   "h": 358
+  },
+  {
+   "out": "look-label",
+   "src": "look",
+   "x": 943,
+   "y": 666,
+   "w": 201,
+   "h": 358
+  },
+  {
+   "out": "look-zip",
+   "src": "look",
+   "x": 1271,
+   "y": 373,
+   "w": 265,
+   "h": 288
+  }
+ ]
 }

@@ -1,5 +1,5 @@
 {
- "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops).",
+ "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops). 90209e16 contact sheet is off-limits (Bridge 2026-10-14): never crop from it. orig-company-bagged (IMG_4199.HEIC) is made with ImageMagick -auto-orient (sips drops the HEIC rotation): see tools/runwae_reissue_mockups.sh.",
  "sources": {
   "rwa": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 4(1).png",
   "trc": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 9.png",
@@ -18,7 +18,14 @@
   "ad6": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/06_sketch_black_hoodie.png",
   "ad3": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/RUNWAE_Ad_Concept_Crops/03_illustrated_cream_hoodie.png",
   "ed": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/a_clean_editorial_product_catalog_style_layout_i.png",
-  "cj": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/runwae_apparel_a_continuing_journey.png"
+  "cj": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/runwae_apparel_a_continuing_journey.png",
+  "bankA": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/1946c029-f6ec-4af1-a4be-7b0d4787e1b0.png",
+  "bankB": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/c150594b-b976-48c1-8d18-a695ffaf1624.png",
+  "curious": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/runwae_apparel_a_curious_journey.png",
+  "flat": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/wide_editorial_product_catalog_moodboard_flat_lay.png",
+  "o_ra": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_2986.JPG",
+  "o_trc": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/731190D9-31BF-4AA6-A7C2-F6C79D5689A5.JPG",
+  "o_blue": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_5546.JPG"
  },
  "crops": [
   {
@@ -208,6 +215,207 @@
    "y": 631,
    "w": 204,
    "h": 194
+  },
+  {
+   "out": "bk-concrete",
+   "src": "bankA",
+   "x": 540,
+   "y": 3,
+   "w": 222,
+   "h": 334
+  },
+  {
+   "out": "bk-doorway",
+   "src": "bankA",
+   "x": 1013,
+   "y": 3,
+   "w": 241,
+   "h": 334
+  },
+  {
+   "out": "bk-plaid",
+   "src": "bankA",
+   "x": 3,
+   "y": 351,
+   "w": 266,
+   "h": 322
+  },
+  {
+   "out": "bk-fog",
+   "src": "bankA",
+   "x": 283,
+   "y": 351,
+   "w": 242,
+   "h": 322
+  },
+  {
+   "out": "bk-olive-zip",
+   "src": "bankA",
+   "x": 1268,
+   "y": 351,
+   "w": 265,
+   "h": 322
+  },
+  {
+   "out": "bk-terrace-tree",
+   "src": "bankB",
+   "x": 653,
+   "y": 3,
+   "w": 287,
+   "h": 344
+  },
+  {
+   "out": "bk-rust-concrete",
+   "src": "bankB",
+   "x": 333,
+   "y": 3,
+   "w": 307,
+   "h": 344
+  },
+  {
+   "out": "bk-flannel-concrete",
+   "src": "bankB",
+   "x": 953,
+   "y": 3,
+   "w": 272,
+   "h": 344
+  },
+  {
+   "out": "bk-terrace-sea",
+   "src": "bankB",
+   "x": 1221,
+   "y": 360,
+   "w": 312,
+   "h": 305
+  },
+  {
+   "out": "bk-rust-macro",
+   "src": "bankB",
+   "x": 908,
+   "y": 360,
+   "w": 299,
+   "h": 305
+  },
+  {
+   "out": "bk-knit",
+   "src": "bankB",
+   "x": 628,
+   "y": 679,
+   "w": 266,
+   "h": 342
+  },
+  {
+   "out": "bk-pool",
+   "src": "bankB",
+   "x": 333,
+   "y": 679,
+   "w": 281,
+   "h": 342
+  },
+  {
+   "out": "cu-embroidery",
+   "src": "curious",
+   "x": 534,
+   "y": 1225,
+   "w": 110,
+   "h": 122
+  },
+  {
+   "out": "fl-sketch-hoodie",
+   "src": "flat",
+   "x": 546,
+   "y": 80,
+   "w": 308,
+   "h": 344
+  },
+  {
+   "out": "fl-garden-shirt",
+   "src": "flat",
+   "x": 546,
+   "y": 470,
+   "w": 308,
+   "h": 276
+  },
+  {
+   "out": "fl-knit-polo",
+   "src": "flat",
+   "x": 868,
+   "y": 470,
+   "w": 320,
+   "h": 276
+  },
+  {
+   "out": "fl-field-jacket",
+   "src": "flat",
+   "x": 1206,
+   "y": 470,
+   "w": 328,
+   "h": 276
+  },
+  {
+   "out": "fl-embroidery",
+   "src": "flat",
+   "x": 546,
+   "y": 780,
+   "w": 390,
+   "h": 244
+  },
+  {
+   "out": "ed-plant-panel",
+   "src": "ed",
+   "x": 1188,
+   "y": 648,
+   "w": 200,
+   "h": 374
+  },
+  {
+   "out": "orig-ra-cream",
+   "src": "o_ra",
+   "x": 650,
+   "y": 0,
+   "w": 1500,
+   "h": 1728,
+   "widths": [
+    640,
+    1080
+   ]
+  },
+  {
+   "out": "orig-trc-red",
+   "src": "o_trc",
+   "x": 1,
+   "y": 0,
+   "w": 2050,
+   "h": 2939,
+   "widths": [
+    640,
+    1080
+   ]
+  },
+  {
+   "out": "orig-company-blue",
+   "src": "o_blue",
+   "widths": [
+    640,
+    1080
+   ]
   }
- ]
+ ],
+ "_people": {
+  "_rule": "Real people in the owner's original photos: local preview only; model releases needed before anything is public (handoff 03/08).",
+  "identifiable": [
+   "IMG_2986.JPG (man in cream Runwae Apparel hoodie, face mask)",
+   "731190D9-...JPG (man in red TRC hoodie; cropped to exclude the person behind)",
+   "IMG_5546.JPG (woman in light-blue Runwae Company hoodie)",
+   "IMG_5595.JPG / A4C76011 / 3DA1BCC5 (story page archive portraits)"
+  ],
+  "no_people": [
+   "IMG_4199.HEIC (bagged blue hoodies)"
+  ],
+  "never_used": [
+   "E2CD0177, 2F277B93, 59553D8B, IMG_2987, IMG_2988: they show the outside artist's head/cage/trees illustration (#82-d)",
+   "IMG_3514, IMG_3515, IMG_5585, IMG_5588: Poison hoodie",
+   "Tri County items: not Runwae"
+  ]
+ }
 }
