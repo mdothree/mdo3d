@@ -64,6 +64,8 @@ const stripeConfig = JSON.stringify({
   paymentLinkMonthly: PRO_ON ? (process.env.STRIPE_PAYMENT_LINK_MONTHLY || '') : '',
   paymentLinkYearly:  PRO_ON ? (process.env.STRIPE_PAYMENT_LINK_YEARLY  || '') : '',
   portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || '',
+  // mdothree-api Cloud Functions base (js/pro-api.js createCheckoutSession), e.g. https://us-central1-<project>.cloudfunctions.net
+  functionsBaseUrl: process.env.FIREBASE_FUNCTION_BASE_URL || '',
   // #66b: Pro checkout stays closed (coming-soon copy, no payment link) unless this is exactly 'true'.
   PRO_CHECKOUT_ENABLED: PRO_ON,
 });

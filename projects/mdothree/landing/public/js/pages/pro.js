@@ -3,6 +3,10 @@ import { ensureAnonymousUser, onAuthChange, getFirebaseAuth } from '../config/co
 import { withLoading, showToast as uiToast, showError } from '../utils/ui-helpers.js';
 import { initSubscription, isPro, onSubscriptionChange, refreshSubscription } from '../services/subscriptionService.js';
 import { STRIPE_CONFIG, PRO_CHECKOUT_ENABLED } from '../config/config.js';
+// mdothree-api client (hardened API 883dbfc): Bearer Firebase ID token, guests refused, no uid in bodies.
+// createCheckoutSession ties the Stripe session to the signed-in account (the webhook grants Pro by uid);
+// the old Stripe Payment Links carried no uid, so /pro no longer links to them.
+import { createCheckout, signedInUser, ProApiError, proErrorMessage } from '../pro-api.js';
 
 // #66b: the static page says "coming soon" (no price, no checkout). Only when
 // PRO_CHECKOUT_ENABLED is on does it become a purchasable plan.
@@ -135,34 +139,53 @@ if (PRO_CHECKOUT_ENABLED) {
       await mountPayment();
     });
 
+    // Hosted Stripe Checkout through createCheckoutSession (sign-in first). The server fixes the price
+    // ($4/month or $36/year) and the success/cancel URLs (mdothree.com/success, /pro?checkout=cancel).
     async function mountPayment() {
       if (!PRO_CHECKOUT_ENABLED) return;
       const submitBtn   = document.getElementById('checkout-submit');
       const submitLabel = document.getElementById('checkout-submit-label');
       const mountEl     = document.getElementById('payment-element');
+      const errorEl     = document.getElementById('payment-error');
+      const auth = getFirebaseAuth();
+      const label = () => signedInUser(auth)
+        ? (selectedBilling === 'yearly' ? 'Continue to checkout — $36/year' : 'Continue to checkout — $4/month')
+        : 'Sign in to continue';
 
-      // Use Stripe Payment Links for simple checkout (no server needed)
-      const paymentLinkUrl = selectedBilling === 'yearly'
-        ? STRIPE_CONFIG.paymentLinkYearly
-        : STRIPE_CONFIG.paymentLinkMonthly;
-      if (!/^https:\/\/buy\.stripe\.com\//.test(paymentLinkUrl || '')) return;   // #66b: no link configured -> no checkout
-
-      submitBtn.disabled = true;
-      submitLabel.textContent = 'Redirecting to secure checkout…';
-      mountEl.innerHTML = `
-        <div style="text-align:center;padding:40px 20px;">
-          <p style="color:#64748B;font-size:0.9rem;margin-bottom:16px">You'll be redirected to Stripe's secure checkout.</p>
-          <a href="${paymentLinkUrl}" target="_blank" rel="noopener" 
-             style="display:inline-block;background:#10B981;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:0.95rem;">
-            Continue to Payment →
-          </a>
-        </div>
-      `;
-
-      // Auto-redirect after short delay
-      setTimeout(() => {
-        window.open(paymentLinkUrl, '_blank');
-      }, 1500);
+      mountEl.classList.remove('loading');
+      mountEl.textContent = signedInUser(auth)
+        ? "You'll pay on Stripe's secure checkout page, then come back to mdothree.com."
+        : proErrorMessage(401, 'sign_in_required');
+      if (errorEl) errorEl.textContent = '';
+      submitBtn.disabled = false;
+      submitLabel.textContent = label();
+      submitBtn.onclick = async () => {
+        if (errorEl) errorEl.textContent = '';
+        if (!signedInUser(auth)) {
+          // Sign in or create an account (js/auth-ui.js, loaded now). The guest session on this page is
+          // linked to the new account, so the purchase lands on that account.
+          const { openSignIn } = await import('../auth-nav.js');
+          const signed = await openSignIn({ reason: 'Pro belongs to your mdothree account. Sign in or create one, then continue to checkout.' }).catch(() => null);
+          if (signed && signedInUser(auth)) {
+            const status = await refreshSubscription();
+            if (status?.isPro) return;   // onSubscriptionChange switches the page to "Manage billing"
+          }
+          return mountPayment();
+        }
+        submitBtn.disabled = true;
+        submitLabel.textContent = 'Opening secure checkout…';
+        try {
+          const url = await createCheckout(selectedBilling === 'yearly' ? 'yearly' : 'monthly', {
+            baseUrl: STRIPE_CONFIG.functionsBaseUrl,
+            auth,
+          });
+          window.location.assign(url);
+        } catch (e) {
+          if (errorEl) errorEl.textContent = e instanceof ProApiError ? e.message : proErrorMessage(500, 'internal');
+          submitBtn.disabled = false;
+          submitLabel.textContent = label();
+        }
+      };
     }
 
     // Billing portal link

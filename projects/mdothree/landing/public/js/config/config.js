@@ -130,6 +130,9 @@ export const STRIPE_CONFIG = {
   // #66b: empty unless the build emitted them (PRO_CHECKOUT_ENABLED=true). Never hardcoded here.
   paymentLinkMonthly: CONFIG.paymentLinkMonthly || '',
   paymentLinkYearly:  CONFIG.paymentLinkYearly  || '',
+  // mdothree-api Cloud Functions base, e.g. https://us-central1-<project>.cloudfunctions.net
+  // (stripe-config meta). Empty = checkout fails closed with an honest message.
+  functionsBaseUrl: CONFIG.functionsBaseUrl || CONFIG.FIREBASE_FUNCTION_BASE_URL || '',
 };
 
 export const IS_TEST_MODE = STRIPE_CONFIG.publishableKey.startsWith('pk_test_');
