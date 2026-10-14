@@ -1,24 +1,30 @@
 # Rigor paid path: Q7 fix (staged, not run)
 
+> **Pricing 2026-10-14 (DECISIONS 19:40 ET): Rigor Pro is $10/mo.** The new price is created by
+> `staged/pricing/PRICING_GO.sh`; `RIGOR_GO.sh` reads it from `staged/pricing/out/new_ids.json` (`rigor_pro_price`) and
+> refuses to run without it. The original link `plink_1TEwCoCRLa19N9qBx7eNHK7D` sells the retired price, stays active (never
+> paused) and is on no page. Tool pins: resume:1ef90f2 cover:ec879b8 interview:caba820 linkedin:cc578ac networking:af952f6
+> portfolio:0cd784d salary:8b3b6c7; rigor-api 6114581. Where the 2026-10-12 diagnosis below cites a price, it is the price at that time.
+
 > **Rev 2026-10-13 (supersedes the GO order below where they differ):** `RIGOR_GO.sh` now writes **no secret
 > and no Stripe object**. The env is set first by the Principal (see `SECRETS_NEEDED.md`), and the preflight refuses
 > to deploy while any required env name is missing from project `rigor`. Stages: unlink rigor-landing → domain
 > (already attached; cert issued 2026-10-12) → DNS only (already) → deploy rigor-api `q7/paid-path` @ `0d7459d` →
 > verify (`/health` 200 + `environment: production`, unsigned webhook 400, anon 401s, link `active=true` by
-> read-only GET) → 7 tools → verify (`/`, `/success`, `/cancel` 200, checkout on, price 999) → fast-forward main.
+> read-only GET) → 7 tools → verify (`/`, `/success`, `/cancel` 200, checkout on, price 1000 cents) → fast-forward main.
 > On a failed verify it **stops and reports, with no rollback**. Live root cause on 2026-10-13: `api.rigor.design` is
 > 404, not 525. DNS/TLS/domain are fine; project `rigor`'s production deployment is a rigor-landing git build.
 
 
 Principal decision Q7: *"for the rigor link thing, it sounds like the answer is to fix it, not take it down"*.
-The Stripe Payment Link (`buy.stripe.com/…8k804`, Rigor Pro $9.99/mo) is **not paused**. This change makes paying
+The Stripe Payment Link (`buy.stripe.com/…8k804`, Rigor Pro at the pre-2026-10-14 price) is **not paused**. This change makes paying
 work end to end. One script runs it: `staged/rigor_fix/RIGOR_GO.sh` (needs the Principal's GO).
 
 ## Diagnosis (2026-10-12, read-only)
 
 | Question | Finding | Evidence |
 |---|---|---|
-| Price shown vs charged | **Match.** The pages show $9.99/mo, and the link charges 999 USD per month (recurring, licensed, live), product "Rigor Pro". | Live resume (2×), interview, networking and salary link `8k804` with the text "Upgrade to Pro - $9.99/mo". The public checkout JSON of the link (the request a browser makes on page load; nothing was submitted) shows `unit_amount 999`, `currency usd`, `interval month`, `mode subscription`, `livemode true`. |
+| Price shown vs charged | **Match.** The pages showed the same price the link charged (the pre-2026-10-14 price), per month (recurring, licensed, live), product "Rigor Pro". | Live resume (2×), interview, networking and salary link `8k804` with the "Upgrade to Pro" text and that price. The public checkout JSON of the link (the request a browser makes on page load; nothing was submitted) shows the same `unit_amount`, `currency usd`, `interval month`, `mode subscription`, `livemode true`. |
 | Where a payer lands | Stripe's own confirmation page. `success_url`/`cancel_url` are placeholders, `after_completion=confirmation_page`, and the rigor `/success` page is never reached. Promotion codes are **off** on the link (`allow_promotion_codes:false`). | Same JSON. |
 | Does paying grant Pro? | **No, never.** The link sends no `client_reference_id` (null), and the pages don't add one. The webhook handled `checkout.session.completed` only when `metadata.userId` was set (embedded checkout only), so a link payment was dropped. The stripe-hub receiver also ignored it (no serviceName, and no line items on the session object). Later subscription events find no `subscriptions/{uid}` with that customer, so they are no-ops. | `api/lib/stripeEvents.js` @ `863d3f2`. |
 | What Pro unlocks | Unlimited AI calls on all 7 tools (`subscriptions/{uid}` plan pro/team and status active/trialing). Since #94, no plan means a 402 on the first call. | `api/lib/quota.js`. |
@@ -54,11 +60,11 @@ session, nobody can pay while the API is down. The link itself stays live, and p
 ### 7 tools: branch `q7/paid-path` (on top of #94 + go-final)
 - Checkout **on**, with the `apiReachable()` probe still in front of it. The page sends `priceId:"pro"`, and
   Stripe.js uses the key the API returns.
-- Pro card: $9.99/mo, "Unlimited use of all 7 Rigor career tools", "Full AI results", "Cancel anytime from Manage Plan".
+- Pro card: $10/mo (2026-10-14), "Unlimited use of all 7 Rigor career tools", "Full AI results", "Cancel anytime from Manage Plan".
   Team is hidden.
 - `/success` runs `js/success.js` → `/api/payment/confirm` and shows one of four states: active, confirming (polls),
   sign in, or wrong account. It only says "active" when the API says so.
-- xps Playwright (API and Stripe.js mocked): on all 7, checkout mounts with the API key and secret, $9.99 is shown,
+- xps Playwright (API and Stripe.js mocked): on all 7, checkout mounts with the API key and secret, the Pro price is shown ($10 since 2026-10-14),
   Team is hidden, and there are 0 page errors.
 
 ## The new GO order
@@ -76,7 +82,7 @@ session, nobody can pay while the API is down. The link itself stays live, and p
      also unknown price 400, first unsubscribed call 402, and confirm inactive.
    - **[8]** deploy the tools. **Only if [7] passes** do they get `q7/paid-path` (checkout on). Otherwise they get the
      gate (`go-final`/`main`).
-   - **[9]** verify: no `buy.stripe.com` href, `/success` 200, checkout flag, page price × 100 = Stripe 999
+   - **[9]** verify: no `buy.stripe.com` href, `/success` 200, checkout flag, page price × 100 = Stripe 1000
    - **[10]** fast-forward `main` ← `q7/paid-path` (never force)
 4. Optional: `… go --stripe-live-write`. This step is **LIVE STRIPE WRITE (Principal)**: it creates the webhook endpoint
    if none reaches rigor, and points the Payment Link at `/success` with promo codes on. Every stage writes a rollback
@@ -89,7 +95,7 @@ endpoint behind it.
 - `~/latarence/secrets/sega_credentials.env`: `VERCEL_TOKEN_MDO3`, `CLOUDFLARE_TOKEN_MDO3` (used by variable).
 - `RIGOR_ENV_FILE` (default `~/latarence/secrets/rigor_api.env`): `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`,
   `FIREBASE_PRIVATE_KEY` (one line, `\n` escapes), `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`,
-  `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRO_PRICE_IDS` (the price the link sells). Optional: `STRIPE_TEAM_PRICE_IDS`,
+  `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRO_PRICE_IDS` (the new $10/mo price id from `staged/pricing/out/new_ids.json` `rigor_pro_price`). Optional: `STRIPE_TEAM_PRICE_IDS`,
   `APPCHECK_ENFORCE`. `ANTHROPIC_API_KEY` is already on Vercel.
 - Optional `RIGOR_TEST_ID_TOKEN`: the ID token of a signed-in, unsubscribed test account. Email/password sign-in
   must be on (#96).
@@ -97,7 +103,7 @@ endpoint behind it.
   before deploying, unless it is run with `--stripe-live-write`.
 
 ## For HQ
-- RIGOR-PAY-BEFORE-API kit check: change "live $9.99 Stripe link absent" to **"checkout/link present only while
+- RIGOR-PAY-BEFORE-API kit check: change "live Stripe link absent" to **"checkout/link present only while
   `https://api.rigor.design/health` is 200"**.
 - With #94 the old "4th call 402" check becomes **"1st unsubscribed call 402"**.
 - Principal check in the Stripe Dashboard: has anyone already paid through `8k804`? Those payers got nothing. With

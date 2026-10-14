@@ -24,7 +24,7 @@ never reads values). `/health` returns 200 only when all of them are set and Fir
 | `STRIPE_SECRET_KEY` | **yes** | The **live** MDO3 Stripe account that owns `plink_1TEwCoCRLa19N9qBx7eNHK7D` / `price_1TEwCiCRLa19N9qBTxS4Oo0K` (these ids contain `CRLa19N9q`). Use the same key as Vercel project `oracle-cards-api`'s `STRIPE_SECRET_KEY` if that's the same account, or better, a restricted `rk_live_` key with write access to Checkout Sessions, Customers, Subscriptions and Billing Portal, and read access to Events, Prices and Payment Links. |
 | `STRIPE_PUBLISHABLE_KEY` | no (public) | The `pk_live_` key of the **same** account. Stripe → Developers → API keys. `/health` checks that the modes match. |
 | `STRIPE_WEBHOOK_SECRET` | **yes** | The signing secret (`whsec_…`) of a **new live webhook endpoint**. URL `https://api.rigor.design/api/payment/webhook`, events `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`. Creating it is a Stripe write, so it's the Principal's. The endpoint can exist before the API is live: Stripe retries for 3 days. |
-| `STRIPE_PRO_PRICE_IDS` | no | `price_1TEwCiCRLa19N9qBTxS4Oo0K` (Rigor Pro, $9.99/mo, the price the link sells) |
+| `STRIPE_PRO_PRICE_IDS` | no | the new $10/mo price id from `staged/pricing/out/new_ids.json` `rigor_pro_price` (Rigor Pro, decision 2026-10-14; created by `staged/pricing/PRICING_GO.sh`). **Not** the retired `price_1TEwCiCRLa19N9qBTxS4Oo0K`. |
 | `ANTHROPIC_API_KEY` | **yes** | Already on the project (RIGOR_FIX 2026-10-12). Don't change it. Preflight confirms the name. |
 | `RIGOR_PAYMENT_LINK_IDS` | no, optional | `plink_1TEwCoCRLa19N9qBx7eNHK7D` (this is also the code default, so it can stay unset) |
 | `APPCHECK_ENFORCE` | no, optional | Leave unset or `false` |
@@ -66,7 +66,7 @@ the backend next. The env names its code reads (they agree with the AUDIT):
 | `FIREBASE_CLIENT_EMAIL` / `FIREBASE_PRIVATE_KEY` | yes | A new key for that project's `firebase-adminsdk` service account |
 | `STRIPE_SECRET_KEY` | yes | The MDO3 account, **test mode first** (AUDIT), and live only at launch |
 | `STRIPE_WEBHOOK_SECRET` | yes | A new live endpoint `https://api.ronnascanner.com/api/payment/webhook` (events as in A) |
-| `STRIPE_PRO_PRICE_IDS` / `STRIPE_TEAM_PRICE_IDS` | no | Ronna prices **don't exist yet**. They're a price decision (S8/S10), then a Stripe write. |
+| `STRIPE_PRO_PRICE_IDS` / `STRIPE_TEAM_PRICE_IDS` | no | Decided 2026-10-14: Ronna Pro $10/mo (price created by `staged/pricing/PRICING_GO.sh`, see `staged/pricing/out/new_ids.json`); Team hidden until it has a team feature, so leave `STRIPE_TEAM_PRICE_IDS` unset. |
 | `APOLLO_API_KEY` | yes | An Apollo.io account (none on file). This is the lead data source the backend needs. |
 | `HUNTER_API_KEY` | yes | A Hunter.io account (none on file). Used for email finding. |
 

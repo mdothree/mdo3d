@@ -28,14 +28,19 @@ API_PROJECT_NAME=rigor                       # Vercel project prj_6XVgXk8RuUT56A
 DOMAIN=api.rigor.design; ZONE=rigor.design
 TOOLS="resume cover interview linkedin networking portfolio salary"
 PAID_REF=q7/paid-path                        # rigor-api + 7 tools (contains #94 paid-first-use + go-final)
-API_SHA=${API_SHA:-0d7459d}                  # rigor-api q7/paid-path tip 2026-10-13 (/health reports environment)
+API_SHA=${API_SHA:-6114581}                  # rigor-api q7/paid-path tip 2026-10-14 (0d7459d + pricing comment; /health reports environment)
 # 7 tools: q7/paid-path tips after the 2026-10-13 fold-forwards (go-final-r4 incl. h13 font fix + theme toggle + footer legal links, main merged in; stage 8 FFs main).
-TOOL_PINS=${TOOL_PINS:-"resume:9a3b7fb cover:033ddf7 interview:407cdf5 linkedin:2d6a2b7 networking:25b22d8 portfolio:322e26a salary:49c5844"}
+# 2026-10-14 pricing: + "pricing: Rigor Pro $10/mo" on each tool (was resume:9a3b7fb cover:033ddf7 interview:407cdf5 linkedin:2d6a2b7 networking:25b22d8 portfolio:322e26a salary:49c5844).
+TOOL_PINS=${TOOL_PINS:-"resume:1ef90f2 cover:ec879b8 interview:caba820 linkedin:cc578ac networking:af952f6 portfolio:0cd784d salary:8b3b6c7"}
 # 2026-10-14 window-4 split: q7/paid-path now defaults PRO_CHECKOUT_ENABLED to "false" (the tools ship alone in
 # WINDOW slot w4_rigor_tools before the API is verified). Step [6] flips the default to "true" in the deployed copy only.
-PLINK_ID=plink_1TEwCoCRLa19N9qBx7eNHK7D      # Rigor Pro link (buy.stripe.com/…8k804). NEVER paused or modified here.
-PRO_PRICE=price_1TEwCiCRLa19N9qBTxS4Oo0K     # what the link sells; must equal STRIPE_PRO_PRICE_IDS
-EXPECT_CENTS=999; EXPECT_CURRENCY=usd; EXPECT_INTERVAL=month
+PLINK_ID=plink_1TEwCoCRLa19N9qBx7eNHK7D      # original Rigor Pro link (buy.stripe.com/…8k804, sells the retired pre-2026-10-14 price). NEVER paused or modified here.
+# Pricing decision 2026-10-14 (DECISIONS 19:40 ET): Rigor Pro $10/mo. The Pro price id comes from PRICING_GO.sh's output
+# ($NEW_IDS key rigor_pro_price) and must equal STRIPE_PRO_PRICE_IDS. No fallback: the retired price_1TEwCiCRLa19N9qBTxS4Oo0K is refused.
+NEW_IDS=${NEW_IDS:-$HOME/mdo3d/staged/pricing/out/new_ids.json}
+RETIRED_PRO_PRICE=price_1TEwCiCRLa19N9qBTxS4Oo0K
+PRO_PRICE=""; PRO_PLINK=""                   # resolved from $NEW_IDS after the tool checks below
+EXPECT_CENTS=1000; EXPECT_CURRENCY=usd; EXPECT_INTERVAL=month
 REQ_ENV="FIREBASE_PROJECT_ID FIREBASE_CLIENT_EMAIL FIREBASE_PRIVATE_KEY STRIPE_SECRET_KEY STRIPE_PUBLISHABLE_KEY STRIPE_WEBHOOK_SECRET STRIPE_PRO_PRICE_IDS ANTHROPIC_API_KEY"
 
 log()  { echo "$(date -u +%FT%TZ) $*" | tee -a "$LOG"; }
@@ -52,6 +57,14 @@ stop_report(){  # failed verify: report and stop. No rollback, no revert (Princi
 [ "$MODE" = check ] || [ "$MODE" = go ] || { sed -n 2,22p "$0"; exit 1; }
 for b in curl jq git; do command -v $b >/dev/null || die "$b missing"; done
 [ "$MODE" = go ] && { command -v vercel >/dev/null || die "vercel CLI missing"; }
+
+
+# Pro price (2026-10-14 pricing): from PRICING_GO.sh's new_ids.json only. Refuse without it, never fall back to the retired price.
+[ -f "$NEW_IDS" ] || die "$NEW_IDS not found: run staged/pricing/PRICING_GO.sh first (it creates the \$10/mo Rigor Pro price). The retired price is never used."
+PRO_PRICE=$(jq -r '.rigor_pro_price // empty' "$NEW_IDS" 2>/dev/null)
+[[ "$PRO_PRICE" =~ ^price_[A-Za-z0-9]+$ ]] || die "no valid rigor_pro_price in $NEW_IDS: run staged/pricing/PRICING_GO.sh first"
+[ "$PRO_PRICE" != "$RETIRED_PRO_PRICE" ] || die "rigor_pro_price in $NEW_IDS is the retired pre-2026-10-14 price: refusing"
+PRO_PLINK=$(jq -r '.rigor_pro_payment_link // empty' "$NEW_IDS" 2>/dev/null)   # optional: a new link selling the $10 price
 
 # ── tokens (by variable; nothing below echoes a value) ─────────────────────────────────────────────
 source ~/latarence/secrets/sega_credentials.env >/dev/null 2>&1
@@ -108,7 +121,12 @@ fi
 # Stripe (GET only)
 if [ -n "$SRK" ]; then
   LA=$(link_active); chk "Payment Link $PLINK_ID active (read-only)" "$LA" true
-  LP=$(sget "payment_links/$PLINK_ID/line_items" | jq -r '.data[0].price.id // empty'); chk "link sells the Pro price" "$LP" "$PRO_PRICE"
+  log "  Pro price (from $NEW_IDS): $PRO_PRICE"
+  if [ -n "$PRO_PLINK" ]; then
+    LP=$(sget "payment_links/$PRO_PLINK/line_items" | jq -r '.data[0].price.id // empty'); chk "new Pro link $PRO_PLINK sells the Pro price" "$LP" "$PRO_PRICE"
+  else
+    log "  $PLINK_ID sells the retired price (kept active, never paused; on no page). The tools use embedded checkout with STRIPE_PRO_PRICE_IDS: link-price check skipped"
+  fi
   P=$(sget "prices/$PRO_PRICE")
   chk "Pro price cents" "$(echo "$P" | jq -r '.unit_amount // empty')" "$EXPECT_CENTS"
   chk "Pro price currency" "$(echo "$P" | jq -r '.currency // empty')" "$EXPECT_CURRENCY"
@@ -233,7 +251,7 @@ for t in $TOOLS; do
 done
 chk "Payment Link still active after tools (read-only GET)" "$(link_active)" true
 [ "$failn" = 0 ] || stop_report "[7] tools verify"
-manual "one real browser pass: sign in on resume.rigor.design → Get Rigor Pro → embedded checkout shows \$9.99/month. No real card unless the Principal chooses a live test purchase."
+manual "one real browser pass: sign in on resume.rigor.design → Get Rigor Pro → embedded checkout shows \$10.00/month (Stripe's format). No real card unless the Principal chooses a live test purchase."
 
 # ── 8. Keep main = what is live (fast-forward only, never force) ───────────────────────────────
 log "[8] fast-forward main ← $PAID_REF (these Vercel projects are CLI-deployed, so this does not deploy)"
