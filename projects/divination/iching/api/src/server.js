@@ -10,6 +10,7 @@ import { priceFor } from './pricing.js';
 dotenv.config();
 
 const app = express();
+app.disable('x-powered-by'); // SURF-011: no framework banner
 const PORT = process.env.PORT || 3005;
 
 // Services
@@ -19,8 +20,16 @@ const stripeService = new StripeService('I Ching Oracle');
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:8080',
-  credentials: true
+  // SURF-011: the frontend never sends cookies or credentials (no credentials:'include'), so
+  // no Access-Control-Allow-Credentials; only the methods the routes use.
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: false
 }));
+// SURF-011: a coarse per-IP cap on every POST except the Stripe webhooks (the direct one is
+// signature-verified; the forwarded one has its own limiter). It bounds the Stripe lookups behind
+// /api/payment/verify and the paid-session checks, and the save stubs. Best-effort, per warm
+// instance, like every limiter in security.js. Paid AI routes also have a per-session use cap.
+app.use(rateLimit({ max: 60, skip: req => req.method !== 'POST' || req.path.startsWith('/api/webhook/') }));
 // Parse JSON for every route EXCEPT the Stripe webhook: Stripe signature
 // verification (stripe.webhooks.constructEvent) needs the exact raw bytes, which
 // the route-level express.raw() below provides. If express.json() ran first it

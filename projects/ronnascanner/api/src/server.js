@@ -36,7 +36,11 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:8080',
   credentials: true
 }));
-app.use(express.json());
+// SURF-011: JSON for every route EXCEPT the Stripe webhook, whose signature check
+// (stripe.webhooks.constructEvent) needs the raw bytes from the route-level express.raw().
+// A global express.json() consumed the stream first, so every real event failed verification.
+const jsonParser = express.json();
+app.use((req, res, next) => (req.path === '/api/webhook/stripe' ? next() : jsonParser(req, res, next)));
 
 if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
 
