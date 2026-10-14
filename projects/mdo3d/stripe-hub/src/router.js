@@ -16,11 +16,14 @@ export function buildRouteIndex(routesConfig) {
   const byName = new Map();
   for (const [key, svc] of Object.entries(services)) {
     if (!svc || svc.enabled === false) continue;
-    if (!Array.isArray(svc.targets) || svc.targets.length === 0) continue;
+    // A service is live with forward targets, or with an in-process handler (e.g. "fulfilment").
+    const hasTargets = Array.isArray(svc.targets) && svc.targets.length > 0;
+    if (!hasTargets && !svc.handler) continue;
     byName.set(key.toLowerCase(), key);
     for (const alias of svc.aliases || []) byName.set(String(alias).toLowerCase(), key);
   }
-  return { services, byName };
+  const paymentLinkServices = Object.keys(services).filter((k) => byName.get(k.toLowerCase()) === k && services[k].paymentLinks === true);
+  return { services, byName, paymentLinkServices };
 }
 
 export function parsePriceMap(raw) {
@@ -128,6 +131,16 @@ export async function resolveService(event, { index, priceMap = {}, stripe = nul
     for (const p of prices) {
       const key = priceMap[p];
       const r = key && index.services[key] && index.byName.get(key.toLowerCase()) ? hit(key, 'price_map') : null;
+      if (r) return r;
+    }
+  }
+
+  // Last resort: a Checkout Session created from a Payment Link goes to the service that owns
+  // Payment Link sales ("paymentLinks": true). The receiver decides whether the link is one of its
+  // products and ignores the rest, so no plink ids are needed here.
+  if (event.type && event.type.startsWith('checkout.session') && obj.payment_link) {
+    for (const key of index.paymentLinkServices || []) {
+      const r = hit(key, 'payment_link');
       if (r) return r;
     }
   }

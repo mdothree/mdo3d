@@ -4,7 +4,7 @@
     {
       "src": "src/server.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["routes.json"] }
+      "config": { "includeFiles": ["routes.json", "src/fulfilment/catalog.json", "private/**"] }
     }
   ],
   "routes": [

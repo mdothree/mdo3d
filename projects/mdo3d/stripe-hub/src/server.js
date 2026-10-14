@@ -20,6 +20,7 @@ import { createRequire } from 'module';
 import {
   ACCOUNT_RE, accountEnvKey, buildRouteIndex, parsePriceMap, resolveService, amountOf, forwardEvent
 } from './router.js';
+import { handleFulfilment, handleDownload } from './fulfilment/index.js';
 
 const require = createRequire(import.meta.url);
 
@@ -28,7 +29,7 @@ function loadRoutes(env) {
   return require('../routes.json');
 }
 
-export function createApp({ env = process.env, routes, fetchImpl, StripeCtor = Stripe, log = console.log } = {}) {
+export function createApp({ env = process.env, routes, fetchImpl, StripeCtor = Stripe, log = console.log, fulfilDeps = {} } = {}) {
   const index = buildRouteIndex(routes || loadRoutes(env));
   const priceMap = parsePriceMap(env.ROUTE_PRICE_MAP);
   const timeoutMs = parseInt(env.HUB_FORWARD_TIMEOUT_MS || '8000', 10);
@@ -44,7 +45,23 @@ export function createApp({ env = process.env, routes, fetchImpl, StripeCtor = S
     return c;
   }
 
+  // In-process handlers (routes.json "handler"). They re-fetch the event with their own key.
+  let fulfilStripe = null;
+  const handlers = {
+    fulfilment: (eventId) => {
+      if (!fulfilStripe && env.STRIPE_SECRET_KEY_FULFIL) fulfilStripe = new StripeCtor(env.STRIPE_SECRET_KEY_FULFIL);
+      return handleFulfilment(eventId, { env, stripe: fulfilStripe, fetchImpl, log, ...fulfilDeps });
+    }
+  };
+
   const app = express();
+
+  // Signed, expiring download links sent by the fulfilment emails.
+  app.get('/api/fulfil/download', (req, res) => {
+    const r = handleDownload(String(req.query.t || ''), { env, ...(fulfilDeps.privateDir ? { privateDir: fulfilDeps.privateDir } : {}) });
+    if (r.file) { res.set(r.headers); return res.sendFile(r.file); }
+    return res.status(r.status).type('text/plain').send(r.body);
+  });
 
   app.get('/api/health', (req, res) => {
     res.json({ status: 'healthy', service: 'mdo3d-stripe-hub', services: [...new Set(index.byName.values())] });
@@ -83,7 +100,19 @@ export function createApp({ env = process.env, routes, fetchImpl, StripeCtor = S
       return res.json({ received: true, routed: false });
     }
 
-    const targets = index.services[service].targets;
+    const svc = index.services[service];
+    if (svc.handler) {
+      const h = handlers[svc.handler];
+      let r;
+      try { r = h ? await h(event.id) : { status: 500, body: { error: `unknown handler ${svc.handler}` } }; }
+      catch (e) { r = { status: 500, body: { error: e.message } }; }
+      const retry = r.status >= 500 || r.status === 429;
+      log(JSON.stringify({ ...line, outcome: retry ? 'handler_failed_retry' : 'handled', handler: svc.handler, status: r.status }));
+      if (retry) return res.status(500).json({ received: true, routed: true, retry: true });
+      return res.json({ received: true, routed: true, service });
+    }
+
+    const targets = svc.targets;
     const results = await forwardEvent(targets, { eventId: event.id, account, type: event.type }, { timeoutMs, fetchImpl });
     const retry = results.some(r => r.retryable);
     log(JSON.stringify({

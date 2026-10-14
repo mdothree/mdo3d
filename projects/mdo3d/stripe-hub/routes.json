@@ -61,6 +61,15 @@
       "targets": ["https://api.rigor.design/api/payment/webhook-forwarded"],
       "source": "projects/rigor/api. serviceName='rigor' is now set on checkout session + subscription metadata. Subscriptions created before that change carry no serviceName: map their price ids to 'rigor' in ROUTE_PRICE_MAP (same values as rigor's STRIPE_PRO_PRICE_IDS / STRIPE_TEAM_PRICE_IDS)."
     },
+    "fulfilment": {
+      "enabled": true,
+      "aliases": ["layoffleads", "promptsforbusiness"],
+      "targets": [],
+      "handler": "fulfilment",
+      "paymentLinks": true,
+      "accounts": ["mdo3"],
+      "source": "src/fulfilment (in-process handler, no forward). LayoffLeads Pro + Prompts for Business Payment Links (src/fulfilment/catalog.json, built by scripts/build-fulfilment.mjs). Routed by payment_link on checkout.session.* as the last resort; links not in the catalog are ignored (200)."
+    },
 
     "dailyaitoll": {
       "enabled": false,
