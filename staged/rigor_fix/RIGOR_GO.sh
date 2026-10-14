@@ -30,7 +30,7 @@ TOOLS="resume cover interview linkedin networking portfolio salary"
 PAID_REF=q7/paid-path                        # rigor-api + 7 tools (contains #94 paid-first-use + go-final)
 API_SHA=${API_SHA:-0d7459d}                  # rigor-api q7/paid-path tip 2026-10-13 (/health reports environment)
 # 7 tools: q7/paid-path tips after the 2026-10-13 fold-forwards (go-final-r4 incl. h13 font fix + theme toggle + footer legal links, main merged in; stage 8 FFs main).
-TOOL_PINS=${TOOL_PINS:-"resume:9d0df05 cover:ced9a39 interview:1649bed linkedin:da14a73 networking:e16bfdf portfolio:af1b4a1 salary:4ea2de0"}
+TOOL_PINS=${TOOL_PINS:-"resume:9a3b7fb cover:033ddf7 interview:407cdf5 linkedin:2d6a2b7 networking:25b22d8 portfolio:322e26a salary:49c5844"}
 # 2026-10-14 window-4 split: q7/paid-path now defaults PRO_CHECKOUT_ENABLED to "false" (the tools ship alone in
 # WINDOW slot w4_rigor_tools before the API is verified). Step [6] flips the default to "true" in the deployed copy only.
 PLINK_ID=plink_1TEwCoCRLa19N9qBx7eNHK7D      # Rigor Pro link (buy.stripe.com/…8k804). NEVER paused or modified here.
