@@ -4,7 +4,13 @@
   "outputDirectory": "public",
   "functions": {
     "api/checkout.mjs": {
-      "includeFiles": "brands/**/*.json"
+      "includeFiles": "{brands/**/*.json,inventory/*.csv}"
+    },
+    "api/availability.mjs": {
+      "includeFiles": "{brands/**/*.json,inventory/*.csv}"
+    },
+    "api/stripe-webhook.mjs": {
+      "includeFiles": "{brands/**/*.json,inventory/*.csv}"
     },
     "api/notify.mjs": {},
     "api/order-lookup.mjs": {}

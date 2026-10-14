@@ -8,8 +8,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "preorder",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -86,8 +84,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -143,8 +139,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -200,8 +194,6 @@
    "category": "sweatshirts",
    "type": "Crewneck",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -246,8 +238,6 @@
    "category": "hoodies",
    "type": "Hoodie",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -304,8 +294,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -354,8 +342,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -404,8 +390,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -471,8 +455,6 @@
    "category": "tees",
    "type": "Tee",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -521,8 +503,6 @@
    "category": "baby-tees",
    "type": "Baby tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -587,8 +567,6 @@
    "category": "hoodies",
    "type": "Hoodie",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -637,8 +615,6 @@
    "category": "shorts",
    "type": "Shorts",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "XS",
     "S",
@@ -687,8 +663,6 @@
    "category": "hats",
    "type": "Cap",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "One size"
    ],
@@ -732,8 +706,6 @@
    "category": "hats",
    "type": "Dad hat",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "One size"
    ],
@@ -777,8 +749,6 @@
    "category": "accessories",
    "type": "Tote",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "One size"
    ],

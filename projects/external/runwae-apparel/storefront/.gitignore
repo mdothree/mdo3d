@@ -6,3 +6,8 @@ node_modules/
 holding-dist/
 deploy/holding_go.log
 data/
+orders/
+outbox/
+inventory/.lock
+inventory/*.tmp
+docs/Apparel_Shops_Overview.pdf

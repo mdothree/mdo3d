@@ -27,14 +27,16 @@
    "lime": "#a6cf34",
    "paper": "#f2efe7",
    "ink": "#1a1a17",
-   "on-accent": "#f2efe7"
+   "on-accent": "#f2efe7",
+   "washed": "#1d1d1b"
   },
   "fonts": {
    "display": "'Instrument Serif', 'Cormorant Garamond', Georgia, serif",
    "body": "'Inter', 'Helvetica Neue', Arial, sans-serif",
-   "master": "'Inter Tight', 'Inter', 'Helvetica Neue', Arial, sans-serif"
+   "master": "'Inter Tight', 'Inter', 'Helvetica Neue', Arial, sans-serif",
+   "headline": "'Playfair Display', 'Instrument Serif', Georgia, serif"
   },
-  "fontsHref": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap"
+  "fontsHref": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&family=Playfair+Display:wght@600;700&display=swap"
  },
  "copy": {
   "preview": "Preview \u00b7 not open for orders",
@@ -68,5 +70,11 @@
   "washed-black",
   "rust"
  ],
- "_palette": "Principal 2026-10-14: 'lets do some of our origianl designs on more cohesive colors'. Forest, ivory, washed black, rust as the single accent. Archive pieces keep their 2021 colours."
+ "_palette": "Principal 2026-10-14: 'lets do some of our origianl designs on more cohesive colors'. Forest, ivory, washed black, rust as the single accent. Archive pieces keep their 2021 colours.",
+ "order_prefix": "RW",
+ "from_name": "Runwae Apparel",
+ "orders_from": "orders@runwaeapparel.com",
+ "orders_inbox": "orders@runwaeapparel.com",
+ "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout.",
+ "_main_site": "This shop is the brand main site, so there is no main_site footer link."
 }

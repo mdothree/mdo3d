@@ -1,2 +1,15 @@
-{ "_readme": "window.open/close null until scheduled (14 to 21 days). Ship-by = close + 49 days by default (core/drop.mjs).",
-  "drops": [ { "id": "first-drop", "name": "First drop", "products": ["example-tee"], "window": { "open": null, "close": null }, "schedule": {}, "moq": null } ] }
+{
+ "_readme": "window.open/close null until scheduled (14 to 21 days). Ship-by = close + 49 days by default (core/drop.mjs).",
+ "drops": [
+  {
+   "id": "first-drop",
+   "name": "First drop",
+   "window": {
+    "open": null,
+    "close": null
+   },
+   "schedule": {},
+   "moq": null
+  }
+ ]
+}

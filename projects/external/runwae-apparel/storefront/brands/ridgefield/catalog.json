@@ -9,8 +9,6 @@
    "category": "apparel",
    "type": "Hoodie",
    "channel": "preorder",
-   "status": "preorder",
-   "price_cents": null,
    "sizes": [
     "S",
     "M",
@@ -73,8 +71,6 @@
    "category": "apparel",
    "type": "Tee",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "S",
     "M",
@@ -128,8 +124,6 @@
    "category": "apparel",
    "type": "Beanie",
    "channel": "preorder",
-   "status": "next_drop",
-   "price_cents": null,
    "sizes": [
     "One size"
    ],
@@ -175,8 +169,6 @@
    "category": "apparel",
    "type": "Jacket",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "S",
     "M",
@@ -226,8 +218,6 @@
    "category": "apparel",
    "type": "Overshirt",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "S",
     "M",
@@ -281,8 +271,6 @@
    "category": "gear",
    "type": "Backpack",
    "channel": "preorder",
-   "status": "in_development",
-   "price_cents": null,
    "sizes": [
     "One size"
    ],

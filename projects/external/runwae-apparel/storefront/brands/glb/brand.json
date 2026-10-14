@@ -1,36 +1,62 @@
 {
-  "id": "glb",
-  "name": "Girls Love Butts",
-  "short": "GLB",
-  "endorsement": "a Butts Studios company",
-  "endorsement_status": "pending: confirm wording with the Butts Studios pane",
-  "domain": "girlslovebutts.com",
-  "description": "Girls Love Butts: line art, worn. Clothes for every body.",
-  "tagline": "They own it.",
-  "_tagline_status": "PROVISIONAL. Pending identity proposal, not yet approved by the Principal: 'They own it.' / under: 'every body is worth drawing'. 'Clothes for every body' and 'Real bodies, brighter days' come from the GLB concept boards.",
-  "mode": "preview",
-  "favicon": "assets/favicon.svg",
-  "tokens": {
-    "colors": {
-      "bg": "#fffaf1", "fg": "#141414", "muted": "#5c5853", "accent": "#1f4bff", "line": "#141414", "panel": "#fff1f7",
-      "pink": "#ff9fca", "pink-soft": "#ffd6e8", "yellow": "#ffe24d", "blue": "#1f4bff", "orange": "#ff5b24", "cream": "#fffaf1", "on-accent": "#ffffff", "focus": "#ff5b24"
-    },
-    "fonts": {
-      "display": "'Permanent Marker', 'Marker Felt', 'Comic Sans MS', cursive",
-      "body": "'DM Sans', 'Helvetica Neue', Arial, sans-serif"
-    },
-    "fontsHref": "https://fonts.googleapis.com/css2?family=Permanent+Marker&family=DM+Sans:wght@400;500;700&display=swap"
+ "id": "glb",
+ "name": "Girls Love Butts",
+ "short": "GLB",
+ "endorsement": "a Butts Studios company",
+ "endorsement_status": "pending: confirm wording with the Butts Studios pane",
+ "domain": "girlslovebutts.com",
+ "description": "Girls Love Butts: line art, worn. Clothes for every body.",
+ "tagline": "They own it.",
+ "_tagline_status": "PROVISIONAL. Pending identity proposal, not yet approved by the Principal: 'They own it.' / under: 'every body is worth drawing'. 'Clothes for every body' and 'Real bodies, brighter days' come from the GLB concept boards.",
+ "mode": "preview",
+ "favicon": "assets/favicon.svg",
+ "tokens": {
+  "colors": {
+   "bg": "#fffaf1",
+   "fg": "#141414",
+   "muted": "#5c5853",
+   "accent": "#1f4bff",
+   "line": "#141414",
+   "panel": "#fff1f7",
+   "pink": "#ff9fca",
+   "pink-soft": "#ffd6e8",
+   "yellow": "#ffe24d",
+   "blue": "#1f4bff",
+   "orange": "#ff5b24",
+   "cream": "#fffaf1",
+   "on-accent": "#ffffff",
+   "focus": "#ff5b24"
   },
-  "copy": {
-    "preview": "Preview · not open for orders",
-    "notifyIntro": "Want a heads-up? One email when it opens.",
-    "exchangeLine": "Size swaps within 14 days of delivery.",
-    "checkoutOff": "Checkout opens when the shop does."
+  "fonts": {
+   "display": "'Permanent Marker', 'Marker Felt', 'Comic Sans MS', cursive",
+   "body": "'DM Sans', 'Helvetica Neue', Arial, sans-serif"
   },
-  "shipping": { "flat_cents": null, "country": "US", "note": "US shipping only at launch. Rate set per drop." },
-  "policies": {
-    "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
-    "contact": "hello@girlslovebutts.com",
-    "contact_status": "placeholder: confirm the inbox exists before launch"
-  }
+  "fontsHref": "https://fonts.googleapis.com/css2?family=Permanent+Marker&family=DM+Sans:wght@400;500;700&display=swap"
+ },
+ "copy": {
+  "preview": "Preview · not open for orders",
+  "notifyIntro": "Want a heads-up? One email when it opens.",
+  "exchangeLine": "Size swaps within 14 days of delivery.",
+  "checkoutOff": "Checkout opens when the shop does."
+ },
+ "shipping": {
+  "flat_cents": null,
+  "country": "US",
+  "note": "US shipping only at launch. Rate set per drop."
+ },
+ "policies": {
+  "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
+  "contact": "hello@girlslovebutts.com",
+  "contact_status": "placeholder: confirm the inbox exists before launch"
+ },
+ "order_prefix": "GLB",
+ "from_name": "Girls Love Butts",
+ "orders_from": "orders@girlslovebutts.com",
+ "orders_inbox": "orders@girlslovebutts.com",
+ "print_rules": {
+  "large_art": "back_only",
+  "_why": "Principal 2026-10-14: shirt-sized art on the back is GLB-only."
+ },
+ "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout.",
+ "_main_site": "This shop is the brand main site, so there is no main_site footer link."
 }

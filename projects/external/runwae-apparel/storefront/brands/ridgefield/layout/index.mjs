@@ -19,7 +19,7 @@ ${kit.menuButton('Menu')}
 
 export function footer({ brand, kit }) {
   return `<footer class="rf-foot"><div class="rf-wrap rf-foot-grid">
-<div><a class="rf-logo" href="${kit.href.home()}" aria-label="Ridgefield store">${mark}<span>RIDGEFIELD</span></a><p class="rf-fine">ridgefieldtech.com</p></div>
+<div><a class="rf-logo" href="${kit.href.home()}" aria-label="Ridgefield store">${mark}<span>RIDGEFIELD</span></a></div>
 <nav aria-label="Footer"><a href="${kit.href.shop()}">Capsule 01</a><a href="${kit.href.story()}">About</a></nav>
 <nav aria-label="Help"><a href="${kit.href.orders()}">Order lookup</a><a href="${kit.href.policies()}">Shipping and exchanges</a><a href="mailto:${kit.esc(brand.policies.contact)}">${kit.esc(brand.policies.contact)}</a></nav>
 </div><div class="rf-wrap"><p class="rf-fine rf-foot-note">© ${new Date().getUTCFullYear()} Ridgefield. ${MARK_NOTE}</p></div></footer>`;
@@ -126,7 +126,7 @@ ${kit.buyBox(p, { showStatus: false })}
       body: `<section class="rf-wrap rf-about">${label('About')}<h1 class="rf-h1 rf-h1--md">Ridgefield</h1>
 <p class="rf-lede">Ridgefield works on technology assessment, design and development for systems that operate outside controlled conditions. Capsule 01 carries the same marks: the square, the mono type and the terrain line.</p>
 <p class="rf-lede">Specifications are published when confirmed with the maker.</p>
-<p><a class="rf-link" href="https://ridgefieldtech.com">ridgefieldtech.com</a></p></section>
+</section>
 <section class="rf-wrap rf-about-fig">${kit.figure('field-walker', { concept: true, caption: 'Fig. 06 · Field', sizes: '(max-width: 820px) 100vw, 70vw', alt: 'A figure with a backpack walking along a ridge' })}</section>`,
     };
   },

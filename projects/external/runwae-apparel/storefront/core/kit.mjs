@@ -71,7 +71,10 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
     const ss = p.sizes ?? [];
     if (!ss.length) return '';
     if (ss.length === 1) return `<input type="hidden" name="size" value="${esc(ss[0])}"><p class="seed-onesize">${esc(legend)}: ${esc(ss[0])}</p>`;
-    return `<fieldset class="seed-sizes"><legend>${esc(legend)}</legend><div class="seed-options">${ss.map((s) => `<label class="seed-size"><input type="radio" name="size" value="${esc(s)}" required><span>${esc(s)}</span></label>`).join('')}</div></fieldset>`;
+    // A size with nothing to sell in any colour renders disabled; seed.js refines this per colour.
+    const av = Object.entries(p.avail ?? {});
+    const gone = (s) => av.length > 0 && av.filter(([k]) => k.endsWith(`/${s}`)).every(([, a]) => !(a.available > 0));
+    return `<fieldset class="seed-sizes"><legend>${esc(legend)}</legend><div class="seed-options">${ss.map((s) => `<label class="seed-size"><input type="radio" name="size" value="${esc(s)}" required${gone(s) ? ' disabled' : ''}><span>${esc(s)}</span></label>`).join('')}</div></fieldset>`;
   };
   k.notifyForm = (p, { label = 'Notify me', intro } = {}) => `<form class="seed-notify" data-notify data-product="${esc(p.id)}" novalidate>
 <label for="notify-${esc(p.id)}">${esc(intro ?? k.copy('notifyIntro', 'Get one email when it opens.'))}</label>
@@ -98,7 +101,8 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
     const v = views[p.id];
     const head = `<div class="seed-buy-head">${k.price(p)}${showStatus ? k.status(p) : ''}</div>${v.note ? `<p class="seed-note">${esc(v.note)}</p>` : ''}${k.printLine(p)}`;
     if (v.canAdd) {
-      return `<div class="seed-buy">${head}<form class="seed-add" data-add data-product="${esc(p.id)}" novalidate>${k.swatches(p)}${k.sizes(p)}
+      const avail = v.stock ? `<p class="seed-avail" data-avail role="status" aria-live="polite">${esc(v.stock.text)}</p>` : '';
+      return `<div class="seed-buy">${head}${avail}<form class="seed-add" data-add data-product="${esc(p.id)}" novalidate>${k.swatches(p)}${k.sizes(p)}
 <button class="seed-add-btn" type="submit">${esc(v.preorder ? preorderLabel : addLabel)}</button>
 <p class="seed-msg" role="status" aria-live="polite"></p></form>
 <p class="seed-fine">${esc(k.copy('exchangeLine', 'Size exchanges within 14 days.'))} <a href="${k.href.policies()}">Shipping and exchanges</a></p></div>`;

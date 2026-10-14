@@ -2,7 +2,7 @@
 //
 // A brand layout (brands/<id>/layout/index.mjs) exports:
 //   header(ctx), footer(ctx)                          -> HTML strings
-//   pages: { home, collection, product, story, [cart, orders, policies, thanks] }
+//   pages: { home, collection, product, story, [cart, orders, policies, thanks], [extra: {slug: fn}] }
 //          each (ctx[, product]) -> { title?, description?, body, image? } (or a body string)
 // and ships layout/styles.css. ctx = { brand, products, shown, archive, drops, now, kit, page, root }.
 // Core adds: <head> (SEO/OG/JSON-LD/noindex), tokens -> CSS custom properties, base.css, seed.js
@@ -12,6 +12,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { readBrandDir, validateCatalog, productView, publicCatalog } from './catalog.mjs';
 import { createKit, esc } from './kit.mjs';
+import { radiusErrors, templateRadiusErrors } from './style-rules.mjs';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CORE = dirname(fileURLToPath(import.meta.url));
@@ -20,8 +21,8 @@ export const brandIds = (root = ROOT) => readdirSync(join(root, 'brands'), { wit
   .filter((d) => d.isDirectory() && !d.name.startsWith('_') && existsSync(join(root, 'brands', d.name, 'brand.json')))
   .map((d) => d.name).sort();
 
-export function loadBrand(id, root = ROOT) {
-  const b = readBrandDir(join(root, 'brands', id));
+export function loadBrand(id, root = ROOT, opts = {}) {
+  const b = readBrandDir(join(root, 'brands', id), opts);
   return { ...b, products: b.catalog };
 }
 
@@ -60,6 +61,26 @@ ${fonts}<link rel="stylesheet" href="${root}base.css"><link rel="stylesheet" hre
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}`;
 }
 
+/** brand.json `main_site` {label, url}: the only link between a shop and its main site, rendered by the core in
+ *  the footer (Principal 2026-10-14: "it shold only be footer link to get betweeen main site and shop for now").
+ *  Shops that ARE their brand's main site leave it out. Headers and navs never carry it (a test checks). */
+function withMainSite(footer, { brand }) {
+  const m = brand.main_site;
+  if (!m?.url) return footer;
+  const link = `<p class="seed-mainsite"><a href="${esc(m.url)}">${esc(m.label ?? m.url)}</a></p>`;
+  const i = footer.lastIndexOf('</footer>');
+  return i < 0 ? footer + link : `${footer.slice(0, i)}${link}${footer.slice(i)}`;
+}
+
+/** Small corners: every stylesheet and template a brand ships passes core/style-rules.mjs, or the build fails. */
+export function styleErrors(dir) {
+  return [
+    ...radiusErrors(readFileSync(join(CORE, 'base.css'), 'utf8'), 'core/base.css'),
+    ...radiusErrors(readFileSync(join(dir, 'layout', 'styles.css'), 'utf8'), `${dir.split('/').slice(-1)[0]}/layout/styles.css`),
+    ...templateRadiusErrors(readFileSync(join(dir, 'layout', 'index.mjs'), 'utf8'), `${dir.split('/').slice(-1)[0]}/layout/index.mjs`),
+  ];
+}
+
 function shell(L, ctx, page, out) {
   const r = typeof out === 'string' ? { body: out } : out;
   const { brand, kit, root } = ctx;
@@ -73,15 +94,18 @@ ${head({ brand, title, description, path: page.path, image: r.image, preview: br
 ${kit.skipLink()}${kit.previewBanner()}
 ${L.header(ctx)}
 <main id="main" tabindex="-1">${r.body}</main>
-${L.footer(ctx)}
+${withMainSite(L.footer(ctx), ctx)}
 </body></html>
 `;
 }
 
 /** Build one brand into outDir. */
 export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, env = process.env } = {}) {
-  const { dir, brand, catalog, drops, manifest } = readBrandDir(join(root, 'brands', id));
-  validateCatalog(catalog, drops, brand.palette ?? null);
+  if (id.startsWith('_')) throw new Error(`"${id}" is not a shop (folders starting with _ are never built)`);
+  const { dir, brand, catalog, drops, manifest } = readBrandDir(join(root, 'brands', id), { now });
+  validateCatalog(catalog, drops, brand.palette ?? null, brand.print_rules ?? {});
+  const se = styleErrors(dir);
+  if (se.length) throw new Error(`style rules:\n  ${se.join('\n  ')}`);
   const L = await import(pathToFileURL(join(dir, 'layout', 'index.mjs')).href);
   const listed = catalog.filter((p) => p.listed !== false);
   const views = Object.fromEntries(listed.map((p) => [p.id, productView(p, drops, now)]));
@@ -110,6 +134,11 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   if (want.includes('home')) make('home', 'index.html', '', (c) => P.home(c));
   if (want.includes('collection')) make('collection', 'shop.html', '', (c) => P.collection(c));
   if (want.includes('story') && P.story) make('story', 'story.html', '', (c) => P.story(c));
+  // Extra brand pages: pages.extra = {'<slug>': (ctx) => page} -> <slug>.html (page id = slug).
+  for (const [slug, fn] of Object.entries(P.extra ?? {})) {
+    if (!/^[a-z0-9-]+$/.test(slug) || ['index', 'shop', 'story', 'cart', 'orders', 'policies', 'thanks', '404'].includes(slug)) throw new Error(`bad extra page "${slug}"`);
+    make(slug, `${slug}.html`, '', (c) => fn(c));
+  }
   if (want.includes('cart')) make('cart', 'cart.html', '', (c) => (P.cart ? P.cart(c) : { title: `Bag | ${brand.name}`, body: c.kit.cartBody() }));
   if (want.includes('orders')) make('orders', 'orders.html', '', (c) => (P.orders ? P.orders(c) : { title: `Order lookup | ${brand.name}`, body: c.kit.ordersBody() }));
   if (want.includes('policies')) make('policies', 'policies.html', '', (c) => (P.policies ? P.policies(c) : { title: `Shipping and exchanges | ${brand.name}`, body: c.kit.policiesBody() }));
@@ -145,7 +174,7 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
 /** Holding page for a brand's public domain before the shop launches. Indexable, no forms, no prices, no scripts.
  *  Driven by brand.json `holding`: {lede, sub, shots: [asset file names under brands/<id>/<dir>]}. */
 export function buildHolding(id, outDir, { root = ROOT } = {}) {
-  const { dir, brand } = readBrandDir(join(root, 'brands', id));
+  const { dir, brand } = readBrandDir(join(root, 'brands', id), { merge: false });
   const h = brand.holding ?? {};
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(join(outDir, 'photos'), { recursive: true });

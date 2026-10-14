@@ -67,10 +67,46 @@ function initColors() {
   });
 }
 
+// ---------- live availability (core/stock.mjs via /api/availability; the build-time snapshot is the fallback) ----------
+function skuKey(color, size) { return (color || '-') + '/' + (size || '-'); }
+function skuAvail(pid, color, size) {
+  var p = SEED.products[pid];
+  if (!p || !p.avail) return null;
+  if (!color && (p.colors || []).length) color = p.colors[0].id;
+  return p.avail[skuKey(color, size)] || null;
+}
+function canSell(a) { return !a || ['sold_out', 'not_in_stock', 'preorder_full'].indexOf(a.state) < 0; }
+function paintAvail(f) {
+  var pid = f.getAttribute('data-product');
+  var c = f.querySelector('input[name="color"]:checked');
+  var color = c ? c.value : ((SEED.products[pid] || {}).colors || [])[0] ? SEED.products[pid].colors[0].id : '';
+  var sizeIn = f.querySelector('input[name="size"]:checked') || f.querySelector('input[type="hidden"][name="size"]');
+  f.querySelectorAll('input[name="size"][type="radio"]').forEach(function (r) {
+    var a = skuAvail(pid, color, r.value);
+    r.disabled = !canSell(a);
+    if (r.disabled && r.checked) r.checked = false;
+  });
+  var line = f.parentNode.querySelector('[data-avail]');
+  var a = sizeIn && !sizeIn.disabled ? skuAvail(pid, color, sizeIn.value) : null;
+  if (line && a) line.textContent = a.text;
+}
+function refreshAvailability(done) {
+  if (!window.fetch || location.protocol === 'file:') { if (done) done(); return; }
+  fetch('/api/availability?brand=' + encodeURIComponent(SEED.brand.id), { headers: { accept: 'application/json' } })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) {
+      if (j && j.products) for (var id in j.products) if (SEED.products[id]) SEED.products[id].avail = j.products[id];
+    })
+    .catch(function () { /* keep the build-time snapshot */ })
+    .then(function () { if (done) done(); });
+}
+
 // ---------- add to bag ----------
 function initAdd() {
   document.querySelectorAll('form[data-add]').forEach(function (f) {
     var msg = f.querySelector('.seed-msg');
+    paintAvail(f);
+    f.addEventListener('change', function () { paintAvail(f); });
     f.querySelectorAll('input[name="color"]').forEach(function (r) {
       r.addEventListener('change', function () { var t = f.querySelector('[data-color-name]'); if (t) t.textContent = r.getAttribute('data-name'); });
     });
@@ -86,6 +122,8 @@ function initAdd() {
         return;
       }
       var colorIn = f.querySelector('input[name="color"]:checked');
+      var av = skuAvail(pid, colorIn ? colorIn.value : ((p.colors || [])[0] || {}).id, sizeIn ? sizeIn.value : '');
+      if (!canSell(av)) { say(msg, av.text + '. Choose another size or colour.'); return; }
       var r = addLine(loadCart(), { product: pid, size: sizeIn ? sizeIn.value : '', color: colorIn ? colorIn.value : '', qty: 1 });
       if (!r.ok) { say(msg, r.error); return; }
       saveCart(r.cart);
@@ -138,6 +176,7 @@ function renderCart(root) {
         meta ? el('p', { cls: 'seed-cart-meta', text: meta }) : null,
         l.preorder ? el('p', { cls: 'seed-cart-pre', text: l.ship_by ? 'Pre-order · ships by ' + fmtDay(l.ship_by) : 'Pre-order · ship-by date set when the window opens' }) : null,
         l.unavailable ? el('p', { cls: 'seed-cart-pre', text: 'No longer available. Please remove it.' }) : null,
+        (function () { var a = skuAvail(l.product, l.color, l.size); return a && !l.unavailable ? el('p', { cls: 'seed-cart-avail' + (canSell(a) ? '' : ' is-out'), text: a.text }) : null; })(),
         qty,
         el('button', { type: 'button', cls: 'seed-remove', 'data-remove': l.key, text: 'Remove' }),
       ]),
@@ -150,7 +189,7 @@ function renderCart(root) {
   ship.hidden = !s.notice;
   if (s.notice) ship.textContent = s.notice.text;
   var btn = root.querySelector('[data-checkout]');
-  var ready = SEED.checkout === true && s.lines.length && s.subtotal_cents !== null && !s.lines.some(function (l) { return l.unavailable; });
+  var ready = SEED.checkout === true && s.lines.length && s.subtotal_cents !== null && !s.lines.some(function (l) { return l.unavailable || !canSell(skuAvail(l.product, l.color, l.size)); });
   btn.disabled = !ready;
   say(root.querySelector('[data-checkout-msg]'), ready ? '' : (SEED.checkout ? 'Some items in your bag are not available to buy yet.' : COPY.checkoutOff));
 }
@@ -168,6 +207,7 @@ function initCart() {
     saveCart(c); renderCart(root);
   });
   renderCart(root);
+  refreshAvailability(function () { renderCart(root); });
   window.addEventListener('storage', function (e) { if (e.key === KEY) { renderCart(root); paintCount(); } });
 }
 function checkout(root) {
@@ -199,5 +239,5 @@ function initLookup() {
   });
 }
 
-function init() { initColors(); initMenu(); initAdd(); initNotify(); initCart(); initLookup(); paintCount(); }
+function init() { initColors(); initMenu(); initAdd(); if (document.querySelector('form[data-add]')) refreshAvailability(function () { document.querySelectorAll('form[data-add]').forEach(paintAvail); }); initNotify(); initCart(); initLookup(); paintCount(); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

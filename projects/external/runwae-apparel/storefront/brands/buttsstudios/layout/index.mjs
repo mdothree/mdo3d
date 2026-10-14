@@ -30,7 +30,7 @@ export function footer({ brand, kit }) {
 <div><a class="bs-mark bs-mark--sm" href="${kit.href.home()}" aria-label="Butts Studios">${C5}<span class="bs-word">Butts<br>Studios</span></a><p class="bs-foot-tag">Made of Story.</p></div>
 <div><p class="bs-mono">Shop</p><a href="${kit.href.shop()}">Collection</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${kit.href.cart()}">Bag</a></div>
 <div><p class="bs-mono">Help</p><a href="${kit.href.orders()}">Order lookup</a><a href="${kit.href.policies()}">Shipping and exchanges</a><a href="mailto:${kit.esc(brand.policies.contact)}">${kit.esc(brand.policies.contact)}</a></div>
-<div><p class="bs-mono">Studio</p><a href="${kit.href.story()}">Story</a><a href="https://buttsstudios.com">buttsstudios.com</a></div>
+<div><p class="bs-mono">Studio</p><a href="${kit.href.story()}">Story</a></div>
 </div><div class="bs-wrap"><p class="bs-fine">© ${new Date().getUTCFullYear()} Butts Studios. Images on this preview are concept renders.</p></div></footer>`;
 }
 

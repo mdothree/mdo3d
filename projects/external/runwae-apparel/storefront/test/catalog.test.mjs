@@ -5,7 +5,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, cpSync, readFileSync, readdirSyn
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { productView, validateCatalog, soldOutBacked, publicCatalog } from '../core/catalog.mjs';
-import { buildBrand, ROOT } from '../core/build.mjs';
+import { buildBrand, loadBrand, ROOT } from '../core/build.mjs';
+import { templateRoot, rowsFor, writeInv } from './_fixtures.mjs';
 
 const base = { id: 'x', name: 'X', sizes: ['M'], channel: 'preorder', price_cents: null };
 const drops = [{ id: 'd', products: ['x'], window: { open: '2026-11-01T00:00:00Z', close: '2026-11-15T00:00:00Z' }, schedule: {} }];
@@ -51,7 +52,7 @@ test('no shop renders "sold out" without backing data (all four built brands)', 
   for (const id of ['buttsstudios', 'runwae', 'glb', 'ridgefield']) {
     const out = mkdtempSync(join(tmpdir(), `sf-so-${id}-`));
     await buildBrand(id, out, { now: new Date('2026-10-14') });
-    const cat = JSON.parse(readFileSync(join(ROOT, 'brands', id, 'catalog.json'), 'utf8')).products;
+    const cat = loadBrand(id).catalog;
     const backed = cat.some((p) => p.status === 'sold_out' && soldOutBacked(p));
     const files = ['index.html', 'shop.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
     for (const f of files) {
@@ -63,42 +64,50 @@ test('no shop renders "sold out" without backing data (all four built brands)', 
 });
 
 test('a sold_out item with a sales_record builds, shows "Sold out" and hides the record', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'sf-soroot-'));
-  mkdirSync(join(root, 'brands'), { recursive: true });
-  cpSync(join(ROOT, 'brands', '_template'), join(root, 'brands', 'demo'), { recursive: true });
-  const cat = JSON.parse(readFileSync(join(root, 'brands', 'demo', 'catalog.json'), 'utf8'));
-  cat.products.push({ ...cat.products[0], id: 'old-tee', status: 'sold_out', sales_record: { channel: '2021 Shopify', note: 'internal only' } });
-  writeFileSync(join(root, 'brands', 'demo', 'catalog.json'), JSON.stringify(cat));
+  const { root, catalogPath } = templateRoot(ROOT, mkdtempSync(join(tmpdir(), 'sf-soroot-')));
+  const cat = JSON.parse(readFileSync(catalogPath, 'utf8'));
+  cat.products.push({ ...cat.products[0], id: 'old-tee' });
+  writeFileSync(catalogPath, JSON.stringify(cat));
+  const rows = rowsFor('demo', cat.products, { 'example-tee': { status: 'preorder', drop: 'first-drop' }, 'old-tee': { status: 'sold_out', channel: '2021 Shopify', notes: 'internal only' } });
+  writeInv(root, rows);
   const out = join(root, 'out');
   await buildBrand('demo', out, { root });
   const html = readFileSync(join(out, 'products', 'old-tee.html'), 'utf8');
   assert.match(html, /Sold out/);
   assert.match(html, /data-notify/);
   assert.doesNotMatch(html + readFileSync(join(out, 'catalog.js'), 'utf8'), /2021 Shopify|internal only/);
-  cat.products.at(-1).sales_record = null;
-  writeFileSync(join(root, 'brands', 'demo', 'catalog.json'), JSON.stringify(cat));
-  await assert.rejects(buildBrand('demo', join(root, 'out2'), { root }), /sold_out needs a sales_record/);
+  rows.find((r) => r.product_id === 'old-tee').sales_record_channel = '';
+  writeInv(root, rows);
+  await assert.rejects(buildBrand('demo', join(root, 'out2'), { root }), /sold_out needs sales_record_channel/);
 });
 
 import { printErrors, printLabel } from '../core/catalog.mjs';
 
-test('design rules: shirt-sized art goes on the back; chest marks are medium; specs render as a Print line', () => {
+test('design rules: chest marks are medium for every brand; shirt-sized art on the back is GLB-only (print_rules); specs render as a Print line', () => {
   const it = (print, extra = {}) => ({ id: 'x', status: 'next_drop', print, ...extra });
-  assert.deepEqual(printErrors(it([{ placement: 'back', size: 'full_back' }, { placement: 'front_chest', size: 'chest_medium' }])), []);
-  assert.match(printErrors(it({ placement: 'front_chest', size: 'full_front' })).join(), /shirt-sized art must be on the back/);
-  assert.match(printErrors(it({ placement: 'front_panel', size: 'full_back' })).join(), /must be on the back/);
+  const glb = { large_art: 'back_only' };
+  assert.deepEqual(printErrors(it([{ placement: 'back', size: 'full_back' }, { placement: 'front_chest', size: 'chest_medium' }]), glb), []);
+  assert.match(printErrors(it({ placement: 'front_panel', size: 'full_front' }), glb).join(), /shirt-sized art must be on the back/);
+  assert.deepEqual(printErrors(it({ placement: 'front_panel', size: 'full_front' })), [], 'other brands may carry large front art');
+  assert.match(printErrors(it({ placement: 'front_chest', size: 'full_front' })).join(), /belongs on the front_panel/);
+  assert.match(printErrors(it({ placement: 'front_panel', size: 'full_back' })).join(), /full_back belongs on the back/);
   assert.match(printErrors(it({ placement: 'front_chest', size: 'chest_large' })).join(), /chest marks must be chest_medium/);
+  assert.match(printErrors(it({ placement: 'front_chest', size: 'chest_large' }), glb).join(), /chest marks must be chest_medium/);
   assert.match(printErrors(it(undefined)).join(), /print spec missing/);
   assert.deepEqual(printErrors(it(undefined, { status: 'archive' })), [], 'archive pieces are historical');
   assert.equal(printLabel({ placement: 'back', size: 'full_back' }), 'Back print · full size');
+  assert.equal(printLabel({ placement: 'front_panel', size: 'full_front' }), 'Front panel print · full size');
   assert.equal(printLabel({ placement: 'front_chest', size: 'chest_medium' }), 'Chest mark · medium');
-  assert.throws(() => validateCatalog([{ ...base, status: 'next_drop', print: { placement: 'front_chest', size: 'full_front' } }]), /must be on the back/);
+  assert.throws(() => validateCatalog([{ ...base, status: 'next_drop', print: { placement: 'front_panel', size: 'full_front' } }], [], null, glb), /must be on the back/);
+  assert.doesNotThrow(() => validateCatalog([{ ...base, status: 'next_drop', print: { placement: 'front_panel', size: 'full_front' } }]));
 });
 
-test('every real catalog follows the print rules and every product page shows its Print line', async () => {
+test('every real catalog follows its print rules (GLB back-only) and every product page shows its Print line', async () => {
   for (const id of ['buttsstudios', 'runwae', 'glb', 'ridgefield']) {
-    const cat = JSON.parse(readFileSync(join(ROOT, 'brands', id, 'catalog.json'), 'utf8')).products;
-    for (const p of cat) assert.deepEqual(printErrors(p), [], `${id}/${p.id}`);
+    const { brand, catalog: cat } = loadBrand(id);
+    if (id === 'glb') assert.equal(brand.print_rules?.large_art, 'back_only');
+    else assert.notEqual(brand.print_rules?.large_art, 'back_only', `${id}: back-only is GLB-only`);
+    for (const p of cat) assert.deepEqual(printErrors(p, brand.print_rules ?? {}), [], `${id}/${p.id}`);
     const out = mkdtempSync(join(tmpdir(), `sf-pr-${id}-`));
     await buildBrand(id, out, { now: new Date('2026-10-14') });
     for (const p of cat.filter((x) => x.listed !== false && x.status !== 'archive' && (x.print ?? []).length)) {

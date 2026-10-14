@@ -113,3 +113,6 @@ main:focus{outline:none}
 .seed-print{font-size:13px;letter-spacing:.04em;color:var(--c-muted);margin:10px 0 0}.seed-print span{text-transform:uppercase;letter-spacing:.1em;font-size:11px;margin-right:6px;color:var(--c-fg)}
 .seed-color-group[hidden]{display:none}
 .seed-colorswitch .seed-swatches{margin-top:18px}
+.seed-avail{margin:6px 0 0;font-size:14px}.seed-cart-avail{margin:4px 0;font-size:13px}.seed-cart-avail.is-out{color:var(--c-accent)}
+.seed-size input:disabled+span{opacity:.35;text-decoration:line-through}
+.seed-mainsite{margin:14px 0 0;font-size:13px}.seed-mainsite a{color:inherit}

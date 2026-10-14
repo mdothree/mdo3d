@@ -1,5 +1,5 @@
 {
- "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops). orig-company-bagged (IMG_4199.HEIC) is made with ImageMagick -auto-orient (sips drops the HEIC rotation): see tools/runwae_reissue_mockups.sh.",
+ "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops). orig-company-bagged (IMG_4199.HEIC) is made with ImageMagick -auto-orient (sips drops the HEIC rotation): see tools/runwae_reissue_mockups.sh. v4 (2026-10-14): v4-* crops come from the two primary layout concepts (added_2026-10-14/cbce9be5 home, 38b3982c Drawn Series); line art on photos and walls is allowed, bare sketches are not featured except as the Drawn Series art panels (art-*: the owner's drawings, 640px, made from the sketch scans).",
  "sources": {
   "rwa": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 4(1).png",
   "trc": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 9.png",
@@ -26,7 +26,9 @@
   "o_ra": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_2986.JPG",
   "o_trc": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/731190D9-31BF-4AA6-A7C2-F6C79D5689A5.JPG",
   "o_blue": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_5546.JPG",
-  "bankC": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/90209e16-32ce-43a7-83de-e7b11a8e1c7c.png"
+  "bankC": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/90209e16-32ce-43a7-83de-e7b11a8e1c7c.png",
+  "v4home": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/added_2026-10-14/cbce9be5-c9e6-4493-8c38-9d3c995e8280.png",
+  "v4coll": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/added_2026-10-14/38b3982c-c185-46d5-895c-800673095dc9.png"
  },
  "crops": [
   {
@@ -456,6 +458,198 @@
    "y": 699,
    "w": 227,
    "h": 322
+  },
+  {
+   "out": "v4-hero",
+   "src": "v4home",
+   "x": 345,
+   "y": 44,
+   "w": 580,
+   "h": 442
+  },
+  {
+   "out": "v4-portrait",
+   "src": "v4home",
+   "x": 624,
+   "y": 490,
+   "w": 256,
+   "h": 302
+  },
+  {
+   "out": "v4-botanical",
+   "src": "v4home",
+   "x": 898,
+   "y": 490,
+   "w": 156,
+   "h": 170
+  },
+  {
+   "out": "v4-band",
+   "src": "v4home",
+   "x": 408,
+   "y": 796,
+   "w": 488,
+   "h": 236
+  },
+  {
+   "out": "v4-label",
+   "src": "v4home",
+   "x": 1,
+   "y": 1037,
+   "w": 242,
+   "h": 143
+  },
+  {
+   "out": "v4-button",
+   "src": "v4home",
+   "x": 247,
+   "y": 1037,
+   "w": 188,
+   "h": 143
+  },
+  {
+   "out": "v4-embroidery",
+   "src": "v4home",
+   "x": 439,
+   "y": 1037,
+   "w": 194,
+   "h": 143
+  },
+  {
+   "out": "v4-globe-patch",
+   "src": "v4home",
+   "x": 637,
+   "y": 1037,
+   "w": 220,
+   "h": 143
+  },
+  {
+   "out": "v4-coll-hero",
+   "src": "v4coll",
+   "x": 290,
+   "y": 44,
+   "w": 652,
+   "h": 420
+  },
+  {
+   "out": "v4-foundation",
+   "src": "v4coll",
+   "x": 307,
+   "y": 491,
+   "w": 163,
+   "h": 194
+  },
+  {
+   "out": "v4-globe",
+   "src": "v4coll",
+   "x": 482,
+   "y": 491,
+   "w": 163,
+   "h": 194
+  },
+  {
+   "out": "v4-figure-overshirt",
+   "src": "v4coll",
+   "x": 657,
+   "y": 491,
+   "w": 178,
+   "h": 194
+  },
+  {
+   "out": "v4-atelier",
+   "src": "v4coll",
+   "x": 847,
+   "y": 491,
+   "w": 168,
+   "h": 194
+  },
+  {
+   "out": "v4-sketch-tee",
+   "src": "v4coll",
+   "x": 46,
+   "y": 750,
+   "w": 196,
+   "h": 184
+  },
+  {
+   "out": "v4-field-overshirt",
+   "src": "v4coll",
+   "x": 254,
+   "y": 750,
+   "w": 205,
+   "h": 184
+  },
+  {
+   "out": "v4-botanical-tee",
+   "src": "v4coll",
+   "x": 471,
+   "y": 750,
+   "w": 218,
+   "h": 184
+  },
+  {
+   "out": "v4-fabric",
+   "src": "v4coll",
+   "x": 694,
+   "y": 750,
+   "w": 176,
+   "h": 234
+  },
+  {
+   "out": "v4-d-portrait",
+   "src": "v4coll",
+   "x": 1,
+   "y": 993,
+   "w": 295,
+   "h": 236
+  },
+  {
+   "out": "v4-d-label",
+   "src": "v4coll",
+   "x": 511,
+   "y": 993,
+   "w": 198,
+   "h": 120
+  },
+  {
+   "out": "v4-d-button",
+   "src": "v4coll",
+   "x": 714,
+   "y": 993,
+   "w": 169,
+   "h": 120
+  },
+  {
+   "out": "v4-d-globe",
+   "src": "v4coll",
+   "x": 888,
+   "y": 993,
+   "w": 166,
+   "h": 120
+  },
+  {
+   "out": "v4-d-embroidery",
+   "src": "v4coll",
+   "x": 511,
+   "y": 1118,
+   "w": 198,
+   "h": 112
+  },
+  {
+   "out": "v4-d-cords",
+   "src": "v4coll",
+   "x": 714,
+   "y": 1118,
+   "w": 169,
+   "h": 112
+  },
+  {
+   "out": "v4-d-fabric",
+   "src": "v4coll",
+   "x": 888,
+   "y": 1118,
+   "w": 166,
+   "h": 112
   }
  ],
  "_people": {

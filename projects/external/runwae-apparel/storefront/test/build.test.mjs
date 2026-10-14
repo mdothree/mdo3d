@@ -5,6 +5,7 @@ import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, cpSync }
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildBrand, buildHolding, brandIds, loadBrand, ROOT } from '../src/build.mjs';
+import { templateRoot } from './_fixtures.mjs';
 
 const BRANDS = ['buttsstudios', 'glb', 'ridgefield', 'runwae'];
 const NOW = new Date('2026-10-14T12:00:00Z');
@@ -13,7 +14,7 @@ async function build(id) {
   if (!built[id]) { const out = mkdtempSync(join(tmpdir(), `sf-${id}-`)); await buildBrand(id, out, { now: NOW, env: {} }); built[id] = out; }
   return built[id];
 }
-const pagesOf = (out) => ['index.html', 'shop.html', 'story.html', 'cart.html', 'orders.html', 'policies.html', 'thanks.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
+const pagesOf = (out) => [...(existsSync(join(out, 'drawn-series.html')) ? ['drawn-series.html'] : []), 'index.html', 'shop.html', 'story.html', 'cart.html', 'orders.html', 'policies.html', 'thanks.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
 
 test('brandIds: the four shops, never _template', () => {
   assert.deepEqual(brandIds(), BRANDS);
@@ -110,37 +111,81 @@ test('Butts Studios: approved scope only, tagline in sans, bag never purchasable
   assert.match(catalog.find((p) => p.id === 'plaid-flannel').summary, /No logo on the front/);
 });
 
-test('Runwae Apparel: photography first, no featured bare sketch, collection after the story; archive = real Fall 21 pieces', async () => {
+test('Runwae v4 home follows cbce9be5: photo hero, 01 Built on, 02 dark band, details, 03 capsule row; no bare sketch outside the Drawn Series art panels', async () => {
   const out = await build('runwae');
-  const pages = pagesOf(out).map((f) => readFileSync(join(out, f), 'utf8')).join('\n');
-  assert.doesNotMatch(pages, /assets\/sketch-/, 'the bare sketches are not shown as pictures (Principal 2026-10-14)');
+  const pages = pagesOf(out).filter((f) => f !== 'drawn-series.html').map((f) => readFileSync(join(out, f), 'utf8')).join('\n');
+  assert.doesNotMatch(pages, /assets\/(sketch-|art-)/, 'bare drawings are not pictures on the shop pages (Principal 2026-10-14)');
   assert.ok(!readdirSync(join(out, 'assets')).some((f) => f.startsWith('sketch-')));
   const idx = readFileSync(join(out, 'index.html'), 'utf8');
-  const main = idx.slice(idx.indexOf('<main'));
-  assert.match(main.slice(0, 2500), /class="rw3-hero"/);
-  assert.match(main.slice(0, 2500), /drawn-figure-hoodie/, 'the hero leads with photography of the drawn pieces');
-  assert.match(main, /<h1 class="rw3-wordmark"><span>Runwae<\/span><span>Apparel<\/span><\/h1>/, 'typeset wordmark (provisional)');
-  for (const t of ['A continuing journey', 'Built on<br>Ideas, People,<br>Places, Progress.', 'A more<br>curious world', 'Art in every detail.', 'The Archive']) assert.ok(main.includes(t), t);
-  assert.ok(main.indexOf('<a class="rw-card') > main.indexOf('id="built"'), 'product cards come after the story panels');
-  assert.doesNotMatch(main, /tote/i);
-  assert.ok((idx.match(/class="rw-ptag">Concept</g) ?? []).length >= 8, 'concept photography is captioned');
+  const main = idx.slice(idx.indexOf('<main'), idx.lastIndexOf('<footer'));
+  assert.match(main.slice(0, 1500), /class="rw4-hero"/);
+  assert.match(main.slice(0, 1500), /v4-hero/);
+  assert.match(main, /<h1 id="hero-t" class="rw4-title"><span>Runwae<\/span><span>Apparel<\/span><\/h1>/);
+  for (const t of ['A continuing journey.', 'Clothing for a more curious world.', 'Explore the story', 'Built on Ideas, People, Places, Progress.', 'Clothes for a more thoughtful tomorrow.', 'Wear a brighter tomorrow.']) assert.ok(main.includes(t), t);
+  for (const w of ['Ideas', 'People', 'Places', 'Progress']) assert.match(main, new RegExp(`<li>${w}</li>`));
+  for (const f of ['v4-label', 'v4-button', 'v4-embroidery', 'v4-globe-patch', 'v4-band']) assert.match(main, new RegExp(f));
+  const row = main.slice(main.indexOf('class="rw4-row"'));
+  const names = [...row.matchAll(/rw4-card-name">([^<]+)</g)].map((m) => m[1]);
+  assert.deepEqual(names.slice(0, 7), ['Foundation Hoodie', 'Globe Hoodie', 'Figure Overshirt', 'Atelier Shirt', 'Sketch Tee', 'Field Overshirt', 'Botanical Tee']);
+  assert.match(main, /class="rw4-focus"[\s\S]*Luv Thy Neighbor Hoodie/, 'the focus piece stays reachable from home');
+  const foot = idx.slice(idx.lastIndexOf('<footer'));
+  for (const w of ['Art', 'People', 'Places', 'Progress']) assert.match(foot, new RegExp(`<li>${w}</li>`));
+  assert.match(foot, /Join the journey/);
+  assert.ok((idx.match(/class="rw-ptag">Concept</g) ?? []).length >= 7, 'concept photography is captioned');
   const { catalog } = loadBrand('runwae');
   for (const p of catalog.filter((x) => x.status === 'archive')) { assert.equal(p.archive_year, 2021); assert.equal(p.line, "Fall '21"); }
   assert.doesNotMatch(idx + readFileSync(join(out, 'shop.html'), 'utf8'), /museum|gallery wall|exhibit/i);
 });
 
+test('Runwae v4 Drawn Series page follows 38b3982c: Globe Hoodie hero, seven pieces, Artwork in every thread, the artwork panels', async () => {
+  const out = await build('runwae');
+  const ds = readFileSync(join(out, 'drawn-series.html'), 'utf8');
+  const main = ds.slice(ds.indexOf('<main'), ds.lastIndexOf('<footer'));
+  assert.match(main.slice(0, 1500), /v4-coll-hero/);
+  assert.match(main, /<span>The<\/span><span>Drawn<\/span><span>Series<\/span>/);
+  assert.match(main, /Seven pieces\. A brighter tomorrow\./);
+  assert.match(main, /Artwork in every thread\./);
+  assert.equal((main.match(/<a class="rw4-card/g) ?? []).length, 7);
+  for (const a of ['art-head', 'art-portrait', 'art-figure', 'art-pair']) assert.match(main, new RegExp(`assets/${a}-`), `${a}: art panel on this page`);
+  assert.match(ds, /<a href="drawn-series\.html" aria-current="page">The Drawn Series<\/a>/);
+  assert.match(ds, /<meta name="robots" content="noindex, nofollow">/);
+  assert.doesNotMatch(ds, / style="/);
+  for (const m of ds.matchAll(/(?:src|href)="((?:assets|products)\/[^"#?]+)"/g)) assert.ok(existsSync(join(out, m[1])), m[1]);
+});
+
+test('Runwae capsule "The Drawn Series · Seven pieces": honest mapping, palette, print, prices ignored', () => {
+  const { catalog } = loadBrand('runwae');
+  const cap = catalog.filter((p) => Number.isInteger(p.capsule)).sort((a, b) => a.capsule - b.capsule);
+  assert.deepEqual(cap.map((p) => p.name), ['Foundation Hoodie', 'Globe Hoodie', 'Figure Overshirt', 'Atelier Shirt', 'Sketch Tee', 'Field Overshirt', 'Botanical Tee']);
+  const by = Object.fromEntries(cap.map((p) => [p.name, p]));
+  assert.equal(by['Foundation Hoodie'].colors[0].id, 'forest');
+  assert.deepEqual(by['Foundation Hoodie'].print, [{ placement: 'front_chest', size: 'chest_medium' }]);
+  assert.equal(by['Globe Hoodie'].colors[0].id, 'ivory');
+  assert.deepEqual(by['Globe Hoodie'].print, [{ placement: 'back', size: 'full_back' }]);
+  assert.equal(by['Atelier Shirt'].colors[0].id, 'ivory');
+  assert.equal(by['Sketch Tee'].colors[0].id, 'ivory');
+  assert.equal(by['Field Overshirt'].colors[0].id, 'rust');
+  assert.equal(by['Botanical Tee'].colors[0].id, 'forest');
+  for (const p of cap) { assert.equal(p.line, 'The Drawn Series'); assert.equal(p.price_cents, null, 'concept prices ignored'); assert.ok(p.images[0].concept); }
+  for (const p of catalog) assert.ok(!(p.images ?? []).some((i) => /^art-/.test(i.file)), `${p.id}: drawings are art panels on the Drawn Series page only`);
+  const focus = catalog.filter((p) => ['preorder', 'available'].includes(p.status));
+  assert.deepEqual(focus.map((p) => p.id), ['tlt-neighbor-hoodie'], 'focus item kept: Luv Thy Neighbor Hoodie');
+});
+
 test('Runwae catalog edits (Principal 2026-10-14): removals gone, merges done, off-limits sources unused', async () => {
   const out = await build('runwae');
   const files = pagesOf(out).map((f) => readFileSync(join(out, f), 'utf8')).join('\n') + readFileSync(join(out, 'catalog.js'), 'utf8');
-  for (const n of ['True Grit Tee', 'Crafting Tee', 'The Little Things Tee', 'Luv Thy Neighbor Tee', 'RWA Sweatpants', 'RWA Tee', 'Head Study Hoodie']) assert.ok(!files.includes(n), n);
+  for (const n of ['True Grit Tee', 'Crafting Tee', 'The Little Things Tee', 'Luv Thy Neighbor Tee', 'RWA Sweatpants', 'RWA Tee', 'Head Study Hoodie', 'Botanical Button-Down</', 'Field Jacket</']) assert.ok(!files.includes(n), n);
   assert.ok(!readdirSync(join(out, 'assets')).some((f) => /^(true-grit-tee|crafting-tee|tlt-face-tee|tlt-neighbor-tee|tlt-rwa-sweatpants|tlt-rwa-tee)-/.test(f)));
-  for (const n of ['Sketch Hoodie', 'Chest-Drawing Hoodie', 'Runwae Company Hoodie', 'Knit Polo', 'Field Jacket', 'Garden Shirt', 'Rust Corduroy Shirt', 'The Runwae Company Tee', 'Luv Thy Neighbor Hoodie']) assert.ok(files.includes(n), n);
+  for (const n of ['Foundation Hoodie', 'Chest-Drawing Hoodie', 'Runwae Company Hoodie', 'Knit Polo', 'Field Overshirt', 'Atelier Shirt', 'Garden Shirt', 'Rust Corduroy Shirt', 'The Runwae Company Tee', 'Luv Thy Neighbor Hoodie']) assert.ok(files.includes(n), n);
   const fig = readFileSync(join(out, 'products', 'drawn-figure-hoodie.html'), 'utf8');
   assert.match(fig, /data-color-group="forest"/); assert.match(fig, /data-color-group="ivory"/); assert.match(fig, /name="view-color"/);
   assert.match(readFileSync(join(out, 'products', 'drawn-portrait-hoodie.html'), 'utf8'), /Mockup · original drawing/);
   assert.match(readFileSync(join(out, 'products', 'drawn-overshirt.html'), 'utf8'), /Mockup · original drawing/);
   const shop = readFileSync(join(out, 'shop.html'), 'utf8');
-  for (const l of ['The Little Things', 'Essentials', 'The Drawn Series', "Archive · Fall '21"]) assert.ok(shop.includes(l), l);
+  const order = ['The Drawn Series', 'Next drop', 'Essentials', 'The Little Things', "Archive · Fall '21"].map((l) => shop.indexOf(`>${l}`));
+  assert.ok(order.every((i) => i > 0), order.join());
+  assert.deepEqual([...order].sort((a, b) => a - b), order, 'the shop leads with the capsule; everything else sits behind it');
   assert.doesNotMatch(JSON.parse(readFileSync(join(ROOT, 'brands', 'runwae', 'catalog.json'), 'utf8')).products.map((p) => JSON.stringify(p.images)).join(), /FB2/, 'third-party back art (#82-d)');
 });
 
@@ -190,10 +235,8 @@ test('holding page: Runwae Apparel in full, drop coming, no forms/prices/emails,
   assert.match(JSON.stringify(JSON.parse(readFileSync(join(out, 'vercel.json'), 'utf8'))), /script-src 'none'/);
 });
 
-test('the template builds (a copied brand works with no code changes)', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'sf-tpl-'));
-  mkdirSync(join(root, 'brands'));
-  cpSync(join(ROOT, 'brands', '_template'), join(root, 'brands', 'newbrand'), { recursive: true });
+test('the template builds (a copied brand works with no code changes, once it has inventory rows)', async () => {
+  const { root } = templateRoot(ROOT, mkdtempSync(join(tmpdir(), 'sf-tpl-')), 'newbrand');
   const out = join(root, 'out');
   const r = await buildBrand('newbrand', out, { root, now: NOW });
   assert.ok(r.pages >= 8);
@@ -201,7 +244,8 @@ test('the template builds (a copied brand works with no code changes)', async ()
 });
 
 test('core never names a brand', () => {
-  const files = ['core/build.mjs', 'core/kit.mjs', 'core/catalog.mjs', 'core/cart.mjs', 'core/checkout.mjs', 'core/drop.mjs', 'core/base.css', 'core/client/seed.js'];
+  const files = ['core/build.mjs', 'core/kit.mjs', 'core/catalog.mjs', 'core/cart.mjs', 'core/checkout.mjs', 'core/drop.mjs', 'core/base.css', 'core/client/seed.js',
+    'core/inventory.mjs', 'core/stock.mjs', 'core/admin.mjs', 'core/email.mjs', 'core/style-rules.mjs', 'api/stripe-webhook.mjs', 'api/availability.mjs'];
   for (const f of files) assert.doesNotMatch(readFileSync(join(ROOT, f), 'utf8'), /runwae|girls love|\bglb\b|butts ?studios|ridgefield/i, f);
 });
 
@@ -210,7 +254,7 @@ test('Runwae cohesive palette: current items use forest / ivory / washed black /
   assert.deepEqual(brand.palette, ['forest', 'ivory', 'washed-black', 'rust']);
   for (const p of catalog.filter((x) => x.status !== 'archive' && x.listed !== false)) for (const c of p.colors) assert.ok(brand.palette.includes(c.id), `${p.id}: ${c.id}`);
   const out = await build('runwae');
-  for (const id of ['runwae-apparel-hoodie', 'trc-hoodie', 'runwae-company-hoodie']) assert.match(readFileSync(join(out, 'products', `${id}.html`), 'utf8'), /Original 2021/, id);
+  for (const id of ['foundation-hoodie', 'trc-hoodie', 'runwae-company-hoodie']) assert.match(readFileSync(join(out, 'products', `${id}.html`), 'utf8'), /Original 2021/, id);
   const trc = readFileSync(join(out, 'products', 'trc-hoodie.html'), 'utf8');
   assert.match(trc, /not used \(#82-d\)/, 'the third-party back illustration is not reissued');
 });

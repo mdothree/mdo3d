@@ -1,5 +1,5 @@
 {
- "_readme": "3 to 8 items. status: available | preorder | next_drop | in_development | archive | sold_out (sold_out needs an internal sales_record {channel, note} or sold_count >= stock). price_cents null shows Price TBA. images[].file = an asset key from assets/manifest.json (tools/images.mjs). Mark AI or mock imagery concept: true. print: {placement, size} or a list ([] = unbranded). Shirt-sized art: placement back, size full_back. Chest marks: front_chest + chest_medium.",
+ "_readme": "3 to 8 items. Status, price and stock live in inventory/inventory.csv (shared by every shop; see SEED.md \"Inventory\"). images[].file = an asset key from assets/manifest.json (tools/images.mjs). Mark AI or mock imagery concept: true. print: {placement, size} or a list ([] = unbranded). Shirt-sized art: placement back, size full_back. Chest marks: front_chest + chest_medium.",
  "products": [
   {
    "id": "example-tee",
@@ -8,8 +8,6 @@
    "category": "apparel",
    "type": "tee",
    "channel": "preorder",
-   "status": "preorder",
-   "price_cents": null,
    "sizes": [
     "S",
     "M",

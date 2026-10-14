@@ -6,7 +6,8 @@ guts; each brand has its own art-directed layout. How it fits together and how t
 Static site plus serverless functions; zero npm dependencies; Node >= 20. Images: `node tools/images.mjs <brand>`
 (macOS `sips`).
 
-**State (2026-10-14):** preview only. Every shop is `"mode": "preview"` (noindex, a preview banner), every item is
+**State (2026-10-14):** preview only. One shared inventory for all four shops (`inventory/`, `tools/inventory.mjs`,
+local admin at `dist/_admin/`), order emails ready in test mode (`api/stripe-webhook.mjs`), Runwae v4 (Drawn Series). Every shop is `"mode": "preview"` (noindex, a preview banner), every item is
 unpriced (Price TBA), checkout is off. Each shop has one focus item you can add to the bag (pre-order); the rest
 show their state (next drop, concept, archive). **Nothing has been deployed.** Pricing, going live and any Stripe
 key are the Principal's per-item calls. Physical fulfilment is on (no "digital only" rule). No Poison or Pave hoodie.
@@ -17,13 +18,17 @@ core/                      shared guts (never names a brand); see SEED.md
 brands/_template/          copy this to start a brand
 brands/<id>/               brand.json · catalog.json · drops.json · images.json · assets/ · layout/{index.mjs,styles.css}
 src/build.mjs              build CLI -> dist/<brand>/ (or --brand X --out public); src/drop.mjs re-exports core/drop.mjs
-api/checkout.mjs           POST {brand, lines} -> Stripe Checkout Session URL (multi-line, per-line metadata)
+inventory/                 inventory.csv (status, price, per-SKU stock settings; every shop) + ledger.csv (stock movements)
+api/checkout.mjs           POST {brand, lines} -> holds stock, then a Stripe Checkout Session URL (multi-line, per-line metadata)
+api/stripe-webhook.mjs     paid session -> sale + order log + shop "New order" + customer confirmation emails
+api/availability.mjs       GET ?brand= -> live per-SKU availability
+tools/inventory.mjs        inventory CLI: list, set, receive, adjust, return, fulfil, export/import, check
 api/notify.mjs             Notify-me stub (local JSONL log; TODO before deploy)
 api/order-lookup.mjs       order lookup stub (503 until the order store exists)
 tools/images.mjs           crop list -> brands/<id>/assets/*-<w>.jpg + manifest.json
 tools/drop.mjs             drop CLI (below)
 tools/assets.py, photos.py, digital_mocks.py   older Runwae image tools (Python + Pillow, run off-box)
-test/                      node --test test/*.test.mjs  (48 tests)
+test/                      node --test test/*.test.mjs  (86 tests)
 ```
 Kept as data, no longer built: `brands/runwae/catalog-digital.json`, `digital/` and `photos/` (the 2026-10-12
 digital-only direction and the gallery/sketchbook photo looks). `photos/` still feeds the Runwae holding page.
@@ -47,7 +52,8 @@ node tools/drop.mjs notice runwae fall21-rerelease --new-date 2027-01-20
 
 ## How a product goes live (each step needs the Principal's OK)
 0. Clear any `rights_hold`.
-1. Set `price_cents` and the item's `status` (`available` sells now; `preorder` sells inside its drop window).
+1. Set the price and status in the shared inventory: `node tools/inventory.mjs set <brand>/<product> price=48 status=preorder`
+   (`available` sells now; `preorder` sells inside its drop window), plus SKU rows (fulfilment, caps, stock).
 2. Pre-order piece: set its drop's `window.open/close` (14 to 21 days) and `moq`. Ship-by = close + 28 production
    + 7 freight + 7 receiving + 7 safety days; override per drop in `schedule`.
 3. Set `brand.json` `shipping.flat_cents` and `mode: "live"`; deploy with `CHECKOUT_ENABLED=true` and a test key first.

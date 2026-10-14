@@ -1,2 +1,15 @@
-{ "_note": "Windows stay null until the first drop is scheduled (14 to 21 days). Ship-by is computed from close.",
-  "drops": [ { "id": "first-drop", "name": "First drop", "products": ["icon-tee"], "window": { "open": null, "close": null }, "schedule": {}, "moq": null } ] }
+{
+ "_note": "Windows stay null until the first drop is scheduled (14 to 21 days). Ship-by is computed from close.",
+ "drops": [
+  {
+   "id": "first-drop",
+   "name": "First drop",
+   "window": {
+    "open": null,
+    "close": null
+   },
+   "schedule": {},
+   "moq": null
+  }
+ ]
+}

@@ -483,5 +483,202 @@
   ],
   "w": 1000,
   "h": 1000
+ },
+ "v4-hero": {
+  "widths": [
+   580
+  ],
+  "w": 580,
+  "h": 442
+ },
+ "v4-portrait": {
+  "widths": [
+   256
+  ],
+  "w": 256,
+  "h": 302
+ },
+ "v4-botanical": {
+  "widths": [
+   156
+  ],
+  "w": 156,
+  "h": 170
+ },
+ "v4-band": {
+  "widths": [
+   488
+  ],
+  "w": 488,
+  "h": 236
+ },
+ "v4-label": {
+  "widths": [
+   242
+  ],
+  "w": 242,
+  "h": 143
+ },
+ "v4-button": {
+  "widths": [
+   188
+  ],
+  "w": 188,
+  "h": 143
+ },
+ "v4-embroidery": {
+  "widths": [
+   194
+  ],
+  "w": 194,
+  "h": 143
+ },
+ "v4-globe-patch": {
+  "widths": [
+   220
+  ],
+  "w": 220,
+  "h": 143
+ },
+ "v4-coll-hero": {
+  "widths": [
+   640,
+   652
+  ],
+  "w": 652,
+  "h": 420
+ },
+ "v4-foundation": {
+  "widths": [
+   163
+  ],
+  "w": 163,
+  "h": 194
+ },
+ "v4-globe": {
+  "widths": [
+   163
+  ],
+  "w": 163,
+  "h": 194
+ },
+ "v4-figure-overshirt": {
+  "widths": [
+   178
+  ],
+  "w": 178,
+  "h": 194
+ },
+ "v4-atelier": {
+  "widths": [
+   168
+  ],
+  "w": 168,
+  "h": 194
+ },
+ "v4-sketch-tee": {
+  "widths": [
+   196
+  ],
+  "w": 196,
+  "h": 184
+ },
+ "v4-field-overshirt": {
+  "widths": [
+   205
+  ],
+  "w": 205,
+  "h": 184
+ },
+ "v4-botanical-tee": {
+  "widths": [
+   218
+  ],
+  "w": 218,
+  "h": 184
+ },
+ "v4-fabric": {
+  "widths": [
+   176
+  ],
+  "w": 176,
+  "h": 234
+ },
+ "v4-d-portrait": {
+  "widths": [
+   295
+  ],
+  "w": 295,
+  "h": 236
+ },
+ "v4-d-label": {
+  "widths": [
+   198
+  ],
+  "w": 198,
+  "h": 120
+ },
+ "v4-d-button": {
+  "widths": [
+   169
+  ],
+  "w": 169,
+  "h": 120
+ },
+ "v4-d-globe": {
+  "widths": [
+   166
+  ],
+  "w": 166,
+  "h": 120
+ },
+ "v4-d-embroidery": {
+  "widths": [
+   198
+  ],
+  "w": 198,
+  "h": 112
+ },
+ "v4-d-cords": {
+  "widths": [
+   169
+  ],
+  "w": 169,
+  "h": 112
+ },
+ "v4-d-fabric": {
+  "widths": [
+   166
+  ],
+  "w": 166,
+  "h": 112
+ },
+ "art-figure": {
+  "widths": [
+   640
+  ],
+  "w": 640,
+  "h": 641
+ },
+ "art-head": {
+  "widths": [
+   640
+  ],
+  "w": 640,
+  "h": 641
+ },
+ "art-portrait": {
+  "widths": [
+   640
+  ],
+  "w": 640,
+  "h": 641
+ },
+ "art-pair": {
+  "widths": [
+   640
+  ],
+  "w": 640,
+  "h": 641
  }
 }

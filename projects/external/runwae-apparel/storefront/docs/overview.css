@@ -9,10 +9,10 @@ p{font-size:10.5pt;line-height:1.45;margin:0}
 figure{margin:0}img{display:block;width:100%;border:1px solid #ddd8cd;border-radius:4px}
 figcaption{font-size:8.5pt;color:#8a857b;margin-top:5px}
 .grid4{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
-.grid4 img{height:2.0in;object-fit:cover;object-position:top}
+.grid4 img{height:1.7in;object-fit:cover;object-position:top}
 .grid4 figcaption{display:flex;justify-content:space-between}.grid4 figcaption b{color:#151513;font-size:10pt}
-.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:16px;border-top:1px solid #ddd8cd;padding-top:12px}
-.facts b{display:block;font-size:10pt;margin-bottom:3px}.facts span{font-size:9.5pt;color:#3a3833;line-height:1.4}
+.facts{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:14px;border-top:1px solid #ddd8cd;padding-top:12px}
+.facts b{display:block;font-size:10pt;margin-bottom:3px}.facts span{font-size:8.5pt;color:#3a3833;line-height:1.4}
 .two{display:grid;grid-template-columns:1.6fr 1fr;gap:26px;align-items:start}
 .two.b{grid-template-columns:1fr 1fr;margin-top:16px}
 .big img{height:auto}
@@ -21,7 +21,7 @@ figcaption{font-size:8.5pt;color:#8a857b;margin-top:5px}
 .three{display:grid;grid-template-columns:1.4fr 1.4fr .55fr;gap:14px;align-items:start}
 .three img{height:auto}.three .phone img{height:2.75in;object-fit:cover;object-position:top}
 table{width:100%;border-collapse:collapse;font-size:9pt}td{padding:3px 0;border-bottom:1px solid #eee9df}td:last-child{text-align:right}
-.st{font-size:8pt;padding:1px 6px;border-radius:999px;border:1px solid #ccc;white-space:nowrap}.st-preorder{background:#151513;color:#fff;border-color:#151513}.st-archive{color:#8a857b}
+.st{font-size:8pt;padding:1px 6px;border-radius:3px;border:1px solid #ccc;white-space:nowrap}.st-preorder{background:#151513;color:#fff;border-color:#151513}.st-archive{color:#8a857b}
 ul{margin:0;padding-left:16px;font-size:10pt;line-height:1.45}li{margin-bottom:4px}
 .note{font-size:8.5pt;color:#8a857b;margin-top:6px}.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 16px;margin-top:6px}
 .pc img,.pc .noimg{width:100%;aspect-ratio:1/1;object-fit:cover;border:1px solid #ddd8cd;border-radius:4px;background:#f3f0e9}

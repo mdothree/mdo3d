@@ -1,26 +1,56 @@
 {
-  "_readme": "Copy brands/_template to brands/<id>, then edit. See SEED.md. Folders starting with _ are never built.",
-  "id": "example",
-  "name": "Example Brand",
-  "endorsement": "",
-  "domain": "shop.example.com",
-  "description": "One sentence for search results and link previews.",
-  "tagline": "Provisional tagline",
-  "mode": "preview",
-  "tokens": {
-    "colors": { "bg": "#ffffff", "fg": "#111111", "muted": "#666666", "accent": "#111111", "line": "#dddddd", "panel": "#f5f5f5" },
-    "fonts": { "display": "'Helvetica Neue', Arial, sans-serif", "body": "'Helvetica Neue', Arial, sans-serif" },
-    "fontsHref": null
+ "_readme": "Copy brands/_template to brands/<id>, then edit. See SEED.md. Folders starting with _ are never built.",
+ "id": "example",
+ "name": "Example Brand",
+ "endorsement": "",
+ "domain": "shop.example.com",
+ "description": "One sentence for search results and link previews.",
+ "tagline": "Provisional tagline",
+ "mode": "preview",
+ "tokens": {
+  "colors": {
+   "bg": "#ffffff",
+   "fg": "#111111",
+   "muted": "#666666",
+   "accent": "#111111",
+   "line": "#dddddd",
+   "panel": "#f5f5f5"
   },
-  "copy": {
-    "preview": "Preview: not open for orders",
-    "heroLead": "",
-    "story": ["A short paragraph about the brand, in its own words."]
+  "fonts": {
+   "display": "'Helvetica Neue', Arial, sans-serif",
+   "body": "'Helvetica Neue', Arial, sans-serif"
   },
-  "nav": [["Shop", "shop"], ["Story", "story"]],
-  "shipping": { "flat_cents": null, "country": "US", "note": "US shipping only at launch. Rate set per drop." },
-  "policies": {
-    "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
-    "contact": "hello@example.com"
-  }
+  "fontsHref": null
+ },
+ "copy": {
+  "preview": "Preview: not open for orders",
+  "heroLead": "",
+  "story": [
+   "A short paragraph about the brand, in its own words."
+  ]
+ },
+ "nav": [
+  [
+   "Shop",
+   "shop"
+  ],
+  [
+   "Story",
+   "story"
+  ]
+ ],
+ "shipping": {
+  "flat_cents": null,
+  "country": "US",
+  "note": "US shipping only at launch. Rate set per drop."
+ },
+ "policies": {
+  "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
+  "contact": "hello@example.com"
+ },
+ "order_prefix": "EX",
+ "from_name": "Example Brand",
+ "orders_from": "orders@example.com",
+ "orders_inbox": "orders@example.com",
+ "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout."
 }

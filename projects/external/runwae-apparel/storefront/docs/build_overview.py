@@ -26,12 +26,13 @@ SHOPS = [
                     "Vector logo files and font licences for production"]),
     dict(id="runwae", name="Runwae Apparel",
          ident="They influence. Under it: they notice the little things.",
-         look="Follows the &ldquo;A curious journey&rdquo; concept: a spaced RUNWAE / APPAREL masthead over golden-hour photography, the IDEAS · PEOPLE · PLACES · PROGRESS column, &ldquo;Built on&hellip;&rdquo;, &ldquo;A more curious world&rdquo;, &ldquo;Art in every detail&rdquo;, the Archive, then the collection. One cohesive palette (forest, ivory, washed black, rust); the 2021 originals return in it. No bare sketches.",
-         keys=["forest", "paper", "rust", "ink"], type="Spaced serif display · quiet sans · small caps labels",
+         look="v4, from the two 2026-10-14 concepts. Home: a golden-hour photo hero with a bold serif RUNWAE / APPAREL, IDEAS · PEOPLE · PLACES · PROGRESS and a rust &ldquo;Explore the story&rdquo;; 01 &ldquo;Built on Ideas, People, Places, Progress.&rdquo;; 02 a dark photo band with line art; a details strip (label, button, embroidery, globe patch); 03 &ldquo;Wear a brighter tomorrow.&rdquo; with the capsule. A Drawn Series page leads the shop: &ldquo;Seven pieces. A brighter tomorrow.&rdquo;, &ldquo;Artwork in every thread.&rdquo; and his drawings as art panels (that page only). Forest, ivory, washed black, rust. Focus piece stays the Luv Thy Neighbor Hoodie.",
+         keys=["forest", "paper", "rust", "washed"], type="Playfair Display bold headlines · Inter tracked small caps · Instrument Serif accents",
          decisions=["Master logo: handoff variants A / B / C / globe (current wordmark is provisional)",
                     "Whether &ldquo;The Runwae Company&rdquo; is used as an umbrella name",
                     "Model releases for the 2021 photos of real people (preview-only until then)",
-                    "Which pieces make the first capsule; the catalog is larger than the 3&ndash;8 target"]),
+                    "The Drawn Series capsule (seven pieces): fabric, print method and prices; the Globe Hoodie lettering is from the concept, not final",
+                    "Whether the capsule replaces the Luv Thy Neighbor Hoodie as the focus pre-order (kept for now)"]),
     dict(id="glb", name="Girls Love Butts (GLB)",
          ident="Every body is worth drawing. (Both lines provisional.)",
          look="Bright and hand-drawn: pink, yellow and blue, marker type and stickers, body-positive and playful. &ldquo;Clothes for every body.&rdquo; Shirt-sized art sits on the back; chest marks stay medium.",
@@ -64,8 +65,16 @@ def shot(url, out, size):
 
 
 def items_of(b):
+    # Product definitions from the catalog; status/price from the shared inventory (inventory/inventory.csv).
+    import csv
     cat = json.load(open(f"{SF}/brands/{b}/catalog.json"))
-    return cat if isinstance(cat, list) else cat.get("products") or cat.get("items") or []
+    items = cat if isinstance(cat, list) else cat.get("products") or cat.get("items") or []
+    inv = {r["product_id"]: r for r in csv.DictReader(open(f"{SF}/inventory/inventory.csv")) if r["brand"] == b and r["variant"] == "-"}
+    for it in items:
+        r = inv.get(it["id"], {})
+        it["status"] = r.get("status", it.get("status"))
+    caps = sorted([i for i in items if isinstance(i.get("capsule"), int)], key=lambda i: i["capsule"])
+    return caps + [i for i in items if i not in caps]
 
 
 def find_img(preview, b, f):
@@ -130,8 +139,10 @@ def main():
                            f'<span>{E(s["bj"].get("domain", ""))}</span></figcaption></figure>' for s in SHOPS)
                  + '</div><div class="facts"><div><b>Shared seed</b><span>One core (catalog, cart, checkout, drops, order lookup, policies); '
                    'a brand is added by copying a template folder.</span></div><div><b>One focus item per shop</b><span>Everything else shows '
-                   'honestly: next drop (Notify me), in development, or archive.</span></div><div><b>Design rules</b><span>Shirt-sized art on the '
-                   'back; chest marks medium. Enforced by the build.</span></div></div></section>')
+                   'honestly: next drop (Notify me), in development, or archive.</span></div><div><b>Design rules</b><span>Chest marks medium everywhere; '
+                   'shirt-sized art on the back for GLB; corners 4px or less (circles only when round). Enforced by the build.</span></div>'
+                   '<div><b>One inventory</b><span>One file for all four shops: status, price, per-size stock, a stock ledger and a local admin page.</span></div>'
+                   '<div><b>Order emails</b><span>A &ldquo;New order&rdquo; email to each shop and a confirmation to the customer, one shared template.</span></div></div></section>')
     for s in SHOPS:
         b, n = s["id"], s["name"]
         tag = s["bj"].get("tagline", "")

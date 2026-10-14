@@ -68,6 +68,7 @@ test('every real brand catalog has nothing purchasable (unpriced) and no Poison/
   assert.deepEqual(w.source_images, ['Fall 21/FB1_2048x2048.png'], 'wordmark tee is front-only (#82-d)');
   assert.ok(rw.products.every((p) => (p.source_images ?? []).every((i) => !/FB2/.test(i))), 'third-party birdcage art never ships');
   assert.ok(rw.drops.every((d) => d.products.every((x) => !/poison|pave/.test(x))));
+  assert.deepEqual(rw.drops.find((d) => d.id === 'tlt').products, ['tlt-neighbor-hoodie'], 'drop membership comes from the inventory');
 });
 
 test('multi-line cart: one line_item per line, per-line metadata, latest ship-by wins', () => {
