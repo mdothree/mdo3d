@@ -8,6 +8,7 @@ import { ClaudeAnalyzer } from './analyzers/claudeAnalyzer.js';
 import { EmailService } from './services/emailService.js';
 import { StripeService } from './services/stripeService.js';
 import { ATSAnalyzer } from './analyzers/atsAnalyzer.js';
+import { stripeWebhookRoute } from './routes/stripeWebhook.js';
 
 dotenv.config();
 
@@ -125,14 +126,7 @@ app.post('/api/payment/create-checkout', async (req, res) => {
   }
 });
 
-app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
-  try {
-    const result = await stripeService.handleWebhook(req.body, req.headers['stripe-signature']);
-    res.json(result);
-  } catch (error) {
-    res.status(400).json({ error: 'Webhook error' });
-  }
-});
+app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), stripeWebhookRoute(stripeService));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });

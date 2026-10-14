@@ -8,6 +8,14 @@ dotenv.config();
  * Handles payment processing for premium reports
  */
 
+export class WebhookSignatureError extends Error {
+  constructor(message) {
+    super(message || 'Invalid Stripe signature');
+    this.name = 'WebhookSignatureError';
+    this.statusCode = 400;
+  }
+}
+
 export class StripeService {
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -125,37 +133,41 @@ export class StripeService {
     }
   }
 
+  /**
+   * Verify and handle a Stripe webhook.
+   * A missing or invalid signature THROWS a WebhookSignatureError (statusCode 400):
+   * it must never be answered with a 2xx, or Stripe treats a forged/misrouted
+   * delivery as accepted. Handler failures throw too (the route answers 500 so
+   * Stripe retries). Only a verified, handled event resolves.
+   */
   async handleWebhook(payload, signature) {
+    let event;
     try {
-      const event = this.stripe.webhooks.constructEvent(
+      event = this.stripe.webhooks.constructEvent(
         payload,
         signature,
         process.env.STRIPE_WEBHOOK_SECRET
       );
-
-      // Handle different event types
-      switch (event.type) {
-        case 'checkout.session.completed':
-          return await this.handleCheckoutComplete(event.data.object);
-        
-        case 'payment_intent.succeeded':
-          return await this.handlePaymentSuccess(event.data.object);
-        
-        case 'payment_intent.payment_failed':
-          return await this.handlePaymentFailure(event.data.object);
-        
-        default:
-          console.log(`Unhandled event type: ${event.type}`);
-      }
-
-      return { success: true };
     } catch (error) {
-      console.error('Webhook error:', error);
-      return {
-        success: false,
-        error: error.message
-      };
+      console.error('Webhook signature error:', error.message);
+      throw new WebhookSignatureError(error.message);
     }
+
+    switch (event.type) {
+      case 'checkout.session.completed':
+        return await this.handleCheckoutComplete(event.data.object);
+
+      case 'payment_intent.succeeded':
+        return await this.handlePaymentSuccess(event.data.object);
+
+      case 'payment_intent.payment_failed':
+        return await this.handlePaymentFailure(event.data.object);
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    return { success: true };
   }
 
   async handleCheckoutComplete(session) {
