@@ -58,3 +58,8 @@ Rules every prompt follows: shirt-sized art on the back, chest marks medium; Run
 | 42 | Runwae | drawn-figure-hoodie | `drawn-figure-hoodie, ed-green-back, drawn-cream-hoodie, ed-cream-back` | Concept photography / owner mockup; usable | **acceptable for preview** | - |
 | 43 | Runwae | drawn-buttondown | `drawn-buttondown` | Concept photography / owner mockup; usable | **acceptable for preview** | - |
 | 44 | Runwae | tlt-faces-tee | `tlt-faces-tee-1.jpg` | Concept photography / owner mockup; usable | **acceptable for preview** | - |
+
+## Added 2026-10-14 (Bridge): Runwae v4 hero/band crops are low-res
+| Brand | Image | Problem | Status | Prompt |
+|---|---|---|---|---|
+| runwae | `assets/v4-*` hero + band crops (≈500–650 px wide, cropped from concept boards cbce9be5 / 38b3982c) | Soft at full width | needs regen | "Editorial fashion photograph, golden hour: young man in a heavyweight deep-forest hoodie with a cream hand-drawn figure line drawing on the back, seated on brutalist concrete steps, palm trees and hazy city hills behind, warm natural light, 35mm, high resolution 2400px wide, no text, no logos." Plus matching variants: woman in an ivory button-down with an olive tree drawing (portrait), dusk city/forest band (landscape), ivory Globe Hoodie back with the globe emblem (hero). |
