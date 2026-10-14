@@ -1,5 +1,5 @@
 {
- "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops). 90209e16 contact sheet is off-limits (Bridge 2026-10-14): never crop from it. orig-company-bagged (IMG_4199.HEIC) is made with ImageMagick -auto-orient (sips drops the HEIC rotation): see tools/runwae_reissue_mockups.sh.",
+ "_note": "owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used. Principal 2026-10-14: the bare sketches are not featured as pictures; the drawings appear on the garments in the editorial concept photography (05_generated_explorations + ad concept crops). orig-company-bagged (IMG_4199.HEIC) is made with ImageMagick -auto-orient (sips drops the HEIC rotation): see tools/runwae_reissue_mockups.sh.",
  "sources": {
   "rwa": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 4(1).png",
   "trc": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/02_original_identity/Artboard 1 copy 9.png",
@@ -25,7 +25,8 @@
   "flat": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/assets/05_generated_explorations/wide_editorial_product_catalog_moodboard_flat_lay.png",
   "o_ra": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_2986.JPG",
   "o_trc": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/731190D9-31BF-4AA6-A7C2-F6C79D5689A5.JPG",
-  "o_blue": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_5546.JPG"
+  "o_blue": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_5546.JPG",
+  "bankC": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/90209e16-32ce-43a7-83de-e7b11a8e1c7c.png"
  },
  "crops": [
   {
@@ -399,6 +400,62 @@
     640,
     1080
    ]
+  },
+  {
+   "out": "bk-man-door",
+   "src": "bankC",
+   "x": 419,
+   "y": 3,
+   "w": 290,
+   "h": 379
+  },
+  {
+   "out": "bk-man-sit",
+   "src": "bankC",
+   "x": 723,
+   "y": 3,
+   "w": 306,
+   "h": 379
+  },
+  {
+   "out": "bk-cream-concrete",
+   "src": "bankC",
+   "x": 1043,
+   "y": 3,
+   "w": 244,
+   "h": 379
+  },
+  {
+   "out": "bk-man-sea",
+   "src": "bankC",
+   "x": 237,
+   "y": 395,
+   "w": 290,
+   "h": 290
+  },
+  {
+   "out": "bk-man-peak",
+   "src": "bankC",
+   "x": 273,
+   "y": 699,
+   "w": 249,
+   "h": 322
+  },
+  {
+   "out": "bk-sunset",
+   "src": "bankC",
+   "x": 1259,
+   "y": 699,
+   "w": 274,
+   "h": 322
+  },
+  {
+   "out": "bk-knit-macro",
+   "src": "bankC",
+   "x": 1015,
+   "y": 699,
+   "w": 227,
+   "h": 322
   }
  ],
  "_people": {

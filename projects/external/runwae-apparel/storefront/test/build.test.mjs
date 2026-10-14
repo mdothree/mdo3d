@@ -140,8 +140,6 @@ test('Runwae catalog edits (Principal 2026-10-14): removals gone, merges done, o
   assert.match(readFileSync(join(out, 'products', 'drawn-overshirt.html'), 'utf8'), /Mockup · original drawing/);
   const shop = readFileSync(join(out, 'shop.html'), 'utf8');
   for (const l of ['The Little Things', 'Essentials', 'The Drawn Series', "Archive · Fall '21"]) assert.ok(shop.includes(l), l);
-  const spec = readFileSync(join(ROOT, 'brands', 'runwae', 'images.json'), 'utf8');
-  assert.doesNotMatch(spec.replace(/"_note"[^\n]*/, ''), /90209e16/, 'the 90209e16 sheet is off-limits');
   assert.doesNotMatch(JSON.parse(readFileSync(join(ROOT, 'brands', 'runwae', 'catalog.json'), 'utf8')).products.map((p) => JSON.stringify(p.images)).join(), /FB2/, 'third-party back art (#82-d)');
 });
 

@@ -291,6 +291,12 @@
      "caption": "Mockup · original design"
     },
     {
+     "file": "re-trc-detail",
+     "alt": "Close view: the four drawn faces over TRC, extracted from the 2021 embroidery",
+     "concept": true,
+     "caption": "Mockup · original design, detail"
+    },
+    {
      "file": "re-trc-back",
      "alt": "Forest hoodie, back: the TRC monogram in cream",
      "concept": true,
@@ -302,7 +308,7 @@
      "caption": "Original 2021"
     }
    ],
-   "summary": "The Runwae Company hoodie from 2021, reissued in forest: four drawn faces over TRC at the chest, the TRC monogram on the back.",
+   "summary": "The Runwae Company hoodie from 2021, reissued in forest: the four drawn faces over TRC at centre chest (medium), the TRC monogram on the upper back.",
    "print": [
     {
      "placement": "front_chest",

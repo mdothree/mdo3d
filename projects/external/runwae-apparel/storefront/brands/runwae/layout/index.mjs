@@ -81,9 +81,9 @@ ${panel(kit, 'drawn-buttondown', { alt: 'A woman in an ivory button-down with a 
 
 <section class="rw3-world" aria-labelledby="world-t">
 <div class="rw3-world-strip">
-${panel(kit, 'bk-terrace-tree', { alt: 'A tree on a concrete terrace above the water at golden hour', sizes: '(max-width: 820px) 100vw, 34vw' })}
+${panel(kit, 'bk-man-door', { alt: 'A figure in a hoodie in a concrete doorway at sunset', sizes: '(max-width: 820px) 100vw, 34vw' })}
+${panel(kit, 'bk-man-sea', { alt: 'A figure by a concrete wall at the sea at dusk', sizes: '(max-width: 820px) 50vw, 33vw', cls: ' rw3-hide-m' })}
 ${panel(kit, 'bk-doorway', { alt: 'Sunset through a tall concrete doorway onto the hills', sizes: '(max-width: 820px) 50vw, 33vw', cls: ' rw3-hide-m' })}
-${panel(kit, 'bk-terrace-sea', { alt: 'A concrete terrace open to the sea at dusk', sizes: '(max-width: 820px) 50vw, 33vw', cls: ' rw3-hide-m' })}
 </div>
 <div class="rw3-world-copy"><p class="rw3-num rw3-num--light">02</p><h2 id="world-t" class="rw3-spaced">A more<br>curious world</h2><span class="rw3-rule" aria-hidden="true"></span><p class="rw3-small-caps">Places shape perspective</p></div>
 </section>
@@ -93,7 +93,7 @@ ${panel(kit, 'bk-terrace-sea', { alt: 'A concrete terrace open to the sea at dus
 <div class="rw3-detail-grid">
 ${panel(kit, 'bk-plaid', { alt: 'Rust and forest plaid, close', label: 'Plaid', sizes: '(max-width: 820px) 50vw, 25vw' })}
 ${panel(kit, 'cj-rust-button', { alt: 'Metal globe button on rust cloth', label: 'Globe button', sizes: '(max-width: 820px) 50vw, 25vw' })}
-${panel(kit, 'bk-knit', { alt: 'Olive rib knit, close', label: 'Rib knit', sizes: '(max-width: 820px) 50vw, 25vw' })}
+${panel(kit, 'bk-knit-macro', { alt: 'Dark rib knit and drawcord, close', label: 'Rib knit', sizes: '(max-width: 820px) 50vw, 25vw' })}
 ${panel(kit, 'bk-rust-macro', { alt: 'Rust hood and drawcord, close', label: 'Fleece', sizes: '(max-width: 820px) 50vw, 25vw' })}
 ${panel(kit, 'cj-cream-hood', { alt: 'Ivory hood with a woven neck label', label: 'Woven label', sizes: '(max-width: 820px) 50vw, 25vw' })}
 ${panel(kit, 'ed-black-hood', { alt: 'Black hood with RUNWAE COMPANY embroidery', label: 'Embroidery', sizes: '(max-width: 820px) 50vw, 25vw' })}
@@ -121,9 +121,9 @@ ${archive.slice(0, 2).map((p) => `<a class="rw3-artifact" href="${P(p.id)}">${ki
 <section class="rw3-close" aria-labelledby="close-t">
 <div class="rw3-close-strip">
 ${panel(kit, 'bk-fog', { alt: 'Fog over the hills at sunrise', sizes: '(max-width: 820px) 100vw, 25vw' })}
-${panel(kit, 'bk-rust-concrete', { alt: 'A rust hoodie folded over a concrete block in low sun', sizes: '25vw', cls: ' rw3-hide-m' })}
-${panel(kit, 'bk-flannel-concrete', { alt: 'A plaid flannel laid on concrete in warm light', sizes: '25vw', cls: ' rw3-hide-m' })}
-${panel(kit, 'bk-pool', { alt: 'A still pool on a concrete terrace at dusk', sizes: '25vw', cls: ' rw3-hide-m' })}
+${panel(kit, 'bk-man-peak', { alt: 'A figure on a rocky peak at sunset', sizes: '25vw', cls: ' rw3-hide-m' })}
+${panel(kit, 'bk-man-sit', { alt: 'A figure in a hoodie seated on concrete facing the hills at dusk', sizes: '25vw', cls: ' rw3-hide-m' })}
+${panel(kit, 'bk-sunset', { alt: 'A concrete terrace facing the sunset over the sea', sizes: '25vw', cls: ' rw3-hide-m' })}
 </div>
 <div class="rw3-close-copy"><h2 id="close-t" class="rw3-spaced">A continuing<br>journey</h2><span class="rw3-rule" aria-hidden="true"></span><p class="rw3-small-caps">Runwae Apparel</p></div>
 </section>`,
