@@ -1,0 +1,36 @@
+{
+  "id": "ridgefield",
+  "name": "Ridgefield",
+  "endorsement": "",
+  "domain": "store.ridgefieldtech.com",
+  "description": "Ridgefield store, capsule 01: apparel and a pack.",
+  "tagline": "Systems that perform under real-world conditions.",
+  "_tagline_status": "PROVISIONAL headline: Ridgefield's site line, used as the anchor until the Principal sets shop copy. Copy follows the Ridgefield voice docs: composed, minimal, no em dashes, no promotional language. Render taglines ('Built for higher ground', 'Apparel and gear for what's next', 'More than apparel') are not used.",
+  "mode": "preview",
+  "favicon": "assets/favicon.svg",
+  "logo": { "kind": "square", "_spec": "The real Ridgefield mark from ridgefieldtech.com (~/ridgefield/frontend/index.html .mark): a solid square with a square cut-out, plus RIDGEFIELD in JetBrains Mono. The chevron mark in the AI renders is NOT Ridgefield's." },
+  "tokens": {
+    "colors": {
+      "bg": "#0a0b0a", "fg": "#f0eee8", "muted": "#9c9a92", "accent": "#c75a2e", "line": "#2a2c28", "panel": "#121411",
+      "ink": "#0a0b0a", "bone": "#f0eee8", "olive": "#7a8a3f", "ember": "#c75a2e", "on-accent": "#0a0b0a", "focus": "#c75a2e"
+    },
+    "fonts": {
+      "display": "'Inter', 'Helvetica Neue', Arial, sans-serif",
+      "body": "'Inter', 'Helvetica Neue', Arial, sans-serif",
+      "mono": "'JetBrains Mono', ui-monospace, Menlo, monospace"
+    },
+    "fontsHref": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+  },
+  "copy": {
+    "preview": "Preview. Not open for orders.",
+    "notifyIntro": "One email when it opens.",
+    "exchangeLine": "Size exchanges within 14 days of delivery.",
+    "checkoutOff": "Checkout opens when the shop opens."
+  },
+  "shipping": { "flat_cents": null, "country": "US", "note": "US shipping at launch. Rate set per release." },
+  "policies": {
+    "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
+    "contact": "store@ridgefieldtech.com",
+    "contact_status": "placeholder: confirm the inbox before launch"
+  }
+}

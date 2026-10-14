@@ -76,4 +76,25 @@ test('purchasable: draft, unpriced, closed window are all blocked', () => {
   assert.equal(ok.drop.id, 'd');
   assert.equal(purchasable({ ...base, id: 't', channel: 'printful' }, []).ok, true);
   assert.equal(purchasable({ ...base, rights_hold: 'third-party art' }, drops, '2026-11-05').reason, 'rights hold');
+  // seed statuses: preorder needs an open window; available sells now; the rest never sell
+  assert.equal(purchasable({ ...base, status: 'preorder', channel: 'printful' }, drops, '2026-11-05').ok, true);
+  assert.equal(purchasable({ ...base, status: 'preorder' }, drops, '2026-12-05').ok, false);
+  assert.equal(purchasable({ ...base, status: 'available' }, []).ok, true);
+  for (const s of ['next_drop', 'in_development', 'archive', 'sold_out']) assert.equal(purchasable({ ...base, status: s }, drops, '2026-11-05').reason, 'not released', s);
+});
+
+test('normaliseOrders + tally: multi-line Stripe sessions (expanded line_items, metadata on price.product)', () => {
+  const li = (product, size, quantity, extra = {}) => ({ quantity, price: { product: { metadata: { product, size, qty: String(quantity), ...extra } } } });
+  const rows = [
+    { object: 'checkout.session', id: 'cs_a', payment_status: 'paid', customer_details: { email: 'a@x.test' },
+      line_items: { data: [li('hood', 'M', 2, { drop: 'd1' }), li('tee', 'L', 1), li('hood', 'L', 1, { drop: 'd1', refunded: 'true' })] } },
+    { object: 'checkout.session', id: 'cs_b', payment_status: 'paid', line_items: { data: [li('hood', 'M', 1, { drop: 'd1' })] } },
+    { object: 'checkout.session', id: 'cs_c', payment_status: 'unpaid', line_items: { data: [li('hood', 'S', 5)] } },
+    { object: 'checkout.session', id: 'cs_legacy', payment_status: 'paid', metadata: { product: 'tee', size: 'L', qty: '1' } },
+    { id: 'o1', status: 'paid', lines: [{ product: 'tee', size: 'M', qty: 2 }, { product: 'hood', size: 'XL', qty: 1, drop: 'd1' }] },
+  ];
+  const n = normaliseOrders(rows);
+  assert.equal(n.length, 6);
+  assert.deepEqual(tally(n), { hood: { M: 3, XL: 1 }, tee: { L: 2, M: 2 } });
+  assert.deepEqual(n.filter((x) => x.drop === 'd1').map((x) => x.id), ['cs_a', 'cs_b', 'o1']);
 });

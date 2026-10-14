@@ -1,0 +1,179 @@
+{
+ "_note": "Owner art (01_original_artwork), owner identity (02_original_identity), owner photography (03, rights to confirm before publication) and the Drawn Series ad concept crops (AI-generated, captioned 'Concept render'). 04_third_party_references_internal_only is never used.",
+ "sources": {
+  "sk1": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 19_.PNG",
+  "sk2": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 18_.PNG",
+  "sk3": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 12_.PNG",
+  "sk4": "~/Downloads/RUNWAE_Developer_Handoff/assets/01_original_artwork/Artboard 1 copy 16_.PNG",
+  "rwa": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/Artboard 1 copy 4(1).png",
+  "trc": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/Artboard 1 copy 9.png",
+  "company": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/Artboard 1 copy 2.png",
+  "badge": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/emblem.png",
+  "card": "~/Downloads/RUNWAE_Developer_Handoff/assets/02_original_identity/runwaeapparelbusinesscardback.png",
+  "p_black": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/IMG_5595(1).jpeg",
+  "p_tee": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/A4C76011-B802-4A77-AFB3-4B2F9FD392C9(1).jpeg",
+  "p_tlt": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/3DA1BCC5-C2B6-4BE4-A990-F605574A8B66(1).jpeg",
+  "p_label": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/B8CFAB7F-A9BC-42CF-AACA-4A940F1E7C6F.jpeg",
+  "p_green": "~/Downloads/RUNWAE_Developer_Handoff/assets/03_user_apparel_and_photography/Artboard 1 copy 6.png",
+  "ad1": "~/Downloads/RUNWAE_Ad_Concept_Crops/01_figure_hoodie_forest.png",
+  "ad2": "~/Downloads/RUNWAE_Ad_Concept_Crops/02_cream_hoodie_back.png",
+  "ad4": "~/Downloads/RUNWAE_Ad_Concept_Crops/04_figure_overshirt.png",
+  "ad5": "~/Downloads/RUNWAE_Ad_Concept_Crops/05_botanical_buttondown.png",
+  "ad6": "~/Downloads/RUNWAE_Ad_Concept_Crops/06_sketch_black_hoodie.png",
+  "ad3": "~/Downloads/RUNWAE_Ad_Concept_Crops/03_illustrated_cream_hoodie.png"
+ },
+ "crops": [
+  {
+   "out": "sketch-01",
+   "src": "sk1",
+   "widths": [
+    540
+   ]
+  },
+  {
+   "out": "sketch-02",
+   "src": "sk2",
+   "widths": [
+    540
+   ]
+  },
+  {
+   "out": "sketch-03",
+   "src": "sk3",
+   "widths": [
+    540
+   ]
+  },
+  {
+   "out": "sketch-04",
+   "src": "sk4",
+   "widths": [
+    540
+   ]
+  },
+  {
+   "out": "sketch-03-detail",
+   "src": "sk3",
+   "x": 330,
+   "y": 300,
+   "w": 520,
+   "h": 520
+  },
+  {
+   "out": "mark-rwa",
+   "src": "rwa",
+   "widths": [
+    400
+   ]
+  },
+  {
+   "out": "mark-trc",
+   "src": "trc",
+   "widths": [
+    400
+   ]
+  },
+  {
+   "out": "mark-company",
+   "src": "company",
+   "widths": [
+    400
+   ]
+  },
+  {
+   "out": "mark-badge",
+   "src": "badge",
+   "widths": [
+    400
+   ]
+  },
+  {
+   "out": "archive-card",
+   "src": "card",
+   "widths": [
+    800
+   ]
+  },
+  {
+   "out": "people-black-hoodie",
+   "src": "p_black",
+   "widths": [
+    640,
+    1080
+   ]
+  },
+  {
+   "out": "people-tee",
+   "src": "p_tee",
+   "widths": [
+    640,
+    1080
+   ]
+  },
+  {
+   "out": "people-tlt",
+   "src": "p_tlt",
+   "widths": [
+    640,
+    1080
+   ]
+  },
+  {
+   "out": "making-label",
+   "src": "p_label",
+   "widths": [
+    640,
+    1080
+   ]
+  },
+  {
+   "out": "green-figures-hoodie",
+   "src": "p_green",
+   "widths": [
+    640
+   ]
+  },
+  {
+   "out": "drawn-figure-hoodie",
+   "src": "ad1",
+   "widths": [
+    640
+   ]
+  },
+  {
+   "out": "drawn-cream-hoodie",
+   "src": "ad2",
+   "widths": [
+    640
+   ]
+  },
+  {
+   "out": "drawn-overshirt",
+   "src": "ad4",
+   "widths": [
+    640
+   ]
+  },
+  {
+   "out": "drawn-buttondown",
+   "src": "ad5",
+   "widths": [
+    640
+   ]
+  },
+  {
+   "out": "drawn-sketch-hoodie",
+   "src": "ad6",
+   "widths": [
+    640
+   ]
+  },
+  {
+   "out": "drawn-illustrated-hoodie",
+   "src": "ad3",
+   "widths": [
+    640
+   ]
+  }
+ ]
+}

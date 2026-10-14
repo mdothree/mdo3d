@@ -4,32 +4,40 @@
   "endorsement": "a Butts Studios company",
   "endorsement_status": "pending: confirm wording with the Butts Studios pane",
   "domain": "runwaeapparel.com",
-  "tagline": "Everybody Influences",
+  "description": "Runwae Apparel: art-led apparel made from original drawings. Ideas. People. Places. Progress.",
+  "tagline": "Everyone Influences",
+  "_tagline_source": "Developer handoff: brand beliefs 'Everyone Influences' and 'Ideas. People. Places. Progress.' (beliefs, not slogans).",
   "mode": "preview",
-  "theme": {
-    "bg": "#1f1f1f",
-    "panel": "#272626",
-    "text": "#f3eee6",
-    "muted": "#a8a29a",
-    "accent": "#fa9674",
-    "gold": "#bca84a",
-    "goldDeep": "#7f622d",
-    "goldLight": "#e8d27a",
-    "fontDisplay": "'Cormorant Garamond', 'Cormorant', Garamond, 'Times New Roman', serif",
-    "fontBody": "'Helvetica Neue', Arial, sans-serif",
-    "frame": "gilded"
+  "favicon": "assets/emblem.png",
+  "logo": { "kind": "wordmark", "_status": "PROVISIONAL. Owner is undecided on the master logo (handoff 03/08). The site uses the clean, non-handwritten, equal-weight RUNWAE APPAREL wordmark set in type until a mark is chosen." },
+  "tokens": {
+    "colors": {
+      "bg": "#f2efe7", "fg": "#1a1a17", "muted": "#6b675f", "accent": "#a9573e", "line": "#d8d2c5", "panel": "#ebe7dc",
+      "forest": "#263a2d", "stone": "#b8b0a5", "rust": "#a9573e", "lime": "#a6cf34", "paper": "#f2efe7", "ink": "#1a1a17", "on-accent": "#f2efe7"
+    },
+    "fonts": {
+      "display": "'Instrument Serif', 'Cormorant Garamond', Georgia, serif",
+      "body": "'Inter', 'Helvetica Neue', Arial, sans-serif",
+      "master": "'Inter Tight', 'Inter', 'Helvetica Neue', Arial, sans-serif"
+    },
+    "fontsHref": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap"
   },
-  "logo": "assets/emblem.png",
-  "shipping": {
-    "flat_cents": null,
-    "country": "US",
-    "note": "US shipping only at launch. Rate set per drop."
+  "copy": {
+    "preview": "Preview · not open for orders",
+    "notifyIntro": "One email when it opens.",
+    "exchangeLine": "Size exchanges within 14 days of delivery.",
+    "checkoutOff": "Checkout opens when the shop does."
   },
+  "holding": {
+    "lede": "Everyone Influences",
+    "sub": "Original drawings, made wearable. Opening here soon.",
+    "seal": "assets/emblem.png",
+    "shots": ["photos/tlt-neighbor-hoodie-sketchbook.jpg", "photos/tlt-face-hoodie-sketchbook.jpg", "photos/true-grit-hoodie-sketchbook.jpg"]
+  },
+  "shipping": { "flat_cents": null, "country": "US", "note": "US shipping only at launch. Rate set per drop." },
   "policies": {
-    "returns": "Size exchanges only, no returns. Request an exchange within 14 days of delivery; items must be unworn with tags.",
+    "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
     "contact": "hello@runwaeapparel.com",
     "contact_status": "placeholder: confirm the inbox exists before launch"
-  },
-  "photoStyle": "gallery",
-  "photoStyle_status": "pending the Principal's taste call (gallery | sketchbook | per-line)"
+  }
 }

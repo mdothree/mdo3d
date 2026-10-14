@@ -57,7 +57,7 @@ def phone(screen):
 # A · Lookbook: "Everybody Influences, Issue No. 2"
 c = stage()
 cover = Image.new("RGB", (620, 800), (31, 31, 31))
-shot = Image.open(B / "photos" / "pave-hoodie-gallery.jpg").resize((620, 775))
+shot = Image.open(B / "photos" / "tlt-neighbor-hoodie-gallery.jpg").resize((620, 775))
 cover.paste(shot.crop((0, 60, 620, 560)), (0, 150))
 d = ImageDraw.Draw(cover)
 d.text((310, 60), "Runwae Apparel", font=font("serif", 54), fill=(243, 238, 230), anchor="mm")

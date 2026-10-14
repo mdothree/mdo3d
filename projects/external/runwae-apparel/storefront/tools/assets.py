@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Make web-size product images from the (git-ignored) design copies.
 
-Reads brands/<brand>/catalog.json, resolves each image path under ../design, and writes
+Reads brands/<brand>/catalog.json `source_images`, resolves each path under ../design, and writes
 brands/<brand>/assets/<product>-<n>.jpg (max 1000px, flattened onto the brand's panel colour).
 Also writes the brand logo if brand.json names one. Originals are never modified.
 
@@ -35,7 +35,7 @@ def main(brand: str) -> None:
     panel = "#f2f0ec"  # light studio grey reads well inside both themes' frames
     n = 0
     for p in cat["products"]:
-        for i, rel in enumerate(p["images"], 1):
+        for i, rel in enumerate(p.get("source_images") or [], 1):
             src = DESIGN / rel
             if not src.exists():
                 sys.exit(f"missing design file: {src}")

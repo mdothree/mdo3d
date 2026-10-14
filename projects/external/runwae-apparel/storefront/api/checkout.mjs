@@ -1,4 +1,4 @@
-// POST /api/checkout  {product, size, qty}  ->  {url}  (Stripe Checkout Session)
+// POST /api/checkout  {brand, lines:[{product, size, color, qty}]}  ->  {url}  (Stripe Checkout Session)
 //
 // SAFETY (payments code: deploying this is gated on the Principal's OK):
 //   * Off unless CHECKOUT_ENABLED === 'true'  -> 503.
@@ -8,9 +8,7 @@
 // Env: BRAND, STRIPE_SECRET_KEY, CHECKOUT_ENABLED, ALLOW_LIVE_STRIPE, SITE_URL, SHIPPING_FLAT_CENTS (optional override)
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { purchasable, shipBy } from '../src/drop.mjs';
-
-const MAX_QTY = 5;
+import { checkoutParams } from '../core/checkout.mjs';
 
 export function loadCatalog(brandId, root = process.cwd()) {
   if (!/^[a-z0-9-]+$/.test(brandId ?? '')) throw new Error('BRAND not set');
@@ -24,61 +22,9 @@ export function keyAllowed(key, env) {
   return env.ALLOW_LIVE_STRIPE === 'true' && /^(sk|rk)_live_/.test(key);
 }
 
-/** Validate a request and return Stripe form params, or {error, status}. Pure: unit-tested. */
-export function sessionParams({ brand, products, drops }, body, { siteUrl, now = new Date(), shippingCents } = {}) {
-  const { product: pid, size } = body ?? {};
-  const qty = Number(body?.qty ?? 1);
-  if (typeof pid !== 'string' || typeof size !== 'string') return { status: 400, error: 'product and size are required' };
-  if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY) return { status: 400, error: `qty must be 1–${MAX_QTY}` };
-  const p = products.find((x) => x.id === pid);
-  if (!p) return { status: 404, error: 'unknown product' };
-  if (p.format === 'digital') return { status: 409, error: 'not available: digital checkout is not configured' };
-  if (!p.sizes.includes(size)) return { status: 400, error: 'unknown size' };
-  const buy = purchasable(p, drops, now);
-  if (!buy.ok) return { status: 409, error: `not available: ${buy.reason}` };
-  if (!siteUrl) return { status: 500, error: 'SITE_URL not set' };
-  const ship = Number.isInteger(shippingCents) ? shippingCents : brand.shipping?.flat_cents;
-  if (!Number.isInteger(ship) || ship < 0) return { status: 500, error: 'shipping rate not set' };
-
-  const sb = buy.drop ? shipBy(buy.drop.window.close, buy.drop.schedule).shipBy : null;
-  const terms = sb
-    ? `Pre-order: ships by ${sb}. Size exchanges only; no returns.`
-    : 'Size exchanges only; no returns.';
-  const f = {
-    mode: 'payment',
-    'line_items[0][quantity]': String(qty),
-    'line_items[0][price_data][currency]': 'usd',
-    'line_items[0][price_data][unit_amount]': String(buy.price_cents),
-    'line_items[0][price_data][tax_behavior]': 'exclusive',
-    'line_items[0][price_data][product_data][name]': `${p.name}, ${size}`,
-    'line_items[0][price_data][product_data][description]': sb ? `Pre-order. Ships by ${sb}.` : p.description.slice(0, 200),
-    'line_items[0][price_data][product_data][tax_code]': 'txcd_30011000', // clothing
-    'automatic_tax[enabled]': 'true',
-    'shipping_address_collection[allowed_countries][0]': 'US',
-    'shipping_options[0][shipping_rate_data][type]': 'fixed_amount',
-    'shipping_options[0][shipping_rate_data][display_name]': sb ? `Ships by ${sb}` : 'Standard shipping',
-    'shipping_options[0][shipping_rate_data][fixed_amount][amount]': String(ship),
-    'shipping_options[0][shipping_rate_data][fixed_amount][currency]': 'usd',
-    'shipping_options[0][shipping_rate_data][tax_behavior]': 'exclusive',
-    'custom_text[submit][message]': terms,
-    'metadata[brand]': brand.id,
-    'metadata[product]': p.id,
-    'metadata[size]': size,
-    'metadata[qty]': String(qty),
-    'metadata[channel]': p.channel,
-    'payment_intent_data[metadata][brand]': brand.id,
-    'payment_intent_data[metadata][product]': p.id,
-    'payment_intent_data[metadata][size]': size,
-    success_url: `${siteUrl}/thanks.html?session={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl}/products/${p.id}.html`,
-  };
-  if (buy.drop) {
-    f['metadata[drop]'] = buy.drop.id;
-    f['metadata[ship_by]'] = sb;
-    f['payment_intent_data[metadata][drop]'] = buy.drop.id;
-  }
-  return { params: f };
-}
+/** Validate a request and return Stripe form params, or {error, status}. Pure: unit-tested.
+ *  Body: {lines:[{product,size,color,qty}]} from the cart, or the legacy {product,size,qty}. */
+export const sessionParams = checkoutParams;
 
 export default async function handler(req, res) {
   const send = (status, obj) => { res.statusCode = status; res.setHeader('content-type', 'application/json'); res.setHeader('cache-control', 'no-store'); res.end(JSON.stringify(obj)); };

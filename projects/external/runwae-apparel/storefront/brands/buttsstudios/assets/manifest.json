@@ -1,0 +1,156 @@
+{
+ "rust-hoodie": {
+  "widths": [
+   326
+  ],
+  "w": 326,
+  "h": 392
+ },
+ "black-hoodie-back": {
+  "widths": [
+   322
+  ],
+  "w": 322,
+  "h": 392
+ },
+ "black-hoodie-front": {
+  "widths": [
+   284
+  ],
+  "w": 284,
+  "h": 392
+ },
+ "windbreaker": {
+  "widths": [
+   290
+  ],
+  "w": 290,
+  "h": 392
+ },
+ "windbreaker-back": {
+  "widths": [
+   364
+  ],
+  "w": 364,
+  "h": 356
+ },
+ "flannel": {
+  "widths": [
+   464
+  ],
+  "w": 464,
+  "h": 356
+ },
+ "beanie": {
+  "widths": [
+   386
+  ],
+  "w": 386,
+  "h": 174
+ },
+ "detail-label": {
+  "widths": [
+   271
+  ],
+  "w": 271,
+  "h": 258
+ },
+ "detail-flannel": {
+  "widths": [
+   176
+  ],
+  "w": 176,
+  "h": 258
+ },
+ "detail-zip": {
+  "widths": [
+   198
+  ],
+  "w": 198,
+  "h": 258
+ },
+ "detail-neck": {
+  "widths": [
+   168
+  ],
+  "w": 168,
+  "h": 258
+ },
+ "contour": {
+  "widths": [
+   312
+  ],
+  "w": 312,
+  "h": 258
+ },
+ "hero-wearer": {
+  "widths": [
+   472
+  ],
+  "w": 472,
+  "h": 394
+ },
+ "look-rust-back": {
+  "widths": [
+   242
+  ],
+  "w": 242,
+  "h": 366
+ },
+ "look-black-back": {
+  "widths": [
+   264
+  ],
+  "w": 264,
+  "h": 366
+ },
+ "look-window": {
+  "widths": [
+   282
+  ],
+  "w": 282,
+  "h": 366
+ },
+ "look-flannel": {
+  "widths": [
+   343
+  ],
+  "w": 343,
+  "h": 366
+ },
+ "look-beanie": {
+  "widths": [
+   255
+  ],
+  "w": 255,
+  "h": 288
+ },
+ "look-reader": {
+  "widths": [
+   477
+  ],
+  "w": 477,
+  "h": 358
+ },
+ "look-knit": {
+  "widths": [
+   231
+  ],
+  "w": 231,
+  "h": 358
+ },
+ "look-label": {
+  "widths": [
+   201
+  ],
+  "w": 201,
+  "h": 358
+ },
+ "look-zip": {
+  "widths": [
+   265
+  ],
+  "w": 265,
+  "h": 288
+ }
+}

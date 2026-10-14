@@ -1,0 +1,113 @@
+{
+ "icon-tee-front": {
+  "widths": [
+   362
+  ],
+  "w": 362,
+  "h": 410
+ },
+ "icon-tee-back": {
+  "widths": [
+   366
+  ],
+  "w": 366,
+  "h": 410
+ },
+ "icon-tee-detail": {
+  "widths": [
+   236
+  ],
+  "w": 236,
+  "h": 240
+ },
+ "icon-tee-label": {
+  "widths": [
+   240
+  ],
+  "w": 240,
+  "h": 240
+ },
+ "icon-tee-card": {
+  "widths": [
+   206
+  ],
+  "w": 206,
+  "h": 196
+ },
+ "logo-crew": {
+  "widths": [
+   206
+  ],
+  "w": 206,
+  "h": 196
+ },
+ "line-art-tee": {
+  "widths": [
+   206
+  ],
+  "w": 206,
+  "h": 196
+ },
+ "brighter-hoodie": {
+  "widths": [
+   206
+  ],
+  "w": 206,
+  "h": 196
+ },
+ "nice-butts-tee": {
+  "widths": [
+   206
+  ],
+  "w": 206,
+  "h": 196
+ },
+ "hero-tee": {
+  "widths": [
+   330
+  ],
+  "w": 330,
+  "h": 380
+ },
+ "hero-girl": {
+  "widths": [
+   386
+  ],
+  "w": 386,
+  "h": 384
+ },
+ "band-friends": {
+  "widths": [
+   440
+  ],
+  "w": 440,
+  "h": 248
+ },
+ "band-shorts": {
+  "widths": [
+   290
+  ],
+  "w": 290,
+  "h": 190
+ },
+ "sketchbook-six": {
+  "widths": [
+   640,
+   1000,
+   1400
+  ],
+  "w": 1050,
+  "h": 1400,
+  "rotated": true
+ },
+ "sketchbook-one": {
+  "widths": [
+   640,
+   1000,
+   1400
+  ],
+  "w": 1050,
+  "h": 1400,
+  "rotated": true
+ }
+}

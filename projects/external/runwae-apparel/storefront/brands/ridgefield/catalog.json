@@ -1,0 +1,79 @@
+{
+  "_note": "Ridgefield capsule from ~/Downloads/ridgefield_shop_concepts (ChatGPT renders, captioned Concept render). The chevron on the garments is a render placeholder; final pieces use the Ridgefield square mark. No performance or material claims (waterproof, heavyweight, durable): specs are unconfirmed. Render prices are not used.",
+  "products": [
+    {
+      "id": "hoodie", "ref": "RF-01", "name": "Hoodie", "line": "Capsule 01", "category": "apparel", "type": "Hoodie",
+      "channel": "preorder", "status": "preorder", "price_cents": null,
+      "sizes": ["S", "M", "L", "XL", "2XL"], "colors": [{ "id": "ink", "name": "Ink", "hex": "#151614" }],
+      "images": [
+        { "file": "hoodie", "alt": "Black hoodie with a small RIDGEFIELD wordmark on the chest", "concept": true },
+        { "file": "hoodie-detail", "alt": "Close view of the RIDGEFIELD wordmark on the knit", "concept": true },
+        { "file": "hoodie-cord", "alt": "Close view of the drawcords and metal tips", "concept": true }
+      ],
+      "summary": "Ink hoodie with a small RIDGEFIELD wordmark on the chest.",
+      "details": [["Marking", "RIDGEFIELD wordmark, left chest."], ["Materials and fit", "To be confirmed with the maker before the pre-order opens."], ["Shipping", "Pre-order. Made after the window closes. The ship-by date shows here and at checkout."]],
+      "rights_hold": null
+    },
+    {
+      "id": "tee", "ref": "RF-02", "name": "Tee", "line": "Capsule 01", "category": "apparel", "type": "Tee",
+      "channel": "preorder", "status": "next_drop", "price_cents": null,
+      "sizes": ["S", "M", "L", "XL", "2XL"], "colors": [{ "id": "charcoal", "name": "Charcoal", "hex": "#2a2b29" }],
+      "images": [
+        { "file": "tee", "alt": "Charcoal tee with a small mark on the chest", "concept": true },
+        { "file": "tee-neck", "alt": "RIDGEFIELD printed inside the back neck with an ember rule", "concept": true }
+      ],
+      "summary": "Charcoal tee. RIDGEFIELD inside the back neck with an ember rule.",
+      "details": [["Materials and fit", "To be confirmed with the maker."]],
+      "rights_hold": null
+    },
+    {
+      "id": "beanie", "ref": "RF-03", "name": "Beanie", "line": "Capsule 01", "category": "apparel", "type": "Beanie",
+      "channel": "preorder", "status": "next_drop", "price_cents": null,
+      "sizes": ["One size"], "colors": [{ "id": "ink", "name": "Ink", "hex": "#151614" }],
+      "images": [
+        { "file": "beanie", "alt": "Black rib-knit beanie with a woven patch", "concept": true },
+        { "file": "beanie-knit", "alt": "Close view of the crown of the knit", "concept": true }
+      ],
+      "summary": "Ink rib-knit beanie with a woven patch on the cuff.",
+      "details": [["Materials", "Yarn and knit to be confirmed with the maker."]],
+      "rights_hold": null
+    },
+    {
+      "id": "windbreaker", "ref": "RF-04", "name": "Windbreaker", "line": "Capsule 01", "category": "apparel", "type": "Jacket",
+      "channel": "preorder", "status": "in_development", "price_cents": null,
+      "sizes": ["S", "M", "L", "XL", "2XL"], "colors": [{ "id": "ink", "name": "Ink", "hex": "#151614" }],
+      "images": [
+        { "file": "windbreaker", "alt": "Black hooded windbreaker with olive drawcords and a sleeve pocket", "concept": true },
+        { "file": "windbreaker-zip", "alt": "Close view of the zip with an olive pull cord", "concept": true }
+      ],
+      "summary": "Hooded shell in ink with olive cord pulls and a sleeve pocket.",
+      "details": [["Status", "In development. Fabric and any weather performance are unconfirmed."]],
+      "rights_hold": null
+    },
+    {
+      "id": "flannel", "ref": "RF-05", "name": "Flannel Overshirt", "line": "Capsule 01", "category": "apparel", "type": "Overshirt",
+      "channel": "preorder", "status": "in_development", "price_cents": null,
+      "sizes": ["S", "M", "L", "XL", "2XL"], "colors": [{ "id": "ink-plaid", "name": "Ink plaid", "hex": "repeating-linear-gradient(90deg,#151614 0 6px,#6b5a46 6px 8px)" }],
+      "images": [
+        { "file": "flannel", "alt": "Ink and tan plaid overshirt with two chest pockets", "concept": true },
+        { "file": "flannel-weave", "alt": "Close view of the plaid weave", "concept": true }
+      ],
+      "summary": "Ink and tan plaid overshirt with two flap pockets.",
+      "details": [["Status", "In development. Weight and fabric are unconfirmed."]],
+      "rights_hold": null
+    },
+    {
+      "id": "ridgeline-pack", "ref": "RF-06", "name": "Ridgeline Pack", "line": "Capsule 01", "category": "gear", "type": "Backpack",
+      "channel": "preorder", "status": "in_development", "price_cents": null,
+      "sizes": ["One size"], "colors": [{ "id": "ink", "name": "Ink", "hex": "#151614" }],
+      "images": [
+        { "file": "pack", "alt": "Black backpack with a front panel and side pockets, on a rock at sunset", "concept": true },
+        { "file": "pack-open", "alt": "The pack opened flat, with a laptop sleeve and organiser pockets", "concept": true },
+        { "file": "pack-field", "alt": "The pack on a ridge at sunset", "concept": true }
+      ],
+      "summary": "Backpack with a fold-down organiser panel and a laptop sleeve.",
+      "details": [["Status", "In development. Capacity, fabric and hardware are unconfirmed."]],
+      "rights_hold": null
+    }
+  ]
+}

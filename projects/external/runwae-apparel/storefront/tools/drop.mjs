@@ -8,7 +8,9 @@
 //   node tools/drop.mjs landed  --unit 9.5 --qty 120 [--freight 260 --packaging 0.6 --postage 5.2 --samples 80 --margin 0.5 --duty 0.165 --surcharge 0.10]
 //   node tools/drop.mjs notice  <brand> <drop-id> --new-date YYYY-MM-DD [--reason "…"]   delay-notice email text (FTC)
 //
-// orders.json: a Stripe list of checkout.session objects ({data:[…]} or […]) or rows {product,size,qty,status}.
+// orders.json: a Stripe list of checkout.session objects ({data:[…]} or […]); for multi-line carts list them with
+//   expand[]=data.line_items&expand[]=data.line_items.data.price.product (per-line metadata lives on the product),
+//   or rows {product,size,qty,status} / {status, lines:[{product,size,qty,drop}]}.  `tally … --drop <id>` filters to one drop.
 // orders.csv : header row with product,size,qty[,status].
 import { readFileSync, writeFileSync } from 'node:fs';
 import { shipBy, normaliseOrders, tally, purchaseOrder, landedCost, checkWindow } from '../src/drop.mjs';
@@ -50,7 +52,8 @@ switch (cmd) {
     break;
   }
   case 'tally': {
-    console.table(tally(normaliseOrders(readOrders(pos[0]))));
+    const rows = normaliseOrders(readOrders(pos[0]));
+    console.table(tally(flag('drop') ? rows.filter((r) => r.drop === flag('drop')) : rows));
     break;
   }
   case 'po': {

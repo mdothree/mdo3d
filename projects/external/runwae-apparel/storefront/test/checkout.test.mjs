@@ -53,17 +53,61 @@ test('sessionParams: rejections', () => {
   assert.equal(sessionParams(c, { product: 'dig', size: 'M' }, opts).status, 409);
 });
 
-test('the real Runwae catalog has nothing purchasable (all draft, unpriced)', () => {
-  const real = loadCatalog('runwae', ROOT);
-  const w = real.products.find((p) => p.id === 'wordmark-tee');
-  assert.deepEqual(w.images, ['Fall 21/FB1_2048x2048.png'], 'wordmark tee is front-only (#82-d)');
-  assert.equal(w.rights_hold, null);
-  assert.ok(real.products.every((p) => p.images.every((i) => !/FB2/.test(i))), 'third-party birdcage art never ships');
-  for (const p of real.products) {
-    assert.equal(p.status, 'draft');
-    assert.equal(p.price_cents, null);
-    assert.equal(sessionParams(real, { product: p.id, size: p.sizes[0] }, opts).status, 409);
+test('every real brand catalog has nothing purchasable (unpriced) and no Poison/Pave', () => {
+  for (const id of ['runwae', 'glb', 'buttsstudios', 'ridgefield']) {
+    const real = loadCatalog(id, ROOT);
+    assert.ok(real.products.length >= 1, id);
+    for (const p of real.products) {
+      assert.equal(p.price_cents, null, `${id}/${p.id} must stay unpriced until the Principal sets a price`);
+      assert.doesNotMatch(p.id, /poison|pave/);
+      if (p.sizes?.length) assert.equal(sessionParams(real, { product: p.id, size: p.sizes[0] }, opts).status, 409, `${id}/${p.id}`);
+    }
   }
+  const rw = loadCatalog('runwae', ROOT);
+  const w = rw.products.find((p) => p.id === 'wordmark-tee');
+  assert.deepEqual(w.source_images, ['Fall 21/FB1_2048x2048.png'], 'wordmark tee is front-only (#82-d)');
+  assert.ok(rw.products.every((p) => (p.source_images ?? []).every((i) => !/FB2/.test(i))), 'third-party birdcage art never ships');
+  assert.ok(rw.drops.every((d) => d.products.every((x) => !/poison|pave/.test(x))));
+});
+
+test('multi-line cart: one line_item per line, per-line metadata, latest ship-by wins', () => {
+  const c = cat();
+  c.products.push({ id: 'cap2', name: 'Late Hood', description: 'd', sizes: ['M'], channel: 'preorder', status: 'preorder', price_cents: 7000, colors: [{ id: 'ink', name: 'Ink', hex: '#000' }] });
+  c.drops.push({ id: 'd2', products: ['cap2'], window: { open: '2026-11-01T00:00:00Z', close: '2026-11-25T00:00:00Z' }, schedule: {} });
+  const r = sessionParams(c, { lines: [
+    { product: 'tee', size: 'M', qty: 2 },
+    { product: 'hood', size: 'L', qty: 1 },
+    { product: 'cap2', size: 'M', color: 'ink', qty: 1, price_cents: 1 },
+  ] }, opts);
+  const p = r.params;
+  assert.equal(p['line_items[0][quantity]'], '2');
+  assert.equal(p['line_items[0][price_data][unit_amount]'], '3200');
+  assert.equal(p['line_items[0][price_data][product_data][metadata][product]'], 'tee');
+  assert.equal(p['line_items[0][price_data][product_data][metadata][ship_by]'], undefined, 'in-stock line has no ship_by');
+  assert.equal(p['line_items[1][price_data][product_data][metadata][drop]'], 'd1');
+  assert.equal(p['line_items[1][price_data][product_data][metadata][ship_by]'], '2027-01-03');
+  assert.equal(p['line_items[2][price_data][unit_amount]'], '7000', 'client price ignored');
+  assert.equal(p['line_items[2][price_data][product_data][metadata][color]'], 'ink');
+  assert.equal(p['line_items[2][price_data][product_data][metadata][ship_by]'], '2027-01-13');
+  assert.equal(p['line_items[2][price_data][product_data][metadata][brand]'], 'runwae');
+  assert.equal(p['metadata[ship_by]'], '2027-01-13', 'order ships when its latest item is ready');
+  assert.equal(p['metadata[drop]'], 'd1,d2');
+  assert.equal(p['metadata[lines]'], '3');
+  assert.match(p['custom_text[submit][message]'], /ships by 2027-01-13 \(the whole order ships together when its latest item is ready\)/);
+  assert.equal(p['shipping_options[0][shipping_rate_data][display_name]'], 'Ships by 2027-01-13');
+  assert.equal(r.mixed, true);
+  assert.equal(p.cancel_url, 'https://example.test/cart.html');
+});
+
+test('multi-line cart: rejections', () => {
+  const c = cat();
+  assert.equal(sessionParams(c, { lines: [] }, opts).status, 400);
+  assert.equal(sessionParams(c, { lines: Array.from({ length: 11 }, () => ({ product: 'tee', size: 'M' })) }, opts).status, 400);
+  assert.equal(sessionParams(c, { lines: [{ product: 'tee', size: 'M' }, { product: 'tee', size: 'M' }] }, opts).status, 400, 'duplicate lines');
+  assert.equal(sessionParams(c, { lines: [{ product: 'tee', size: 'M' }, { product: 'draft', size: 'M' }] }, opts).status, 409, 'one bad line rejects the order');
+  c.products[1].colors = [{ id: 'a', name: 'A', hex: '#000' }, { id: 'b', name: 'B', hex: '#fff' }];
+  assert.equal(sessionParams(c, { lines: [{ product: 'tee', size: 'M', color: 'z' }] }, opts).status, 400);
+  assert.equal(sessionParams(c, { lines: [{ product: 'tee', size: 'M', color: 'b' }] }, opts).params['line_items[0][price_data][product_data][name]'], 'Tee, B, M');
 });
 
 function fakeRes() {
