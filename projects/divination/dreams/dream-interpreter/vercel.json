@@ -15,7 +15,7 @@
       }
     },
     {
-      "src": "/(terms|privacy)/?",
+      "src": "/(terms|privacy|refund|cancellation|acceptable-use|contact)/?",
       "status": 307,
       "headers": {
         "Location": "https://mdo3d.com/$1"
