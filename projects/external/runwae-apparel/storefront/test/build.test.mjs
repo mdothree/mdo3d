@@ -118,10 +118,17 @@ test('Runwae v4 home follows cbce9be5: photo hero, 01 Built on, 02 dark band, de
   assert.ok(!readdirSync(join(out, 'assets')).some((f) => f.startsWith('sketch-')));
   const idx = readFileSync(join(out, 'index.html'), 'utf8');
   const main = idx.slice(idx.indexOf('<main'), idx.lastIndexOf('<footer'));
-  assert.match(main.slice(0, 1500), /class="rw4-hero"/);
+  assert.match(main.slice(0, 1500), /class="rw4-hero[ "]/);
   assert.match(main.slice(0, 1500), /v4-hero/);
   assert.match(main, /<h1 id="hero-t" class="rw4-title"><span>Runwae<\/span><span>Apparel<\/span><\/h1>/);
-  for (const t of ['A continuing journey.', 'Clothing for a more curious world.', 'Explore the story', 'Built on Ideas, People, Places, Progress.', 'Clothes for a more thoughtful tomorrow.', 'Wear a brighter tomorrow.']) assert.ok(main.includes(t), t);
+  for (const t of ['A continuing journey.', 'Clothing for a more curious world.', 'Explore the story', 'Shop the Drawn Series', 'Everyone influences.', 'Built on Ideas, People, Places, Progress.', 'Clothes for a more thoughtful tomorrow.', 'Wear a brighter tomorrow.', 'Enter the shop']) assert.ok(main.includes(t), t);
+  // v5 doorway (Principal 2026-10-14 "entry way to the store"): story sections end on the piece they are worn as,
+  // the capsule row shows prices (Price TBA) and statuses, a final Enter the shop, and Shop is visible in the header.
+  const order = ['id="story"', 'What we believe', 'The art behind the clothes', 'class="rw4-row"', 'id="enter-t"'].map((k) => main.indexOf(k));
+  assert.ok(order.every((i) => i > 0), order.join()); assert.deepEqual([...order].sort((x, y) => x - y), order, 'who -> belief -> art -> pieces -> enter the shop');
+  for (const [id, n] of [['atelier-shirt', 'Atelier Shirt'], ['globe-hoodie', 'Globe Hoodie'], ['drawn-overshirt', 'Figure Overshirt']]) assert.match(main, new RegExp(`class="rw5-worn[^"]*" href="products/${id}\\.html"><span>Worn as:</span> ${n}`), n);
+  assert.equal((main.slice(main.indexOf('class="rw4-row"')).match(/class="rw4-price">Price TBA</g) ?? []).length >= 7, true, 'capsule prices shown');
+  assert.match(idx.slice(0, idx.indexOf('<main')), /class="rw-shoplink" href="shop\.html">Shop</, 'Shop always visible in the header (outside the phone menu)');
   for (const w of ['Ideas', 'People', 'Places', 'Progress']) assert.match(main, new RegExp(`<li>${w}</li>`));
   for (const f of ['v4-label', 'v4-button', 'v4-embroidery', 'v4-globe-patch', 'v4-band']) assert.match(main, new RegExp(f));
   const row = main.slice(main.indexOf('class="rw4-row"'));
@@ -151,6 +158,33 @@ test('Runwae v4 Drawn Series page follows 38b3982c: Globe Hoodie hero, seven pie
   assert.match(ds, /<meta name="robots" content="noindex, nofollow">/);
   assert.doesNotMatch(ds, / style="/);
   for (const m of ds.matchAll(/(?:src|href)="((?:assets|products)\/[^"#?]+)"/g)) assert.ok(existsSync(join(out, m[1])), m[1]);
+});
+
+test('Runwae Drawn Series "03 The artwork": every tile in the row shares one treatment (Principal 2026-10-14)', async () => {
+  const out = await build('runwae');
+  const ds = readFileSync(join(out, 'drawn-series.html'), 'utf8');
+  const row = ds.slice(ds.indexOf('<section class="rw4-art"'), ds.indexOf('</section>', ds.indexOf('<section class="rw4-art"')));
+  const tiles = [...row.matchAll(/<figure class="([^"]+)">/g)].map((m) => m[1]);
+  assert.equal(tiles.length, 4, 'four artwork tiles');
+  assert.deepEqual([...new Set(tiles)], ['rw4-art-panel'], `one treatment class for every tile: ${tiles.join(', ')}`);
+  assert.doesNotMatch(row, /--forest|<figcaption/, 'no odd-one-out modifier; the words sit outside the tiles');
+  const css = readFileSync(join(ROOT, 'brands', 'runwae', 'layout', 'styles.css'), 'utf8');
+  assert.doesNotMatch(css, /\.rw4-art-panel--/, 'no per-tile variants in the CSS');
+});
+
+test('Runwae story page stays on the palette; 2021 photos framed and captioned as originals (Principal 2026-10-14)', async () => {
+  const out = await build('runwae');
+  const st = readFileSync(join(out, 'story.html'), 'utf8');
+  const main = st.slice(st.indexOf('<main'), st.lastIndexOf('<footer'));
+  for (const f of ['people-black-hoodie', 'people-tee', 'people-tlt', 'archive-card', 'making-label']) assert.match(main, new RegExp(`<figure class="seed-fig rw5-orig"><img[^>]+assets/${f}-[\\s\\S]*?<figcaption>Original 2021 · `), f);
+  assert.doesNotMatch(main, / style="/);
+  const brand = JSON.parse(readFileSync(join(ROOT, 'brands', 'runwae', 'brand.json'), 'utf8'));
+  assert.ok(!('lime' in brand.tokens.colors), 'lime token removed');
+  const css = readFileSync(join(ROOT, 'brands', 'runwae', 'layout', 'styles.css'), 'utf8');
+  const v5 = css.slice(css.indexOf('===== v5'));
+  const allowed = new Set(['#d9a28c']);
+  for (const m of v5.matchAll(/#[0-9a-f]{3,6}\b/gi)) assert.ok(allowed.has(m[0].toLowerCase()), `v5 colours come from the tokens: ${m[0]}`);
+  assert.doesNotMatch(css, /\.rw-marks img\{[^}]*#fff/, 'mark tiles on paper, not white');
 });
 
 test('Runwae capsule "The Drawn Series · Seven pieces": honest mapping, palette, print, prices ignored', () => {

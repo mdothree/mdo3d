@@ -20,10 +20,13 @@ const globe = (cls = 'rw4-globe') => `<svg class="${cls}" viewBox="0 0 40 40" ar
 // Header and nav never link to another site; the core renders any main-site link in the footer only.
 export function header({ kit, page }) {
   const cur = (k) => (page === k ? ' aria-current="page"' : '');
+  // v5 (Principal 2026-10-14: "entry way to the store"): a quiet but always-visible Shop link. On a phone the
+  // nav folds into Menu, so a Shop link also sits outside it, beside the menu button.
   return `<header class="rw-head${page === 'home' || page === 'drawn-series' ? ' rw-head--over' : ''}"><div class="rw-wrap rw-head-row">
 ${wordmark(kit)}
+<a class="rw-shoplink" href="${kit.href.shop()}"${cur('collection')}>Shop</a>
 ${kit.menuButton('Menu')}
-<nav id="site-nav" class="rw-nav" aria-label="Main"><a href="${kit.href.home()}"${cur('home')}>Home</a><a href="${kit.href.story()}"${cur('story')}>Story</a><a href="${kit.root}${DRAWN}"${cur('drawn-series')}>The Drawn Series</a><a href="${kit.href.shop()}"${cur('collection')}>Shop</a><a href="${kit.href.shop()}#archive">Archive</a>${kit.bagLink('Bag')}</nav>
+<nav id="site-nav" class="rw-nav" aria-label="Main"><a href="${kit.href.home()}"${cur('home')}>Home</a><a href="${kit.href.story()}"${cur('story')}>Story</a><a href="${kit.root}${DRAWN}"${cur('drawn-series')}>The Drawn Series</a><a href="${kit.href.shop()}#archive">Archive</a><a class="rw-nav-shop" href="${kit.href.shop()}"${cur('collection')}>Shop</a>${kit.bagLink('Bag')}</nav>
 </div></header>`;
 }
 
@@ -65,45 +68,73 @@ function capsuleCard(kit, p, { big = false } = {}) {
   const v = kit.view(p);
   const im = p.images[0];
   return `<a class="rw4-card${big ? ' rw4-card--big' : ''}" href="${kit.href.product(p)}"><span class="rw4-card-media">${kit.img(im, { sizes: big ? '(max-width: 820px) 50vw, 22vw' : '(max-width: 820px) 50vw, 13vw', alt: im.alt })}${im.concept ? '<span class="rw-tag">Concept</span>' : ''}</span>
-<span class="rw4-card-name">${kit.esc(p.name)}</span><span class="rw4-card-meta">${v.priceText ? `${kit.esc(v.priceText)} · ` : ''}${kit.esc(v.label)}</span>${dots(kit, p)}</a>`;
+<span class="rw4-card-name">${kit.esc(p.name)}</span><span class="rw4-card-meta"><span class="rw4-price">${kit.esc(priceOf(v))}</span><span class="rw4-status">${kit.esc(v.label)}</span></span>${dots(kit, p)}</a>`;
 }
+/** The price line on the home capsule row: the real price, or "Price TBA" while none is set. */
+const priceOf = (v) => v.priceText || (v.price_cents == null ? 'Price TBA' : `$${(v.price_cents / 100).toFixed(2)}`);
+
+/** Ideas · People · Places · Progress, one calm line each (the brand beliefs; beliefs, not slogans). */
+const BELIEFS = [
+  ['Ideas', 'Every piece starts as a drawing.'],
+  ['People', 'Everyone you meet leaves a mark.'],
+  ['Places', 'Where you go shapes what you see.'],
+  ['Progress', 'Keep noticing. Keep going.'],
+];
+/** The bridge at the end of a story section: the piece that section is worn as. */
+const wornAs = (kit, id, name, light = false) => `<a class="rw5-worn${light ? ' rw5-worn--light' : ''}" href="${kit.href.product(id)}"><span>Worn as:</span> ${kit.esc(name)} <span aria-hidden="true">→</span></a>`;
 
 export const pages = {
   home({ brand, kit, shown }) {
-    // v4 home, section by section from cbce9be5: hero, 01 Built on…, 02 dark band, details strip, 03 collection row.
+    // v5 home (Principal 2026-10-14: "the home page of runwae apparel needs to be a bit more suitable for an apparl
+    // shoopo page. entry way to the store" + "i like how its more identity and sotry based right now. we'll just have
+    // to improve what that is"). Still story-led, v4 layout language, one idea per section, each ending on the piece
+    // it is worn as: hero -> 01 who Runwae is -> 02 the belief -> 03 the art behind the clothes -> 04 the pieces ->
+    // enter the shop.
     const capsule = capsuleOf(shown);
     const focus = shown.find((p) => ['preorder', 'available'].includes(kit.view(p).status));
     const tile = (file, alt, label) => panel(kit, file, { alt, label, sizes: '(max-width: 820px) 50vw, 20vw' });
+    const drawn = `${kit.root}${DRAWN}`;
     return {
       title: 'Runwae Apparel · A continuing journey',
       description: brand.description,
       image: kit.imgData('v4-hero').src,
       body: `
-<section class="rw4-hero" aria-labelledby="hero-t">
+<section class="rw4-hero rw5-hero" aria-labelledby="hero-t">
 ${panel(kit, 'v4-hero', { alt: 'A man in the forest Foundation Hoodie on concrete steps above the city, line drawings on the wall behind him', sizes: '100vw', eager: true, cls: ' rw4-hero-photo' })}
 <div class="rw-wrap rw4-hero-copy">
 <p class="rw4-kicker">A continuing journey.</p>
 <h1 id="hero-t" class="rw4-title"><span>Runwae</span><span>Apparel</span></h1>
 <ul class="rw4-words" aria-label="Brand beliefs">${WORDS.map((w) => `<li>${w}</li>`).join('')}</ul>
 <p class="rw4-sub">Clothing for a more curious world.</p>
-<a class="rw4-cta" href="${kit.href.story()}">Explore the story <span aria-hidden="true">→</span></a>
+<div class="rw5-ctas"><a class="rw4-cta" href="#story">Explore the story <span aria-hidden="true">→</span></a><a class="rw5-cta-ghost" href="${drawn}">Shop the Drawn Series <span aria-hidden="true">→</span></a></div>
 </div></section>
 
-<section class="rw4-built" id="built" aria-labelledby="built-t">
-<div class="rw4-built-copy"><p class="rw4-num"><span>01</span> Our story</p>
-<h2 id="built-t" class="rw4-h2">Built on Ideas, People, Places, Progress.</h2><span class="rw4-rule" aria-hidden="true"></span>
-<p class="rw4-tracked">Runwae Apparel sits where art, culture and a more curious tomorrow meet. We make clothing, and we make room for ideas to travel.</p>
-<a class="rw4-link" href="${kit.href.story()}">Explore our story <span aria-hidden="true">→</span></a></div>
-${panel(kit, 'v4-portrait', { alt: 'A woman in the ivory Atelier Shirt, its tree drawings on the chest and sleeve, seated against concrete', href: kit.href.product('atelier-shirt'), label: 'Atelier Shirt', sizes: '(max-width: 820px) 100vw, 30vw', cls: ' rw4-built-photo' })}
-<figure class="rw-panel rw4-built-art">${kit.img('v4-botanical', { alt: 'A botanical drawing embroidered in cream on forest cloth', sizes: '(max-width: 820px) 50vw, 16vw' })}<figcaption class="rw4-hand">Same places,<br>new ideas</figcaption><span class="rw-pcap"><span class="rw-ptag">Concept</span></span></figure>
+<section class="rw4-built rw5-who" id="story" aria-labelledby="built-t">
+<div class="rw4-built-copy"><p class="rw4-num"><span>01</span> Who we are</p>
+<h2 id="built-t" class="rw4-h2">Clothes that start as drawings.</h2><span class="rw4-rule" aria-hidden="true"></span>
+<p class="rw5-body">Runwae Apparel’s first pieces came out in 2021, with one belief printed on the card: <em>Everyone Influences</em>. The work still starts the same way: an original drawing first, then something to wear.</p>
+${wornAs(kit, 'atelier-shirt', 'Atelier Shirt')}</div>
+${panel(kit, 'v4-portrait', { alt: 'A woman in the ivory Atelier Shirt, its tree drawings on the chest and sleeve, seated against concrete', href: kit.href.product('atelier-shirt'), label: 'Atelier Shirt', sizes: '(max-width: 820px) 60vw, 30vw', cls: ' rw4-built-photo' })}
+<figure class="rw-panel rw4-built-art">${kit.img('v4-botanical', { alt: 'A botanical drawing embroidered in cream on forest cloth', sizes: '(max-width: 820px) 40vw, 16vw' })}<figcaption class="rw4-hand">Same places,<br>new ideas</figcaption><span class="rw-pcap"><span class="rw-ptag">Concept</span></span></figure>
 </section>
 
-<section class="rw4-band" aria-labelledby="band-t">
+<section class="rw4-band rw5-belief" aria-labelledby="band-t">
 ${panel(kit, 'v4-band', { alt: 'Dusk over the city from a concrete terrace, a line drawing of a seated figure over the trees', sizes: '100vw', cls: ' rw4-band-photo' })}
 <div class="rw-wrap rw4-band-copy">
-<div><p class="rw4-num rw4-num--light"><span>02</span> A more curious world</p><h2 id="band-t" class="rw4-h2 rw4-h2--caps">Clothes for a more thoughtful tomorrow.</h2><span class="rw4-rule rw4-rule--light" aria-hidden="true"></span>
-<p class="rw4-tracked rw4-tracked--light">Different people<br>Brighter places<br>Bigger ideas</p></div>
-<blockquote class="rw4-quote"><p>“Art lives in people, places, and the everyday moments between.”</p><span class="rw4-rule rw4-rule--light" aria-hidden="true"></span><p class="rw4-tracked rw4-tracked--light">A continuing journey.</p></blockquote>
+<div><p class="rw4-num rw4-num--light"><span>02</span> What we believe</p><h2 id="band-t" class="rw4-h2">Everyone influences.</h2><span class="rw4-rule rw4-rule--light" aria-hidden="true"></span>
+<p class="rw4-tracked rw4-tracked--light">Built on Ideas, People, Places, Progress.</p>
+${wornAs(kit, 'globe-hoodie', 'Globe Hoodie', true)}</div>
+<dl class="rw5-beliefs">${BELIEFS.map(([w, l]) => `<div><dt>${w}</dt><dd>${l}</dd></div>`).join('')}</dl>
+</div></section>
+
+<section class="rw5-art" aria-labelledby="art-t"><div class="rw-wrap rw5-art-grid">
+${panel(kit, 'drawn-overshirt', { alt: 'A man in the olive Figure Overshirt seen from behind, the paired figures and plant drawn in cream line across the back', href: kit.href.product('drawn-overshirt'), label: 'Figure Overshirt', sizes: '(max-width: 820px) 100vw, 40vw', cls: ' rw5-art-photo' })}
+<div class="rw5-art-copy"><p class="rw4-num"><span>03</span> The art behind the clothes</p>
+<h2 id="art-t" class="rw4-h2">Drawn first. Then made.</h2><span class="rw4-rule" aria-hidden="true"></span>
+<p class="rw5-body">Figures, faces, plants and the places in between, drawn by hand and kept as they were drawn. Then the quiet parts: a woven label, a drawn button, a line of embroidery.</p>
+<p class="rw-note">Concept renders. Fabric and print method are confirmed with the maker before anything opens.</p>
+${wornAs(kit, 'drawn-overshirt', 'Figure Overshirt')}
+<a class="rw4-link rw5-more" href="${drawn}">See the artwork <span aria-hidden="true">→</span></a></div>
 </div></section>
 
 <section class="rw4-details" aria-label="Details">
@@ -111,19 +142,32 @@ ${tile('v4-label', 'A woven RUNWAE APPAREL label on natural cloth', 'Woven label
 ${tile('v4-button', 'A metal shank button with a drawn figure on forest cloth', 'Button')}
 ${tile('v4-embroidery', 'A plant drawing embroidered in cream on forest cloth', 'Embroidery')}
 ${tile('v4-globe-patch', 'The globe patch: RUNWAE APPAREL COMPANY around a line globe, on rust', 'Globe patch')}
-<blockquote class="rw4-quote rw4-quote--ink"><p>“Considered details for a more creative, connected and inspired tomorrow.”</p><span class="rw4-rule" aria-hidden="true"></span></blockquote>
+<blockquote class="rw4-quote rw4-quote--ink"><p>“Clothes for a more thoughtful tomorrow.”</p><span class="rw4-rule" aria-hidden="true"></span></blockquote>
 </section>
 
-<section class="rw4-collection" id="collection" aria-labelledby="col-t"><div class="rw-wrap rw4-col-grid">
-<div class="rw4-col-copy"><p class="rw4-num"><span>03</span> The collection</p><h2 id="col-t" class="rw4-h2">Wear a brighter tomorrow.</h2>
-<p class="rw4-tracked">The Drawn Series: original artwork, seven pieces, made to be lived in.</p>
-<a class="rw4-link" href="${kit.root}${DRAWN}">Explore the collection <span aria-hidden="true">→</span></a></div>
+<section class="rw4-collection rw5-pieces" id="collection" aria-labelledby="col-t"><div class="rw-wrap rw4-col-grid">
+<div class="rw4-col-copy"><p class="rw4-num"><span>04</span> The pieces</p><h2 id="col-t" class="rw4-h2">Wear a brighter tomorrow.</h2>
+<p class="rw4-tracked">The Drawn Series. Seven pieces, each carrying an original drawing.</p>
+<p class="rw-note">Prices are set when each drop opens. Join the list on any piece for one email when it does.</p>
+<a class="rw4-link" href="${drawn}">Shop the Drawn Series <span aria-hidden="true">→</span></a></div>
 <div class="rw4-row">${capsule.map((p) => capsuleCard(kit, p)).join('')}</div>
 </div></section>
 ${focus ? `<section class="rw4-focus" aria-labelledby="focus-t"><div class="rw-wrap rw4-focus-row">
-<a class="rw4-focus-img" href="${kit.href.product(focus)}">${kit.img(focus.images[0], { alt: focus.images[0].alt, sizes: '(max-width: 820px) 40vw, 180px', eager: true })}</a>
-<div><p class="rw4-num"><span>Now</span> ${kit.esc(kit.view(focus).label)}</p><h2 id="focus-t" class="rw4-h3">${kit.esc(focus.name)}</h2><p class="rw4-tracked">${kit.esc(focus.line)} · ${kit.esc(kit.view(focus).priceText || '')}</p>
-<a class="rw4-link" href="${kit.href.product(focus)}">See the piece <span aria-hidden="true">→</span></a></div></div></section>` : ''}`,
+<a class="rw4-focus-img" href="${kit.href.product(focus)}">${kit.img(focus.images[0], { alt: focus.images[0].alt, sizes: '(max-width: 820px) 40vw, 180px' })}</a>
+<div><p class="rw4-num"><span>Now</span> ${kit.esc(kit.view(focus).label)}</p><h2 id="focus-t" class="rw4-h3">${kit.esc(focus.name)}</h2><p class="rw4-tracked">${kit.esc(focus.line)} · ${kit.esc(priceOf(kit.view(focus)))}</p>
+<a class="rw4-link" href="${kit.href.product(focus)}">See the piece <span aria-hidden="true">→</span></a></div></div></section>` : ''}
+
+<section class="rw5-enter" aria-labelledby="enter-t">
+<div class="rw5-enter-strip">
+${panel(kit, 'bk-man-door', { alt: 'A man in a dark hoodie in a concrete doorway at sunset', sizes: '(max-width: 820px) 50vw, 25vw' })}
+${panel(kit, 'bk-cream-concrete', { alt: 'An ivory hoodie folded on concrete', sizes: '(max-width: 820px) 50vw, 25vw', cls: ' rw5-hide-m' })}
+${panel(kit, 'bk-terrace-tree', { alt: 'A concrete terrace and a single tree above the sea at dusk', sizes: '(max-width: 820px) 50vw, 25vw' })}
+${panel(kit, 'bk-rust-macro', { alt: 'Rust cloth, close', sizes: '(max-width: 820px) 50vw, 25vw', cls: ' rw5-hide-m' })}
+</div>
+<div class="rw5-enter-copy"><p class="rw4-num rw4-num--light"><span>Shop</span> Runwae Apparel</p><h2 id="enter-t" class="rw4-h2">Enter the shop.</h2>
+<p class="rw4-tracked rw4-tracked--light">The Drawn Series · Next drop · Essentials · Archive</p>
+<a class="rw4-cta" href="${kit.href.shop()}">Enter the shop <span aria-hidden="true">→</span></a></div>
+</section>`,
     };
   },
 
@@ -162,28 +206,49 @@ ${kit.colorSwitch(p)}${kit.buyBox(p)}
   },
 
   story({ kit }) {
+    // v5 (Principal 2026-10-14: "the story page has colors that are off style, we should stayon style"). Every UI
+    // colour is the Runwae palette (forest, ivory/paper, washed black, rust). The 2021 originals stay as photos in
+    // ivory mats, toned slightly warmer and softer by CSS (.rw5-orig), captioned "Original 2021". Real people:
+    // preview only until model releases are in (handoff 03/08).
     const marks = [['mark-rwa', 'RWA monogram'], ['mark-trc', 'TRC monogram'], ['mark-company', 'The Runwae Company'], ['mark-badge', 'Circular badge']];
+    const orig = (file, alt, caption, sizes) => kit.figure(file, { cls: 'rw5-orig', caption: `Original 2021 · ${caption}`, sizes, alt });
     return {
       title: 'Story | Runwae Apparel',
-      description: 'Runwae Apparel: everyone influences. The people, the marks and the archive.',
+      description: 'Runwae Apparel: everyone influences. The belief, the first pieces from 2021, the marks, and what is next.',
       body: `<section class="rw-feature rw-feature--story">
-${panel(kit, 'drawn-illustrated-hoodie', { alt: 'A woman in an ivory hoodie with plant line work on the sleeve', sizes: '(max-width: 820px) 100vw, 50vw', cls: ' rw-feature-img' })}
-<div class="rw-feature-copy"><p class="rw-kicker">Story</p><h1 class="rw-h2 rw-h2--light">Everyone influences.</h1>
-<p class="rw-lede rw-lede--light">Runwae Apparel makes clothes from original drawings for people who notice things: art, ideas, the places they move through and the people they meet.</p></div></section>
-<section class="rw-wrap rw-story-sec"><p class="rw-kicker">From the archive</p><h2 class="rw-h2">Runwae, worn.</h2>
-<div class="rw-people">
-${kit.figure('people-black-hoodie', { caption: 'Runwae, archive photography', sizes: '(max-width: 820px) 100vw, 34vw', alt: 'A woman in a black Runwae hoodie, studio portrait' })}
-${kit.figure('people-tee', { caption: 'Runwae, archive photography', sizes: '(max-width: 820px) 100vw, 30vw', alt: 'A man in a black RUNWAE APPAREL tee, looking down' })}
-${kit.figure('people-tlt', { caption: 'The Little Things, archive photography', sizes: '(max-width: 820px) 100vw, 30vw', alt: 'A woman in a green The Little Things hoodie' })}
+${panel(kit, 'drawn-illustrated-hoodie', { alt: 'A woman in the ivory Figure Hoodie, plant line work on the sleeve', href: kit.href.product('drawn-figure-hoodie'), label: 'Figure Hoodie', sizes: '(max-width: 820px) 100vw, 50vw', cls: ' rw-feature-img' })}
+<div class="rw-feature-copy"><p class="rw4-num rw4-num--light"><span>Story</span> Runwae Apparel</p><h1 class="rw4-h2 rw5-story-h1">Everyone influences.</h1><span class="rw4-rule rw4-rule--light" aria-hidden="true"></span>
+<p class="rw5-body rw5-body--light">Runwae Apparel makes clothes from original drawings, for people who notice things: art, ideas, the places they move through and the people they meet.</p>
+<div class="rw5-ctas"><a class="rw4-cta" href="${kit.root}${DRAWN}">Shop the Drawn Series <span aria-hidden="true">→</span></a></div></div></section>
+
+<section class="rw5-sbelief" aria-labelledby="sb-t"><div class="rw-wrap rw5-sbelief-grid">
+<div><p class="rw4-num"><span>01</span> The belief</p><h2 id="sb-t" class="rw4-h2">Ideas. People. Places. Progress.</h2></div>
+<dl class="rw5-beliefs rw5-beliefs--ink">${BELIEFS.map(([w, l]) => `<div><dt>${w}</dt><dd>${l}</dd></div>`).join('')}</dl>
 </div></section>
-<section class="rw-wrap rw-story-sec" id="archive"><p class="rw-kicker">Marks</p><h2 class="rw-h2">The marks, so far.</h2>
-<p class="rw-lede">Monograms, lettering and the badge from Runwae's first years. Each may return on a single piece or capsule.</p>
+
+<section class="rw5-sorig" aria-labelledby="so-t"><div class="rw-wrap">
+<div class="rw5-shead"><div><p class="rw4-num rw4-num--light"><span>02</span> Original 2021</p><h2 id="so-t" class="rw4-h2">Runwae, worn.</h2></div>
+<p class="rw5-body rw5-body--light">The first pieces, photographed in 2021. These are originals: the garments are shown in their real colours, with the photos toned slightly warmer to sit on this page.</p></div>
+<div class="rw-people">
+${orig('people-black-hoodie', 'A woman in a black Runwae hoodie, studio portrait', 'Runwae hoodie, black', '(max-width: 820px) 100vw, 34vw')}
+${orig('people-tee', 'A man in a black RUNWAE APPAREL tee, looking down', 'Runwae Apparel tee, black', '(max-width: 820px) 50vw, 30vw')}
+${orig('people-tlt', 'A woman in a green The Little Things hoodie', 'The Little Things hoodie, green', '(max-width: 820px) 50vw, 30vw')}
+</div></div></section>
+
+<section class="rw5-smarks" id="archive" aria-labelledby="sm-t"><div class="rw-wrap">
+<div class="rw5-shead"><div><p class="rw4-num"><span>03</span> The marks</p><h2 id="sm-t" class="rw4-h2">The marks, so far.</h2></div>
+<p class="rw5-body">Monograms, lettering and the badge from Runwae's first years. Each may return on a single piece or capsule.</p></div>
 <ul class="rw-marks">${marks.map(([f, a]) => `<li>${kit.figure(f, { caption: a, sizes: '(max-width: 820px) 45vw, 20vw', alt: a })}</li>`).join('')}</ul>
 <div class="rw-story-pair">
-${kit.figure('archive-card', { caption: 'The original Runwae card: Everyone Influences', sizes: '(max-width: 820px) 100vw, 50vw', alt: 'Black card reading EVERYONE INFLUENCES' })}
-${kit.figure('making-label', { caption: 'Archive · Runwae care label and hang tag', sizes: '(max-width: 820px) 100vw, 40vw', alt: 'A red Runwae hoodie with its woven label and hang tag' })}
-</div></section>
-<section class="rw-wrap rw-story-end"><a class="rw-btn" href="${kit.href.shop()}">Discover the collection</a></section>`,
+${orig('archive-card', 'Black card reading EVERYONE INFLUENCES', 'the first Runwae card: Everyone Influences', '(max-width: 820px) 100vw, 50vw')}
+${orig('making-label', 'A red Runwae hoodie with its woven label and hang tag', 'woven label and hang tag', '(max-width: 820px) 100vw, 40vw')}
+</div></div></section>
+
+<section class="rw5-snext" aria-labelledby="sn-t"><div class="rw-wrap rw5-snext-row">
+<div><p class="rw4-num rw4-num--light"><span>04</span> Today</p><h2 id="sn-t" class="rw4-h2">The Drawn Series.</h2>
+<p class="rw4-tracked rw4-tracked--light">Seven pieces, each carrying an original drawing.</p></div>
+<div class="rw5-ctas"><a class="rw4-cta" href="${kit.root}${DRAWN}">Shop the Drawn Series <span aria-hidden="true">→</span></a><a class="rw5-cta-ghost" href="${kit.href.shop()}">Enter the shop <span aria-hidden="true">→</span></a></div>
+</div></section>`,
     };
   },
 
@@ -193,7 +258,9 @@ ${kit.figure('making-label', { caption: 'Archive · Runwae care label and hang t
     'drawn-series'({ kit, shown }) {
       const capsule = capsuleOf(shown);
       const d = (file, alt) => `<figure class="rw-panel">${kit.img(file, { alt, sizes: '(max-width: 820px) 50vw, 16vw' })}<span class="rw-pcap"><span class="rw-ptag">Concept</span></span></figure>`;
-      const art = [['art-head', 'The owner’s drawing: a figure under a woven hat, seen from behind'], ['art-portrait', 'The owner’s drawing: a crowded portrait with RUNWAE APPAREL written beside it'], ['art-figure', 'The owner’s drawing: a standing figure in a hoodie']];
+      // v5 (Principal 2026-10-14: "I dont know why the last picture is different in this row"): every tile in this row
+      // gets ONE treatment, cream ground + dark line, square crop (art-pair re-toned from cream-on-forest to match).
+      const art = [['art-head', 'The owner’s drawing: a figure under a woven hat, seen from behind'], ['art-portrait', 'The owner’s drawing: a crowded portrait with RUNWAE APPAREL written beside it'], ['art-figure', 'The owner’s drawing: a standing figure in a hoodie'], ['art-pair', 'The owner’s drawing: two figures and a plant']];
       return {
         title: 'The Drawn Series | Runwae Apparel',
         description: 'The Drawn Series: seven pieces carrying the owner’s original drawings. Concept renders; not yet available.',
@@ -233,7 +300,6 @@ ${d('v4-d-embroidery', 'Plant drawing embroidery on forest cloth')}${d('v4-d-cor
 <p class="rw4-tracked">A continuing journey through original artwork: the owner’s drawings, as they were drawn.</p>
 <a class="rw4-link" href="${kit.href.shop()}#archive">View the archive <span aria-hidden="true">→</span></a></div>
 ${art.map(([f, alt]) => `<figure class="rw4-art-panel">${kit.img(f, { alt, sizes: '(max-width: 820px) 50vw, 18vw' })}</figure>`).join('')}
-<figure class="rw4-art-panel rw4-art-panel--forest">${kit.img('art-pair', { alt: 'The owner’s drawing: two figures and a plant, in cream line on forest', sizes: '(max-width: 820px) 50vw, 18vw' })}</figure>
 </section>`,
       };
     },

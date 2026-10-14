@@ -24,7 +24,6 @@
    "forest": "#263a2d",
    "stone": "#b8b0a5",
    "rust": "#a9573e",
-   "lime": "#a6cf34",
    "paper": "#f2efe7",
    "ink": "#1a1a17",
    "on-accent": "#f2efe7",
@@ -70,7 +69,7 @@
   "washed-black",
   "rust"
  ],
- "_palette": "Principal 2026-10-14: 'lets do some of our origianl designs on more cohesive colors'. Forest, ivory, washed black, rust as the single accent. Archive pieces keep their 2021 colours.",
+ "_palette": "Principal 2026-10-14: 'lets do some of our origianl designs on more cohesive colors'. Forest, ivory, washed black, rust as the single accent. Archive pieces keep their 2021 colours. v5 (2026-10-14, 'stay on style'): lime token removed; every UI colour is forest / paper / washed black / rust. 2021 colours appear only inside the original photos.",
  "order_prefix": "RW",
  "from_name": "Runwae Apparel",
  "orders_from": "orders@runwaeapparel.com",
