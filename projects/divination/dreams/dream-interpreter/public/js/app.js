@@ -24,9 +24,9 @@ class DreamInterpreterApp {
         
         // Initialize social sharing
         this.socialShare = new SocialShare({
-            title: 'BlackLabb Dreams',
-            hashtags: ['Dreams', 'DreamMeaning', 'Spirituality', 'BlackLabb'],
-            via: 'BlackLabb'
+            title: 'Dream Interpreter · MDO3D',
+            hashtags: ['Dreams', 'DreamMeaning', 'Spirituality', 'MDO3D'],
+            via: ''
         });
         
         this.initialize();
