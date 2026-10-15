@@ -136,7 +136,7 @@ async function handlePremiumPurchase() {
     await deliverPremiumReading();
     return;
   }
-  const email = prompt('Enter your email to receive your premium reading:');
+  const email = prompt('Enter your email for your Stripe receipt. Your reading appears on this site after payment:');
   if (!email) return;
   try {
     const response = await fetch(`${API_URL}/api/payment/create-checkout`, {

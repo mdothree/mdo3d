@@ -452,7 +452,7 @@ class OracleCardsApp {
         }
 
         // Prompt user for email
-        const email = prompt('Please enter your email address:');
+        const email = prompt('Enter your email for your Stripe receipt. Your reading appears on this site after payment:');
         if (email && this.isValidEmail(email)) {
             return email;
         }
