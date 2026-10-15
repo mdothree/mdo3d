@@ -1,7 +1,7 @@
 {
   "name": "dream-interpreter",
   "version": "1.0.0",
-  "description": "The Channels Dreams - AI-powered dream interpretation platform",
+  "description": "BlackLabb Dreams - AI-powered dream interpretation platform",
   "type": "module",
   "scripts": {
     "dev": "npx http-server public -p 8083 -o",
@@ -14,7 +14,7 @@
     "dream-symbols",
     "spirituality",
     "psychology",
-    "the-channels"
+    "blacklabb"
   ],
   "author": "",
   "license": "MIT",

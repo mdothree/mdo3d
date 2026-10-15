@@ -9,13 +9,13 @@
     },
     "oracle": {
       "enabled": true,
-      "aliases": ["The Channels Oracle", "BlackLabb Oracle"],
+      "aliases": ["BlackLabb Oracle"],
       "targets": ["https://oracle-cards-api.vercel.app/api/webhook/stripe-forwarded"],
       "source": "projects/divination/oracle/api/src/server.js; host from oracle-cards/public/js/config/api.js"
     },
     "dreams": {
       "enabled": true,
-      "aliases": ["The Channels Dreams", "BlackLabb Dreams"],
+      "aliases": ["BlackLabb Dreams"],
       "targets": ["https://dream-interpreter-api-delta.vercel.app/api/webhook/stripe-forwarded"],
       "source": "projects/divination/dreams/api/src/server.js; host from dream-interpreter/public/js/config/api.js"
     },

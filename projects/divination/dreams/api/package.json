@@ -1,7 +1,7 @@
 {
   "name": "dream-interpreter-api",
   "version": "1.0.0",
-  "description": "The Channels Dreams - Backend API for dream interpretation with Claude AI",
+  "description": "BlackLabb Dreams - Backend API for dream interpretation with Claude AI",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
