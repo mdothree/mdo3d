@@ -142,6 +142,9 @@ verify_D(){ local b
   for a in "oracle:single-premium" "tarot:single" "runes:single-premium" "iching:single-premium" "dreams:dream-analysis" "astrology:birth-chart" "numerology:core-numbers"; do
     local h=${a%%:*} t=${a##*:}; b=$(body "https://$h.mdo3d.com/")
     has "$h" 'id="example-reading"' "$b"; has "$h" "data-price=\"$t\">\$5</span>" "$b"; has "$h" 'generated with Claude (Opus 5.5) on 2026-10-14' "$b"
+    # 2026-10-15: checkout email is for the Stripe receipt; no reading is emailed
+    local aj; aj=$(curl -s --max-time 20 "https://$h.mdo3d.com/js/app.js")
+    has "$h-app.js" 'for your Stripe receipt' "$aj"; hasnt "$h-app.js" 'to receive your premium' "$aj"
   done
   for h in fengshui pastlife; do
     b=$(body "https://$h.mdo3d.com/"); has "$h" 'Example reading' "$b"; has "$h" 'paid once by card' "$b"; has "$h" '$5' "$b"

@@ -61,3 +61,11 @@ Run order:
 - **The bundle promises "every pack we add later"**, and LayoffLeads promises weekly alerts. Neither is automated; the sale alert flags both for manual follow-up.
 - **BlackLabb naming:** not touched, as instructed (pending Principal question). Upstream `9cc9758` had already changed the numerology footer and the dreams share text to MDO3D.
 - **Redundant local commits to drop:** `3952e29` (promptsforbusiness local main) and `d42a087` (layoffleads local main) were made on stale mains. The `wt-p1-*` branches supersede them.
+
+## Added 2026-10-15 (legal follow-up)
+
+- **07 `07_legal.sh`** (`check`, `go ai|full`, `verify`): mdo3d.com shared legal set, branch `legal-2026-10-15` (on top of 04 B's `copy-honest-2026-10-14`).
+  - `d8c57d4` privacy: plain AI-processing disclosure (what each Guidance app sends to Anthropic) and the checkout-email truth (Stripe receipt only; no reading is emailed). No fill-ins, deployable with `go ai`.
+  - `4cf5c8e` terms: the unsupported "State of Delaware" clause is replaced by a `[CONFIRM]` fill-in bound to the JARVIS legal question. `go full` refuses while any `[CONFIRM` remains.
+- **05 D additions:** the checkout prompt on astrology, iching, runes (`wt-p1-*`) and numerology, oracle, tarot, dreams (`wt-p1-top`) now says the email is for the Stripe receipt and the reading shows on the site. `verify_D` checks the served `app.js`.
+- Not yet done: the same Delaware removal in the mdothree, layoffleads, promptsforbusiness, dailyaitoll and runwae sets (each in its own repo).
