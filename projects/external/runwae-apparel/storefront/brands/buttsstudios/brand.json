@@ -47,7 +47,7 @@
   "note": "US shipping only at launch. Rate set per drop."
  },
  "policies": {
-  "entity": "[CONFIRM: legal name and entity type of the seller (Butts Studios)]",
+  "entity": "Butts Studios",
   "contact": "hello@buttsstudios.com",
   "contact_status": "placeholder: confirm the inbox before launch. Domain has no MX record on 2026-10-14, so mail to it bounces",
   "privacy_contact": "hello@buttsstudios.com",

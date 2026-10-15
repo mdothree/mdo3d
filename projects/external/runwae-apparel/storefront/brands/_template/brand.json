@@ -45,7 +45,7 @@
   "note": "US shipping only at launch. Rate set per drop."
  },
  "policies": {
-  "entity": "[CONFIRM: legal name of the selling entity]",
+  "entity": "Example Brand",
   "contact": "hello@example.com",
   "privacy_contact": "hello@example.com",
   "mailing_address": "[CONFIRM: mailing address]",

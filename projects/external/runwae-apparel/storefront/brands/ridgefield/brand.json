@@ -46,7 +46,7 @@
   "note": "US shipping at launch. Rate set per release."
  },
  "policies": {
-  "entity": "[CONFIRM: legal name of the entity that sells Ridgefield goods]",
+  "entity": "Ridgefield",
   "contact": "store@ridgefieldtech.com",
   "contact_status": "placeholder: confirm the inbox before launch",
   "privacy_contact": "store@ridgefieldtech.com",

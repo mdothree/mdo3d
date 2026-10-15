@@ -335,7 +335,7 @@ test('a live build refuses unconfirmed policy facts; a confirmed one builds with
   const tb = JSON.parse(readFileSync(bp, 'utf8'));
   writeFileSync(bp, JSON.stringify({ ...tb, mode: 'live' }));
   await assert.rejects(buildBrand('gate', join(root, 'out'), { root, now: NOW, env: {} }), /policies: confirm before going live/);
-  const policies = { entity: 'Example LLC', contact: 'help@example.com', mailing_address: '1 Main St, Town', governing_law: 'the State of Delaware',
+  const policies = { entity: 'Example Brand', contact: 'help@example.com', mailing_address: '1 Main St, Town', governing_law: 'the State of Delaware',
     effective_date: '2026-11-01', returns_window_days: 14, exchange_shipping: 'we cover it', order_retention: '7 years', preorder_cancel: 'yes, email us before it closes' };
   writeFileSync(bp, JSON.stringify({ ...tb, mode: 'live', policies }));
   const out = join(root, 'out');

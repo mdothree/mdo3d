@@ -59,7 +59,7 @@
   "note": "US shipping only at launch. Rate set per drop."
  },
  "policies": {
-  "entity": "[CONFIRM: legal name of the seller (Runwae Apparel, a Butts Studios company)]",
+  "entity": "Runwae Apparel",
   "contact": "hello@runwaeapparel.com",
   "contact_status": "placeholder: confirm the inbox exists before launch. Domain has no MX record on 2026-10-14, so mail to it bounces",
   "privacy_contact": "hello@runwaeapparel.com",

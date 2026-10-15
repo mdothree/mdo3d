@@ -29,7 +29,7 @@ export function policyFields(brand) {
   return {
     shop: brand.name,
     domain: brand.domain,
-    entity: p.entity ?? C('legal name of the selling entity'),
+    entity: p.entity ?? brand.name, // the project itself is the seller (DECISIONS 2026-10-15: project names, no entity name)
     contact: p.contact ?? C('customer service inbox'),
     privacy: p.privacy_contact ?? p.contact ?? C('privacy inbox'),
     address: p.mailing_address ?? C('mailing address'),
@@ -61,7 +61,7 @@ export function policyGaps(brand) {
 const mail = (a) => (/^\S+@\S+\.\S+$/.test(a) ? `<a href="mailto:${esc(a)}">${esc(a)}</a>` : esc(a));
 const head = (f, title) => `<article class="seed-prose seed-policy"><h1>${esc(title)}</h1>
 <p class="seed-fine">Last updated: ${esc(f.effective)}${f.draft ? '. Draft for review: final before the shop opens.' : ''}</p>`;
-const foot = (f) => `<h2>Contact</h2><p>${esc(f.entity)}, selling as ${esc(f.shop)}. Email ${mail(f.contact)}. Post: ${esc(f.address)}.</p></article>`;
+const foot = (f) => `<h2>Contact</h2><p>${esc(f.entity)}${f.entity === f.shop ? '' : `, selling as ${esc(f.shop)}`}. Email ${mail(f.contact)}. Post: ${esc(f.address)}.</p></article>`;
 
 export function privacyBody(f, href) {
   return `${head(f, 'Privacy policy')}
