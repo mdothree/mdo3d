@@ -45,8 +45,20 @@
   "note": "US shipping only at launch. Rate set per drop."
  },
  "policies": {
+  "entity": "[CONFIRM: legal name of the selling entity]",
+  "contact": "hello@example.com",
+  "privacy_contact": "hello@example.com",
+  "mailing_address": "[CONFIRM: mailing address]",
+  "governing_law": "[CONFIRM: governing-law state]",
+  "effective_date": "[CONFIRM: effective date]",
+  "returns_window_days": 14,
+  "returns_window_status": "provisional: confirm the 14-day size-exchange window",
+  "defect_window_days": 30,
+  "exchange_shipping": "[CONFIRM: who pays shipping on size exchanges]",
+  "order_retention": "[CONFIRM: how long order records are kept (suggest 7 years for tax records)]",
+  "preorder_cancel": "[CONFIRM: whether a pre-order can be cancelled for a full refund before its window closes]",
   "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
-  "contact": "hello@example.com"
+  "_note": "Policy pages (privacy, terms, returns, shipping, policies hub) render from core/policies.mjs. Every [CONFIRM] value and every *_status placeholder blocks a live build."
  },
  "order_prefix": "EX",
  "from_name": "Example Brand",

@@ -1,7 +1,7 @@
 import './_cleanup.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, cpSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, cpSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildBrand, buildHolding, brandIds, loadBrand, ROOT } from '../src/build.mjs';
@@ -14,7 +14,7 @@ async function build(id) {
   if (!built[id]) { const out = mkdtempSync(join(tmpdir(), `sf-${id}-`)); await buildBrand(id, out, { now: NOW, env: {} }); built[id] = out; }
   return built[id];
 }
-const pagesOf = (out) => [...(existsSync(join(out, 'drawn-series.html')) ? ['drawn-series.html'] : []), 'index.html', 'shop.html', 'story.html', 'cart.html', 'orders.html', 'policies.html', 'thanks.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
+const pagesOf = (out) => [...(existsSync(join(out, 'drawn-series.html')) ? ['drawn-series.html'] : []), 'index.html', 'shop.html', 'story.html', 'cart.html', 'orders.html', 'policies.html', 'privacy.html', 'terms.html', 'returns.html', 'shipping.html', 'thanks.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
 
 test('brandIds: the four shops, never _template', () => {
   assert.deepEqual(brandIds(), BRANDS);
@@ -279,7 +279,7 @@ test('the template builds (a copied brand works with no code changes, once it ha
 
 test('core never names a brand', () => {
   const files = ['core/build.mjs', 'core/kit.mjs', 'core/catalog.mjs', 'core/cart.mjs', 'core/checkout.mjs', 'core/drop.mjs', 'core/base.css', 'core/client/seed.js',
-    'core/inventory.mjs', 'core/stock.mjs', 'core/admin.mjs', 'core/email.mjs', 'core/style-rules.mjs', 'api/stripe-webhook.mjs', 'api/availability.mjs'];
+    'core/inventory.mjs', 'core/stock.mjs', 'core/admin.mjs', 'core/email.mjs', 'core/style-rules.mjs', 'core/policies.mjs', 'api/stripe-webhook.mjs', 'api/availability.mjs'];
   for (const f of files) assert.doesNotMatch(readFileSync(join(ROOT, f), 'utf8'), /runwae|girls love|\bglb\b|butts ?studios|ridgefield/i, f);
 });
 
@@ -291,4 +291,55 @@ test('Runwae cohesive palette: current items use forest / ivory / washed black /
   for (const id of ['foundation-hoodie', 'trc-hoodie', 'runwae-company-hoodie']) assert.match(readFileSync(join(out, 'products', `${id}.html`), 'utf8'), /Original 2021/, id);
   const trc = readFileSync(join(out, 'products', 'trc-hoodie.html'), 'utf8');
   assert.match(trc, /not used \(#82-d\)/, 'the third-party back illustration is not reissued');
+});
+
+// Legal pages (2026-10-14 legal audit): every shop renders Privacy, Terms, Returns and pre-orders, Shipping and
+// the policies hub from core/policies.mjs, links all of them in every footer, and says true things about the code.
+const LEGAL = ['privacy.html', 'terms.html', 'returns.html', 'shipping.html', 'policies.html'];
+for (const id of BRANDS) {
+  test(`${id}: every policy page renders and every page's footer links all of them`, async () => {
+    const out = await build(id);
+    const { brand } = loadBrand(id);
+    for (const f of LEGAL) {
+      assert.ok(existsSync(join(out, f)), `${id}: ${f} missing`);
+      const html = readFileSync(join(out, f), 'utf8');
+      assert.match(html, /Last updated:/, `${f}: dated`);
+      assert.match(html, /Draft for review/, `${f}: preview shops keep the draft line`);
+      assert.ok(html.includes(brand.policies.contact), `${f}: contact address`);
+    }
+    for (const f of pagesOf(out)) {
+      const html = readFileSync(join(out, f), 'utf8');
+      const foot = html.slice(html.lastIndexOf('<footer'));
+      const nav = foot.match(/<nav class="seed-legal" aria-label="Policies">([\s\S]*?)<\/nav>/);
+      assert.ok(nav, `${f}: footer legal nav`);
+      for (const pg of ['privacy', 'terms', 'returns', 'shipping']) assert.match(nav[1], new RegExp(`href="(\\.\\./)?${pg}\\.html"`), `${f}: footer links ${pg}`);
+      assert.match(nav[1], /href="mailto:/, `${f}: footer contact`);
+    }
+    const priv = readFileSync(join(out, 'privacy.html'), 'utf8');
+    for (const must of [/Stripe/, /Link/, /localStorage/, /Resend/, /Vercel/, /Printful/, /Notify me/, /Do Not Track/, /under 13/, /California/, /do not sell/i]) assert.match(priv, must, `privacy mentions ${must}`);
+    assert.equal(/Google Fonts/.test(priv), !!brand.tokens?.fontsHref, 'Google Fonts disclosed exactly when loaded');
+    const ret = readFileSync(join(out, 'returns.html'), 'utf8');
+    assert.match(ret, /before it passes/); assert.match(ret, /more than 30 days/); assert.match(ret, /minimum production run/);
+    const terms = readFileSync(join(out, 'terms.html'), 'utf8');
+    for (const must of [/Governing law/, /liability/i, /18 or older/]) assert.match(terms, must);
+    const legal = LEGAL.map((f) => readFileSync(join(out, f), 'utf8')).join('\n').replace(/<[^>]+>/g, ' ');
+    assert.doesNotMatch(legal, /\bfree\b|digital only|\bincluding\b|—|\bAHL\b|Anne Huntington/i, 'legal copy rules');
+  });
+}
+
+test('a live build refuses unconfirmed policy facts; a confirmed one builds without [CONFIRM] or draft lines', async () => {
+  const { policyGaps } = await import('../core/policies.mjs');
+  assert.ok(policyGaps(loadBrand('buttsstudios').brand).length > 0, 'the current brand has open confirmations');
+  const { root } = templateRoot(ROOT, mkdtempSync(join(tmpdir(), 'sf-gate-')), 'gate');
+  const bp = join(root, 'brands', 'gate', 'brand.json');
+  const tb = JSON.parse(readFileSync(bp, 'utf8'));
+  writeFileSync(bp, JSON.stringify({ ...tb, mode: 'live' }));
+  await assert.rejects(buildBrand('gate', join(root, 'out'), { root, now: NOW, env: {} }), /policies: confirm before going live/);
+  const policies = { entity: 'Example LLC', contact: 'help@example.com', mailing_address: '1 Main St, Town', governing_law: 'the State of Delaware',
+    effective_date: '2026-11-01', returns_window_days: 14, exchange_shipping: 'we cover it', order_retention: '7 years', preorder_cancel: 'yes, email us before it closes' };
+  writeFileSync(bp, JSON.stringify({ ...tb, mode: 'live', policies }));
+  const out = join(root, 'out');
+  await buildBrand('gate', out, { root, now: NOW, env: {} });
+  for (const f of LEGAL) assert.doesNotMatch(readFileSync(join(out, f), 'utf8'), /CONFIRM|Draft for review/, f);
+  assert.equal(policyGaps({ ...tb, policies: { ...policies, contact_status: 'placeholder: no MX' } }).length, 1, 'a placeholder status blocks launch');
 });

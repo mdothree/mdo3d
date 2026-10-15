@@ -47,9 +47,21 @@
   "note": "US shipping only at launch. Rate set per drop."
  },
  "policies": {
-  "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
+  "entity": "[CONFIRM: legal name and entity type of the seller (Butts Studios)]",
   "contact": "hello@buttsstudios.com",
-  "contact_status": "placeholder: confirm the inbox before launch"
+  "contact_status": "placeholder: confirm the inbox before launch. Domain has no MX record on 2026-10-14, so mail to it bounces",
+  "privacy_contact": "hello@buttsstudios.com",
+  "mailing_address": "[CONFIRM: mailing address]",
+  "governing_law": "[CONFIRM: governing-law state]",
+  "effective_date": "[CONFIRM: effective date]",
+  "returns_window_days": 14,
+  "returns_window_status": "provisional: confirm the 14-day size-exchange window",
+  "defect_window_days": 30,
+  "exchange_shipping": "[CONFIRM: who pays shipping on size exchanges]",
+  "order_retention": "[CONFIRM: how long order records are kept (suggest 7 years for tax records)]",
+  "preorder_cancel": "[CONFIRM: whether a pre-order can be cancelled for a full refund before its window closes]",
+  "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
+  "_note": "Policy pages (privacy, terms, returns, shipping, policies hub) render from core/policies.mjs. Every [CONFIRM] value and every *_status placeholder blocks a live build."
  },
  "main_site": {
   "label": "Butts Studios",

@@ -43,8 +43,8 @@ export function checkoutParams({ brand, products, drops }, body, { siteUrl, now 
   const latest = lines.map((x) => x.sb).filter(Boolean).sort().pop() ?? null;
   const mixed = latest && (lines.some((x) => !x.sb) || new Set(lines.filter((x) => x.sb).map((x) => x.buy.drop.id)).size > 1);
   const terms = latest
-    ? `Pre-order: ships by ${latest}${mixed ? ' (the whole order ships together when its latest item is ready)' : ''}. Size exchanges only; no returns.`
-    : 'Size exchanges only; no returns.';
+    ? `Pre-order: ships by ${latest}${mixed ? ' (the whole order ships together when its latest item is ready)' : ''}. If that date moves we email you first, with the option to cancel for a full refund. Size exchanges only; no change-of-mind returns. Faulty or wrong items are replaced or refunded.`
+    : 'Size exchanges only; no change-of-mind returns. Faulty or wrong items are replaced or refunded.';
   const f = {
     mode: 'payment',
     'automatic_tax[enabled]': 'true',

@@ -17,6 +17,9 @@ core/
   inventory.mjs    the shared inventory master (inventory/inventory.csv): CSV, validation, merge into catalogs
   stock.mjs        stock ledger (inventory/ledger.csv): replay, availability, reservations, sale/receive/adjust/return
   admin.mjs        local admin page (dist/_admin/) + stock report + order email previews
+  policies.mjs     Privacy, Terms, Returns and pre-orders, Shipping + policies hub from one template; per-brand
+                   fields in brand.json `policies` (entity, contact, address, law, returns window...); every footer
+                   gets the legal links; a live build fails while any [CONFIRM: ...] or *_status placeholder remains
   email.mjs        order emails: shop "New order" + customer confirmation, one template, Resend or outbox/
   style-rules.mjs  small-corners check (border-radius <= 4px; 50% only on true circles)
   base.css         reset, a11y, variant pickers, cart, phone menu (820px), cards, details

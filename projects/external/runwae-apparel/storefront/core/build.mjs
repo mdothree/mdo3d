@@ -3,6 +3,7 @@
 // A brand layout (brands/<id>/layout/index.mjs) exports:
 //   header(ctx), footer(ctx)                          -> HTML strings
 //   pages: { home, collection, product, story, [cart, orders, policies, thanks], [extra: {slug: fn}] }
+//   (privacy/terms/returns/shipping always come from core/policies.mjs so every shop says the same true things)
 //          each (ctx[, product]) -> { title?, description?, body, image? } (or a body string)
 // and ships layout/styles.css. ctx = { brand, products, shown, archive, drops, now, kit, page, root }.
 // Core adds: <head> (SEO/OG/JSON-LD/noindex), tokens -> CSS custom properties, base.css, seed.js
@@ -13,6 +14,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { readBrandDir, validateCatalog, productView, publicCatalog } from './catalog.mjs';
 import { createKit, esc } from './kit.mjs';
 import { radiusErrors, templateRadiusErrors } from './style-rules.mjs';
+import { POLICY_PAGES, POLICY_BODIES, policyFields, policyGaps, legalNav } from './policies.mjs';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CORE = dirname(fileURLToPath(import.meta.url));
@@ -72,6 +74,14 @@ function withMainSite(footer, { brand }) {
   return i < 0 ? footer + link : `${footer.slice(0, i)}${link}${footer.slice(i)}`;
 }
 
+/** Every footer carries the shared policy links (Privacy, Terms, Returns and pre-orders, Shipping, Contact),
+ *  rendered by the core so no shop can ship without them (a test checks every page). */
+function withLegal(footer, { brand, kit }) {
+  const nav = legalNav(brand, (id) => kit.href[id]());
+  const i = footer.lastIndexOf('</footer>');
+  return i < 0 ? footer + nav : `${footer.slice(0, i)}${nav}${footer.slice(i)}`;
+}
+
 /** Small corners: every stylesheet and template a brand ships passes core/style-rules.mjs, or the build fails. */
 export function styleErrors(dir) {
   return [
@@ -94,7 +104,7 @@ ${head({ brand, title, description, path: page.path, image: r.image, preview: br
 ${kit.skipLink()}${kit.previewBanner()}
 ${L.header(ctx)}
 <main id="main" tabindex="-1">${r.body}</main>
-${withMainSite(L.footer(ctx), ctx)}
+${withLegal(withMainSite(L.footer(ctx), ctx), ctx)}
 </body></html>
 `;
 }
@@ -113,6 +123,9 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   const shown = listed.filter((p) => views[p.id].status !== 'archive');
   const archive = listed.filter((p) => views[p.id].status === 'archive');
   const checkout = brand.mode === 'live' && env.CHECKOUT_ENABLED === 'true';
+  // Launch gate: a live shop may not publish policy pages with unconfirmed facts (entity, inbox, address, law...).
+  const gaps = brand.mode === 'live' ? policyGaps(brand) : [];
+  if (gaps.length) throw new Error(`policies: confirm before going live:\n  ${gaps.join('\n  ')}`);
 
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(join(outDir, 'products'), { recursive: true });
@@ -136,12 +149,19 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   if (want.includes('story') && P.story) make('story', 'story.html', '', (c) => P.story(c));
   // Extra brand pages: pages.extra = {'<slug>': (ctx) => page} -> <slug>.html (page id = slug).
   for (const [slug, fn] of Object.entries(P.extra ?? {})) {
-    if (!/^[a-z0-9-]+$/.test(slug) || ['index', 'shop', 'story', 'cart', 'orders', 'policies', 'thanks', '404'].includes(slug)) throw new Error(`bad extra page "${slug}"`);
+    if (!/^[a-z0-9-]+$/.test(slug) || ['index', 'shop', 'story', 'cart', 'orders', 'policies', 'thanks', '404', ...POLICY_PAGES.map((x) => x.id)].includes(slug)) throw new Error(`bad extra page "${slug}"`);
     make(slug, `${slug}.html`, '', (c) => fn(c));
   }
   if (want.includes('cart')) make('cart', 'cart.html', '', (c) => (P.cart ? P.cart(c) : { title: `Bag | ${brand.name}`, body: c.kit.cartBody() }));
   if (want.includes('orders')) make('orders', 'orders.html', '', (c) => (P.orders ? P.orders(c) : { title: `Order lookup | ${brand.name}`, body: c.kit.ordersBody() }));
-  if (want.includes('policies')) make('policies', 'policies.html', '', (c) => (P.policies ? P.policies(c) : { title: `Shipping and exchanges | ${brand.name}`, body: c.kit.policiesBody() }));
+  if (want.includes('policies')) {
+    make('policies', 'policies.html', '', (c) => (P.policies ? P.policies(c) : { title: `Shipping, returns and policies | ${brand.name}`, body: c.kit.policiesBody() }));
+    // Privacy, Terms, Returns and pre-orders, Shipping: one shared template, per-brand fields (core/policies.mjs).
+    for (const pg of POLICY_PAGES) {
+      make(pg.id, pg.path, '', (c) => ({ title: `${pg.label} | ${brand.name}`, description: `${pg.label} for ${brand.name}.`,
+        body: POLICY_BODIES[pg.id](policyFields(brand), (id) => c.kit.href[id]()) }));
+    }
+  }
   if (want.includes('thanks')) make('thanks', 'thanks.html', '', (c) => (P.thanks ? P.thanks(c) : { title: `Thank you | ${brand.name}`, body: c.kit.thanksBody() }));
   if (want.includes('product')) {
     for (const p of listed) {

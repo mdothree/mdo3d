@@ -4,6 +4,7 @@
 // CSP rule (vercel.json: style-src/script-src 'self'): no inline style="" and no inline <script>.
 import { fmtDay } from './cart.mjs';
 import { printList, printLabel } from './catalog.mjs';
+import { hubBody, policyFields } from './policies.mjs';
 
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 export const money = (c) => (Number.isInteger(c) ? `$${(c / 100).toFixed(2)}` : 'Price TBA');
@@ -18,6 +19,7 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
   k.href = {
     home: () => `${root}index.html`, shop: () => `${root}shop.html`, story: () => `${root}story.html`,
     cart: () => `${root}cart.html`, orders: () => `${root}orders.html`, policies: () => `${root}policies.html`,
+    privacy: () => `${root}privacy.html`, terms: () => `${root}terms.html`, returns: () => `${root}returns.html`, shipping: () => `${root}shipping.html`,
     product: (p) => `${root}products/${esc(typeof p === 'string' ? p : p.id)}.html`, asset: (f) => `${root}assets/${f}`,
   };
 
@@ -79,6 +81,7 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
   k.notifyForm = (p, { label = 'Notify me', intro } = {}) => `<form class="seed-notify" data-notify data-product="${esc(p.id)}" novalidate>
 <label for="notify-${esc(p.id)}">${esc(intro ?? k.copy('notifyIntro', 'Get one email when it opens.'))}</label>
 <div class="seed-notify-row"><input id="notify-${esc(p.id)}" type="email" name="email" autocomplete="email" placeholder="you@example.com" required><button type="submit">${esc(label)}</button></div>
+<p class="seed-fine seed-notify-consent">We use your email only to tell you when this piece opens. Unsubscribe any time. <a href="${k.href.privacy()}">Privacy</a></p>
 <p class="seed-msg" role="status" aria-live="polite"></p></form>`;
 
   /** Per-colour galleries: images carry `color` (a colour id). Returns one block per colour, each wrapped in
@@ -146,17 +149,9 @@ ${lead ? `<span class="seed-card-lead">${lead}</span>` : ''}<span class="seed-ca
 <label for="lk-email">Email</label><input id="lk-email" name="email" type="email" autocomplete="email" required>
 <button type="submit">Look up</button><p class="seed-msg" role="status" aria-live="polite"></p></form>
 <h2>Order emails</h2><ol class="seed-steps"><li><strong>Confirmed.</strong> Your receipt and ship-by date.</li><li><strong>In production.</strong> For pre-orders, when the window closes and making starts.</li><li><strong>Shipped.</strong> With tracking.</li><li><strong>Delay notice.</strong> Only if a date moves, sent before it passes, with the option to cancel for a full refund.</li></ol>
-<p class="seed-fine">Questions: ${esc(brand.policies?.contact ?? '')}</p></section>`;
+<p class="seed-fine">Questions: ${esc(brand.policies?.contact ?? '')}. Lookups use your order number and email only to find the order. <a href="${k.href.privacy()}">Privacy</a></p></section>`;
 
-  k.policiesBody = () => `<article class="seed-prose"><h1>Shipping and exchanges</h1>
-<p class="seed-fine">Draft terms for review. Final before the shop opens.</p>
-<h2>Pre-orders</h2><p>Pre-order pieces are made after their window closes, in the quantity ordered. Every pre-order shows a <strong>ships-by date</strong>, and you're charged at checkout. If something will stop us shipping by that date, we'll email you <strong>before</strong> it passes with the new date and the option to cancel for a full refund.</p>
-<p>Each design has a minimum production run. If a design doesn't reach it, everyone who ordered it gets a full refund or a swap to a design that did.</p>
-<h2>Mixed orders</h2><p>An order that mixes in-stock and pre-order pieces, or pieces from different drops, ships together when its latest item is ready. The bag and checkout both show that date.</p>
-<h2>Shipping</h2><p>${esc(brand.shipping?.note ?? '')} You'll get a tracking number by email when your order ships.</p>
-<h2>Exchanges</h2><p>${esc(brand.policies?.returns ?? '')}</p>
-<h2>Your details</h2><p>Checkout runs on Stripe. We use your name, email and address to make, ship and support your order.</p>
-<h2>Contact</h2><p>${esc(brand.policies?.contact ?? '')}</p></article>`;
+  k.policiesBody = () => hubBody(policyFields(brand), (id) => k.href[id]());
 
   k.thanksBody = () => `<article class="seed-prose"><h1>Thank you.</h1><p>Your order is in. A receipt is on its way to your email, and you'll get tracking when it ships. Pre-orders ship by the date shown at checkout.</p><p><a href="${k.href.orders()}">Look up an order</a> · <a href="${k.href.home()}">Back to the shop</a></p></article>`;
 

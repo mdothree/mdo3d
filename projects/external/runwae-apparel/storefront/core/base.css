@@ -116,3 +116,5 @@ main:focus{outline:none}
 .seed-avail{margin:6px 0 0;font-size:14px}.seed-cart-avail{margin:4px 0;font-size:13px}.seed-cart-avail.is-out{color:var(--c-accent)}
 .seed-size input:disabled+span{opacity:.35;text-decoration:line-through}
 .seed-mainsite{margin:14px 0 0;font-size:13px}.seed-mainsite a{color:inherit}
+.seed-legal{display:flex;flex-wrap:wrap;gap:6px 18px;margin:14px 0 0;font-size:13px}.seed-legal a{color:inherit}
+.seed-notify-consent{margin:8px 0 0}.seed-policy ul{padding-left:20px}.seed-policy li{margin:0 0 8px}
