@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3004;
 
 // Services
 const dreamService = new ClaudeDreamService();
-const stripeService = new StripeService('BlackLabb Dreams');
+const stripeService = new StripeService('The Channels Dreams');
 
 // Middleware
 app.use(cors({

@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3002;
 
 // Services
 const claudeService = new ClaudeReadingService();
-const stripeService = new StripeService('BlackLabb Oracle');
+const stripeService = new StripeService('The Channels Oracle');
 
 // Middleware
 app.use(cors({
