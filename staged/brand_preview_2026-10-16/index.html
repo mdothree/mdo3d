@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MDO3 Brand Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&family=Cormorant+Garamond:wght@500;600&family=Playfair+Display:wght@600&family=Space+Grotesk:wght@500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141311;--paper:#F5F2EC;--mute:#6F695F;--rule:#D9D3C7;--surface:#FBF9F5;--accent:#B8862A;--red:#A8361F;--green:#2F6B3E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#ECE7DE;--paper:#121110;--mute:#9C958A;--rule:#2C2926;--surface:#181715;--accent:#E2B13C;--red:#E0634E;--green:#6FB07F}}
+:root[data-theme="dark"]{--ink:#ECE7DE;--paper:#121110;--mute:#9C958A;--rule:#2C2926;--surface:#181715;--accent:#E2B13C;--red:#E0634E;--green:#6FB07F}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"Inter Tight",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1264px;margin:0 auto;padding:0 40px}
+@media (max-width:720px){.wrap{padding:0 16px}}
+header.top{display:flex;justify-content:space-between;align-items:center;min-height:64px;border-bottom:1px solid var(--rule);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);gap:16px;flex-wrap:wrap}
+.label{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.03em;font-weight:700;margin:56px 0 16px}
+.lede{font-family:"EB Garamond",Georgia,serif;font-size:clamp(19px,2.2vw,23px);line-height:1.4;max-width:46em}
+h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.02em;line-height:1.1;margin-bottom:8px}
+h3{font-size:18px;margin-bottom:6px}
+section{padding:56px 0;border-bottom:1px solid var(--rule)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.box{border:1px solid var(--rule);border-radius:3px;background:var(--surface);padding:16px 18px}
+.box p,.box li{font-size:15px}
+ul.t{list-style:none}ul.t li{padding:6px 0;border-top:1px solid var(--rule)}ul.t li:first-child{border-top:0}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:13px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:2px;border:1px solid var(--rule);vertical-align:-2px;margin-right:4px}
+.fam{display:flex;flex-direction:column;gap:10px}
+.fam .spec{font-size:13px;color:var(--mute)}
+.fam .sample{border-radius:3px;padding:18px;border:1px solid var(--rule)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+@media (max-width:720px){.pair{grid-template-columns:1fr}}
+figure{border:1px solid var(--rule);border-radius:3px;overflow:hidden;background:var(--surface)}
+figure img{display:block;width:100%;height:auto}
+figcaption{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
+.tg{font-size:11px;font-weight:700;letter-spacing:.14em;padding:3px 6px;border-radius:2px;border:1px solid currentColor}
+.tg.b{color:var(--mute)}.tg.a{color:var(--accent)}
+.phone{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:520px;margin-top:16px}
+.meta{font-size:14px;color:var(--mute);margin-top:6px}
+.app h2 small{font-size:14px;font-weight:500;color:var(--mute);letter-spacing:0;margin-left:8px}
+.changes{margin-top:14px;columns:2;column-gap:32px;font-size:15px}
+@media (max-width:720px){.changes{columns:1}}
+.changes li{break-inside:avoid;margin:0 0 6px 18px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:28px;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+nav.toc a{color:var(--ink)}
+a{color:var(--ink)}
+footer{padding:32px 0 56px;font-size:13px;color:var(--mute)}
+.missing{padding:48px 12px;text-align:center;color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><span>MDO3 · brand pass · 2026-10-16</span><span>Staged · nothing deployed</span></header>
+
+<h1>One look per family,<br>applied to the live apps.</h1>
+<p class="lede">Principal, 2026-10-16: “we need things to be breanded and have the proper look and feel.” This page shows each app before (current source, rendered on xps) and after (branch <span class="mono">design/brand-2026-10-16</span>). The brand rules are stored as data in <span class="mono">mdo3d/shared/brand/tokens.json</span>.</p>
+<nav class="toc" id="toc"></nav>
+
+<section id="reviews">
+  <div class="label">1 · What the reviews found</div>
+  <h2>Seven visual languages, no shared system</h2>
+  <div class="grid g3" style="margin-top:20px">
+    <div class="box"><h3>Consumer audit (10-14)</h3><ul class="t">
+      <li>At least 7 looks across 33 hostnames (hub purple SaaS, guidance editorial, divination gradients, Next.js plain, names unstyled, mdothree mono-green, rigor navy/gold).</li>
+      <li>names.mdo3d.com scored 1/5: browser defaults, no header or brand.</li>
+      <li>rigor.design hub 2/5: a bare grid of 7 “Beta” emoji cards, no nav, no footer.</li>
+      <li>mdo3d.com hub: purple gradient, emoji icons, “31 live platforms”.</li>
+      <li>BlackLabb strings leaked onto MDO reading apps.</li></ul></div>
+    <div class="box"><h3>B2B audit (10-14)</h3><ul class="t">
+      <li>Ronna 2/5: gradient hero, emoji icons, “5 / 1 / Soon” stat row, blank /pricing, Sign In and Upgrade next to “not open yet”.</li>
+      <li>LayoffLeads and Prompts for Business share a generic dark SaaS template (3/5).</li>
+      <li>Daily AI Toll is the closest to the bar: restrained and monospace (4/5).</li>
+      <li>leads.mdo3d.com works (FL, CO, CT filings) and is the natural engine for Ronna.</li></ul></div>
+    <div class="box"><h3>Before/after proposal (10-16)</h3><ul class="t">
+      <li>MDO design system v0: shared header, footer, label style, 3px corners, hairlines.</li>
+      <li>Per-product voice: Guidance (Cormorant/EB Garamond, ink-violet, gold), Data (Plex, paper, red), index (ink, paper, gold).</li>
+      <li>Real imagery: card art, a real WARN chart, real rows.</li>
+      <li>blacklabb.com out of scope: its future is undecided.</li></ul></div>
+  </div>
+</section>
+
+<section id="tokens">
+  <div class="label">2 · The brand as data</div>
+  <h2>Five MDO families and one Blacklab B identity</h2>
+  <p class="meta">Shared throughline for MDO: Inter Tight labels and UI, IBM Plex Mono numbers, radius 2–4px, 1px hairlines, 44px tap targets, one offer and one next step. Blacklab B has none of the MDO faces or colours.</p>
+  <div class="grid g3" style="margin-top:20px" id="fams"></div>
+</section>
+
+<div id="apps"></div>
+
+<footer>Sources: <span class="mono">latarence/coordination/audits/mdo_2026-10-14/</span> · <span class="mono">mdo3d/staged/proposal_2026-10-16/</span> · tokens <span class="mono">mdo3d/shared/brand/</span>. Screenshots: xps headless Chrome, 1440×900 and 390×844. Before = HEAD source; after = branch design/brand-2026-10-16. Nothing here is live.</footer>
+</div>
+
+<script src="apps.js"></script>
+<script>
+const FAMS=[
+ {n:"Guidance",p:"Readings + names.mdo3d.com",bg:"#14111B",fg:"#EDE6D8",ac:"#C9A24A",f:"'Cormorant Garamond','EB Garamond',Georgia,serif",t:"The draw, then the price",s:"Cormorant Garamond / EB Garamond · ink-violet · gold hairlines"},
+ {n:"Data",p:"LayoffLeads · Ronna · leads.mdo3d.com",bg:"#F3F0E9",fg:"#141311",ac:"#B4381F",f:"'IBM Plex Sans','Inter Tight',sans-serif",t:"Show the rows, then one offer",s:"IBM Plex Sans / Mono · paper · signal red"},
+ {n:"Tools",p:"mdothree.com",bg:"#0F1115",fg:"#E9ECEF",ac:"#10B981",f:"'JetBrains Mono','IBM Plex Mono',monospace",t:"m3 · the tool is the hero",s:"Inter Tight / JetBrains Mono · graphite · green"},
+ {n:"Rigor",p:"rigor.design career tools",bg:"#0D1526",fg:"#EEF1F6",ac:"#D4A84B",f:"'Playfair Display',Georgia,serif",t:"Negotiate your worth",s:"Playfair Display / Inter Tight · navy · gold"},
+ {n:"Index",p:"mdo3d.com",bg:"#0E0D0C",fg:"#EEE8DD",ac:"#E2B13C",f:"'Inter Tight',sans-serif",t:"What MDO3D makes",s:"Inter Tight / EB Garamond · ink · paper · gold"},
+ {n:"Blacklab B",p:"Quantum · Space · Neuro trackers",bg:"#0A0B0D",fg:"#E6E8EB",ac:"#7AA2FF",ac2:"#FF8A3D",ac3:"#C792FF",f:"'Space Grotesk',system-ui,sans-serif",t:"BLACKLAB B · track the field",s:"Space Grotesk / JetBrains Mono · graphite · per-tracker signal"}
+];
+document.getElementById('fams').innerHTML=FAMS.map(f=>`<div class="box fam"><div><h3>${f.n}</h3><div class="spec">${f.p}</div></div>
+ <div class="sample" style="background:${f.bg};color:${f.fg};font-family:${f.f};font-size:22px;line-height:1.15">${f.t}<div style="margin-top:12px;display:flex;gap:6px">
+ ${[f.bg,f.fg,f.ac,f.ac2,f.ac3].filter(Boolean).map(c=>`<span class="sw" style="background:${c}"></span>`).join('')}</div></div>
+ <div class="spec">${f.s}</div></div>`).join('');
+
+/* APPS is filled in once the xps renders land */
+const APPS=window.APPS||[];
+const shot=(f,cap,tag)=>`<figure><img loading="lazy" src="shots/${f}" alt="${cap}" onerror="this.outerHTML='<div class=missing>render pending: ${f}</div>'"><figcaption><span>${cap}</span><span class="tg ${tag==='BEFORE'?'b':'a'}">${tag}</span></figcaption></figure>`;
+document.getElementById('apps').innerHTML=APPS.map((a,i)=>`<section class="app" id="${a.id}"><div class="label">${i+3} · ${a.family}</div>
+ <h2>${a.name}<small>${a.repo}</small></h2><p class="meta">${a.why}</p>
+ <div class="pair">${shot(a.id+'_before_d.png','Desktop 1440','BEFORE')}${shot(a.id+'_after_d.png','Desktop 1440','AFTER')}</div>
+ ${a.extra?`<div class="pair">${a.extra.map(e=>shot(e[0],e[1],'AFTER')).join('')}</div>`:''}
+ <div class="phone">${shot(a.id+'_before_m.png','Phone 390','BEFORE')}${shot(a.id+'_after_m.png','Phone 390','AFTER')}</div>
+ <ul class="changes">${a.changes.map(c=>`<li>${c}</li>`).join('')}</ul></section>`).join('');
+document.getElementById('toc').innerHTML=['<a href="#reviews">Reviews</a>','<a href="#tokens">Tokens</a>'].concat(APPS.map(a=>`<a href="#${a.id}">${a.short||a.name}</a>`)).join('');
+</script>
+</body>
+</html>
