@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<title>Guidance · Tarot (mockup)</title>
+<link rel="stylesheet" href="mdo-system.css">
+<style>
+body{font-size:19px;line-height:1.55}
+.hdr .mark{font-family:var(--display);font-size:26px;font-weight:600;letter-spacing:.02em}
+.hdr nav{font-size:12px;gap:24px}
+.hero{display:grid;grid-template-columns:520px 1fr;gap:72px;padding:64px 0 56px}
+h1{font-family:var(--display);font-weight:500;font-size:68px;line-height:1.02;letter-spacing:-.01em;margin:18px 0 22px}
+.lede{color:var(--fg);opacity:.86;max-width:470px}
+.q{margin-top:30px;padding:16px 18px;font-family:var(--body);font-style:italic;color:var(--mute);border:1px solid var(--rule);border-radius:var(--radius)}
+.spreads{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.sp{padding:16px;border:1px solid var(--rule);border-radius:var(--radius)}
+.sp.on{border-color:var(--accent)}
+.sp b{display:block;font-family:var(--ui);font-size:14px;font-weight:600}
+.sp small{display:block;font-family:var(--ui);font-size:12px;color:var(--mute);margin:3px 0 10px}
+.sp .pr{font-family:var(--display);font-size:30px;font-weight:600;color:var(--accent)}
+.cta{margin-top:20px;display:flex;gap:14px;align-items:center}
+.cta .note{font-family:var(--ui);font-size:13px;color:var(--mute)}
+.table{position:relative;display:flex;gap:26px;align-items:flex-end;justify-content:center;padding:36px 0 0}
+.card{width:208px;text-align:center}
+.card img{width:208px;height:auto;display:block;border:1px solid var(--rule);border-radius:3px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.card.mid img{width:236px}
+.card .pos{margin-top:14px}
+.card .nm{font-family:var(--display);font-size:22px;font-weight:600;margin-top:2px}
+.receive{display:grid;grid-template-columns:520px 1fr;gap:72px;padding:56px 0;border-top:1px solid var(--rule)}
+h2{font-family:var(--display);font-weight:500;font-size:44px;line-height:1.05;margin:14px 0 16px}
+.rcv li{list-style:none;padding:11px 0;border-bottom:1px solid var(--rule);font-family:var(--ui);font-size:15px;display:flex;justify-content:space-between}
+.rcv li span:last-child{color:var(--mute)}
+.excerpt{padding:30px 34px;border:1px solid var(--rule);border-radius:var(--radius)}
+.excerpt h3{font-family:var(--display);font-size:26px;font-weight:600;margin:6px 0 10px}
+.excerpt p{margin-bottom:12px}
+.excerpt .sec{font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:16px}
+.pack{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;padding:34px 36px;margin:0 0 56px;border:1px solid var(--accent);border-radius:var(--radius)}
+.pack h3{font-family:var(--display);font-size:34px;font-weight:600}
+.pack p{color:var(--mute);font-family:var(--ui);font-size:15px;margin-top:6px}
+.pack .pr{font-family:var(--display);font-size:54px;font-weight:600;color:var(--accent);text-align:right;line-height:1}
+.pack .pr small{display:block;font-family:var(--ui);font-size:13px;color:var(--mute);font-weight:500}
+.disc{font-family:var(--ui);font-size:13px;color:var(--mute);padding-bottom:20px}
+</style></head>
+<body class="p-guidance">
+<div class="wrap">
+  <header class="hdr">
+    <div class="mark">Guidance</div>
+    <nav><a class="on">Tarot</a><a>Oracle</a><a>Runes</a><a>I Ching</a><a>Astrology</a><a>Numerology</a><a>Dreams</a><a>Names</a><a>Your readings</a></nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="label">Tarot · Rider–Waite–Smith deck</div>
+      <h1>Ask one question.<br>Draw the cards.</h1>
+      <p class="lede">Every card has its own meaning; the reading puts them in order around your question. You see the draw first and pay only for the written reading.</p>
+      <div class="q">What should I keep in mind as I take the new role?</div>
+      <div class="spreads">
+        <div class="sp"><b>One card</b><small>A single answer</small><span class="pr">$3</span></div>
+        <div class="sp on"><b>Three cards</b><small>Past · present · next</small><span class="pr">$5</span></div>
+        <div class="sp"><b>Celtic Cross</b><small>Ten cards, full spread</small><span class="pr">$9</span></div>
+      </div>
+      <div class="cta"><a class="btn">Draw three cards</a><span class="note">Reading delivered on the page and to your email.</span></div>
+    </div>
+    <div class="table">
+      <div class="card"><img src="art/RWS_Tarot_02_High_Priestess.jpg" alt="The High Priestess"><div class="label pos">I · Past</div><div class="nm">The High Priestess</div></div>
+      <div class="card mid"><img src="art/RWS_Tarot_17_Star.jpg" alt="The Star"><div class="label pos">II · Present</div><div class="nm">The Star</div></div>
+      <div class="card"><img src="art/RWS_Tarot_10_Wheel_of_Fortune.jpg" alt="Wheel of Fortune"><div class="label pos">III · Next</div><div class="nm">Wheel of Fortune</div></div>
+    </div>
+  </section>
+
+  <section class="receive">
+    <div>
+      <div class="label">What $5 buys</div>
+      <h2>A written reading, about 600 words, in four parts.</h2>
+      <ul class="rcv">
+        <li><span>Each card in its position</span><span>3 short sections</span></li>
+        <li><span>How the cards answer your question</span><span>1 section</span></li>
+        <li><span>One thing to do this week</span><span>1 line</span></li>
+        <li><span>Saved to your email</span><span>open it on any device</span></li>
+      </ul>
+    </div>
+    <div class="excerpt">
+      <div class="label">Example reading · excerpt</div>
+      <h3>“What should I keep in mind as I take the new role?”</h3>
+      <div class="sec">I · The High Priestess, past</div>
+      <p>You got here by listening more than you spoke. The card points to the quiet read you made of the people and the work before you said yes.</p>
+      <div class="sec">II · The Star, present</div>
+      <p>The Star is a card of steady repair after a hard stretch. In this position it asks you to start plainly: show up, do the first visible thing well, and let trust build from there…</p>
+    </div>
+  </section>
+
+  <section class="pack">
+    <div>
+      <div class="label">Guidance pack</div>
+      <h3>Five readings, any practice, any depth.</h3>
+      <p>Tarot, oracle, runes, I Ching, astrology, numerology, dreams or names. Balance kept on your email, usable on any device.</p>
+    </div>
+    <div class="pr">$20<small>one time</small></div>
+  </section>
+
+  <p class="disc">For reflection and entertainment. A reading is a prompt for thinking, not a prediction or professional advice.</p>
+  <footer class="ftr"><div>Guidance · an MDO3D product</div><div><span>Privacy</span><span>Terms</span><span>Refunds</span><span>Contact</span></div></footer>
+</div>
+</body></html>

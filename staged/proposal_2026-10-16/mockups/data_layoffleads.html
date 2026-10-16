@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<title>LayoffLeads · data template (mockup)</title>
+<link rel="stylesheet" href="mdo-system.css">
+<style>
+body{font-size:17px;line-height:1.55}
+.hdr .mark{display:block;font-family:var(--display);font-weight:600;font-size:21px}
+.hdr .mark i{font-style:normal;color:var(--accent)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:80px;padding:60px 0 44px}
+h1{font-family:var(--display);font-weight:600;font-size:60px;line-height:1.02;letter-spacing:-.025em;margin:16px 0 20px}
+.lede{max-width:600px;color:#2D2B27}
+.offer{padding:28px;border:1px solid var(--fg);border-radius:var(--radius);align-self:start}
+.offer .pr{font-family:var(--display);font-size:52px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.offer .pr small{font-size:16px;font-weight:500;color:var(--mute);letter-spacing:0}
+.offer ul{margin:18px 0 22px}
+.offer li{list-style:none;padding:9px 0;border-top:1px solid var(--rule);font-size:15px}
+.offer .btn{width:100%;text-align:center;background:var(--fg);color:var(--bg)}
+.offer .alt{display:block;text-align:center;margin-top:12px;font-family:var(--ui);font-size:13px;color:var(--mute)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:80px;padding:40px 0 48px;border-top:1px solid var(--rule)}
+h2{font-family:var(--display);font-size:24px;font-weight:600;letter-spacing:-.01em;margin:10px 0 18px}
+.facts div{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.facts b{font-family:var(--mono);font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--ui);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);text-align:left;padding:8px 10px;border-bottom:1px solid var(--fg)}
+td{padding:11px 10px;border-bottom:1px solid var(--rule)}
+td.n{font-family:var(--mono);text-align:right}
+th.n{text-align:right}
+.src{font-family:var(--ui);font-size:12px;color:var(--mute);margin-top:12px}
+</style></head>
+<body class="p-data">
+<div class="wrap">
+  <header class="hdr">
+    <div class="mark">Layoff<i>Leads</i></div>
+    <nav><a class="on">This week</a><a>Search</a><a>States</a><a>AI layoffs</a><a>Methodology</a><a>Pricing</a></nav>
+  </header>
+  <section class="hero">
+    <div>
+      <div class="label">WARN notices · 38 states + DC · counts as of Oct 14, 2026</div>
+      <h1>Who filed a layoff notice this week.</h1>
+      <p class="lede">Every row is a state WARN filing or a sourced news report, with the company, city, headcount and a link to the filing. Recruiters and B2B sales teams use it to find companies and teams in transition.</p>
+      <div style="margin-top:34px">
+        <div class="label">WARN notices per week, 2026</div>
+        <svg viewBox="0 0 760 250" width="100%" font-family="IBM Plex Mono" font-size="11">
+<line x1="36" x2="760" y1="222.0" y2="222.0" stroke="#D5CFC3" stroke-width="1"/><text x="28" y="226.0" text-anchor="end" fill="#6E685F">0</text>
+<line x1="36" x2="760" y1="169.0" y2="169.0" stroke="#D5CFC3" stroke-width="1"/><text x="28" y="173.0" text-anchor="end" fill="#6E685F">25</text>
+<line x1="36" x2="760" y1="116.0" y2="116.0" stroke="#D5CFC3" stroke-width="1"/><text x="28" y="120.0" text-anchor="end" fill="#6E685F">50</text>
+<line x1="36" x2="760" y1="63.0" y2="63.0" stroke="#D5CFC3" stroke-width="1"/><text x="28" y="67.0" text-anchor="end" fill="#6E685F">75</text>
+<line x1="36" x2="760" y1="10.0" y2="10.0" stroke="#D5CFC3" stroke-width="1"/><text x="28" y="14.0" text-anchor="end" fill="#6E685F">100</text>
+<rect x="38.0" y="63.0" width="22.8" height="159.0" fill="#141311"/>
+<rect x="64.8" y="122.4" width="22.8" height="99.6" fill="#141311"/>
+<text x="64.8" y="242" fill="#6E685F">Apr</text>
+<rect x="91.6" y="75.7" width="22.8" height="146.3" fill="#141311"/>
+<rect x="118.4" y="101.2" width="22.8" height="120.8" fill="#141311"/>
+<rect x="145.3" y="24.8" width="22.8" height="197.2" fill="#141311"/>
+<rect x="172.1" y="137.2" width="22.8" height="84.8" fill="#141311"/>
+<text x="172.1" y="242" fill="#6E685F">May</text>
+<rect x="198.9" y="160.5" width="22.8" height="61.5" fill="#141311"/>
+<rect x="225.7" y="126.6" width="22.8" height="95.4" fill="#141311"/>
+<rect x="252.5" y="158.4" width="22.8" height="63.6" fill="#141311"/>
+<rect x="279.3" y="137.2" width="22.8" height="84.8" fill="#141311"/>
+<text x="279.3" y="242" fill="#6E685F">Jun</text>
+<rect x="306.1" y="147.8" width="22.8" height="74.2" fill="#141311"/>
+<rect x="333.0" y="141.4" width="22.8" height="80.6" fill="#141311"/>
+<rect x="359.8" y="82.1" width="22.8" height="139.9" fill="#141311"/>
+<rect x="386.6" y="116.0" width="22.8" height="106.0" fill="#141311"/>
+<rect x="413.4" y="124.5" width="22.8" height="97.5" fill="#141311"/>
+<text x="413.4" y="242" fill="#6E685F">Jul</text>
+<rect x="440.2" y="143.6" width="22.8" height="78.4" fill="#141311"/>
+<rect x="467.0" y="156.3" width="22.8" height="65.7" fill="#141311"/>
+<rect x="493.9" y="137.2" width="22.8" height="84.8" fill="#141311"/>
+<rect x="520.7" y="109.6" width="22.8" height="112.4" fill="#141311"/>
+<text x="520.7" y="242" fill="#6E685F">Aug</text>
+<rect x="547.5" y="130.8" width="22.8" height="91.2" fill="#141311"/>
+<rect x="574.3" y="152.0" width="22.8" height="70.0" fill="#141311"/>
+<rect x="601.1" y="145.7" width="22.8" height="76.3" fill="#141311"/>
+<rect x="627.9" y="152.0" width="22.8" height="70.0" fill="#141311"/>
+<rect x="654.7" y="181.7" width="22.8" height="40.3" fill="#141311"/>
+<text x="654.7" y="242" fill="#6E685F">Sep</text>
+<rect x="681.6" y="169.0" width="22.8" height="53.0" fill="#141311"/>
+<rect x="708.4" y="166.9" width="22.8" height="55.1" fill="#141311"/>
+<rect x="735.2" y="149.9" width="22.8" height="72.1" fill="#B4381F"/>
+</svg>
+        <div class="src">Source: state WARN filings in this dataset, weeks of Mar 30 – Sep 28, 2026. Latest full week in red.</div>
+      </div>
+    </div>
+    <aside class="offer">
+      <div class="label">LayoffLeads Pro</div>
+      <div class="pr" style="margin-top:10px">$49 <small>/ month</small></div>
+      <ul>
+        <li>Full history since Jan 2025, every row</li>
+        <li>CSV export of any search</li>
+        <li>Weekly email alert for your states and companies</li>
+        <li>Methodology and source link on every row</li>
+      </ul>
+      <a class="btn">Start Pro</a>
+      <span class="alt">or $490 a year · cancel any time</span>
+    </aside>
+  </section>
+  <section class="grid2">
+    <div>
+      <div class="label">Latest filings</div>
+      <h2>Newest notices in the data</h2>
+      <table>
+        <tr><th>Filed</th><th>Company</th><th>Location</th><th class="n">Workers</th></tr>
+        <tr><td>Oct 6</td><td>Pactiv LLC</td><td>Aiken, SC</td><td class="n">133</td></tr>
+        <tr><td>Oct 5</td><td>Chronicle Heritage</td><td>Phoenix, AZ</td><td class="n">108</td></tr>
+        <tr><td>Oct 5</td><td>Zillow</td><td>Seattle, WA</td><td class="n">91</td></tr>
+        <tr><td>Oct 5</td><td>Salesforce</td><td>Seattle, Bellevue, WA</td><td class="n">59</td></tr>
+        <tr><td>Oct 4</td><td>Maynard Steel Casting Co.</td><td>Milwaukee, WI</td><td class="n">77</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="label">In the dataset</div>
+      <h2>What you are searching</h2>
+      <div class="facts">
+        <div><span>Layoff events on record</span><b>4,220</b></div>
+        <div><span>WARN filings since Jan 2025</span><b>4,087</b></div>
+        <div><span>AI-attributed news reports</span><b>114</b></div>
+        <div><span>States covered</span><b>38 + DC</b></div>
+        <div><span>Rebuilt</span><b>daily (target)</b></div>
+      </div>
+    </div>
+  </section>
+  <footer class="ftr"><div>LayoffLeads · an MDO3D data product</div><div><span>Privacy</span><span>Terms</span><span>Refunds</span><span>Contact</span></div></footer>
+</div>
+</body></html>

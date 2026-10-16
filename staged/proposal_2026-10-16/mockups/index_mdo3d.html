@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<title>MDO3D index (mockup)</title>
+<link rel="stylesheet" href="mdo-system.css">
+<style>
+body{font-size:19px;line-height:1.5}
+.hero{padding:88px 0 64px;display:grid;grid-template-columns:1fr 360px;align-items:end;gap:60px}
+h1{font-family:var(--ui);font-weight:700;font-size:84px;line-height:.98;letter-spacing:-.035em;margin-top:18px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-family:var(--body);font-size:22px;max-width:640px;margin-top:26px;opacity:.9}
+.counts{font-family:var(--ui);font-size:14px;color:var(--mute);line-height:1.9;text-align:right}
+.counts b{color:var(--fg)}
+.prod{display:grid;grid-template-columns:420px 1fr 300px;gap:56px;padding:44px 0;border-top:1px solid var(--rule);align-items:center}
+.prod h2{font-family:var(--ui);font-weight:700;font-size:40px;letter-spacing:-.025em;margin:10px 0 10px}
+.prod p{font-family:var(--body);font-size:19px;opacity:.88}
+.prod .go{margin-top:18px;font-family:var(--ui);font-size:14px;font-weight:600;color:var(--accent)}
+.prod .price{font-family:var(--ui);font-size:14px;color:var(--mute);margin-top:8px}
+.vis{height:220px;border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;position:relative}
+.vis.cards{display:flex;gap:12px;justify-content:center;align-items:center;background:#14111B}
+.vis.cards img{height:186px;border-radius:2px}
+.vis.rigor{background:#0F1B2E;color:#F2EBDD;padding:22px 26px;font-family:var(--ui)}
+.vis.rigor .t{font-family:"Playfair Display",serif;font-size:22px;color:#E2B13C}
+.vis.rigor .row{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid #2A3A55}
+.vis.rigor .score{font-family:"Playfair Display",serif;font-size:48px;line-height:1}
+.vis.tool{background:#0F1210;color:#CFE8D2;font-family:var(--mono);font-size:13px;padding:20px 24px;line-height:1.6}
+.vis.tool .k{color:#7FD493}.vis.tool .s{color:#E8D58A}
+.vis .cap{position:absolute;right:10px;bottom:8px;font-family:var(--ui);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8F897F}
+.data{padding:40px 0 56px;border-top:1px solid var(--rule)}
+.data h2{font-family:var(--ui);font-weight:700;font-size:30px;letter-spacing:-.02em;margin:10px 0 22px}
+.drow{display:grid;grid-template-columns:260px 1fr 330px 140px;gap:30px;padding:16px 0;border-top:1px solid var(--rule);align-items:baseline;font-family:var(--ui);font-size:16px}
+.drow b{font-size:19px}
+.drow .n{font-family:var(--mono);font-size:15px;color:var(--fg)}
+.drow .p{color:var(--mute);text-align:right}
+</style></head>
+<body class="p-index">
+<div class="wrap">
+  <header class="hdr">
+    <div class="mark"><svg viewBox="0 0 28 28"><rect x="1" y="1" width="26" height="26" rx="2" fill="none" stroke="#EEE8DD" stroke-width="2"/><path d="M7 20V8l7 7 7-7v12" fill="none" stroke="#E2B13C" stroke-width="2.4"/></svg>MDO3D</div>
+    <nav><a>Guidance</a><a>Rigor</a><a>mdothree</a><a>Data</a><a>About</a></nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="label">MDO3D · software and data</div>
+      <h1>Readings, career tools<br>and browser <em>utilities.</em></h1>
+      <p class="lede">Three products, plus the data and prompt packs we publish. Each one below shows what it does, what it costs and where to start.</p>
+    </div>
+    <div class="counts"><b>8</b> reading practices<br><b>7</b> career tools<br><b>9</b> browser utilities</div>
+  </section>
+
+  <section class="prod">
+    <div class="vis cards"><img src="art/RWS_Tarot_02_High_Priestess.jpg"><img src="art/RWS_Tarot_17_Star.jpg"><img src="art/RWS_Tarot_10_Wheel_of_Fortune.jpg"><span class="cap">Three-card draw</span></div>
+    <div><div class="label">01 · guidance.mdo3d.com</div><h2>Guidance</h2><p>Tarot, oracle, runes, I Ching, astrology, numerology, dreams and baby names. You see the draw, then choose a written reading.</p><div class="go">Draw a card →</div></div>
+    <div class="price">Readings $3 · $5 · $9<br>Five-reading pack $20</div>
+  </section>
+
+  <section class="prod">
+    <div class="vis rigor">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px"><div><div class="t">Resume check</div><div style="font-size:12px;color:#9FB0C8">Senior Product Analyst · sample</div></div><div class="score">82</div></div>
+      <div class="row"><span>Keywords matched to the posting</span><span>14 / 18</span></div>
+      <div class="row"><span>Sections a parser can read</span><span>6 / 6</span></div>
+      <div class="row"><span>Bullets with a number</span><span>5 / 11</span></div>
+      <span class="cap">Sample output</span>
+    </div>
+    <div><div class="label">02 · rigor.design</div><h2>Rigor</h2><p>Seven tools for an active job search: resume, cover letter, LinkedIn, interview, salary, portfolio and networking, in one workspace.</p><div class="go">Check a resume →</div></div>
+    <div class="price">Rigor Pro $10 / month<br>30-day search sprint $20</div>
+  </section>
+
+  <section class="prod">
+    <div class="vis tool">{<br>&nbsp;&nbsp;<span class="k">"invoice"</span>: <span class="s">"INV-2041"</span>,<br>&nbsp;&nbsp;<span class="k">"total"</span>: 1280.00,<br>&nbsp;&nbsp;<span class="k">"lines"</span>: [ <span class="s">"design"</span>, <span class="s">"build"</span> ]<br>}<br><span style="color:#8F897F">✓ valid JSON · formatted · 0.2 KB · stays in your browser</span><span class="cap">JSON tool</span></div>
+    <div><div class="label">03 · mdothree.com</div><h2>mdothree</h2><p>PDF, image, JSON, QR, text, color, hash, password and timestamp tools that run in your browser. Files never leave your machine.</p><div class="go">Open the tools →</div></div>
+    <div class="price">mdothree Pro $4 / month<br>(paid model: Principal's call)</div>
+  </section>
+
+  <section class="data">
+    <div class="label">Data</div>
+    <h2>Data and packs we publish</h2>
+    <div class="drow"><b>Daily AI Toll</b><span>Job cuts that companies tied to AI, sourced daily</span><span class="n">142 events · 145 companies</span><span class="p">Patron $8 / mo</span></div>
+    <div class="drow"><b>LayoffLeads</b><span>State WARN layoff notices for recruiters and sales</span><span class="n">4,220 events · 38 states + DC</span><span class="p">$49 / mo</span></div>
+    <div class="drow"><b>Prompts for Business</b><span>Prompt packs that produce one finished piece of work</span><span class="n">12 packs · 96 prompts</span><span class="p">From $14</span></div>
+  </section>
+
+  <footer class="ftr"><div>MDO3D · [operating entity: Principal to name]</div><div><span>About</span><span>Privacy</span><span>Terms</span><span>Refunds</span><span>Contact</span></div></footer>
+</div>
+</body></html>

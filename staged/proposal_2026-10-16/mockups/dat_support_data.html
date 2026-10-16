@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1440">
+<title>Daily AI Toll · patrons and data (mockup)</title>
+<link rel="stylesheet" href="mdo-system.css">
+<style>
+body{font-size:16px;line-height:1.55;font-family:var(--mono)}
+.hdr .mark{font-family:var(--mono);font-weight:500;font-size:17px}
+.hdr nav{font-family:var(--mono);letter-spacing:.04em}
+.top{display:grid;grid-template-columns:1fr 420px;gap:80px;padding:56px 0 40px;align-items:end}
+h1{font-family:var(--display);font-weight:600;font-size:54px;line-height:1.04;letter-spacing:-.025em;margin:14px 0 16px}
+.lede{font-family:var(--display);font-size:18px;color:#CFC9C0;max-width:620px}
+.big{font-family:var(--mono);font-size:64px;color:var(--accent);line-height:1;text-align:right}
+.big small{display:block;font-size:13px;color:var(--mute);margin-top:8px}
+h2{font-family:var(--display);font-weight:600;font-size:26px;letter-spacing:-.01em;margin:8px 0 18px}
+.sec{padding:36px 0;border-top:1px solid var(--rule)}
+.pat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.card{padding:24px;border:1px solid var(--rule);border-radius:var(--radius)}
+.card.main{border-color:var(--accent)}
+.card .pr{font-size:38px;color:var(--fg);margin:8px 0 2px}
+.card .pr small{font-size:14px;color:var(--mute)}
+.card ul{margin:14px 0 18px}
+.card li{list-style:none;padding:7px 0;border-top:1px solid var(--rule);font-size:13.5px;color:#D8D3CB}
+.card .btn{font-family:var(--mono);font-size:14px;padding:11px 16px}
+.pkgs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.pkg{padding:22px;border:1px solid var(--rule);border-radius:var(--radius);display:flex;flex-direction:column}
+.pkg h3{font-family:var(--display);font-size:20px;font-weight:600;margin:6px 0 8px}
+.pkg p{font-size:13px;color:#CFC9C0;flex:1}
+.pkg dl{margin:14px 0;font-size:12.5px}
+.pkg dt{color:var(--mute);margin-top:6px}
+.pkg dd{color:var(--fg)}
+.pkg .pr{font-size:26px;margin-top:6px}
+.pkg .pr small{font-size:12px;color:var(--mute)}
+.files{display:flex;gap:6px;margin-top:8px}
+.note{font-size:12.5px;color:var(--mute);margin-top:18px}
+</style></head>
+<body class="p-data dark">
+<div class="wrap">
+  <header class="hdr">
+    <div class="mark">▮ Daily AI Toll</div>
+    <nav><a>Toll</a><a>Trends</a><a class="on">Support &amp; data</a><a>Methodology</a><a>About</a></nav>
+  </header>
+
+  <section class="top">
+    <div>
+      <div class="label">Support the count · buy the data</div>
+      <h1>Patrons keep it running.<br>Packages put it to work.</h1>
+      <p class="lede">Every event is logged daily from public reporting, with the source, the stated cause and a confidence score. Patrons fund the collection. Packages deliver it cleaned, organized and ready to use.</p>
+    </div>
+    <div class="big">290,574<small>jobs reported cut and tied to AI · live total</small></div>
+  </section>
+
+  <section class="sec">
+    <div class="label">Patrons</div>
+    <h2>Fund the count</h2>
+    <div class="pat">
+      <div class="card main"><div class="label">Patron · monthly</div><div class="pr">$8<small> / month</small></div>
+        <ul><li>Name on the patrons page</li><li>The Monthly Brief (PDF) each month</li><li>The brief 48 hours before it posts</li><li>25% off every data package</li></ul><a class="btn">Become a patron</a></div>
+      <div class="card"><div class="label">Patron · yearly</div><div class="pr">$80<small> / year</small></div>
+        <ul><li>Everything in monthly</li><li>Two months covered by the yearly price</li><li>Year-end archive snapshot</li></ul><a class="btn ghost">Pay yearly</a></div>
+      <div class="card"><div class="label">Founding patron · organizations</div><div class="pr">$500<small> once</small></div>
+        <ul><li>Name, link and 250-word description</li><li>A year of patron benefits</li><li>Commercial archive license included</li></ul><a class="btn ghost">Contact us</a></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="label">Data packages</div>
+    <h2>Organized, packaged, ready to use</h2>
+    <div class="pkgs">
+      <div class="pkg"><div class="label">Monthly</div><h3>The Monthly Ledger</h3><p>Every event logged that month, deduplicated and reviewed, with a two-page brief: totals, the largest cuts, direct vs. contributing.</p>
+        <dl><dt>Format</dt><dd>CSV · XLSX · JSON · PDF brief</dd><dt>Cadence</dt><dd>By the 5th of each month</dd></dl><div class="pr">$12<small> per month's pack</small></div></div>
+      <div class="pkg"><div class="label">Archive</div><h3>The Full Archive</h3><p>Every event since January 2023 in one file, with a data dictionary, the methodology and a change log.</p>
+        <dl><dt>Format</dt><dd>CSV · XLSX · JSON</dd><dt>Cadence</dt><dd>Refreshed monthly · 3 refreshes included</dd></dl><div class="pr">$20<small> research</small><br>$150<small> commercial</small></div></div>
+      <div class="pkg"><div class="label">By sector</div><h3>Sector Packs</h3><p>The archive cut by industry: tech, finance, retail and logistics, media. Each pack adds six publish-ready charts.</p>
+        <dl><dt>Format</dt><dd>CSV · XLSX · charts as PNG + SVG</dd><dt>Cadence</dt><dd>Quarterly</dd></dl><div class="pr">$25<small> per sector</small></div></div>
+      <div class="pkg"><div class="label">Feed · commercial</div><h3>The Data Feed</h3><p>New and changed events each week with stable IDs, for dashboards, newsrooms and research teams.</p>
+        <dl><dt>Format</dt><dd>Weekly CSV + JSON endpoint</dd><dt>Cadence</dt><dd>Weekly, Mondays</dd></dl><div class="pr">$29<small> / month</small><br>$290<small> / year</small></div></div>
+    </div>
+    <p class="note">One-time purchases, processed by Stripe; subscriptions cancel any time. Figures are as reported by the cited sources; the headline framing is ours.</p>
+  </section>
+
+  <footer class="ftr"><div>Daily AI Toll · an MDO3D data product</div><div><span>Data license</span><span>Terms</span><span>Privacy</span><span>Refunds</span><span>Contact</span></div></footer>
+</div>
+</body></html>

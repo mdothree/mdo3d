@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>MDO3D before and after</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+@page{size:11in 8.5in;margin:0}
+:root{--ink:#141311;--paper:#F5F2EC;--mute:#6F695F;--rule:#D9D3C7;--accent:#B8862A;--red:#A8361F;--green:#2F6B3E}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:"Inter Tight",sans-serif;font-size:10.5pt;line-height:1.42;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:11in;height:8.5in;padding:.5in .55in .45in;position:relative;page-break-after:always;overflow:hidden;display:flex;flex-direction:column}
+.page:last-child{page-break-after:auto}
+.top{display:flex;justify-content:space-between;font-size:7.5pt;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);padding-bottom:9px;border-bottom:1px solid var(--rule);margin-bottom:16px}
+.foot{position:absolute;left:.55in;right:.55in;bottom:.22in;display:flex;justify-content:space-between;font-size:7pt;color:var(--mute)}
+h1{font-size:40pt;line-height:1;letter-spacing:-.03em;font-weight:700}
+h2{font-size:22pt;line-height:1.05;letter-spacing:-.02em;font-weight:700;margin-bottom:6px}
+h3{font-size:11pt;font-weight:700;margin-bottom:4px}
+.kick{font-size:7.5pt;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.lede{font-family:"EB Garamond",serif;font-size:14pt;line-height:1.35;max-width:7.2in}
+.serif{font-family:"EB Garamond",serif}
+.mono{font-family:"IBM Plex Mono",monospace}
+.tagb,.taga{display:inline-block;font-size:7pt;font-weight:700;letter-spacing:.14em;padding:3px 6px;border-radius:2px;color:#fff}
+.tagb{background:#7A7468}.taga{background:var(--accent)}
+.shot{border:1px solid var(--rule);border-radius:3px;width:100%;display:block}
+.cap{font-size:7.5pt;color:var(--mute);margin-top:4px}
+.box{border:1px solid var(--rule);border-radius:3px;padding:10px 12px;background:#FBF9F5}
+.box.key{border-color:var(--accent)}
+ul.t{list-style:none}
+ul.t li{padding:4px 0;border-top:1px solid var(--rule)}
+ul.t li:first-child{border-top:0}
+table{width:100%;border-collapse:collapse;font-size:8.6pt}
+th{text-align:left;font-size:7pt;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding:5px 6px;border-bottom:1px solid var(--ink)}
+td{padding:5px 6px;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n,th.n{text-align:right}
+.b{color:var(--red);font-weight:600}.g{color:var(--green);font-weight:600}
+.grid{display:grid;gap:14px}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.four .box h3{font-size:8pt;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.four .box p,.four .box li{font-size:8.6pt}
+.hostgrp{border:1px solid var(--rule);border-radius:3px;padding:8px 9px;background:#FBF9F5}
+.hostgrp h3{font-size:9pt}
+.host{font-family:"IBM Plex Mono",monospace;font-size:7.4pt;line-height:1.55}
+.host .x{color:var(--red)}
+.chip{display:inline-block;font-size:7pt;font-family:"IBM Plex Mono",monospace;border:1px solid var(--rule);border-radius:2px;padding:1px 4px;margin:1px 2px 1px 0;background:#fff}
+</style></head>
+<body>
+
+<!-- 1 COVER -->
+<section class="page" style="background:#141311;color:#EEE8DD">
+  <div class="top" style="color:#9C958A;border-color:#2A2724"><span>MDO3D · proposal for the Principal</span><span>2026-10-16 · draft · nothing published</span></div>
+  <div style="margin-top:.55in">
+    <div class="kick" style="color:#9C958A">Before and after</div>
+    <h1 style="font-size:54pt;margin-top:10px">MDO3D, at the<br>Butts Studios <span style="color:#E2B13C">bar.</span></h1>
+    <p class="lede" style="margin-top:18px;color:#D9D2C4">You asked to see a before and after before the MDO next-level work starts. Each “before” below is the live site as checked today. Each “after” is a static mockup in <span class="mono" style="font-size:10pt">~/mdo3d/staged/proposal_2026-10-16/</span>. Nothing on this page is live.</p>
+  </div>
+  <table style="margin-top:.4in;color:#EEE8DD;font-size:9pt">
+    <tr><th style="color:#9C958A;border-color:#EEE8DD">Part</th><th style="color:#9C958A;border-color:#EEE8DD">The change</th><th style="color:#9C958A;border-color:#EEE8DD">Effort</th><th style="color:#9C958A;border-color:#EEE8DD">Risk</th><th style="color:#9C958A;border-color:#EEE8DD">What we need from you</th></tr>
+    <tr><td style="border-color:#2A2724"><b>(a)</b> Design system</td><td style="border-color:#2A2724">One MDO look: shared header, footer, grid and type rules. Guidance gets the editorial look with real card art; data products share one template.</td><td style="border-color:#2A2724">M–L<br>~2–3 weeks</td><td style="border-color:#2A2724">Low–Med</td><td style="border-color:#2A2724">OK the look · pick the card-art route</td></tr>
+    <tr><td style="border-color:#2A2724"><b>(b)</b> 33 hosts → 3 products</td><td style="border-color:#2A2724">Guidance, Rigor and mdothree each become one address with paths; mdo3d.com becomes a plain index. Old links keep working through 301 redirects.</td><td style="border-color:#2A2724">L<br>~2–3 weeks</td><td style="border-color:#2A2724">Med</td><td style="border-color:#2A2724">OK the map · GoDaddy login · two GOs</td></tr>
+    <tr><td style="border-color:#2A2724"><b>(c)</b> Price ladder</td><td style="border-color:#2A2724">Price follows depth ($3 / $5 / $9), a $20 five-reading pack, every .99 removed, and recurring options where buyers come back.</td><td style="border-color:#2A2724">S–M<br>~1 week</td><td style="border-color:#2A2724">Low–Med</td><td style="border-color:#2A2724">OK this page; it releases the staged price run</td></tr>
+    <tr><td style="border-color:#2A2724"><b>DAT</b> Daily AI Toll</td><td style="border-color:#2A2724">A monthly patron tier plus four organized data packages. Merch comes later.</td><td style="border-color:#2A2724">M<br>~1–2 weeks</td><td style="border-color:#2A2724">Low</td><td style="border-color:#2A2724">OK the package list</td></tr>
+  </table>
+  <p style="margin-top:14px;font-size:8.5pt;color:#9C958A">Out of scope: blacklabb.com. Its future is undecided (your note, Oct 15), so nothing here plans around it. Prices are set within doctrine under your Oct 14 delegation: paid-only, no .99 prices, promo codes for early access.</p>
+  <div class="foot" style="color:#6F695F"><span>MDO_BEFORE_AFTER_PROPOSAL_2026-10-16</span><span>1</span></div>
+</section>
+
+<!-- 2 TODAY -->
+<section class="page">
+  <div class="top"><span>Where MDO stands today</span><span>Live-checked 2026-10-16 with curl and headless Chrome (xps)</span></div>
+  <h2>What a visitor finds today</h2>
+  <p class="lede" style="font-size:12.5pt;margin-bottom:14px">We fetched 40 MDO hostnames this morning. 38 answer with a page. Most of what follows comes from those pages, read the way a first-time buyer reads them.</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="box"><h3>Working well</h3><ul class="t" style="font-size:9pt">
+      <li>Every reading site has a working checkout, and the API checks the payment before it writes the reading.</li>
+      <li>LayoffLeads and Prompts for Business sell at clean prices: $49 / $490 and $14 / $59.</li>
+      <li>Daily AI Toll is the closest to the bar: restrained, monospace, one big number (290,574).</li>
+      <li>The Rigor tools no longer link to a Stripe checkout. Their button reads “Pro: coming soon”.</li>
+      <li>The BlackLabb footer on numerology is gone.</li></ul></div>
+    <div class="box"><h3>Costing trust</h3><ul class="t" style="font-size:9pt">
+      <li><span class="b">Dreams</span> shows <b>$4.99</b> and a <b>“Basic $0”</b> plan. Names shows <b>$2.99</b>.</li>
+      <li>Tarot charges <b>$10</b> for three cards and <b>$10</b> for ten. Runes charges $10 for both three and five.</li>
+      <li>Feng Shui and Past Life show <b>no price</b> until you submit the form.</li>
+      <li>None of the reading sites shows a card, rune or hexagram.</li>
+      <li><span class="mono">api.rigor.design/api/health</span> returns <b>404</b>, so the Rigor tools fail after sign-in.</li>
+      <li><span class="mono">leads.mdo3d.com</span> returns <b>530</b> (the tunnel is down).</li></ul></div>
+    <div class="box"><h3>Spread thin</h3><ul class="t" style="font-size:9pt">
+      <li><b>33</b> consumer hostnames serve about <b>3</b> real products.</li>
+      <li>We counted <b>7</b> visual languages across them.</li>
+      <li>The hub headline is <span class="serif">“One ecosystem. Many dimensions of intelligence.”</span> It says what MDO3D is, not what a visitor can do.</li>
+      <li><span class="mono">jarvisbee.com</span> is a GoDaddy parking page with ad tiles.</li>
+      <li><span class="mono">blacklabb.com</span> returns a Bubble 404. It is out of scope (your call is pending).</li></ul></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:14px">
+    <div><img class="shot" src="img/b__bar_buttsstudios_2026-10-14.jpg" style="height:2.45in;object-fit:cover;object-position:top"><div class="cap">The bar: buttsstudios.com (capture 2026-10-14). One claim, an editorial pair of typefaces, true numbers, one next step.</div></div>
+    <div><img class="shot" src="img/b_mdo3d.jpg" style="height:2.45in;object-fit:cover;object-position:top"><div class="cap">mdo3d.com today (capture 2026-10-16). A purple template, emoji cards and no price anywhere.</div></div>
+  </div>
+  <div class="foot"><span>Sources: staged/proposal_2026-10-16/live/curl_2026-10-16.txt · audits/mdo_2026-10-14</span><span>2</span></div>
+</section>
+
+<!-- 3 (a) BEFORE -->
+<section class="page">
+  <div class="top"><span>(a) One MDO design system</span><span>Before</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px"><div><span class="tagb">BEFORE</span><h2 style="margin-top:6px">Seven looks, no imagery</h2></div><p style="max-width:4.4in;font-size:9.5pt;color:var(--mute)">Each MDO site picks its own typeface, palette and buttons. A visitor who clicks from Guidance into Tarot seems to land on another company's site. Every capture below is from 2026-10-16.</p></div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:10px">
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_guidance.jpg"><div class="cap">guidance.mdo3d.com: editorial and the closest to the bar, but no price or sample</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_tarot.jpg"><div class="cap">tarot: a purple gradient, $10 for both 3 and 10 cards, no cards on screen</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_dreams.jpg"><div class="cap">dreams: a pink gradient, $4.99, and a “Basic $0” plan</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_fengshui.jpg"><div class="cap">fengshui: a long form, no top navigation, no price until you submit</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_names.jpg"><div class="cap">names: the best-written offer, on an unstyled default HTML page</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_runes.jpg"><div class="cap">runes: a grey serif template, $10 for both 3 and 5 runes</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_rigor.jpg"><div class="cap">rigor.design: an emoji grid of 7 cards marked “Beta”, no nav, no footer</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_ll.jpg"><div class="cap">layoffleads.com: a generic SaaS template, shared with Prompts for Business</div></div>
+    <div><img class="shot" style="height:1.6in;object-fit:cover;object-position:top" src="img/b_mdothree.jpg"><div class="cap">mdothree.com: emoji tool cards with a “Live” badge on every card</div></div>
+  </div>
+  <div class="foot"><span>Captures: staged/proposal_2026-10-16/before/ (xps headless Chrome, 1440×900)</span><span>3</span></div>
+</section>
+
+<!-- 4 (a) AFTER guidance -->
+<section class="page">
+  <div class="top"><span>(a) One MDO design system</span><span>After · Guidance reading page (mockup)</span></div>
+  <div class="grid" style="grid-template-columns:auto 1fr;gap:18px;flex:1">
+    <div style="width:5.75in"><img class="shot" src="img/a_guidance_tarot.jpg" style="height:6.3in;width:auto"><div class="cap">Mockup: guidance.mdo3d.com/tarot. Source: staged/proposal_2026-10-16/mockups/guidance_tarot.html. Card art: Rider–Waite–Smith deck, 1909, public domain. The example reading is placeholder copy.</div></div>
+    <div>
+      <span class="taga">AFTER</span>
+      <h2 style="margin-top:6px;font-size:18pt">The draw first, the price next to it, the reading shown before you buy</h2>
+      <ul class="t" style="font-size:9pt;margin-top:8px">
+        <li><b>Real card art.</b> You see the three cards you drew. Today no reading site shows a card.</li>
+        <li><b>One look for all ten practices:</b> Cormorant and EB Garamond type, ink-violet, gold hairlines. It grows out of today's guidance page.</li>
+        <li><b>“What $5 buys”</b> lists the reading's length and parts, with an excerpt, before checkout.</li>
+        <li><b>The pack</b> is offered once, on every page.</li>
+        <li><b>The throughline:</b> the same header, footer, label style, 3 px corners and full hairline borders as every MDO site. There are no pills or emoji.</li>
+      </ul>
+      <div class="box key" style="margin-top:10px;font-size:8.8pt"><b>Card-art routes (your pick)</b><br>
+        <b>1.</b> Rider–Waite–Smith, public domain: all 78 cards ready now, at no cost.<br>
+        <b>2.</b> A commissioned MDO deck: one look across tarot, oracle (44 cards), runes and hexagrams. About 4–8 weeks.<br>
+        Runes, hexagrams and zodiac glyphs are line art, so we draw those in-house either way.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Mockup rendered on xps · fonts: Google Fonts</span><span>4</span></div>
+</section>
+
+<!-- 5 (a) AFTER data template -->
+<section class="page">
+  <div class="top"><span>(a) One MDO design system</span><span>After · shared data-product template (mockup)</span></div>
+  <div class="grid" style="grid-template-columns:auto 1fr;gap:18px">
+    <div style="width:5.25in"><img class="shot" src="img/a_data_layoffleads.jpg" style="height:4.7in;width:auto"><div class="cap">Mockup: layoffleads.com on the shared template. The chart is real: weekly WARN notices from the LayoffLeads dataset, Mar 30 – Sep 28, 2026. The five rows are the newest filings in the data.</div></div>
+    <div>
+      <span class="taga">AFTER</span>
+      <h2 style="margin-top:6px;font-size:18pt">Show the data itself, then one offer</h2>
+      <ul class="t" style="font-size:9pt;margin-top:8px">
+        <li>A real chart and real rows take the place of five stat boxes.</li>
+        <li>One offer box gives one price and one button.</li>
+        <li>The template has a <b>light</b> variant (LayoffLeads, Prompts for Business) and a <b>dark</b> one (Daily AI Toll, page 12). One redesign lifts all three.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="four" style="margin-top:12px">
+    <div class="box"><h3>For a visitor</h3><p>Every MDO site reads as one maker. Prices and samples come before checkout, and reading sites show real cards. Each site is recognizably itself, but they share a throughline.</p></div>
+    <div class="box"><h3>Effort</h3><p>Tokens, header and footer: 2–3 agent-days. 10 reading apps: 5–7 days (2 are Next.js). Data template ×3: 3–4 days. All agent work; it ships in one batch.</p></div>
+    <div class="box"><h3>Risk</h3><p>Low to medium. A restyle could break a buy button, so we test each checkout in Stripe test mode before deploying. The deploy cap is 100 a day, so the work ships in batches.</p></div>
+    <div class="box key"><h3>Needs you</h3><p>(1) OK the two looks on pages 4–5. (2) Choose card-art route 1 or 2. Web-copy deploys run under the standing authorization; anything touching checkout or an API waits for your GO.</p></div>
+  </div>
+  <div class="foot"><span>Mockup source: staged/proposal_2026-10-16/mockups/data_layoffleads.html + mdo-system.css</span><span>5</span></div>
+</section>
+
+<!-- 6 (b) BEFORE host map -->
+<section class="page">
+  <div class="top"><span>(b) 33 hostnames → 3 products</span><span>Before · live status 2026-10-16</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px"><div><span class="tagb">BEFORE</span><h2 style="margin-top:6px">33 addresses for 3 products</h2></div><p style="max-width:4.6in;font-size:9.5pt;color:var(--mute)">Each hostname has its own header, footer, legal pages, pricing logic and design, so every fix gets repeated about 25 times. All 33 answer with HTTP 200, but some of those 200s are not the right page (marked in red).</p></div>
+  <div class="grid" style="grid-template-columns:1.25fr 1fr 1fr 1fr;gap:10px">
+    <div class="hostgrp"><h3>Guidance · 13 hosts</h3><div class="host">mdo3d.com <span style="color:var(--mute)">(hub)</span><br>guidance.mdo3d.com<br>tarot.mdo3d.com<br>oracle.mdo3d.com<br>runes.mdo3d.com<br>iching.mdo3d.com<br>dreams.mdo3d.com<br>astrology.mdo3d.com<br>numerology.mdo3d.com<br>fengshui.mdo3d.com<br>pastlife.mdo3d.com<br>names.mdo3d.com<br>compare.mdo3d.com <span style="color:var(--mute)">(ClawBench, off-topic)</span></div></div>
+    <div class="hostgrp"><h3>mdothree · 10 hosts</h3><div class="host">mdothree.com<br>pdf.mdothree.com<br>image.mdothree.com<br>json.mdothree.com<br>qr.mdothree.com<br>text.mdothree.com<br>color.mdothree.com<br>hash.mdothree.com<br>password.mdothree.com<br>timestamp.mdothree.com</div></div>
+    <div class="hostgrp"><h3>Rigor · 9 hosts</h3><div class="host">rigor.design<br>resume.rigor.design<br>cover.rigor.design<br>linkedin.rigor.design<br>interview.rigor.design<br>salary.rigor.design<br>portfolio.rigor.design<br>networking.rigor.design<br><span class="x">api.rigor.design</span> <span style="color:var(--mute)">(serves the landing page; /api 404)</span></div></div>
+    <div class="hostgrp"><h3>Stray · 1 host</h3><div class="host"><span class="x">jarvisbee.com</span><br><span style="color:var(--mute)">GoDaddy parking page with ad tiles; its baby-names app moved to names.mdo3d.com</span></div>
+      <h3 style="margin-top:12px">Not in the 33 (they stay as they are)</h3><div class="host">dailyaitoll.com<br>layoffleads.com<br>promptsforbusiness.com<br><span class="x">leads.mdo3d.com</span> <span style="color:var(--mute)">530</span><br>ronnascanner.com (+5)<br>runwae.com<br><span style="color:var(--mute)">blacklabb.com: undecided, out of scope</span></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+    <div class="box"><b>What this costs us.</b> Each host is its own Vercel project, with its own cookie banner, legal links, pricing file and deploys. The pricing change alone needs 33 builds against a cap of 100 a day.</div>
+    <div class="box"><b>What it costs a visitor.</b> Ten addresses to remember for one practice area. A reading credit lives in one subdomain's browser storage, so it is invisible on the others. There is no single “your readings” page.</div>
+  </div>
+  <div class="foot"><span>Source: live/curl_2026-10-16.txt (status, final URL, title, visible prices per host)</span><span>6</span></div>
+</section>
+
+<!-- 7 (b) AFTER map -->
+<section class="page">
+  <div class="top"><span>(b) 33 hostnames → 3 products</span><span>After · the map</span></div>
+  <div style="margin-bottom:12px"><span class="taga">AFTER</span><h2 style="margin-top:6px">Three addresses, paths underneath, and one index</h2></div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:10px">
+    <div class="hostgrp" style="border-color:var(--ink)"><h3>mdo3d.com · index</h3><div class="host">/ products + data<br>/about · /contact<br>/privacy · /terms · /refunds</div><p style="font-size:8pt;color:var(--mute);margin-top:6px">A studio index in the Butts Studios register (next page).</p></div>
+    <div class="hostgrp" style="border-color:var(--accent)"><h3>guidance.mdo3d.com</h3><div class="host">/tarot /oracle /runes<br>/iching /astrology<br>/numerology /dreams<br>/fengshui /pastlife<br>/names · /readings <span style="color:var(--mute)">(yours)</span></div><p style="font-size:8pt;color:var(--mute);margin-top:6px">← 11 subdomains (301) + jarvisbee.com</p></div>
+    <div class="hostgrp" style="border-color:var(--accent)"><h3>rigor.design</h3><div class="host">/resume /cover<br>/linkedin /interview<br>/salary /portfolio<br>/networking · /pro</div><p style="font-size:8pt;color:var(--mute);margin-top:6px">← 7 subdomains (301). api.rigor.design stays as the API, out of sight.</p></div>
+    <div class="hostgrp" style="border-color:var(--accent)"><h3>mdothree.com</h3><div class="host">/pdf /image /json<br>/qr /text /color<br>/hash /password<br>/timestamp · /pro</div><p style="font-size:8pt;color:var(--mute);margin-top:6px">← 9 subdomains (301)</p></div>
+  </div>
+  <table style="margin-top:14px">
+    <tr><th>Today</th><th>After</th><th>How</th><th>Gate</th></tr>
+    <tr><td class="mono">tarot.mdo3d.com/?q=…</td><td class="mono">guidance.mdo3d.com/tarot/?q=…</td><td>Vercel rewrites on the guidance project. Each app stays its own deploy (low risk); the old host returns a 301 that keeps the path and query.</td><td>Standing (web)</td></tr>
+    <tr><td class="mono">names.mdo3d.com/success?session_id=…</td><td>kept live 90 days, then 301</td><td>Payment Links redirect buyers to the old success URL, so it must keep working.</td><td>Standing (web)</td></tr>
+    <tr><td class="mono">resume.rigor.design</td><td class="mono">rigor.design/resume</td><td>One sign-in for all 7 tools. The Firebase authorized domains and auth redirect change.</td><td class="b">Your GO (auth)</td></tr>
+    <tr><td class="mono">jarvisbee.com</td><td class="mono">guidance.mdo3d.com/names</td><td>Turn off GoDaddy parking and add a 301 at the registrar.</td><td class="b">GoDaddy login</td></tr>
+    <tr><td class="mono">compare.mdo3d.com</td><td>mdothree.com/compare, or retire</td><td>ClawBench has nothing to do with readings.</td><td class="b">Your call</td></tr>
+  </table>
+  <div class="foot"><span>Plan detail: audits/mdo_2026-10-14/CONSUMER_AUDIT.md §5</span><span>7</span></div>
+</section>
+
+<!-- 8 (b) AFTER index -->
+<section class="page">
+  <div class="top"><span>(b) 33 hostnames → 3 products</span><span>After · mdo3d.com index (mockup)</span></div>
+  <div class="grid" style="grid-template-columns:4.9in 1fr;gap:18px">
+    <div><img class="shot" src="img/a_index_mdo3d.jpg" style="height:6.55in;object-fit:cover;object-position:top"><div class="cap">Mockup: mdo3d.com. Source: mockups/index_mdo3d.html. The counts and prices are today's real figures or the proposed (c) prices.</div></div>
+    <div>
+      <span class="taga">AFTER</span>
+      <h2 style="margin-top:6px;font-size:18pt">An index of what MDO3D sells, in place of an “ecosystem”</h2>
+      <ul class="t" style="font-size:9pt;margin-top:8px">
+        <li>The headline names the three things. Each product row shows the product working: a card draw, a sample resume score, a JSON tool.</li>
+        <li>Every row gives its price and one next step.</li>
+        <li>The data and packs sit on their own shelf with one true number each (142 events, 4,220 events, 96 prompts).</li>
+        <li>The vapor rows, the “Live” and “Beta” badges and the “5 Categories” filler come out.</li>
+      </ul>
+      <div class="four" style="grid-template-columns:1fr 1fr;margin-top:12px">
+        <div class="box"><h3>For a visitor</h3><p>One address per product. Old links still land in the right place. One “your readings” page across the practices.</p></div>
+        <div class="box"><h3>Effort</h3><p>L overall: Guidance rewrites 4–5 days, mdothree 3 days, Rigor 4–5 days, index 2 days.</p></div>
+        <div class="box"><h3>Risk</h3><p>A search-ranking dip for 2–6 weeks while the 301s settle. Reading credits stored per subdomain must carry over: old hosts keep their success pages for 90 days.</p></div>
+        <div class="box key"><h3>Needs you</h3><p>OK the map · GoDaddy login (jarvisbee) · GO for the Rigor auth-domain change · fate of compare.mdo3d.com · the operating entity named in the footer.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Mockup rendered on xps</span><span>8</span></div>
+</section>
+
+<!-- 9 (c) prices -->
+<section class="page">
+  <div class="top"><span>(c) Pricing ladder</span><span>Before = live today · After = proposed</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px"><div><h2>Price follows depth. No .99. Nothing free.</h2></div><p style="max-width:4.2in;font-size:9.5pt;color:var(--mute)">Every “before” price was read off the live page this morning. The after prices for readings, names, Rigor and Ronna are already staged in <span class="mono">staged/pricing/PRICING_GO.sh</span>. It has not run.</p></div>
+  <table>
+    <tr><th>Product</th><th><span class="tagb">BEFORE</span> live 2026-10-16</th><th><span class="taga">AFTER</span> proposed</th><th>Why</th></tr>
+    <tr><td><b>Tarot / Oracle</b></td><td>1 card $5 · 3 cards $10 · Celtic Cross (10) <span class="b">$10</span></td><td><b>$3 · $5 · $9</b></td><td>Ten cards cost the same as three today</td></tr>
+    <tr><td><b>Runes</b></td><td>1 rune $5 · 3 runes $10 · 5 runes <span class="b">$10</span></td><td><b>$3 · $5 · $9</b></td><td>Same flat top</td></tr>
+    <tr><td><b>I Ching · Astrology · Numerology</b></td><td>$5 each (one depth shown)</td><td><b>$3</b> single · <b>$5</b> deeper (changing lines, compatibility) · numerology full chart <b>$9</b></td><td>A depth ladder on each</td></tr>
+    <tr><td><b>Dreams</b></td><td><span class="b">$4.99</span> · “Basic <span class="b">$0</span>”</td><td><b>$3</b>; the $0 plan comes out (the symbol list stays as a sample)</td><td>.99 and a free plan break doctrine</td></tr>
+    <tr><td><b>Feng Shui · Past Life</b></td><td>No price shown until you submit</td><td><b>$3 · $5 · $9</b>, shown before the form</td><td>Show the price before asking for effort</td></tr>
+    <tr><td><b>Baby Names</b></td><td><span class="b">$2.99</span></td><td><b>$3</b></td><td>No .99</td></tr>
+    <tr><td><b>Guidance pack</b> <span style="color:var(--mute)">(new)</span></td><td>None: every reading is a fresh decision</td><td><b>$20</b> for 5 readings, any practice and depth, kept on your email</td><td>Buy once, explore across practices</td></tr>
+    <tr><td><b>Rigor Pro</b></td><td><span class="b">$9.99</span>/mo shown; “coming soon”; the API is down</td><td><b>$10</b>/mo or a <b>$20</b> 30-day search sprint, on sale only once the API works</td><td>Job seekers buy for a burst, not forever</td></tr>
+    <tr><td><b>mdothree Pro</b></td><td>“$4/month” on the page, while Stripe holds <span class="b">$4.99</span> / <span class="b">$39.99</span>; not on sale</td><td><b>$4</b>/mo · <b>$36</b>/yr, one figure everywhere</td><td>Shown and charged must match</td></tr>
+    <tr><td><b>Ronna Scanner Pro</b></td><td>Waitlist; /pricing blank</td><td><b>$10</b>/mo, still waitlist</td><td>Staged; nothing to sell yet</td></tr>
+    <tr><td><b>LayoffLeads · Prompts for Business</b></td><td>$49/mo · $490/yr · $14 pack · $59 all</td><td><b>No change</b></td><td>Already clean</td></tr>
+    <tr><td><b>Daily AI Toll</b></td><td>$5 / $50 CSV · patrons $25 / $100 / $500 once</td><td>Patron <b>$8</b>/mo + 4 packages (pages 11–12)</td><td>Recurring, priced to the work</td></tr>
+  </table>
+  <div class="foot"><span>Pricing delegated to the Bridge within doctrine (DECISIONS 2026-10-14 19:40) · old Payment Links stay active; the sites stop linking to them</span><span>9</span></div>
+</section>
+
+<!-- 10 (c) visitor/effort/risk -->
+<section class="page">
+  <div class="top"><span>(c) Pricing ladder</span><span>What changes, effort, risk</span></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:18px">
+    <div><span class="tagb">BEFORE</span><img class="shot" src="img/b_tarot.jpg" style="margin-top:6px"><div class="cap">tarot.mdo3d.com today: three tiers, two priced $10, and “Premium” badges on both.</div></div>
+    <div><span class="taga">AFTER</span><img class="shot" src="img/a_guidance_tarot.jpg" style="margin-top:6px;height:3.05in;object-fit:cover;object-position:top"><div class="cap">The ladder in place: $3 / $5 / $9, sitting under the drawn cards.</div></div>
+  </div>
+  <div class="four" style="margin-top:16px">
+    <div class="box"><h3>For a visitor</h3><ul class="t"><li>A cheaper first step ($3).</li><li>More cards cost more.</li><li>One pack covers the whole practice area.</li><li>No .99 prices and no $0 plan.</li><li>Rigor sells a 30-day pass that fits a job search.</li></ul></div>
+    <div class="box"><h3>Effort</h3><ul class="t"><li>The ladder, names, Rigor and Ronna are already built and staged: about 1 day to run, including 33 builds.</li><li>The pack and the Rigor sprint are new: about 3–4 days, since an email-based balance replaces today's per-device credit.</li></ul></div>
+    <div class="box"><h3>Risk</h3><ul class="t"><li>A $3 single may pull some buyers down from $5. The pack and the depth steps are there to offset that.</li><li>Stripe objects are created with idempotency keys and old links stay active.</li><li>Tests run first on xps, which needs 25 GB free and has 14 GB today. The run waits on disk space.</li></ul></div>
+    <div class="box key"><h3>Needs you</h3><ul class="t"><li>Your OK on pages 9–10 releases the staged price run. The prices themselves are delegated.</li><li>Your GO for the pack and Rigor-sprint backend. Both are payment code, so they stay gated.</li><li>The mdothree paid model is still your open call.</li></ul></div>
+  </div>
+  <div class="foot"><span>Run book: ~/mdo3d/staged/pricing/README.md</span><span>10</span></div>
+</section>
+
+<!-- 11 DAT before/after -->
+<section class="page">
+  <div class="top"><span>Daily AI Toll · paid product</span><span>Your direction: “patron, and the organized packaged data. Eventually merch.”</span></div>
+  <div class="grid" style="grid-template-columns:3.6in 1fr;gap:18px">
+    <div><span class="tagb">BEFORE</span><img class="shot" src="img/b_datpricing.jpg" style="margin-top:6px"><div class="cap">dailyaitoll.com/pricing today: $5 and $50 one-time CSV licenses. Patrons pay $25, $100 or $500 once. “Nothing renews.” The patrons list is empty.</div>
+      <div class="box" style="margin-top:12px;font-size:9pt"><b>What's weak today</b><ul class="t" style="margin-top:4px"><li>$5 is less than handling a sale costs.</li><li>Nothing recurs, so a patron gives once and hears nothing back.</li><li>The data comes as one raw CSV, with no package or brief.</li><li>The fallback CSV has duplicate rows. The integrity fix (P0) comes first.</li></ul></div></div>
+    <div><span class="taga">AFTER</span><img class="shot" src="img/a_dat_support_data.jpg" style="margin-top:6px;height:6.35in;object-fit:cover;object-position:top"><div class="cap">Mockup: dailyaitoll.com/support. Source: mockups/dat_support_data.html (the dark variant of the data template).</div></div>
+  </div>
+  <div class="foot"><span>Live: /pricing, /patrons, /api/health checked 2026-10-16</span><span>11</span></div>
+</section>
+
+<!-- 12 DAT packages -->
+<section class="page">
+  <div class="top"><span>Daily AI Toll · paid product</span><span>What's in each package</span></div>
+  <h2>Patron tier and four packages</h2>
+  <table style="margin-top:8px">
+    <tr><th>Offer</th><th>What's in it</th><th>Format</th><th>Cadence</th><th class="n">Price</th></tr>
+    <tr><td><b>Patron</b></td><td>Name on the patrons page; the Monthly Brief (PDF) 48 h before it posts; 25% off every package via a promo code</td><td>PDF brief + email</td><td>Monthly</td><td class="n"><b>$8</b>/mo · <b>$80</b>/yr</td></tr>
+    <tr><td><b>Founding patron</b></td><td>Name, link and a 250-word description (as today) + a year of patron benefits + the commercial archive license</td><td>—</td><td>Once</td><td class="n"><b>$500</b></td></tr>
+    <tr><td><b>The Monthly Ledger</b></td><td>Every event logged that month, deduplicated and reviewed, plus a 2-page brief: totals, the largest cuts, direct vs contributing, sources</td><td>CSV · XLSX · JSON · PDF</td><td>By the 5th</td><td class="n"><b>$12</b> per month</td></tr>
+    <tr><td><b>The Full Archive</b></td><td>Every event since Jan 2023 (event date, company, jobs, cause, confidence, source link), a data dictionary, the methodology and a change log; 3 monthly refreshes included</td><td>CSV · XLSX · JSON</td><td>Monthly refresh</td><td class="n"><b>$20</b> research · <b>$150</b> commercial</td></tr>
+    <tr><td><b>Sector Packs</b></td><td>The archive cut by industry (tech, finance, retail and logistics, media) + 6 publish-ready charts + a one-page summary</td><td>CSV · XLSX · PNG + SVG</td><td>Quarterly</td><td class="n"><b>$25</b> per sector</td></tr>
+    <tr><td><b>The Data Feed</b></td><td>New and changed events each week with stable IDs, for newsrooms, dashboards and research teams; commercial use</td><td>Weekly CSV + JSON endpoint</td><td>Weekly, Mondays</td><td class="n"><b>$29</b>/mo · <b>$290</b>/yr</td></tr>
+    <tr><td style="color:var(--mute)"><b>Merch</b></td><td style="color:var(--mute)">Later, as you said. It gets no page and no “coming soon” until it exists. The obvious first piece is a dated “toll” print from the live number, through the apparel print-on-demand path.</td><td style="color:var(--mute)">—</td><td style="color:var(--mute)">Phase 3</td><td class="n" style="color:var(--mute)">—</td></tr>
+  </table>
+  <div class="four" style="margin-top:14px">
+    <div class="box"><h3>For a visitor</h3><p>Two clear ways in: support the count monthly, or buy the data packaged for a use. Each package says its format and cadence.</p></div>
+    <div class="box"><h3>Effort</h3><p>Patron subscription + the 4 packages: 5–7 agent-days. The checkout and verified download already exist. Sector packs need a sector tag added to every event (2 days).</p></div>
+    <div class="box"><h3>Risk</h3><p>Low, once the data is clean. Before anything sells: the integrity fix (no “undisclosed” = 5,000, no double-counted rounds, no 12-month totals counted as one event) and a rebuilt paid file.</p></div>
+    <div class="box key"><h3>Needs you</h3><p>OK this list. Deploying the new checkout and webhook is a payments surface, so it waits for your GO. Today's $5 / $50 links stay active; the page stops featuring them.</p></div>
+  </div>
+  <div class="foot"><span>Dataset today: 142 events · 145 companies · 290,574 jobs (live) · fields per web/data/events.csv</span><span>12</span></div>
+</section>
+
+<!-- 13 Needs + order -->
+<section class="page">
+  <div class="top"><span>Decisions and order</span><span>One page to answer</span></div>
+  <h2>What we need from you, and what runs without you</h2>
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:18px;margin-top:10px">
+    <div class="box key"><h3>Your calls (taste and strategy)</h3><ul class="t" style="font-size:9.5pt">
+      <li><b>(a)</b> OK the Guidance look and the data template (pages 4–5).</li>
+      <li><b>(a)</b> Card art: <b>1</b> public-domain Rider–Waite–Smith now, or <b>2</b> a commissioned MDO deck.</li>
+      <li><b>(b)</b> OK the three-address map (page 7). Keep or retire compare.mdo3d.com.</li>
+      <li><b>(b)</b> Which legal entity appears in the MDO footers.</li>
+      <li><b>(c)</b> OK pages 9–10. That releases the staged price run.</li>
+      <li><b>DAT</b> OK the patron tier and the four packages (page 12).</li>
+      <li>Still open from before: the mdothree paid model, and blacklabb.com (out of scope here).</li></ul></div>
+    <div class="box"><h3>Tokens and GOs (doctrine-gated)</h3><ul class="t" style="font-size:9.5pt">
+      <li>GoDaddy login, to point jarvisbee.com at Guidance (goes to SETUP_TODO).</li>
+      <li>GO: Rigor auth-domain change (Firebase), and deploy api.rigor.design.</li>
+      <li>GO: the pack, the Rigor sprint, and the DAT patron and package checkout (payments).</li></ul>
+      <h3 style="margin-top:12px">Runs without you once you OK the shape</h3><ul class="t" style="font-size:9.5pt">
+      <li>Design tokens, the header and footer, and the restyle of all reading and data pages.</li>
+      <li>Path rewrites and 301s for Guidance and mdothree.</li>
+      <li>The mdo3d.com index and the honest-count copy.</li>
+      <li>The DAT integrity fix and the package builds (staged, then your GO to sell).</li></ul></div>
+  </div>
+  <table style="margin-top:14px">
+    <tr><th>Week</th><th>Design (a)</th><th>Hosts (b)</th><th>Prices (c)</th><th>Daily AI Toll</th></tr>
+    <tr><td>1</td><td>Tokens, header, footer; Guidance tarot page</td><td>mdo3d.com index; mdothree paths</td><td>Staged price run (needs xps disk)</td><td>Integrity fix; Monthly Ledger build</td></tr>
+    <tr><td>2</td><td>9 more reading apps; data template ×3</td><td>Guidance paths + 301s</td><td>Pack + Rigor sprint, staged for GO</td><td>Patron subscription + packages, staged for GO</td></tr>
+    <tr><td>3</td><td>Card art in place (route 1) or placeholders (route 2)</td><td>Rigor paths after GO; jarvisbee after login</td><td>—</td><td>Sector tags; Data Feed</td></tr>
+  </table>
+  <p style="margin-top:10px;font-size:8pt;color:var(--mute)">All four parts run in parallel, so no project waits on another. Sources: ~/mdo3d/staged/proposal_2026-10-16/ (mockups, live curl log, captures) · ~/latarence/coordination/audits/mdo_2026-10-14/ (audits and plan).</p>
+  <div class="foot"><span>MDO_BEFORE_AFTER_PROPOSAL_2026-10-16 · prepared by the MDO lane for the latarence Bridge</span><span>13</span></div>
+</section>
+
+</body></html>

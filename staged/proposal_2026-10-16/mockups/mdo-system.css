@@ -1,0 +1,41 @@
+/* MDO design system v0 (proposal mockup, 2026-10-16). One throughline, a per-product voice.
+   Rules: radius <= 4px, no pills, no one-sided accent borders, hairline rules, real imagery, one offer + one next step. */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+
+:root{
+  /* shared throughline */
+  --radius:3px;
+  --ui:"Inter Tight",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --gutter:88px;
+  --maxw:1264px;
+  /* index (mdo3d.com) */
+  --ink:#0E0D0C; --paper:#EEE8DD; --mute:#9C958A; --rule:#2A2724; --accent:#E2B13C;
+}
+/* product voices: same grid, header, footer, label style; different face and accent */
+.p-guidance{ --bg:#14111B; --fg:#EDE6D8; --mute:#A79F92; --rule:#3A3345; --accent:#C9A24A; --display:"Cormorant Garamond",serif; --body:"EB Garamond",serif; }
+.p-data    { --bg:#F3F0E9; --fg:#141311; --mute:#6E685F; --rule:#D5CFC3; --accent:#B4381F; --display:"IBM Plex Sans",sans-serif; --body:"IBM Plex Sans",sans-serif; }
+.p-data.dark{ --bg:#111111; --fg:#ECE8E1; --mute:#8D877E; --rule:#2B2A28; --accent:#D9483B; }
+.p-index   { --bg:var(--ink); --fg:var(--paper); --mute:#9C958A; --rule:#2A2724; --accent:#E2B13C; --display:"Inter Tight",sans-serif; --body:"EB Garamond",serif; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;width:1440px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 0}
+.label{font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.rule{height:1px;background:var(--rule);border:0}
+a{color:inherit;text-decoration:none}
+
+/* header + footer (identical structure on every MDO site) */
+.hdr{display:flex;align-items:center;justify-content:space-between;height:84px;border-bottom:1px solid var(--rule)}
+.hdr .mark{display:flex;align-items:center;gap:12px;font-family:var(--ui);font-weight:700;font-size:18px;letter-spacing:-.01em}
+.hdr .mark svg{width:28px;height:28px}
+.hdr nav{display:flex;gap:28px;font-family:var(--ui);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.hdr nav a.on{color:var(--accent)}
+.ftr{display:flex;justify-content:space-between;padding:28px 0 40px;border-top:1px solid var(--rule);font-family:var(--ui);font-size:13px;color:var(--mute)}
+.ftr span+span{margin-left:22px}
+
+.btn{display:inline-block;font-family:var(--ui);font-weight:600;font-size:15px;padding:14px 22px;border-radius:var(--radius);background:var(--accent);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--rule)}
+.box{border:1px solid var(--rule);border-radius:var(--radius)}
+.tag{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 7px;border:1px solid var(--rule);border-radius:2px;color:var(--mute)}
