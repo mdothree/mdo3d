@@ -8,7 +8,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
   btn.textContent = msg;
   _copyTimers.set(btn, setTimeout(() => { btn.textContent = restore || orig; _copyTimers.delete(btn); }, ms));
 }
-    import { initPaywall, isPremium, requirePremium, FREE_LIMITS } from '../stripe-paywall.js';
+    import { initPaywall, isPremium, requirePremium, OPEN_LIMITS } from '../stripe-paywall.js';
     import { saveToHistory } from '../config/firebase.js';
     initPaywall();
 
@@ -35,7 +35,7 @@ function _flashBtn(btn, msg, restore, ms = 2000) {
         return;
       }
       const sizeKB = new Blob([text]).size / 1024;
-      if (sizeKB > FREE_LIMITS.jsonFileSizeKB && !isPremium()) {
+      if (sizeKB > OPEN_LIMITS.jsonFileSizeKB && !isPremium()) {
         requirePremium('Formatting JSON files over 50KB requires Pro', 'json-format-size');
         return;
       }

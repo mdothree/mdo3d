@@ -4,26 +4,26 @@
   <!-- SEO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Browser Utility Tools — mdothree</title>
-  <meta name="description" content="Simple browser tools for everyday tasks: merge and split PDFs, resize images, format JSON, generate hashes, QR codes, and passwords, and convert timestamps." />
+  <title>mdothree — Developer Utilities That Run in Your Browser</title>
+  <meta name="description" content="PDF, image, JSON, hash, QR, password, time, color and text tools that run in your browser. Open with no sign-up; mdothree Pro is one $29 lifetime payment." />
   <meta name="keywords" content="online tools, browser tools, pdf tools, image tools, json formatter, hash generator, qr code generator, password generator" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://mdothree.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="mdothree" />
-  <meta property="og:title" content="Browser Utility Tools — mdothree" />
-  <meta property="og:description" content="Simple browser tools for everyday tasks: merge and split PDFs, resize images, format JSON, generate hashes, QR codes, and passwords, and convert timestamps." />
+  <meta property="og:title" content="mdothree — Developer Utilities That Run in Your Browser" />
+  <meta property="og:description" content="PDF, image, JSON, hash, QR, password, time, color and text tools that run in your browser. Open with no sign-up; mdothree Pro is one $29 lifetime payment." />
   <meta property="og:url" content="https://mdothree.com/" />
   <meta property="og:image" content="https://mdothree.com/og-image.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="mdothree: simple tools for everyday tasks" />
+  <meta property="og:image:alt" content="mdothree: developer utilities that run in your browser" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Browser Utility Tools — mdothree" />
-  <meta name="twitter:description" content="Simple browser tools for everyday tasks: merge and split PDFs, resize images, format JSON, generate hashes, QR codes, and passwords, and convert timestamps." />
+  <meta name="twitter:title" content="mdothree — Developer Utilities That Run in Your Browser" />
+  <meta name="twitter:description" content="PDF, image, JSON, hash, QR, password, time, color and text tools that run in your browser. Open with no sign-up; mdothree Pro is one $29 lifetime payment." />
   <meta name="twitter:image" content="https://mdothree.com/og-image.png" />
-  <meta name="twitter:image:alt" content="mdothree: simple tools for everyday tasks" />
+  <meta name="twitter:image:alt" content="mdothree: developer utilities that run in your browser" />
   <meta name="theme-color" content="#10B981" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -31,7 +31,7 @@
   <link rel="manifest" href="/site.webmanifest" />
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://mdothree.com/#website", "name": "mdothree", "url": "https://mdothree.com/", "publisher": {"@id": "https://mdothree.com/#org"}}, {"@type": "Organization", "@id": "https://mdothree.com/#org", "name": "mdothree", "url": "https://mdothree.com/", "logo": "https://mdothree.com/icon-512.png", "parentOrganization": {"@type": "Organization", "name": "MDO3D", "url": "https://mdo3d.com"}}]}</script>
   <!-- /SEO -->
-    <script src="/js/theme-init.js?v=395f277a60"></script>
+    <script src="/js/theme-init.js?v=6e95661319"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         /* Theme tokens: html[data-theme] is set before paint by /js/theme-init.js; the nav toggle switches it. */
@@ -87,7 +87,7 @@
         .tool-card {
             background: var(--card);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
+            border-radius: 4px;
             padding: 1.5rem;
             text-align: center;
             transition: all 0.2s;
@@ -107,7 +107,7 @@
             display: inline-block;
             margin-top: 0.75rem;
             padding: 0.2rem 0.6rem;
-            border-radius: 20px;
+            border-radius: 4px;
             font-size: 0.7rem;
             font-weight: 500;
         }
@@ -136,17 +136,24 @@
         /* A11Y-013: footer links get a 44px-tall tap target */
         .footer-links a { margin: 0 0.25rem; display: inline-block; padding: 12px 0.25rem; min-height: 44px; }
         /* A11Y-015: skip link, visible on keyboard focus */
-        .skip-link { position: absolute; left: 8px; top: -100px; background: var(--fg); color: var(--bg); padding: 10px 14px; border-radius: 6px; z-index: 100; text-decoration: none; }
+        .skip-link { position: absolute; left: 8px; top: -100px; background: var(--fg); color: var(--bg); padding: 10px 14px; border-radius: 4px; z-index: 100; text-decoration: none; }
         .skip-link:focus { top: 8px; }
         /* Shared MDOThree nav: logo left, cluster [Pro (coming soon)] [account] [theme toggle] right */
         .site-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px;
             padding: 8px 24px; min-height: 60px; background: var(--bg); border-bottom: 1px solid var(--card-border); }
         .site-header .logo { font-size: 1.35rem; font-weight: 800; color: var(--fg); text-decoration: none; letter-spacing: -0.02em; }
         .site-header .logo .dot { color: var(--dot); }
+        /* Pro band: one quiet line under the tools, full even border, small corners */
+        .pro-band { width: 100%; max-width: 900px; margin: 0.5rem auto 0; padding: 1rem 1.25rem; border: 1px solid var(--card-border);
+            border-radius: 4px; background: var(--card); color: var(--fg); font-size: 0.95rem; line-height: 1.5; text-align: left; }
+        .pro-band strong { font-weight: 700; }
+        .pro-band a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+        .pro-band a:hover, .pro-band a:focus-visible { color: var(--link-hover); }
+        @media (max-width: 520px) { .pro-band { margin: 0.5rem 1rem 0; width: auto; } }
         @media (max-width: 520px) { .site-header { padding: 8px 16px; } }
     </style>
-  <script src="/js/consent.js?v=395f277a60" defer></script>
-  <link rel="stylesheet" href="/css/site-chrome.css?v=395f277a60" />
+  <script src="/js/consent.js?v=6e95661319" defer></script>
+  <link rel="stylesheet" href="/css/site-chrome.css?v=6e95661319" />
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to tools</a>
@@ -161,7 +168,7 @@
     <main id="main">
     <section class="hero">
         <h1>mdothree</h1>
-        <p class="tagline">Simple tools for everyday tasks</p>
+        <p class="tagline">Developer utilities that run in your browser. Open, with no sign-up.</p>
         
         <div class="category" id="pdf">
             <h2>Files & Media</h2>
@@ -234,12 +241,19 @@
                 </a>
             </div>
         </div>
+
+        <p class="pro-band"><strong>mdothree Pro</strong> is one $29 payment for life, with no subscription. It opens bigger files and batches, bcrypt and HMAC, the breach checker, the cron parser, gradients and the other Pro features in every tool. <a href="/pro">What Pro includes</a></p>
     </section>
     </main>
+
+    <aside class="mdo-funnel" aria-label="From MDO3">
+      <p class="mdo-funnel-kicker">From MDO3</p>
+      <p class="mdo-funnel-family">More from MDO3: <a href="https://resume.rigor.design" rel="noopener">Rigor Resume</a> · <a href="https://layoffleads.com" rel="noopener">LayoffLeads</a> · <a href="https://dailyaitoll.com" rel="noopener">Daily AI Toll</a></p>
+    </aside>
     
     <footer>
         <p class="footer-links">
-            <a href="/pro">Pro (coming soon)</a> ·
+            <a href="/pro">mdothree Pro</a> ·
             <a href="/terms">Terms</a> ·
             <a href="/privacy">Privacy</a> ·
             <a href="/refund">Refunds</a> ·
@@ -248,7 +262,7 @@
         </p>
         <p>Part of <a href="https://mdo3d.com">MDO3D</a></p>
     </footer>
-  <script src="/js/site-chrome.js?v=395f277a60" defer></script>
-  <script type="module" src="/js/auth-nav.js?v=395f277a60"></script>
+  <script src="/js/site-chrome.js?v=6e95661319" defer></script>
+  <script type="module" src="/js/auth-nav.js?v=6e95661319"></script>
 </body>
 </html>

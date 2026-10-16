@@ -1,6 +1,6 @@
 // js/pages/success.js — mdothree.com/success (Stripe Checkout return page).
 // Reads the entitlement; never writes it (see ../success-core.js).
-import { COPY, resolveSuccessState } from '../success-core.js?v=395f277a60';
+import { COPY, resolveSuccessState } from '../success-core.js?v=6e95661319';
 
 const $ = (id) => document.getElementById(id);
 
@@ -27,7 +27,7 @@ function waitForUser(timeoutMs = 6000) {
     let settled = false;
     const finish = (u) => { if (!settled) { settled = true; resolve(u || null); } };
     setTimeout(() => finish(null), timeoutMs);
-    import('../config/config.js?v=395f277a60').then((m) => {
+    import('../config/config.js?v=6e95661319').then((m) => {
       cfg = m;
       const unsub = m.onAuthChange((u) => { finish(u); try { unsub(); } catch { /* ignore */ } });
     }).catch(() => finish(null));

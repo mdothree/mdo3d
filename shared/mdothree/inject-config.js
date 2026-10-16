@@ -15,8 +15,6 @@
 //   FIREBASE_MESSAGING_SENDER_ID
 //   FIREBASE_APP_ID
 //   STRIPE_PUBLISHABLE_KEY
-//   STRIPE_PRICE_ID_MONTHLY
-//   STRIPE_PRICE_ID_YEARLY
 //   STRIPE_CUSTOMER_PORTAL_URL
 
 const fs   = require('fs');
@@ -32,8 +30,6 @@ const required = [
   'FIREBASE_MESSAGING_SENDER_ID',
   'FIREBASE_APP_ID',
   'STRIPE_PUBLISHABLE_KEY',
-  'STRIPE_PRICE_ID_MONTHLY',
-  'STRIPE_PRICE_ID_YEARLY',
   'STRIPE_CUSTOMER_PORTAL_URL',
 ];
 
@@ -55,8 +51,6 @@ const firebaseConfig = JSON.stringify({
 
 const stripeConfig = JSON.stringify({
   publishableKey: process.env.STRIPE_PUBLISHABLE_KEY       || 'REPLACE_WITH_STRIPE_PUBLISHABLE_KEY',
-  priceIdMonthly: process.env.STRIPE_PRICE_ID_MONTHLY      || 'REPLACE_WITH_STRIPE_PRICE_ID_MONTHLY',
-  priceIdYearly:  process.env.STRIPE_PRICE_ID_YEARLY       || 'REPLACE_WITH_STRIPE_PRICE_ID_YEARLY',
   portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || 'https://billing.stripe.com/p/login/REPLACE',
 });
 

@@ -1,16 +1,19 @@
-// pricing.js page controller
-import { initPaywall, isPremium, requirePremium, PLANS } from '../stripe-paywall.js';
+// pricing.js page controller — MDOThree shared template (family B). Source: shared/mdothree/pricing.js.
+// mdothree Pro is ONE lifetime purchase: $29 once, no subscription, Pro never expires (DECISIONS 2026-10-16).
+import { initPaywall, startCheckout, PRO, PRO_UNLOCKS, PRO_CHECKOUT_ENABLED } from '../stripe-paywall.js';
+import { ProApiError, proErrorMessage } from '../pro-api.js';
 
 const FAQ = [
-  { q: 'Is there really a 7-day free trial?', a: 'Yes. You won\'t be charged for 7 days. Cancel anytime before the trial ends and you\'ll never be billed.' },
-  { q: 'Can I cancel anytime?', a: 'Absolutely. Cancel from your Account page at any time. You keep Pro access until the end of your current billing period.' },
-  { q: 'Are my files safe?', a: 'All file processing happens in your browser using client-side JavaScript. Your files are never uploaded to any server — they never leave your device.' },
-  { q: 'What payment methods do you accept?', a: 'All major credit and debit cards via Stripe. Apple Pay and Google Pay are also supported on supported browsers.' },
-  { q: 'What happens when I hit a free limit?', a: 'You\'ll see a prompt explaining the limit and an option to upgrade. Free tools continue to work for operations within the free tier.' },
-  { q: 'Is there a student or non-profit discount?', a: 'Email us at hello@mdothree.com with proof of status and we\'ll sort something out.' },
+  { q: 'Is it a subscription?', a: 'No. One payment, Pro never expires.' },
+  PRO_CHECKOUT_ENABLED
+    ? { q: 'How do I pay?', a: `Sign in or create an mdothree account, then pay ${PRO.price} once on Stripe's secure checkout page. Pro turns on for that account as soon as Stripe confirms the payment, on every mdothree tool.` }
+    : { q: 'Can I buy Pro today?', a: 'Not yet. Pro checkout isn\'t open, so nothing can be charged. Every tool works now within its open limits.' },
+  { q: 'Refunds?', a: 'Contact <a href="mailto:hello@mdothree.com">hello@mdothree.com</a>.' },
+  { q: 'Are my files safe?', a: 'File processing happens in your browser. Your files are not uploaded to a server.' },
+  { q: 'What happens when I hit a limit?', a: 'You see a prompt that names the limit. The tools keep working for anything within the open limits.' },
 ];
 
-// Build FAQ
+// Build FAQ (static strings only)
 const faqEl = document.getElementById('faq');
 FAQ.forEach(({ q, a }) => {
   const item = document.createElement('div');
@@ -28,34 +31,55 @@ FAQ.forEach(({ q, a }) => {
   faqEl.appendChild(item);
 });
 
-// Billing toggle
-let billing = 'monthly';
-document.querySelectorAll('[data-billing]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-billing]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    billing = btn.dataset.billing;
-    if (billing === 'yearly') {
-      document.getElementById('proAmount').innerHTML = '<sup>$</sup>3.33';
-      document.getElementById('proPeriod').textContent = 'per month, billed $39.99/yr · 7-day free trial';
-    } else {
-      document.getElementById('proAmount').innerHTML = '<sup>$</sup>4.99';
-      document.getElementById('proPeriod').textContent = 'per month · 7-day free trial';
-    }
-  });
-});
+// Pro unlocks list (one source: stripe-paywall.js PRO_UNLOCKS)
+const listEl = document.getElementById('proUnlocks');
+if (listEl) {
+  listEl.replaceChildren(...PRO_UNLOCKS.map(t => {
+    const li = document.createElement('li');
+    const mark = document.createElement('span');
+    mark.className = 'check';
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = '+';
+    li.append(mark, ' ', t);
+    return li;
+  }));
+}
 
-// Upgrade button
+// Get Pro button
 initPaywall().then(premium => {
-  const btn = document.getElementById('upgradeBtn');
+  const btn  = document.getElementById('upgradeBtn');
+  const fine = document.getElementById('proFine');
   if (premium) {
-    btn.textContent = '✅ You\'re on Pro';
+    btn.textContent = 'You have Pro, lifetime';
     btn.disabled = true;
     btn.classList.remove('btn-primary');
     btn.classList.add('btn-secondary');
-  } else {
-    btn.addEventListener('click', () => {
-      requirePremium('Upgrade to Pro for unlimited access', `pricing-${billing}`);
+    if (fine) fine.textContent = 'Pro never expires on this account.';
+  } else if (PRO_CHECKOUT_ENABLED) {
+    const label = `Get Pro, ${PRO.price} once`;
+    btn.disabled = false;
+    btn.removeAttribute('aria-disabled');
+    btn.textContent = label;
+    document.getElementById('proPeriod').textContent = 'one payment · lifetime';
+    if (fine) fine.textContent = 'One payment. No subscription. Pro never expires. Sign in or create an account, then pay on Stripe\'s secure checkout page.';
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'Opening checkout...';
+      try {
+        const r = await startCheckout();
+        if (r === 'already_pro') {
+          btn.textContent = 'You have Pro, lifetime';
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-secondary');
+          return;
+        }
+        if (r === 'signed_out' && fine) fine.textContent = proErrorMessage(401, 'sign_in_required');
+        if (r !== 'redirect') { btn.disabled = false; btn.textContent = label; }
+      } catch (err) {
+        if (fine) fine.textContent = err instanceof ProApiError ? err.message : proErrorMessage(500, 'internal');
+        btn.disabled = false;
+        btn.textContent = label;
+      }
     });
   }
 });

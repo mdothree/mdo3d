@@ -1,22 +1,22 @@
 // sw.js — Service Worker (generated — do not edit directly)
 // Cache-first for assets, network-first for HTML navigation.
 
-const CACHE_NAME = 'landing-v-395f277a60';
+const CACHE_NAME = 'landing-v-6e95661319';
 
 const PRECACHE_URLS = [
   '/',
   '/pro',
   '/favicon.svg',
   '/site.webmanifest',
-  '/css/styles.css?v=395f277a60',
-  '/css/dark-mode.css?v=395f277a60',
-  '/css/pro.css?v=395f277a60',
-  '/js/app.js?v=395f277a60',
-  '/js/pages/pro.js?v=395f277a60',
-  '/css/site-chrome.css?v=395f277a60',
-  '/js/theme-init.js?v=395f277a60',
-  '/js/site-chrome.js?v=395f277a60',
-  '/js/auth-nav.js?v=395f277a60'
+  '/css/styles.css?v=6e95661319',
+  '/css/dark-mode.css?v=6e95661319',
+  '/css/pro.css?v=6e95661319',
+  '/js/app.js?v=6e95661319',
+  '/js/pages/pro.js?v=6e95661319',
+  '/css/site-chrome.css?v=6e95661319',
+  '/js/theme-init.js?v=6e95661319',
+  '/js/site-chrome.js?v=6e95661319',
+  '/js/auth-nav.js?v=6e95661319'
 ];
 
 self.addEventListener('install', event => {

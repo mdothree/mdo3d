@@ -15,8 +15,6 @@
 //   FIREBASE_MESSAGING_SENDER_ID
 //   FIREBASE_APP_ID
 //   STRIPE_PUBLISHABLE_KEY
-//   STRIPE_PRICE_ID_MONTHLY
-//   STRIPE_PRICE_ID_YEARLY
 //   STRIPE_CUSTOMER_PORTAL_URL
 
 const fs   = require('fs');
@@ -31,8 +29,6 @@ const required = [
   'FIREBASE_MESSAGING_SENDER_ID',
   'FIREBASE_APP_ID',
   'STRIPE_PUBLISHABLE_KEY',
-  'STRIPE_PRICE_ID_MONTHLY',
-  'STRIPE_PRICE_ID_YEARLY',
   'STRIPE_CUSTOMER_PORTAL_URL',
 ];
 
@@ -56,13 +52,11 @@ const firebaseConfig = fbKeys.every(k => process.env[k]) ? JSON.stringify({
 }) : null;
 
 // Publishable key only (never a secret key). Empty when unset: Stripe() then fails and checkout fails closed.
-// #66b (Bridge #66(b)=A): no payment link reaches the page while Pro is unwired. The links are emitted only when
-// PRO_CHECKOUT_ENABLED is exactly 'true', and only from env (STRIPE_PAYMENT_LINK_MONTHLY / _YEARLY); no hardcoded default.
+// mdothree Pro is a one-time lifetime purchase sold ONLY through Stripe-hosted Checkout (mdothree-api
+// createCheckoutSession) + the webhook. No Payment Link is ever emitted (Stripe rule: access = Checkout + webhook).
 const PRO_ON = process.env.PRO_CHECKOUT_ENABLED === 'true';
 const stripeConfig = JSON.stringify({
   publishableKey: process.env.STRIPE_PUBLISHABLE_KEY       || '',
-  paymentLinkMonthly: PRO_ON ? (process.env.STRIPE_PAYMENT_LINK_MONTHLY || '') : '',
-  paymentLinkYearly:  PRO_ON ? (process.env.STRIPE_PAYMENT_LINK_YEARLY  || '') : '',
   portalUrl:      process.env.STRIPE_CUSTOMER_PORTAL_URL   || '',
   // mdothree-api Cloud Functions base (js/pro-api.js createCheckoutSession), e.g. https://us-central1-<project>.cloudfunctions.net
   functionsBaseUrl: process.env.FIREBASE_FUNCTION_BASE_URL || '',

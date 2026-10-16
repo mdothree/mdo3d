@@ -17,10 +17,10 @@
     /* Billing toggle */
     .billing-toggle {
       display: inline-flex; background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: 99px; padding: 4px; gap: 4px; margin-bottom: 40px;
+      border-radius: 4px; padding: 4px; gap: 4px; margin-bottom: 40px;
     }
     .billing-btn {
-      border: none; background: transparent; border-radius: 99px;
+      border: none; background: transparent; border-radius: 4px;
       padding: 8px 20px; font-family: var(--font-body); font-size: 0.875rem;
       font-weight: 500; cursor: pointer; color: var(--text-secondary);
       transition: all 160ms; display: flex; align-items: center; gap: 6px;
@@ -28,13 +28,13 @@
     .billing-btn.active { background: var(--card-bg); color: var(--text-primary); font-weight: 600; box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
     .save-pill {
       background: var(--emerald); color: #fff; font-size: 0.65rem; font-weight: 700;
-      border-radius: 99px; padding: 1px 7px; letter-spacing: 0.04em;
+      border-radius: 4px; padding: 1px 7px; letter-spacing: 0.04em;
     }
 
     /* Pricing cards */
     .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 780px; margin: 0 auto 60px; }
     .pricing-card {
-      border: 1.5px solid var(--border); border-radius: 18px; padding: 28px;
+      border: 1.5px solid var(--border); border-radius: 4px; padding: 28px;
       background: var(--card-bg); position: relative; transition: box-shadow 200ms;
     }
     .pricing-card.featured {
@@ -44,7 +44,7 @@
     .featured-label {
       position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
       background: var(--emerald); color: #fff; font-size: 0.72rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.1em; border-radius: 99px; padding: 4px 14px;
+      text-transform: uppercase; letter-spacing: 0.1em; border-radius: 4px; padding: 4px 14px;
       white-space: nowrap;
     }
     .plan-name { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
@@ -61,7 +61,7 @@
     .feat-x { color: var(--text-secondary); flex-shrink: 0; opacity: 0.5; }
 
     .plan-cta {
-      width: 100%; padding: 13px; border-radius: 10px; font-family: var(--font-body);
+      width: 100%; padding: 13px; border-radius: 4px; font-family: var(--font-body);
       font-size: 0.95rem; font-weight: 700; cursor: pointer; border: none; transition: all 160ms;
     }
     .plan-cta.primary { background: var(--emerald); color: #fff; }
@@ -73,7 +73,7 @@
     .checkout-section {
       max-width: 480px; margin: 0 auto 60px;
       background: var(--card-bg); border: 1.5px solid var(--border);
-      border-radius: 18px; padding: 32px; display: none;
+      border-radius: 4px; padding: 32px; display: none;
     }
     .checkout-section.visible { display: block; }
     .checkout-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
@@ -85,7 +85,7 @@
     }
     .checkout-submit {
       width: 100%; padding: 14px; background: var(--emerald); color: #fff;
-      border: none; border-radius: 10px; font-family: var(--font-body);
+      border: none; border-radius: 4px; font-family: var(--font-body);
       font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 160ms;
     }
     .checkout-submit:hover:not(:disabled) { background: var(--emerald-dark); }

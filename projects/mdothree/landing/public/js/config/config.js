@@ -124,12 +124,8 @@ export function onAuthChange(cb) {
 
 export const STRIPE_CONFIG = {
   publishableKey: CONFIG.publishableKey || CONFIG.STRIPE_PUBLISHABLE_KEY || '',
-  priceIdMonthly: CONFIG.priceIdMonthly || CONFIG.STRIPE_PRICE_ID_MONTHLY || '',
-  priceIdYearly:  CONFIG.priceIdYearly  || CONFIG.STRIPE_PRICE_ID_YEARLY  || '',
-  portalUrl:      CONFIG.portalUrl      || CONFIG.STRIPE_CUSTOMER_PORTAL_URL || '#',
-  // #66b: empty unless the build emitted them (PRO_CHECKOUT_ENABLED=true). Never hardcoded here.
-  paymentLinkMonthly: CONFIG.paymentLinkMonthly || '',
-  paymentLinkYearly:  CONFIG.paymentLinkYearly  || '',
+  // Pro is one lifetime purchase via hosted Checkout (createCheckoutSession); the price lives server-side.
+  // Receipts open through createBillingPortalSession; no Payment Link, no client-side price id.
   // mdothree-api Cloud Functions base, e.g. https://us-central1-<project>.cloudfunctions.net
   // (stripe-config meta). Empty = checkout fails closed with an honest message.
   functionsBaseUrl: CONFIG.functionsBaseUrl || CONFIG.FIREBASE_FUNCTION_BASE_URL || '',
@@ -138,7 +134,7 @@ export const STRIPE_CONFIG = {
 export const IS_TEST_MODE = STRIPE_CONFIG.publishableKey.startsWith('pk_test_');
 
 // #66b: Pro is not on sale until this is turned on (Vercel env PRO_CHECKOUT_ENABLED=true -> stripe-config meta).
-// Off: /pro shows "coming soon", no billing toggle, no checkout, no payment link.
+// Off: /pro shows "coming soon" and nothing can be bought.
 export const PRO_CHECKOUT_ENABLED = CONFIG.PRO_CHECKOUT_ENABLED === true || CONFIG.PRO_CHECKOUT_ENABLED === 'true';
 
 // ─────────────────────────────────────────────────────────────
@@ -157,4 +153,4 @@ export {
 //    reach PLANS and proFeatureLabel without a second import path.
 // ─────────────────────────────────────────────────────────────
 
-export { PLANS, proFeatureLabel, PRO_FEATURES, requiresPro } from './stripe.js?v=395f277a60';
+export { PLANS, proFeatureLabel, PRO_FEATURES, requiresPro } from './stripe.js?v=6e95661319';

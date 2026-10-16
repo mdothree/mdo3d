@@ -9,21 +9,10 @@
 export const CONTACT = 'hello@mdothree.com';
 // Stripe Checkout session ids: cs_test_… / cs_live_… (the hardened API's fixed success_url).
 export const SESSION_RE = /^cs_[A-Za-z0-9_]{6,250}$/;
-const ACTIVE = new Set(['active', 'trialing']);
-const PERIOD_GRACE_MS = 3 * 24 * 60 * 60 * 1000; // same tolerance as the API (late renewal webhook)
-
-function toMillis(v) {
-  if (!v) return NaN;
-  if (typeof v.toMillis === 'function') return v.toMillis();
-  if (typeof v === 'number') return v;
-  return Date.parse(v);
-}
-
-/** Mirrors mdothree-api lib/entitlement.js isActiveEntitlement(). */
-export function isActiveEntitlement(d, now = Date.now()) {
-  if (!d || d.isPro !== true || d.plan !== 'pro' || !ACTIVE.has(d.status)) return false;
-  const end = toMillis(d.currentPeriodEnd);
-  return Number.isFinite(end) && end + PERIOD_GRACE_MS >= now;
+/** Mirrors mdothree-api lib/entitlement.js isActiveEntitlement() and pro-api.js hasProEntitlement():
+ *  a paid, unrevoked lifetime purchase written by the Stripe webhook. (Kept import-free for node tests.) */
+export function isActiveEntitlement(d) {
+  return !!d && d.isPro === true && d.plan === 'pro' && d.status === 'lifetime' && d.lifetime === true;
 }
 
 export const COPY = {
@@ -33,7 +22,7 @@ export const COPY = {
   },
   active: {
     title: 'Pro is active',
-    message: 'Pro is on for this account. Reload any mdothree tool where you are signed in to use it.',
+    message: 'Lifetime Pro is on for this account. It never expires. Reload any mdothree tool where you are signed in to use it.',
   },
   // Signed in on the tool, not on mdothree.com: this page cannot read that account.
   received_elsewhere: {
@@ -59,7 +48,7 @@ export const COPY = {
  * @returns {Promise<'active'|'received_elsewhere'|'unconfirmed'|'no_session'>}
  */
 export async function resolveSuccessState({ sessionId, waitForUser, readSubscription, onUpdate,
-  tries = 12, everyMs = 2500, sleep = (ms) => new Promise(r => setTimeout(r, ms)), now = () => Date.now() }) {
+  tries = 12, everyMs = 2500, sleep = (ms) => new Promise(r => setTimeout(r, ms)) }) {
   if (!sessionId || !SESSION_RE.test(sessionId)) return 'no_session';
   if (onUpdate) onUpdate('activating');
 
@@ -69,7 +58,7 @@ export async function resolveSuccessState({ sessionId, waitForUser, readSubscrip
 
   for (let i = 0; i < tries; i++) {
     try {
-      if (isActiveEntitlement(await readSubscription(user.uid), now())) return 'active';
+      if (isActiveEntitlement(await readSubscription(user.uid))) return 'active';
     } catch { /* not readable yet (offline / rules) — keep polling, then say so honestly */ }
     if (i < tries - 1) await sleep(everyMs);
   }

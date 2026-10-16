@@ -13,9 +13,6 @@ function loadStripeConfig() {
   }
   return {
     publishableKey: '',   // set via <meta name="stripe-config">; empty = checkout fails closed
-    paymentLinkMonthly: '', // #66b: set via <meta name="stripe-config"> only when PRO_CHECKOUT_ENABLED
-    paymentLinkYearly:  '',
-    portalUrl:      '', // customer portal link
   };
 }
 
@@ -29,10 +26,11 @@ export const PLANS = {
     name:  'Without Pro',
     color: '#64748B',
   },
+  // One-time lifetime purchase (DECISIONS 2026-10-16). Display only: the API fixes the real price.
   pro: {
     name:  'Pro',
-    price: '$4/mo',
-    yearly: '$36/yr',
+    price: '$29',
+    note:  'one payment, lifetime',
     color: '#10B981',
   },
 };

@@ -1,7 +1,7 @@
-// account.js page controller
-import { initPaywall, isPremium, openBillingPortal } from '../stripe-paywall.js';
+// account.js page controller — MDOThree shared template (family B). Source: shared/mdothree/account.js.
+// mdothree Pro is a lifetime purchase: the page shows "Pro, lifetime" and a Receipts link (Stripe portal).
+import { initPaywall, openBillingPortal, subscriptionInfo, PRO, PRO_CHECKOUT_ENABLED } from '../stripe-paywall.js';
 import { initFirebase, getHistory, auth } from '../config/firebase.js';
-import { ENV } from '../env.js';
 
 const loadingState   = document.getElementById('loadingState');
 const anonState      = document.getElementById('anonState');
@@ -32,14 +32,11 @@ function formatDate(ts) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-function formatExpiry(millis) {
-  if (!millis) return '';
-  const d = new Date(millis);
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
-
 function showAlert(type, msg) {
-  alertArea.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  const div = document.createElement('div');
+  div.className = `alert alert-${type}`;
+  div.textContent = msg;
+  alertArea.replaceChildren(div);
   setTimeout(() => { alertArea.innerHTML = ''; }, 5000);
 }
 
@@ -72,101 +69,74 @@ async function loadHistory() {
 }
 
 async function init() {
-  const [user, premium] = await Promise.all([initFirebase(), initPaywall()]);
+  const [user, premium] = await Promise.all([initFirebase({ force: true }), initPaywall()])   // PERF-008: the account UI loads the SDK;
 
   loadingState.classList.add('hidden');
 
-  if (!user) {
+  if (!user || user.isAnonymous) {
     anonState.classList.remove('hidden');
-    document.getElementById('signUpBtn').addEventListener('click', () => {
-      window.location.href = 'pricing.html';
+    const signUpBtn = document.getElementById('signUpBtn');
+    if (PRO_CHECKOUT_ENABLED) {
+      // Sign-in opens with Pro checkout (#66b). Until then this card keeps its "coming soon" copy.
+      const h = anonState.querySelector('h2'); const p = anonState.querySelector('p');
+      if (h) h.textContent = 'Sign in to your account';
+      if (p) p.textContent = 'Sign in or create an mdothree account to see Pro and your receipts. One account works on every mdothree tool.';
+      signUpBtn.textContent = 'Sign in or create an account';
+      signUpBtn.addEventListener('click', async () => {
+        const { openSignIn } = await import('../auth-nav.js');
+        const signed = await openSignIn().catch(() => null);
+        if (signed) window.location.reload();
+      });
+      return;
+    }
+    signUpBtn.addEventListener('click', () => {
+      window.location.href = '/pricing';
     });
     return;
   }
 
   accountContent.classList.remove('hidden');
 
-  // Subscription status
+  // Pro status (lifetime: no renewal, nothing to cancel)
   const planBadge   = document.getElementById('planBadge');
   const planDetails = document.getElementById('planDetails');
   const subActions  = document.getElementById('subActions');
-  const cancelBtn   = document.getElementById('cancelBtn');
 
-  if (premium) {
-    planBadge.innerHTML = `<span style="color:var(--emerald);font-size:1.3rem;">✨</span> <span style="color:var(--emerald);">Pro</span>`;
+  if (premium && subscriptionInfo()) {
+    planBadge.innerHTML = `<span style="color:var(--emerald);">Pro, lifetime</span>`;
+    planDetails.textContent = 'One payment. Pro never expires on this account, on every mdothree tool.';
 
-    // Fetch live status from server
-    try {
-      const idToken = await user.getIdToken();
-      const res = await fetch(`${ENV.FIREBASE_FUNCTION_BASE_URL}/getSubscriptionStatus`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.cancelAtPeriodEnd && data.expiresAt) {
-          planDetails.textContent = `Cancels ${formatExpiry(data.expiresAt)} — you keep access until then.`;
-        } else if (data.expiresAt) {
-          planDetails.textContent = `Renews ${formatExpiry(data.expiresAt)}.`;
-          cancelBtn.style.display = 'inline-flex';
-        }
-        if (data.trialEnd && data.trialEnd > Date.now()) {
-          planDetails.textContent = `Free trial ends ${formatExpiry(data.trialEnd)}.`;
-        }
-      }
-    } catch (_) {}
-
-    // Billing portal button
+    // Receipts live in the Stripe Customer Portal (createBillingPortalSession).
     const portalBtn = document.createElement('button');
     portalBtn.className = 'btn btn-secondary';
-    portalBtn.textContent = '💳 Manage Billing';
+    portalBtn.textContent = 'Receipts';
     portalBtn.addEventListener('click', async () => {
       portalBtn.disabled = true;
       portalBtn.textContent = 'Opening...';
       try {
         await openBillingPortal(window.location.href);
       } catch (e) {
-        showAlert('error', '❌ ' + e.message);
+        showAlert('error', e.message);
         portalBtn.disabled = false;
-        portalBtn.textContent = '💳 Manage Billing';
+        portalBtn.textContent = 'Receipts';
       }
     });
     subActions.appendChild(portalBtn);
 
   } else {
-    planBadge.innerHTML = `<span style="color:var(--slate-400);">Free Plan</span>`;
-    planDetails.textContent = 'Upgrade to Pro for unlimited file sizes, batch processing, and more.';
+    planBadge.innerHTML = `<span style="color:var(--slate-400);">Not on Pro</span>`;
     const upgradeBtn = document.createElement('a');
     upgradeBtn.className = 'btn btn-primary';
-    upgradeBtn.href = 'pricing.html';
-    upgradeBtn.textContent = '✨ Upgrade to Pro →';
+    upgradeBtn.href = '/pricing';
+    if (PRO_CHECKOUT_ENABLED) {
+      planDetails.textContent = `mdothree Pro is ${PRO.price} once, lifetime. No subscription.`;
+      upgradeBtn.textContent = `Get Pro, ${PRO.price} once`;
+    } else {
+      planDetails.textContent = 'Pro is coming soon. Nothing to buy yet.';
+      upgradeBtn.textContent = 'Pro (coming soon)';
+    }
     subActions.appendChild(upgradeBtn);
   }
-
-  // Cancel button
-  cancelBtn.addEventListener('click', async () => {
-    if (!confirm('Cancel your Pro subscription? You\'ll keep access until the end of your billing period.')) return;
-    cancelBtn.disabled = true;
-    cancelBtn.textContent = 'Canceling...';
-    try {
-      const idToken = await user.getIdToken();
-      const res = await fetch(`${ENV.FIREBASE_FUNCTION_BASE_URL}/cancelSubscription`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showAlert('success', '✅ Subscription canceled. You keep Pro access until your billing period ends.');
-        cancelBtn.style.display = 'none';
-      } else {
-        throw new Error(data.error || 'Cancellation failed');
-      }
-    } catch (e) {
-      showAlert('error', '❌ ' + e.message);
-      cancelBtn.disabled = false;
-      cancelBtn.textContent = 'Cancel Plan';
-    }
-  });
 
   // Load history
   await loadHistory();

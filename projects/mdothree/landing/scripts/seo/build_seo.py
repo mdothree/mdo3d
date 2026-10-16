@@ -33,13 +33,13 @@ def P(file, title, desc, kw, app=True, noindex=False, canonical=True):
 
 def pricing(tool):
     return P('pricing.html', f'{tool} Pricing — {BRAND}',
-             f'mdothree Pro for {tool}: unlimited file processing, batch operations and premium tools. See the plan and current price.',
-             [f'{tool.lower()} pricing', 'mdothree pro', 'subscription', 'pricing', 'online tools'], app=False)
+             f'mdothree Pro for {tool}: one $29 payment, lifetime, no subscription. Bigger files, larger batches and the Pro features in every mdothree tool.',
+             [f'{tool.lower()} pricing', 'mdothree pro', 'lifetime', 'pricing', 'online tools'], app=False)
 
 def account(tool):
     return P('account.html', f'Account — {BRAND} {tool}',
-             f'Manage your mdothree Pro subscription for {tool}: view your usage history, update billing details, and sign in or out of your account.',
-             ['mdothree account', 'pro subscription', 'billing', 'usage history', 'sign in'], app=False, noindex=True)
+             f'Your mdothree account for {tool}: see whether lifetime Pro is on, open your receipts, and sign in or out.',
+             ['mdothree account', 'mdothree pro', 'receipts', 'lifetime', 'sign in'], app=False, noindex=True)
 
 def notfound(tool):
     return P('404.html', f'Page Not Found — {BRAND} {tool}',
@@ -48,33 +48,33 @@ def notfound(tool):
 
 SITES = [
   dict(dir='landing', domain='mdothree.com', name='mdothree', short='mdothree', glyph='m3',
-       tagline='Everyday utility tools for files, text and code',
+       tagline='Developer utilities that run in your browser',
        tagline2='PDF · Image · QR · JSON · Hash · Time · Color · Text · Password',
        category='UtilitiesApplication', home=True, pages=[
-    P('index.html', 'Browser Utility Tools — mdothree',
-      'Simple browser tools for everyday tasks: merge and split PDFs, resize images, format JSON, generate hashes, QR codes, and passwords, and convert timestamps.',
+    P('index.html', 'mdothree — Developer Utilities That Run in Your Browser',
+      'PDF, image, JSON, hash, QR, password, time, color and text tools that run in your browser. Open with no sign-up; mdothree Pro is one $29 lifetime payment.',
       ['online tools', 'browser tools', 'pdf tools', 'image tools', 'json formatter', 'hash generator', 'qr code generator', 'password generator'], app=False),
-    P('pro.html', 'Upgrade to Pro — mdothree',
-      'mdothree Pro unlocks bcrypt and HMAC hashing, batch hashing, the breach checker, the cron parser, business days, gradients, and the colorblind simulator.',
-      ['mdothree pro', 'upgrade', 'hmac generator', 'bcrypt', 'breach checker', 'cron parser', 'pricing'], app=False),
+    P('pro.html', 'mdothree Pro, Lifetime — mdothree',
+      'mdothree Pro is one $29 payment, no subscription: bigger files and batches, bcrypt and HMAC, the breach checker, the cron parser, gradients and more across every mdothree tool.',
+      ['mdothree pro', 'lifetime', 'hmac generator', 'bcrypt', 'breach checker', 'cron parser', 'pricing'], app=False),
     P('privacy.html', 'Privacy Policy — mdothree',
       'Read the mdothree privacy policy covering the browser utility tools, Pro accounts and payments, and the third-party services the sites rely on to run.',
       ['privacy policy', 'mdothree', 'data', 'cookies', 'pro account'], app=False),
     P('terms.html', 'Terms of Service — mdothree',
-      'The terms of service for using the mdothree browser utility tools and the mdothree Pro subscription, including acceptable use, billing, and liability.',
-      ['terms of service', 'mdothree', 'terms', 'subscription', 'acceptable use'], app=False),
+      'The terms of service for using the mdothree browser utility tools and the one-time mdothree Pro purchase, including acceptable use, payment, and liability.',
+      ['terms of service', 'mdothree', 'terms', 'mdothree pro', 'acceptable use'], app=False),
     P('contact.html', 'Contact — mdothree',
       'How to reach the people behind mdothree: questions about the browser tools, mdothree Pro, billing, privacy, or bug reports.',
       ['contact', 'mdothree', 'support', 'billing', 'bug report'], app=False),
     P('refund.html', 'Refund Policy — mdothree',
-      'The mdothree refund policy: all sales of mdothree Pro are final, how cancellation works, and the legal rights that this policy does not limit.',
-      ['refund policy', 'mdothree', 'mdothree pro', 'cancellation', 'billing'], app=False),
+      'The mdothree refund policy: all sales of mdothree Pro are final, and the legal rights that this policy does not limit.',
+      ['refund policy', 'mdothree', 'mdothree pro', 'all sales final', 'billing'], app=False),
     P('acceptable-use.html', 'Acceptable Use Policy — mdothree',
       'The mdothree acceptable use policy: what you may not do with the browser utility tools, mdothree Pro, and the infrastructure that runs them.',
       ['acceptable use policy', 'mdothree', 'aup', 'terms', 'abuse'], app=False),
     P('success.html', 'Payment Successful — mdothree',
-      'Your mdothree Pro payment went through. Return to any mdothree tool to start using the Pro features that are included with your new subscription.',
-      ['mdothree pro', 'payment', 'subscription', 'upgrade', 'success'], app=False, noindex=True),
+      'Your mdothree Pro payment went through. Pro is lifetime: sign in on any mdothree tool to use the Pro features.',
+      ['mdothree pro', 'payment', 'lifetime', 'upgrade', 'success'], app=False, noindex=True),
     P('404.html', 'Page Not Found — mdothree',
       'The page you were looking for on mdothree could not be found. Head back to the home page to browse the full set of browser utility tools.',
       ['404', 'page not found', 'missing page', 'mdothree', 'online tools'], app=False, noindex=True, canonical=False),

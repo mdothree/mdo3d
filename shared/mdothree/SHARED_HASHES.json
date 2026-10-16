@@ -1,5 +1,5 @@
 {
   "_note": "sha256 of the shared files that must be byte-identical on all 10 MDOThree surfaces (9 tools + mdothree.com). Each tool repo pins the same values in tests/shared-parity.test.mjs. Change a shared file -> copy it to every surface and update these hashes everywhere in the same change.",
-  "auth-ui.js": "e286a9af518964bd8e1a8aaaa419e8c46c43b3c4c0d44177537e1231a6f62a66",
-  "pro-api.js": "a98f98839ca5fe328fefcc35c580717623878f9501109ea1c10000bb245f3a0d"
+  "auth-ui.js": "15ad5452a50739b2764acf7789790e4df91ad3cd1e1622b0b6d4ff1525bbc13c",
+  "pro-api.js": "3d71c6ed0f074763cadf9394717d305bfbaabdeb260dfc16c32b81d46e58c4d4"
 }

@@ -1,14 +1,15 @@
 // services/subscriptionService.js
-// Checks whether the current Firebase user has an active Pro subscription.
+// Checks whether the current Firebase user owns mdothree Pro (a one-time lifetime purchase).
 // The source of truth is a Firestore doc written by the Stripe webhook Cloud Function.
 // Falls back gracefully (no Pro) if Firebase or Firestore is unavailable.
 
-import { getFirebaseAuth, getDB, onAuthChange } from '../config/config.js?v=395f277a60';
+import { getFirebaseAuth, getDB, onAuthChange } from '../config/config.js?v=6e95661319';
+import { hasProEntitlement } from '../pro-api.js?v=6e95661319';
 
 const SUBSCRIPTIONS_COL = 'subscriptions';
 
 // ---- In-memory cache ----
-let _cachedStatus = null;   // null | { isPro, plan, periodEnd, stripeCustomerId }
+let _cachedStatus = null;   // null | { isPro, plan, status, lifetime, stripeCustomerId }
 let _listeners    = [];
 
 // ---- Internal fetch ----
@@ -27,20 +28,14 @@ async function fetchSubscriptionStatus(user) {
     if (!snap.exists()) return { isPro: false, plan: 'none' };
 
     const data = snap.data();
-    const now  = Date.now();
     // Written only by the Stripe webhook (Admin SDK); rules deny client writes.
-    const periodEnd = data.currentPeriodEnd?.toMillis?.() ?? 0;
-    const active    = data.isPro === true
-                   && (data.status === 'active' || data.status === 'trialing')
-                   && periodEnd > now;
-
+    const active = hasProEntitlement(data);
     return {
-      isPro:             active,
-      plan:              active ? 'pro' : 'none',
-      status:            data.status,
-      periodEnd:         new Date(periodEnd),
-      stripeCustomerId:  data.stripeCustomerId ?? null,
-      cancelAtPeriodEnd: data.cancelAtPeriodEnd ?? false,
+      isPro:            active,
+      plan:             active ? 'pro' : 'none',
+      status:           data.status,
+      lifetime:         active,
+      stripeCustomerId: data.stripeCustomerId ?? null,
     };
   } catch (e) {
     console.warn('[subscriptionService] fetch failed:', e.message);

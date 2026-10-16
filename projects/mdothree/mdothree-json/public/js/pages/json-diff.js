@@ -1,6 +1,6 @@
 // Page controller: json-diff.html
 import { diffJSON } from '../services/jsonDiff.js';
-import { initPaywall, isPremium, requirePremium, FREE_LIMITS } from '../stripe-paywall.js';
+import { initPaywall, isPremium, requirePremium, OPEN_LIMITS } from '../stripe-paywall.js';
 import { showAlert } from '../utils/dom.js';
 initPaywall();
 
@@ -10,9 +10,9 @@ initPaywall();
       const rawA = document.getElementById('jsonA').value;
       const rawB = document.getElementById('jsonB').value;
       const sizeKB = (new Blob([rawA]).size + new Blob([rawB]).size) / 1024;
-      if (sizeKB > FREE_LIMITS.jsonFileSizeKB * 2 && !isPremium()) {
+      if (sizeKB > OPEN_LIMITS.jsonFileSizeKB * 2 && !isPremium()) {
         alertArea.innerHTML = '';
-        requirePremium('Diffing JSON over 50KB per side requires Pro', 'json-diff-size');
+        requirePremium('Diffing JSON over 100 KB (both sides together) requires Pro', 'json-diff-size');
         return;
       }
       try {
