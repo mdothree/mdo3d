@@ -112,3 +112,74 @@ live. Nothing posts without the Principal's per-batch OK.
 - **Each drop:** pre-order window pages with ship-by dates, tally reports at close, supplier PO sheets, the
   label/packing-slip pipeline, tracking emails and delay notices.
 - **Nothing** is published, listed, charged or ordered without the Principal's OK.
+
+## Apparel identities: audience stereotypes (DRAFT for the Principal, 2026-10-16)
+**Direction (verbatim, 2026-10-15 07:12):** "No by oversimpliifeid i meant stereotypical like "they all listen to kendrick lamar""
+Earlier draft (JARVIS #3 apparel identities): Runwae Apparel "They influence." / Butts Studios "They make things." /
+GLB "They own it.", each with an under identity. These rewrite them as playful, affectionate stereotypes of who wears
+each brand. The "under" line is kept. Internal brand bible only: artist names are taste references for the team and
+the photo/ad direction, never public copy that implies an endorsement. Respectful by rule: no slurs, no put-downs of
+any group, GLB playful and never crude. Pick one option per brand, or mix lines.
+
+### Runwae Apparel (under: *they notice the little things*; everybody influences)
+**A · The gallery kid**
+- They all have a museum membership and mostly use it for the gift shop.
+- They all play Frank Ocean's *Blonde* at home and Kendrick Lamar in the car.
+- They all keep a sketchbook they swear is "not for anyone."
+- They all photograph the doorway before the food.
+
+**B · The trendsetter who won't say so**
+- They all wore it before it was everywhere, and mention it once.
+- They all listen to Kendrick Lamar and Tyler, the Creator, and argue about which album is better.
+- They all know which thrift store restocks on Tuesday.
+- They all have a 400-pin mood board and three posts.
+
+**C · The quiet curator**
+- They all have a playlist for every month, named by month.
+- They all rearrange the bookshelf more often than they read from it.
+- They all own one great jacket and have a story about it.
+- They all go to gallery openings for the wine and stay for the art.
+
+**Recommendation: B** (it carries "they influence" without saying it), with A's doorway line borrowed (the handoff audience is art appreciators, not necessarily practitioners).
+
+### Butts Studios merch (under: *works in progress, playing the long game*; the X-box = "image goes here")
+**A · The builder**
+- They all have fourteen tabs open and a half-finished project in each.
+- They all have a notes app full of entries titled "idea."
+- They all work to lo-fi beats or Kendrick Lamar, nothing in between.
+- They all own one good pen and lose it weekly.
+
+**B · The 2 a.m. maker**
+- They all do their best work at 2 a.m.
+- They all say "v2 will fix it."
+- They all name their hard drives after planets.
+- They all have a coffee order that takes a full breath to say.
+
+**C · The long gamer**
+- They all start the novel again every January.
+- They all have a sketchbook, a domain name and a plan.
+- They all watch the behind-the-scenes before the movie.
+- They all keep the draft, the receipt and the box it came in.
+
+**Recommendation: C** (it is the long game in four lines), with B's "v2 will fix it."
+
+### GLB / Girls Love Butts (under: *every body is worth drawing*; hand-drawn line art; playful, not crude)
+**A · The main character**
+- They all have a mirror-selfie angle they've perfected.
+- They all get ready to Beyoncé, Lizzo and Megan Thee Stallion, in that order.
+- They all go to brunch for the photos and stay for the mimosas.
+- They all have a gym bag that has seen more brunches than workouts.
+
+**B · The hype friend**
+- They all compliment strangers in the restroom line.
+- They all know every word to "Good as Hell."
+- They all send the voice memo instead of the text.
+- They all have a group chat named with three hearts.
+
+**C · The doodler**
+- They all draw on receipts and napkins.
+- They all have a tote bag full of tote bags.
+- They all dance in the kitchen while dinner cooks.
+- They all have one pair of jeans they'll never explain.
+
+**Recommendation: B** (it is "they own it" as warmth toward other people), with C's doodle line tying it to the line art.
