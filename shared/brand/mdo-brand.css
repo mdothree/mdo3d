@@ -1,4 +1,4 @@
-/* MDO3 brand v1 (2026-10-16). CSS mirror of shared/brand/tokens.json for every MDO family.
+/* MDO3 brand v1.1 (2026-10-16; Principal review: mdo3 = original mdo3d.com language, rigor = yellow and black, Ronna separate). CSS mirror of shared/brand/tokens.json for every MDO family.
    Usage: <body class="f-data"> (or f-guidance, f-index, f-tools, f-rigor). Copy this file into a static app
    (apps are deployed separately; there is no shared import at runtime).
    Rules: radius <= 4px, no pills, no one-sided accent borders, no emoji icons, hairline rules, one offer + one next step. */
@@ -20,7 +20,9 @@
 .f-data    { --bg:#F3F0E9; --fg:#141311; --mute:#6E685F; --rule:#D5CFC3; --surface:#FBF9F4; --accent:#B4381F; --on-accent:#FBF9F4; --ok:#2F6B3E; --warn:#9A6A12; --display:"IBM Plex Sans","Inter Tight",sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; }
 .f-data.dark{ --bg:#111111; --fg:#ECE8E1; --mute:#8D877E; --rule:#2B2A28; --surface:#181816; --accent:#D9483B; --on-accent:#111111; --ok:#5FA36F; --warn:#D4A23A; }
 .f-tools   { --bg:#0F1115; --fg:#E9ECEF; --mute:#8B939E; --rule:#252A31; --surface:#161A20; --accent:#10B981; --on-accent:#0F1115; --display:"Inter Tight",sans-serif; --body:"Inter Tight",system-ui,sans-serif; --mono:"JetBrains Mono","IBM Plex Mono",monospace; }
-.f-rigor   { --bg:#0D1526; --fg:#EEF1F6; --mute:#9AA6BA; --rule:#25324A; --surface:#121D33; --accent:#D4A84B; --on-accent:#0D1526; --display:"Playfair Display",Georgia,serif; --body:"Inter Tight",system-ui,sans-serif; }
+.f-rigor   { --bg:#0E0D0C; --fg:#EEE8DD; --mute:#A39C91; --rule:#2A2724; --surface:#161513; --accent:#E2B13C; --on-accent:#0E0D0C; --display:"Inter Tight",sans-serif; --body:"EB Garamond",Georgia,serif; }
+.f-mdo3    { --bg:#F8F8FC; --fg:#0A0A0F; --mute:#5A5A72; --rule:#E2E2EC; --surface:#FFFFFF; --accent:#4C2FA0; --on-accent:#FFFFFF; --display:"DM Serif Display",Georgia,serif; --body:"DM Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace; }
+.f-mdo3.names{ --accent:#635BFF; }
 
 /* base */
 .mdo{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased}
