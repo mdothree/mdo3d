@@ -646,3 +646,6 @@ footer {
     .nav-links { gap: .35rem; font-size: .75rem; }
     .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

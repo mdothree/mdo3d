@@ -291,7 +291,7 @@ input:focus {
   font-size: 1.1rem;
   color: var(--accent);
   margin-bottom: 1rem;
-  font-style: italic;
+  font-style: normal;
 }
 
 .reading-meaning {
@@ -539,3 +539,6 @@ input[aria-invalid="true"] { border-color: #ff8a8a; }
 @media (max-width: 768px) {
     footer p a { display: inline-block; padding: 14px 4px; margin: -14px -4px; } /* layout-neutral hit area */
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

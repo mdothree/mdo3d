@@ -354,3 +354,6 @@ body.dark .logo .dot { color: var(--emerald); }
 
 /* A11Y-013: legal/pro footer links get a 44px-tall tap target (were 15px) */
 .site-footer a { display: inline-block; padding: 12px 2px; }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

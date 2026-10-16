@@ -174,7 +174,7 @@ header {
 .keywords {
   font-size: 0.875rem;
   color: var(--text-secondary);
-  font-style: italic;
+  font-style: normal;
 }
 
 .card-body {
@@ -303,7 +303,7 @@ button {
 
 .affirmation {
   font-size: 1.125rem;
-  font-style: italic;
+  font-style: normal;
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -562,3 +562,6 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

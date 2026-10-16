@@ -461,7 +461,7 @@ nav {
 
 .meaning-brief {
     font-size: 1.25rem;
-    font-style: italic;
+    font-style: normal;
     color: var(--text-muted);
     margin-bottom: 1.5rem;
 }
@@ -724,3 +724,6 @@ footer {
     .nav-links { gap: .5rem; font-size: .8rem; }
     .nav-links a { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

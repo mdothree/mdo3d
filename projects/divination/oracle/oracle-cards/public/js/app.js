@@ -334,7 +334,7 @@ class OracleCardsApp {
             ${reading.affirmation ? `
             <div class="reading-section">
                 <h3>🌟 Affirmation</h3>
-                <p style="font-size: 1.25rem; font-style: italic; text-align: center; padding: 1.5rem; background: #F3E8FF; border-radius: 12px;">
+                <p style="font-size: 1.25rem; font-style: normal; text-align: center; padding: 1.5rem; background: #F3E8FF; border-radius: 12px;">
                     "${esc(reading.affirmation)}"
                 </p>
             </div>` : ''}

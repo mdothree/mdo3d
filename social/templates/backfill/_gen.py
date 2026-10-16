@@ -2,7 +2,6 @@ from pathlib import Path
 D = Path.home()/"mdo3d/social/templates/backfill"
 CSS = """
 @font-face{font-family:'DM Serif Display';src:url(fonts/DMSerifDisplay.woff2) format('woff2');font-style:normal}
-@font-face{font-family:'DM Serif Display';src:url(fonts/DMSerifDisplay-Italic.woff2) format('woff2');font-style:italic}
 @font-face{font-family:'DM Sans';src:url(fonts/DMSans.woff2) format('woff2');font-weight:100 900}
 @font-face{font-family:'JetBrains Mono';src:url(fonts/JetBrainsMono-500.woff2) format('woff2');font-weight:500}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -14,7 +13,8 @@ body{background:#131320;color:#f8f8fc;font-family:'DM Sans',sans-serif;position:
 .stack{position:absolute;left:96px;right:96px;top:236px}
 .eyebrow{font-family:'JetBrains Mono';font-weight:500;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#9090a8}
 h1{margin-top:28px;font-family:'DM Serif Display';font-weight:400;font-size:100px;line-height:1.06;letter-spacing:-1px;color:#f8f8fc}
-h1 em{font-style:italic;color:#a78bfa}
+h1 em{font-style:normal;color:#a78bfa}
+em,i,cite{font-style:normal}
 .sub{margin-top:40px;margin-right:24px;font-family:'DM Sans';font-size:36px;line-height:1.4;color:#c4c4d4}
 .foot{position:absolute;left:96px;bottom:84px;font-family:'JetBrains Mono';font-weight:500;font-size:26px;letter-spacing:1px;color:#9090a8}
 .art{position:absolute}

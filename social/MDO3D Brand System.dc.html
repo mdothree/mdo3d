@@ -10,7 +10,7 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   :root{
@@ -33,6 +33,7 @@
   a:hover{color:var(--accent);}
   ::selection{background:var(--accent-soft);}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.8);}}
+em, i, cite, q, dfn, var, address { font-style: normal; } /* No italics (Principal 10-16) */
 </style>
 </helmet>
 
@@ -62,7 +63,7 @@
   <!-- COVER -->
   <section data-screen-label="Cover" style="max-width:1120px;margin:0 auto;padding:clamp(3.5rem,8vw,6.5rem) clamp(1.25rem,4vw,3rem) clamp(2.5rem,5vw,4rem);">
     <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-mid);margin-bottom:1.5rem;">Brand &amp; Design System · v1.0 · 2026</div>
-    <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(2.6rem,6.5vw,5rem);line-height:1.02;letter-spacing:-0.02em;max-width:15ch;margin-bottom:1.6rem;">One ecosystem. <em style="font-style:italic;color:var(--accent-mid);">Many dimensions</em> of intelligence.</h1>
+    <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(2.6rem,6.5vw,5rem);line-height:1.02;letter-spacing:-0.02em;max-width:15ch;margin-bottom:1.6rem;">One ecosystem. <em style="font-style:normal;color:var(--accent-mid);">Many dimensions</em> of intelligence.</h1>
     <p style="font-size:clamp(1rem,1.6vw,1.2rem);line-height:1.7;color:var(--ink-40);max-width:60ch;font-weight:300;margin-bottom:3rem;">The definitive reference for the MDO3D identity — a violet-anchored system engineered to flex across spiritual guidance, professional tooling, productivity, and commerce, without ever reading as either too mystical or too corporate.</p>
     <div style="display:flex;flex-wrap:wrap;gap:clamp(2rem,5vw,4rem);border-top:1px solid var(--border);padding-top:2rem;">
       <sc-for list="{{ coverStats }}" as="s" hint-placeholder-count="4">
@@ -77,7 +78,7 @@
   <!-- LOGO -->
   <section id="logo" data-screen-label="Logo system" style="max-width:1120px;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem);border-top:1px solid var(--border);">
     <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-20);margin-bottom:.7rem;">01 — Logo</div>
-    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:.9rem;">The mark <em style="font-style:italic;color:var(--accent-mid);">system</em></h2>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:.9rem;">The mark <em style="font-style:normal;color:var(--accent-mid);">system</em></h2>
     <p style="font-size:1rem;line-height:1.7;color:var(--ink-40);max-width:56ch;font-weight:300;margin-bottom:2.5rem;">Three elements: the primary lockup, the M3 monogram tile, and the Oracle eye symbol. The monogram carries the brand at small sizes; the eye is reserved for the spiritual-guidance arm.</p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;">
@@ -127,7 +128,7 @@
   <!-- COLOR -->
   <section id="color" data-screen-label="Color" style="max-width:1120px;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem);border-top:1px solid var(--border);">
     <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-20);margin-bottom:.7rem;">02 — Color</div>
-    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:.9rem;">Violet is the <em style="font-style:italic;color:var(--accent-mid);">connective tissue</em></h2>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:.9rem;">Violet is the <em style="font-style:normal;color:var(--accent-mid);">connective tissue</em></h2>
     <p style="font-size:1rem;line-height:1.7;color:var(--ink-40);max-width:56ch;font-weight:300;margin-bottom:2.5rem;">One primary violet anchors every product. High-contrast near-black / off-white neutrals keep it premium. Each category earns a single accent — used sparingly, never competing with violet.</p>
 
     <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-40);margin-bottom:1rem;">Brand · Primary</div>
@@ -189,13 +190,13 @@
   <!-- TYPOGRAPHY -->
   <section id="type" data-screen-label="Typography" style="max-width:1120px;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem);border-top:1px solid var(--border);">
     <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-20);margin-bottom:.7rem;">03 — Typography</div>
-    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:2.5rem;">Serif <em style="font-style:italic;color:var(--accent-mid);">emphasis</em>, sans clarity</h2>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:2.5rem;">Serif <em style="font-style:normal;color:var(--accent-mid);">emphasis</em>, sans clarity</h2>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.25rem;margin-bottom:2.75rem;">
       <div style="border:1px solid var(--border);border-radius:12px;padding:1.75rem;">
         <div style="font-family:'DM Serif Display',serif;font-size:3rem;line-height:1;margin-bottom:1rem;">Aa</div>
         <div style="font-weight:600;font-size:.92rem;">DM Serif Display</div>
-        <div style="font-size:.82rem;color:var(--ink-40);line-height:1.55;margin-top:.35rem;">Display &amp; headings. Roman + italic for emphasis on key phrases.</div>
+        <div style="font-size:.82rem;color:var(--ink-40);line-height:1.55;margin-top:.35rem;">Display &amp; headings. Roman only; emphasis on key phrases by colour.</div>
       </div>
       <div style="border:1px solid var(--border);border-radius:12px;padding:1.75rem;">
         <div style="font-family:'DM Sans',sans-serif;font-weight:500;font-size:3rem;line-height:1;margin-bottom:1rem;">Aa</div>
@@ -222,7 +223,7 @@
   <!-- COMPONENTS -->
   <section id="components" data-screen-label="Components" style="max-width:1120px;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem);border-top:1px solid var(--border);">
     <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-20);margin-bottom:.7rem;">04 — Components</div>
-    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:2.5rem;">Built for a <em style="font-style:italic;color:var(--accent-mid);">directory</em></h2>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:2.5rem;">Built for a <em style="font-style:normal;color:var(--accent-mid);">directory</em></h2>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-bottom:1.25rem;">
       <!-- Buttons -->
@@ -277,7 +278,7 @@
   <!-- VOICE -->
   <section id="voice" data-screen-label="Voice" style="max-width:1120px;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem);border-top:1px solid var(--border);">
     <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-20);margin-bottom:.7rem;">05 — Voice &amp; Tone</div>
-    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:2.5rem;">Precision meets <em style="font-style:italic;color:var(--accent-mid);">purpose</em></h2>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,3.5vw,2.7rem);letter-spacing:-0.02em;line-height:1.1;margin-bottom:2.5rem;">Precision meets <em style="font-style:normal;color:var(--accent-mid);">purpose</em></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;">
       <sc-for list="{{ voice }}" as="v" hint-placeholder-count="4">
         <div style="border:1px solid var(--border);border-radius:12px;padding:1.75rem;">
@@ -288,7 +289,7 @@
     </div>
     <div style="margin-top:1.25rem;border:1px solid var(--border);border-radius:14px;padding:clamp(1.75rem,4vw,2.5rem);background:var(--surface);">
       <div style="font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-40);margin-bottom:1rem;">In their words</div>
-      <p style="font-family:'DM Serif Display',serif;font-size:clamp(1.3rem,2.6vw,1.9rem);line-height:1.3;letter-spacing:-0.01em;max-width:32ch;">MDO3D builds AI-powered tools <em style="font-style:italic;color:var(--accent-mid);">engineered with precision and purpose</em> — one identity across many dimensions.</p>
+      <p style="font-family:'DM Serif Display',serif;font-size:clamp(1.3rem,2.6vw,1.9rem);line-height:1.3;letter-spacing:-0.01em;max-width:32ch;">MDO3D builds AI-powered tools <em style="font-style:normal;color:var(--accent-mid);">engineered with precision and purpose</em> — one identity across many dimensions.</p>
     </div>
   </section>
 
@@ -388,7 +389,7 @@ class Component extends DCLogic {
 
       typeScale: [
         { spec: 'Display / 72', family: "'DM Serif Display',serif", weight: 400, style: 'normal', size: 'clamp(2.4rem,5vw,3.6rem)', sample: 'Many dimensions' },
-        { spec: 'H2 / 40', family: "'DM Serif Display',serif", weight: 400, style: 'italic', size: 'clamp(1.6rem,3vw,2.2rem)', sample: 'Engineered with purpose' },
+        { spec: 'H2 / 40', family: "'DM Serif Display',serif", weight: 400, style: 'normal', size: 'clamp(1.6rem,3vw,2.2rem)', sample: 'Engineered with purpose' },
         { spec: 'H3 / 24', family: "'DM Sans',sans-serif", weight: 600, style: 'normal', size: '1.4rem', sample: 'Spiritual guidance' },
         { spec: 'Body / 17', family: "'DM Sans',sans-serif", weight: 400, style: 'normal', size: '1.05rem', sample: 'AI-powered tools across the ecosystem.' },
         { spec: 'Small / 14', family: "'DM Sans',sans-serif", weight: 500, style: 'normal', size: '.88rem', sample: 'Card metadata and secondary UI text.' },

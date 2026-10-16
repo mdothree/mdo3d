@@ -168,7 +168,7 @@ nav {
 .tip {
     color: var(--text-muted);
     font-size: 0.875rem;
-    font-style: italic;
+    font-style: normal;
 }
 
 /* Buttons */
@@ -364,7 +364,7 @@ nav {
 .disclaimer {
     font-size: 0.875rem;
     color: var(--text-muted);
-    font-style: italic;
+    font-style: normal;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--border);
@@ -436,7 +436,7 @@ nav {
 
 .loading-text {
     color: var(--text-muted);
-    font-style: italic;
+    font-style: normal;
     animation: dreamPulse 1.2s ease-in-out infinite;
 }
 @keyframes dreamPulse {
@@ -628,7 +628,7 @@ nav {
     text-align: center;
     color: var(--text-muted);
     padding: 3rem;
-    font-style: italic;
+    font-style: normal;
 }
 
 .journal-entry {
@@ -907,3 +907,6 @@ footer {
     .nav-links { width: 100%; justify-content: space-between; gap: .25rem; }
     .nav-links a { white-space: nowrap; }
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }
