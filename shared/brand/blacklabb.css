@@ -1,4 +1,4 @@
-/* Blacklab B brand v1 (2026-10-16). CSS mirror of tokens.json "blacklabb". Its own identity, distinct from MDO:
+/* Blacklab B brand v1 (2026-10-16). CSS mirror of brand-tokens.json "blacklabb". Its own identity, distinct from MDO:
    cold graphite instrument panel, Space Grotesk + JetBrains Mono, crosshair mark, one signal colour per tracker.
    Rules: radius <= 2px, no pills, no one-sided accent borders, no emoji, no gradients on surfaces or text.
    Usage: <body class="blb t-quantum"> (t-space, t-neuro). Hosts come from js/sites.js, never hard-coded. */

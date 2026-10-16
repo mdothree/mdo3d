@@ -1,4 +1,4 @@
-/* MDO3 brand v1.1 (2026-10-16; Principal review: mdo3 = original mdo3d.com language, rigor = yellow and black, Ronna separate). CSS mirror of shared/brand/tokens.json for every MDO family.
+/* MDO3 brand v1.1 (2026-10-16; Principal review: mdo3 = original mdo3d.com language, rigor = yellow and black, Ronna separate). CSS mirror of shared/brand/brand-tokens.json for every MDO family.
    Usage: <body class="f-data"> (or f-guidance, f-index, f-tools, f-rigor). Copy this file into a static app
    (apps are deployed separately; there is no shared import at runtime).
    Rules: radius <= 4px, no pills, no one-sided accent borders, no emoji icons, hairline rules, one offer + one next step. */

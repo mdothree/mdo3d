@@ -1,0 +1,372 @@
+{
+  "$schema_note": "MDO3 brand tokens v1 (2026-10-16). Builds on the MDO design system v0 in staged/proposal_2026-10-16/mockups/mdo-system.css. Source of truth for every MDO family and for BlacklabB. CSS mirrors: mdo-brand.css (MDO families), blacklabb.css (BlacklabB). v1.1 (Principal review 10-16): mdo3 family = the original mdo3d.com language (mdo3d.com, names, leads); rigor takes the yellow-and-black look; Ronna is its own identity outside the MDO families; index family kept as variant 2 for comparison.",
+  "version": "1.2.0",
+  "date": "2026-10-16",
+  "rules": {
+    "radius_max_px": 4,
+    "pills": false,
+    "one_sided_accent_borders": false,
+    "emoji_icons": false,
+    "gradients": "none on surfaces or text; a chart fill may use one flat accent at low opacity",
+    "claims": "show, don't say; honest numbers only; never the word free; no .99 prices",
+    "offer": "one offer and one next step per screen",
+    "imagery": "real artefacts (cards, data, rows, filings) framed in a 1px hairline box with a caption; no stock illustration",
+    "italic": "none",
+    "italic_note": "Principal 10-16: \"stop using italics\" for MDO and Rigor. No italic font-style, no italic font files or ital axes in font links; em/i/cite/q/blockquote render upright; emphasis by colour or weight."
+  },
+  "throughline": {
+    "description": "Shared by every MDO family. Same grid, header, footer, label style, corners and hairlines; each family swaps face and accent.",
+    "font": {
+      "ui": "\"Inter Tight\", system-ui, -apple-system, sans-serif",
+      "mono": "\"IBM Plex Mono\", ui-monospace, SFMono-Regular, monospace"
+    },
+    "type_scale_px": {
+      "label": 12,
+      "small": 14,
+      "body": 17,
+      "lead": 21,
+      "h3": 22,
+      "h2": 34,
+      "h1": 56,
+      "display": 76
+    },
+    "type_scale_mobile_px": {
+      "h2": 26,
+      "h1": 38,
+      "display": 46
+    },
+    "line_height": {
+      "tight": 1.04,
+      "head": 1.12,
+      "body": 1.55
+    },
+    "tracking": {
+      "label": "0.14em",
+      "nav": "0.08em",
+      "display": "-0.025em"
+    },
+    "space_px": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48,
+      64,
+      96,
+      128
+    ],
+    "layout": {
+      "maxw_px": 1264,
+      "gutter_desktop_px": 48,
+      "gutter_mobile_px": 16,
+      "header_h_px": 72,
+      "columns": 12
+    },
+    "radius_px": {
+      "sm": 2,
+      "md": 3,
+      "lg": 4
+    },
+    "rule_px": 1,
+    "motion": {
+      "fast": "120ms",
+      "base": "180ms",
+      "ease": "cubic-bezier(.2,.7,.2,1)",
+      "reduced_motion": "disable transforms"
+    },
+    "focus": "2px solid var(--accent), offset 2px",
+    "tap_target_min_px": 44,
+    "components": {
+      "header": "full-width, 1px rule below; mark + wordmark left; uppercase ui nav 13px/600/0.08em right; one primary button max",
+      "footer": "1px rule above; legal entity name, privacy, terms, contact; mute 13px",
+      "label": "ui 12px/600, uppercase, 0.14em, mute",
+      "button.primary": "accent fill, bg-colored text, ui 15px/600, 14px 22px, radius md",
+      "button.ghost": "transparent, fg text, 1px rule border, radius md",
+      "box": "1px rule border on all sides, radius md, no shadow",
+      "tag": "ui 11px/600 uppercase 0.1em, 1px rule border, radius sm, mute text (never a pill)",
+      "table": "head: label style over a 1px fg rule; rows: 1px rule; numbers in mono, right aligned",
+      "figure": "1px rule frame, radius md, caption below in mute 13px with source + date",
+      "states": "empty (what it is + one action), loading (static skeleton rows, no spinners over 1s), error (plain sentence + retry), success (inline confirmation, no modal)"
+    }
+  },
+  "families": {
+    "index": {
+      "products": [
+        "mdo3d.com"
+      ],
+      "voice": "plain index of what MDO3D makes; numbers that are true today",
+      "font": {
+        "display": "\"Inter Tight\", sans-serif",
+        "body": "\"EB Garamond\", Georgia, serif"
+      },
+      "color": {
+        "bg": "#0E0D0C",
+        "fg": "#EEE8DD",
+        "mute": "#9C958A",
+        "rule": "#2A2724",
+        "surface": "#161513",
+        "accent": "#E2B13C",
+        "on_accent": "#0E0D0C"
+      },
+      "status": "variant 2 of 3 (yellow and black); its look now proposed for Rigor; mdo3d.com stays on mdo3",
+      "font_style": "normal only"
+    },
+    "guidance": {
+      "products": [
+        "guidance.mdo3d.com",
+        "tarot",
+        "oracle",
+        "runes",
+        "iching",
+        "astrology",
+        "numerology",
+        "dreams",
+        "fengshui",
+        "pastlife"
+      ],
+      "voice": "ceremonial, measured; the draw first, the price next to it",
+      "font": {
+        "display": "\"Cormorant Garamond\", Georgia, serif",
+        "body": "\"EB Garamond\", Georgia, serif"
+      },
+      "color": {
+        "bg": "#14111B",
+        "fg": "#EDE6D8",
+        "mute": "#A79F92",
+        "rule": "#3A3345",
+        "surface": "#1B1724",
+        "accent": "#C9A24A",
+        "on_accent": "#14111B"
+      },
+      "color_light": {
+        "bg": "#F4EFE6",
+        "fg": "#1C1824",
+        "mute": "#6B6373",
+        "rule": "#D8CFC0",
+        "surface": "#FBF8F2",
+        "accent": "#8E6B1F",
+        "on_accent": "#FBF8F2"
+      },
+      "imagery": "real card art (Rider-Waite-Smith 1909, public domain) or in-house line art for runes, hexagrams, glyphs",
+      "font_style": "normal only"
+    },
+    "data": {
+      "products": [
+        "layoffleads.com",
+        "promptsforbusiness",
+        "dailyaitoll"
+      ],
+      "voice": "show the data itself, then one offer; editorial headline over real rows",
+      "font": {
+        "display": "\"IBM Plex Sans\", \"Inter Tight\", sans-serif",
+        "body": "\"IBM Plex Sans\", system-ui, sans-serif",
+        "numeric": "\"IBM Plex Mono\", monospace"
+      },
+      "color": {
+        "bg": "#F3F0E9",
+        "fg": "#141311",
+        "mute": "#6E685F",
+        "rule": "#D5CFC3",
+        "surface": "#FBF9F4",
+        "accent": "#B4381F",
+        "on_accent": "#FBF9F4",
+        "ok": "#2F6B3E",
+        "warn": "#9A6A12"
+      },
+      "color_dark": {
+        "bg": "#111111",
+        "fg": "#ECE8E1",
+        "mute": "#8D877E",
+        "rule": "#2B2A28",
+        "surface": "#181816",
+        "accent": "#D9483B",
+        "on_accent": "#111111",
+        "ok": "#5FA36F",
+        "warn": "#D4A23A"
+      },
+      "imagery": "a real chart (weekly volume line) and real sample rows in a framed table",
+      "font_style": "normal only"
+    },
+    "tools": {
+      "products": [
+        "mdothree.com",
+        "pdf/image/json/qr/text/color/hash/password/timestamp.mdothree.com"
+      ],
+      "voice": "quiet utility; the tool is the hero",
+      "font": {
+        "display": "\"Inter Tight\", sans-serif",
+        "body": "\"Inter Tight\", system-ui, sans-serif",
+        "mono": "\"JetBrains Mono\", \"IBM Plex Mono\", monospace"
+      },
+      "color": {
+        "bg": "#0F1115",
+        "fg": "#E9ECEF",
+        "mute": "#8B939E",
+        "rule": "#252A31",
+        "surface": "#161A20",
+        "accent": "#10B981",
+        "on_accent": "#0F1115"
+      },
+      "mark": "m3 in mono, 3 in accent; wordmark always mono (one face across hub and tools)",
+      "font_style": "normal only"
+    },
+    "rigor": {
+      "products": [
+        "rigor.design",
+        "resume/cover/linkedin/interview/salary/portfolio/networking"
+      ],
+      "voice": "plain and exact about what each tool returns; example output labelled illustrative",
+      "font": {
+        "display": "\"Inter Tight\", system-ui, sans-serif",
+        "body": "\"EB Garamond\", Georgia, serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, monospace"
+      },
+      "color": {
+        "bg": "#0E0D0C",
+        "surface": "#161513",
+        "fg": "#EEE8DD",
+        "mute": "#A39C91",
+        "rule": "#2A2724",
+        "rule_strong": "#47423C",
+        "accent": "#E2B13C",
+        "on_accent": "#0E0D0C"
+      },
+      "mark": "'R' in a 1.5px yellow square outline beside 'Rigor' in Inter Tight 700",
+      "note": "the yellow-and-black MDO variant (Principal 10-16). Alternates A (Paper & Ink) and B (Path) on design/rigor-a|b-2026-10-16.",
+      "font_style": "normal only"
+    },
+    "mdo3": {
+      "products": [
+        "mdo3d.com (original + light pass)",
+        "names.mdo3d.com",
+        "leads.mdo3d.com"
+      ],
+      "voice": "the original mdo3d.com: editorial serif headlines with an italic accent phrase, quiet sans text, mono labels",
+      "font": {
+        "display": "\"DM Serif Display\", Georgia, serif",
+        "body": "\"DM Sans\", system-ui, sans-serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, monospace"
+      },
+      "color": {
+        "bg": "#F8F8FC",
+        "surface": "#FFFFFF",
+        "fg": "#0A0A0F",
+        "mute": "#5A5A72",
+        "rule": "#E2E2EC",
+        "rule_strong": "#C8C8D8",
+        "accent": "#4C2FA0",
+        "accent_mid": "#7C5CCF",
+        "accent_soft": "#EDE8FF",
+        "on_accent": "#FFFFFF"
+      },
+      "color_dark": {
+        "bg": "#0A0A0F",
+        "surface": "#131320",
+        "fg": "#F8F8FC",
+        "mute": "#9090A8",
+        "rule": "#1E1E30",
+        "accent": "#7C5CCF",
+        "accent_text": "#A78BFA"
+      },
+      "mark": "28px filled accent square, 'M3' in JetBrains Mono, white",
+      "per_product_accent": {
+        "names.mdo3d.com": "#635BFF (Baby Name Oracle's original accent)",
+        "leads.mdo3d.com": "#4C2FA0"
+      },
+      "radius_px": {
+        "sm": 3,
+        "md": 4
+      },
+      "font_style": "normal only"
+    }
+  },
+  "blacklabb": {
+    "description": "Blacklab B: its own identity, deliberately distinct from every MDO family (cold graphite instrument panel, grotesk + mono, crosshair mark, per-tracker signal colour). Never shares MDO's warm paper, serif faces or gold. Never depends on blacklabb.com: hosts come from one config (js/sites.js).",
+    "products": [
+      "blacklab landing",
+      "quantum tracker",
+      "space tracker",
+      "neuro tracker"
+    ],
+    "voice": "a precise personal log for following a frontier field; instrument-like, dated, sourced",
+    "font": {
+      "display": "\"Space Grotesk\", system-ui, sans-serif",
+      "body": "\"Space Grotesk\", system-ui, sans-serif",
+      "mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "type_scale_px": {
+      "label": 11,
+      "small": 13,
+      "body": 15,
+      "h3": 18,
+      "h2": 28,
+      "h1": 48,
+      "display": 72
+    },
+    "color": {
+      "bg": "#0A0B0D",
+      "fg": "#E6E8EB",
+      "mute": "#8A9099",
+      "rule": "#23272E",
+      "surface": "#111317",
+      "grid": "#16191E",
+      "accent": "#E6E8EB",
+      "on_accent": "#0A0B0D",
+      "danger": "#FF5F56"
+    },
+    "signal": {
+      "quantum": "#7AA2FF",
+      "space": "#FF8A3D",
+      "neuro": "#C792FF"
+    },
+    "radius_px": {
+      "sm": 0,
+      "md": 2
+    },
+    "mark": "a crosshair (circle + 4 ticks) beside BLACKLAB in mono caps, the B in a solid square",
+    "motifs": [
+      "8px dot grid at 4% opacity on page background",
+      "corner ticks on framed panels",
+      "ISO dates in mono",
+      "entry index numbers in mono"
+    ],
+    "components": {
+      "filter": "segmented control: joined 1px-bordered cells, active cell filled with fg (no pills)",
+      "entry": "row on a 1px rule: mono index + date column, title + source, category tag in signal colour outline",
+      "modal": "sheet with a 1px frame and corner ticks; full-height on mobile"
+    }
+  },
+  "ronna": {
+    "description": "Ronna keeps its own identity, separate from the MDO families (Principal 10-16: 'i dont think it needs to be continuous with ronna scanner'). CSS: css/ronna-brand.css in each Ronna repo, body class 'rs ronna'.",
+    "products": [
+      "ronnascanner.com",
+      "companies/contacts/emails/leads/prospects.ronnascanner.com"
+    ],
+    "font": {
+      "display": "\"IBM Plex Sans\", sans-serif",
+      "body": "\"IBM Plex Sans\", system-ui, sans-serif",
+      "mono": "\"IBM Plex Mono\", monospace"
+    },
+    "color": {
+      "bg": "#F3F0E9",
+      "fg": "#141311",
+      "mute": "#6E685F",
+      "rule": "#D5CFC3",
+      "surface": "#FBF9F4",
+      "accent": "#B4381F",
+      "on_accent": "#FBF9F4"
+    },
+    "color_dark": {
+      "bg": "#111111",
+      "fg": "#ECE8E1",
+      "mute": "#8D877E",
+      "rule": "#2B2A28",
+      "surface": "#181816",
+      "accent": "#D9483B",
+      "on_accent": "#111111"
+    },
+    "mark": "RS monogram in a 1px square, Plex Sans 700"
+  }
+}
