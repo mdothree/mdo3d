@@ -70,6 +70,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, dfn, var, address, blockquote, q { font-style: normal; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;

@@ -24,6 +24,9 @@
 .f-mdo3    { --bg:#F8F8FC; --fg:#0A0A0F; --mute:#5A5A72; --rule:#E2E2EC; --surface:#FFFFFF; --accent:#4C2FA0; --on-accent:#FFFFFF; --display:"DM Serif Display",Georgia,serif; --body:"DM Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace; }
 .f-mdo3.names{ --accent:#635BFF; }
 
+/* no italics, ever (tokens rules.italic = none; Principal 10-16) */
+em,i,cite,dfn,var,address,blockquote,q{font-style:normal}
+
 /* base */
 .mdo{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:var(--t-body);line-height:1.55;-webkit-font-smoothing:antialiased}
 .mdo .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
