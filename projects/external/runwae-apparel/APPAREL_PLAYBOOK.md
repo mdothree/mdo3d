@@ -183,3 +183,7 @@ any group, GLB playful and never crude. Pick one option per brand, or mix lines.
 - They all have one pair of jeans they'll never explain.
 
 **Recommendation: B** (it is "they own it" as warmth toward other people), with C's doodle line tying it to the line art.
+
+## Principal direction (verbatim, 2026-10-16 ~08:30 ET): Runwae Apparel release lineup
+"Botanical Tee - drop , True Grit Hoodie- drop. i dont think we need black in this release. we can keep the creme and forest green, and rust orange, and bear brown. this Knit Polo may remain a charcoal.   Figure Overshirt- drop"
+Applied in storefront/brands/runwae/catalog.json: the 3 items listed:false (kept in the file), black removed where another color exists, Knit Polo = Charcoal, release palette recorded. Black-only items await a color pick.

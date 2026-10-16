@@ -103,11 +103,6 @@
      "id": "ivory",
      "name": "Ivory",
      "hex": "#e9e3d4"
-    },
-    {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
     }
    ],
    "images": [
@@ -200,7 +195,9 @@
      "size": "full_back"
     }
    ],
-   "capsule": 3
+   "capsule": 3,
+   "listed": false,
+   "dropped": "2026-10-16 Principal: dropped from this release"
   },
   {
    "id": "atelier-shirt",
@@ -407,7 +404,9 @@
     ]
    ],
    "rights_hold": null,
-   "capsule": 7
+   "capsule": 7,
+   "listed": false,
+   "dropped": "2026-10-16 Principal: dropped from this release"
   },
   {
    "id": "tlt-neighbor-hoodie",
@@ -857,9 +856,9 @@
    ],
    "colors": [
     {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
+     "id": "charcoal",
+     "name": "Charcoal",
+     "hex": "#3b3b3a"
     }
    ],
    "images": [
@@ -1199,7 +1198,9 @@
     ]
    ],
    "rights_hold": null,
-   "printful_variant_ids": null
+   "printful_variant_ids": null,
+   "listed": false,
+   "dropped": "2026-10-16 Principal: dropped from this release"
   },
   {
    "id": "wordmark-tee",
@@ -1238,5 +1239,30 @@
    "rights_hold": null,
    "printful_variant_ids": null
   }
- ]
+ ],
+ "_release_palette": {
+  "note": "Principal 2026-10-16: no black this release; palette = creme, forest green, rust orange, bear brown (Knit Polo stays charcoal).",
+  "colors": [
+   {
+    "id": "creme",
+    "name": "Creme",
+    "hex": "#efe6d2"
+   },
+   {
+    "id": "forest",
+    "name": "Forest",
+    "hex": "#263a2d"
+   },
+   {
+    "id": "rust",
+    "name": "Rust",
+    "hex": "#a5512a"
+   },
+   {
+    "id": "bear-brown",
+    "name": "Bear brown",
+    "hex": "#5b4030"
+   }
+  ]
+ }
 }
