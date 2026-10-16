@@ -570,7 +570,7 @@
      "alt": "Black tee with a grid of line-drawn faces"
     }
    ],
-   "listed": true,
+   "listed": false,
    "category": "apparel",
    "summary": "A grid of line-drawn faces. Black.",
    "colors": [
@@ -591,7 +591,8 @@
      "placement": "back",
      "size": "full_back"
     }
-   ]
+   ],
+   "dropped": "2026-10-16 Principal: dropped from this release"
   },
   {
    "id": "trc-hoodie",
