@@ -82,7 +82,8 @@
     ]
    ],
    "rights_hold": null,
-   "capsule": 1
+   "capsule": 1,
+   "decision_pending": "2026-10-16 Principal: Foundation Hoodie and Figure Hoodie may become the front and back of one hoodie. Hold until decided."
   },
   {
    "id": "globe-hoodie",
@@ -961,7 +962,8 @@
      "placement": "back",
      "size": "full_back"
     }
-   ]
+   ],
+   "decision_pending": "2026-10-16 Principal: Foundation Hoodie and Figure Hoodie may become the front and back of one hoodie. Hold until decided."
   },
   {
    "id": "drawn-portrait-hoodie",

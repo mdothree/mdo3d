@@ -190,3 +190,4 @@ Applied in storefront/brands/runwae/catalog.json: the 3 items listed:false (kept
 "Faces Tee - drop" (2026-10-16) → listed:false.
 
 Principal (verbatim, 2026-10-16): "these 2 have the wrong colors. they may end up being the frotne nad back of the same hoodie. there are still some decisions to be made" (re the TRC / Chest-Drawing / Company Hood / Knit Polo / Runwae Company hoodie cards).
+Principal (verbatim, 2026-10-16): "Foundation Hoodie · Forest, Ivory  Figure Hoodie · Forest, cream line, Ivory, dark line may also end up front and back of same hoodie"
