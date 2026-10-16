@@ -3,6 +3,14 @@
 **Held by:** Claude (the operator) · **Reports to:** Principal / Founder · **Tracked by:** `latarence`
 (central seat — `~/latarence/docs/CHIEFS_OF_STAFF.md`).
 
+**Last updated:** 2026-10-16 (status refresh by the latarence Bridge doc lane; facts below checked by file read that day).
+
+> **State check 2026-10-16.** The `loops/` control plane is specs only: `loops/CONTROL.md` lists 9 loops (8 enabled,
+> `execution: monitor`), but `loops/LEDGER.md` holds a single 2026-07-12 setup row ("nothing scheduled"), so no loop
+> has recorded a run. Day-to-day MDO work currently arrives through the latarence C2 MDO lane and the Grok channel
+> (`coordination/COS_CHANNEL.md`, `grok/FLEET_FIX_QUEUE.md`). `STATUS.md` was last modified 2026-10-12 (its header still says 2026-09-01), not by the
+> `status-rollup` loop. Live breakage across the lab: `~/latarence/coordination/BROKEN_NOW.md`.
+
 ## Role
 The always-on operator for MDO3D. The Principal sets a target; I select the office / loop / agent to
 execute it, drive it to completion, and report the outcome. I own no single function — I run the whole
@@ -28,7 +36,7 @@ strategic).
 - [`Organization/`](../README.md) — the org itself
 - [`loops/`](../../loops/README.md) — control plane (`CONTROL.md` switchboard, `LEDGER.md`, `INBOX.md`, `CENTRAL_MONITORING_PLAN.md`)
 - [`review/`](../../review/README.md) — the content/portfolio review surface (:8822)
-- [`STATUS.md`](../../STATUS.md) — the rolling snapshot I keep true (via `status-rollup`)
+- [`STATUS.md`](../../STATUS.md) — the rolling snapshot I keep true (intended via `status-rollup`; that loop has not run yet, see state check above)
 
 ## Content generation (a standing capability)
 To generate content on demand: the generator (metrics/plots → styled cards) is the missing piece — see
