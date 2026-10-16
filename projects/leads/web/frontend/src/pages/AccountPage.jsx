@@ -81,11 +81,14 @@ export default function AccountPage() {
 
   return (
     <div className="wrap page narrow">
-      <h1>Plan &amp; access</h1>
-      <p className="lede">
-        MDO3D Leads is a paid product. Searching, CSV export and saved searches require an active plan.
-        Early access is available with a promo code.
-      </p>
+      <div className="page-head">
+        <p className="eyebrow">Account</p>
+        <h1>Plan &amp; access</h1>
+        <p className="lede">
+          MDO3D Leads is a paid product. Searching, CSV export and saved searches require an active plan.
+          Early access is available with a promo code.
+        </p>
+      </div>
       {returnNote && <Notice title={returnNote} />}
 
       {!isAuthenticated ? (

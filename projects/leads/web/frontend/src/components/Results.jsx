@@ -81,7 +81,7 @@ export default function Results({ filings, caption }) {
                 </th>
                 <td className="mono">{f.filing_type || dash}</td>
                 <td className="nowrap">{formatDate(f.filed_date)}</td>
-                <td>{titleCase(f.status) || dash}</td>
+                <td>{f.status ? <span className={`status status-${f.status.toLowerCase()}`}>{titleCase(f.status)}</span> : dash}</td>
                 <td>{f.registered_agent || dash}</td>
                 <td>{formatAddress(f.principal_address) || dash}</td>
                 <td><Industry f={f} /></td>
@@ -99,7 +99,7 @@ export default function Results({ filings, caption }) {
             <p className="mono muted card-id">{f.state} #{f.source_id}{f.filing_type ? ` · ${f.filing_type}` : ''}</p>
             <dl className="card-dl">
               <div><dt>Filed</dt><dd>{formatDate(f.filed_date)}</dd></div>
-              <div><dt>Status</dt><dd>{titleCase(f.status) || dash}</dd></div>
+              <div><dt>Status</dt><dd>{f.status ? <span className={`status status-${f.status.toLowerCase()}`}>{titleCase(f.status)}</span> : dash}</dd></div>
               {f.county && <div><dt>County</dt><dd>{county(f.county)}</dd></div>}
               <div><dt>Registered agent</dt><dd>{f.registered_agent || dash}</dd></div>
               <div><dt>Principal address</dt><dd>{formatAddress(f.principal_address) || dash}</dd></div>

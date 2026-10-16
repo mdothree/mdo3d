@@ -64,8 +64,11 @@ export default function SignInPage() {
 
   return (
     <div className="wrap page narrow">
-      <h1>{mode === 'signin' ? 'Sign in' : 'Create an account'}</h1>
-      <p className="lede">An account is needed to redeem a promo code or start a plan.</p>
+      <div className="page-head">
+        <p className="eyebrow">Account</p>
+        <h1>{mode === 'signin' ? 'Sign in' : 'Create an account'}</h1>
+        <p className="lede">An account is needed to redeem a promo code or start a plan.</p>
+      </div>
       <form className="panel" onSubmit={submit} noValidate>
         <div className="field">
           <label htmlFor="si-email">Email</label>

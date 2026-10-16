@@ -179,13 +179,43 @@ export default function SearchPage() {
   return (
     <div className="wrap page">
       <section className="hero" aria-labelledby="hero-title">
-        <p className="eyebrow">Business filings · by state</p>
-        <h1 id="hero-title">New business filings, as leads.</h1>
-        <p className="lede">
-          Search new state business registrations by filing type, entity kind, name keywords and filing date,
-          then export to CSV. Contacts are shown only when verified from public sources — never guessed.
-          Access requires an active plan.
-        </p>
+        <div>
+          <p className="eyebrow">Business filings · by state</p>
+          <h1 id="hero-title">New business filings, as leads.</h1>
+          <p className="lede">
+            Search new state business registrations by filing type, entity kind, name keywords and filing date,
+            then export to CSV.
+            <span className="lede-note">
+              Contacts appear only when verified from public sources. Search and export need an active plan.
+            </span>
+          </p>
+        </div>
+        <aside className="coverage" aria-labelledby="coverage-title">
+          <div className="coverage-head">
+            <h2 id="coverage-title" className="eyebrow">In the data</h2>
+            <span className="eyebrow">Filings</span>
+          </div>
+          {coverageStatus === 'ok' ? (
+            <ul className="coverage-list">
+              {states.filter((s) => s.status === 'live').map((s) => (
+                <li key={s.code}>
+                  <span className="coverage-code">{s.code}</span>
+                  <span>
+                    <span className="coverage-name">{s.name}</span>
+                    {s.latest_filed_date && <span className="coverage-date">latest filed {s.latest_filed_date}</span>}
+                  </span>
+                  <span className="coverage-n">{s.filings ? s.filings.toLocaleString() : '—'}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="coverage-empty">
+              {coverageStatus === 'loading' ? 'Loading coverage…'
+                : coverageStatus === 'none' ? 'No state data has been loaded yet.'
+                : 'Coverage could not be loaded right now. Nothing is shown rather than a guess.'}
+            </p>
+          )}
+        </aside>
       </section>
 
       <div className="search-layout">
@@ -299,7 +329,16 @@ export default function SearchPage() {
               Results show entity, filing type and date, status, registered agent, principal address and any verified contacts.
             </Notice>
           )}
-          {result.status === 'loading' && <Notice title="Searching filings…" />}
+          {result.status === 'loading' && (
+            <>
+              <Notice title="Searching filings…" />
+              <div className="skeleton" aria-hidden="true">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <div key={i} className="skeleton-row"><span /><span /><span /><span /></div>
+                ))}
+              </div>
+            </>
+          )}
           {result.status === 'error' && <ErrorState error={result.error} />}
           {result.status === 'ok' && page.filings.length === 0 && (
             <Notice title="No filings match these filters.">

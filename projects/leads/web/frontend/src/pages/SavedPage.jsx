@@ -81,8 +81,11 @@ export default function SavedPage() {
 
   return (
     <div className="wrap page narrow">
-      <h1>Saved searches</h1>
-      <p className="lede">Weekly email of new filings that match a search.</p>
+      <div className="page-head">
+        <p className="eyebrow">Your searches</p>
+        <h1>Saved searches</h1>
+        <p className="lede">Weekly email of new filings that match a search.</p>
+      </div>
       {status === 'loading' ? <Notice title="Loading…" /> : body}
     </div>
   );
