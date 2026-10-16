@@ -1,85 +1,39 @@
-# Status
+# MDO3 — Status (rolling snapshot, kept true by the MDO3D CoS)
 
-**Last updated:** 2026-08-17
+*Last updated: 2026-10-16 ~08:10 ET (rewritten to the Now / State / Next / Gate shape; the 2026-08-16 → 09-01 content
+is verbatim in [`documentation/archive/STATUS_through_2026-09-01.md`](documentation/archive/STATUS_through_2026-09-01.md)).
+Seat: [`Organization/Chief-of-Staff/README.md`](Organization/Chief-of-Staff/README.md) · direction log:
+[`coordination/COS_CHANNEL.md`](coordination/COS_CHANNEL.md) · fix queue: [`grok/FLEET_FIX_QUEUE.md`](grok/FLEET_FIX_QUEUE.md)
+· decisions: `~/latarence/docs/DECISIONS.md` · what is broken for real users: `~/latarence/coordination/BROKEN_NOW.md`
+· open calls: `~/jarvis/JARVIS QUESTIONS.md` · access steps: `~/latarence/coordination/SETUP_TODO.md`.*
 
-**Operating org:** [`Organization/README.md`](Organization/README.md) — the Chief of Staff seat (agent operator) that dispatches targets to the [`loops/`](loops/README.md) control plane or a specialist agent and keeps this file true. Tracked centrally by `~/latarence/docs/CHIEFS_OF_STAFF.md`.
+## Now
+| Area | State | Next | Gate |
+|---|---|---|---|
+| Direction (before/after proposal) | 13-page PDF `~/Downloads/MDO_BEFORE_AFTER_PROPOSAL_2026-10-16.pdf` (source `staged/proposal_2026-10-16/`): one design system, 33 hosts → Guidance / Rigor / mdothree + an mdo3d.com index, a price ladder, Daily AI Toll patron + data packages (merch later). Principal 10-16 07:30: "proceed with this mdothree direction"; "our domains are real estate". | Execute per family below | — |
+| Brand pass | Branches `design/brand-2026-10-16` (not pushed or deployed); preview `staged/brand_preview_2026-10-16/index.html` (+ `mdo_variants.html`). **Approved:** Blacklab B as is; **Rigor = the yellow-and-black look**; **no italics** anywhere in MDO3 / Rigor (Principal 08:20). **Decided:** mdo3d.com keeps its original design with a light polish; Baby Name Oracle keeps its original colors; names + leads in the MDO3 family; Ronna is its own identity. **Still weighed:** the 3 MDO variants (Principal: "keep weighing all 3"). No-italics pass done on the brand-pass surfaces; a follow-up sweep (divination CSS, mdo3d-static, social templates) and the `tokens.json` → `brand-tokens.json` rename (gitignore collision) were running at 10-16 07:55 ET. | Finish the italics sweep; MDO production deploy | Principal GO (MDO production deploys) |
+| mdothree.com | Approved direction (10-16): open developer tools usable without sign-up (never called "free") funnelling to paid products, plus a one-time **$29 lifetime Pro** (a Principal-approved paid-only exception for these tools only). Built on `feat/mdothree-pro-2026-10-16` in 10 repos; xps API tests 35/35. GO staged `staged/mdothree_pro_2026-10-16/MDOTHREE_PRO_GO.sh` (stripe → api → web). Live today: a Pro purchase charges but never grants (BROKEN_NOW P0 #6). | Run the GO in TEST, then live | Setup `[mdo-stripe-test]` + `[mdothree-firebase-login]`; JARVIS §1b GO |
+| Rigor | Yellow-and-black look approved; Rigor Pro API answers 404 under `/api/*` (BROKEN_NOW P1 #10); $9.99 → $10 decided under pricing delegation. | Secrets + API deploy | Setup "Rigor API secrets into Vercel"; JARVIS M1 (sprint pass) |
+| BlacklabB (blacklabb.com; MDO3, not AHL's Blacklab) | Brand approved. blacklabb.com 404 (Bubble). Options for the "Future Technology Trackers" (Frontier / Promise Ledger; member-curated verified alerts): `~/jarvis/BLACKLABB_AND_MDOTHREE_OPTIONS_2026-10-16.md`. Domain future undecided (Principal 10-14). "The Channels" is the YouTube channel name only. | Build after the pick | JARVIS BL1 |
+| Divination + names | Privacy disclosure (birth data / dream text sent to Anthropic) **live** (Principal GO 10-15). mdo3d `main` 078d344 → b70c23f (ff; checkout-email prompt, example readings, footer links). Price ladder $3 / $5 / $9 and names $2.99 → $3 decided under pricing delegation; need the Stripe price script. | Price script run | Setup `[mdo-stripe-pricing-key]`; JARVIS L1 (BlackLabb line items) |
+| Daily AI Toll | Paid = patron tier + packaged datasets (Principal 10-15). Open: add-patron workflow shell-injection fix can't be pushed (BROKEN_NOW P0 #7); KV unreachable (#39). | Push the workflow fix; KV | Setup `[mdo-dat-workflow]`, `[mdo-dat-kv]`, `[gh-tokens-expired-2026-10-16]` |
+| Ronna scanner + leads | Pro $10/mo decided; backend hardened on `harden/deploy-ready`; API TLS 525 (BROKEN_NOW #14); leads.mdo3d.com 530 (#13), fix retargeted to xps. | Deploy after keys | Setup `[mdo-ronna-keys]`, `[R-leads-mdo3d-530-1]`; JARVIS M1 |
+| Runwae app (runwae.com) | Feed/XSS hotfix **live** (10-15). Live P0: creators can self-verify a payout (BROKEN_NOW #1). Interim payout guard + full security fix staged (`staged/runwae_sec_GO/`). One-style system approved 10-14; pricing copy + the "100%" claim still open. | Guard, then the full fix | JARVIS RUNWAE-PAYOUT-GUARD-GO, RUNWAE-SEC-GO; setup `[runwae-rtdb-admin]` |
+| Runwae Apparel (Butts Studios brand; files here) | Release lineup applied (no black; Botanical Tee, True Grit Hoodie, Figure Overshirt, Faces Tee dropped; Knit Polo Charcoal). Release notes are **notes only** (`projects/external/runwae-apparel/RELEASE_NOTES_PENDING_2026-10-16.md`). Identity drafts (audience stereotypes) in `APPAREL_PLAYBOOK.md`. Photo + teaser prompt folders in ~/Downloads (see `~/buttsstudios/STATUS.md`). runwaeapparel.com TLS down. | Principal picks; shop launch mode | JARVIS R1, R2, AP1, SH1; setup `[runwae-holding]` |
+| Domains | Every owned domain must carry an income path (Principal 10-16). Study: `~/latarence/docs/strategy/DOMAIN_REAL_ESTATE_2026-10-16.md`. | Per-domain calls | JARVIS DR1 |
+| Repos + tokens | Tokens moved out of git remote URLs into `~/.config/git-tokens.env`; `MDOTHREE_GH_TOKEN` and `LATARENCE_GH_TOKEN` return 401, so pushes from those repos fail (BROKEN_NOW #45). | Re-token | Setup `[gh-tokens-expired-2026-10-16]` |
+| MDO P0 GO bundle (10-14) | Staged `staged/mdo_go_2026-10-14/README.md` (rigor tools, dailyaitoll dataset, honest copy, quick wins, fulfilment); on the Bridge's GO list. | Run per GO | Principal GO |
+| Loops | 9 loop specs drafted in [`loops/`](loops/README.md); never fired (LEDGER has the setup row only). | Fire one loop | — |
 
-## Session: payments + Firebase + landing + social (2026-08-16 → 08-17)
+## Open Principal decisions (JARVIS ids)
+M1 (Rigor sprint pass, Ronna park, Runwae membership) · BL1 (BlacklabB trackers + domain) · DR1 (domain calls) · L1
+(governing law; BlackLabb on Stripe line items) · MDO-STRIPE-NAME · MDO-RONNA-KEYS · MDO-LAUNCH-GATES · R1 / R2 / AP1 / SH1
+(apparel) · RUNWAE-PAYOUT-GUARD-GO / RUNWAE-SEC-GO · §1b mdothree Pro GO.
 
-Large build/deploy session. Everything below is live in production and committed
-(`mdothree/mdo3d` main, through `9748ccc`). Detail docs linked per area.
-
-**Divination payments — now complete end-to-end on all 9 services** ([`documentation/DIVINATION_PAYMENTS_DEPLOYMENT.md`](documentation/DIVINATION_PAYMENTS_DEPLOYMENT.md)):
-- Root cause of the old premium-500s was a **retired model id** (`claude-3-5-sonnet-20241022`); migrated all services to `claude-sonnet-4-6` (fengshui/numerology premium on `haiku-4-5` for latency). Funded Anthropic key (AHL account) set on all 6 API projects.
-- Deployed the previously-dead **tarot/oracle/dreams APIs** to Vercel (were on dead Railway URLs); fixed their vercel.json/lockfile/stripeService issues.
-- **Premium AI delivery wired for all 9** (oracle/tarot/dreams/numerology were charging without delivering); robust JSON parsing (fence + brace-balance); double-charge guard; success pages + entitlement layer.
-- **numerology.mdo3d.com repointed** off the broken jarvisbee app to the real numerology app.
-- Checkout/verify/delivery all smoke-tested; bypass returns 402.
-
-**Firebase — server-side enforcement + rules deployed** ([`documentation/FIREBASE_BEST_PRACTICES.md`](documentation/FIREBASE_BEST_PRACTICES.md)):
-- **Closed the critical exploit:** premium content was enforced only client-side (a `curl` got paid readings free). Now every generate endpoint requires a **verified paid Stripe session**; frontends pass the stored sessionId. Plus a per-session **use-cap** (Stripe metadata, cap 3, fail-open) to bound token-cost abuse.
-- **Firestore rules hardened + deployed** (via `mdo3group@gmail.com`) to `oracle-mdo3d`, `mdo3d-career`, `mdo3d-leads`, `mdo3d-utilities`. Caught + fixed a shared-project hazard: those projects are shared by multiple apps, so rules were merged to cover every app's real collections.
-- Remaining (documented): runwae RTDB rules (needs data-model knowledge + test), a strict atomic replay ledger, SDK/config consolidation.
-
-**Landing (mdo3d.com)** ([`documentation/FEATURE_PARITY_AUDIT.md`](documentation/FEATURE_PARITY_AUDIT.md)):
-- Discovered mdo3d.com is served by the **`mdo3d-landing`** Vercel project, not `mdo3d-static` where edits were being made — so the live site had been stale. Deployed the correct source; all landing improvements are now live.
-- **Dark/light theme toggle** live (+ pre-paint flash guard); removed the "Powered by" banner; fixed a section that stayed white in dark mode; corrected the old 404ing `guidance.mdo3d.com/*` links to real subdomains; rigor/mdothree landings link live tools; rigor `serverTimestamp` save bug fixed.
-
-**Git:** committed + pushed the whole session (main + 3 of 5 nested app repos; fengshui/pastlives nested remotes are stale placeholders, committed locally, force-push deferred).
-
-**Social strategy** ([`social/MDO3D_SOCIAL_STRATEGY.md`](social/MDO3D_SOCIAL_STRATEGY.md)):
-- New LinkedIn page `linkedin.com/company/mdo3`. Adapted the AHL distribution playbook into an MDO3D **umbrella studio-page** strategy (vs AHL's per-product model).
-- Created the backfill seed — **12 voice-compliant drafted posts** ([`social/data/content-plan.md`](social/data/content-plan.md)), registered the page ([`social/data/social_links.json`](social/data/social_links.json)), and filled the voice register in [`comms/voice/VOICE_AND_GUIDELINES.md`](comms/voice/VOICE_AND_GUIDELINES.md). This unblocks the `social-content` loop (graduate `content-plan.md` → xlsx to flip it active).
-- Owner actions to go live: review the 12 drafts + resolve `[CITATION NEEDED]`, confirm page bio/logo, provide a logged-in scheduling session.
-
-**Still open across the portfolio** (from the feature-parity audit): leads.mdo3d.com 502 (littlemini host down); ship the Discord/Telegram bots (built, undeployed); jarvisbee baby-names charges without fulfillment; several credentials still need rotation (see 2026-08-15 note below).
-
-## Filesystem cleanup + fixes (2026-08-15)
-
-Full audit and executed trim — details in [`documentation/FILESYSTEM_AUDIT_2026-08-15.md`](documentation/FILESYSTEM_AUDIT_2026-08-15.md); functionality audit in [`documentation/FEATURE_PARITY_AUDIT.md`](documentation/FEATURE_PARITY_AUDIT.md).
-
-- Repo trimmed ~106MB → ~82MB (build caches, tracked node_modules purged from index, stale `projects/blacklab/{dreams,oracle,tarot}` pre-migration copies removed — `projects/divination/` is canonical).
-- Stranded April integration work committed (divination Stripe/Firebase, 62 files); `.gitignore` nested-repo paths corrected.
-- **Numerology app fixed** (`6aeab3d`, `ca6b65e`): two JS syntax errors that broke the app entirely, plus Firebase init/premium wiring. **Needs redeploy** to reach `numerology.mdo3d.com`.
-- Landing pages (mdothree + mdo3d-static) updated to link all live tools; chrome extension icons added (parallel session; links verified HTTP 200).
-- Stale Feb/Mar docs in `documentation/` banner-marked as superseded.
-- **🔴 SECURITY (action required):** exposed credentials found in prose docs and scrubbed 2026-08-15, but **rotation is still needed**: (1) MDO3 GitHub token (was in `MDO3D_GAP_ANALYSIS.md`, still in git history), (2) runwae live Stripe secret key (was in `RUNWAE_IMPROVEMENT_PLAN.md`), (3) prudent: leads Stripe key in `projects/leads/web/backend/.env`. Details in the filesystem audit doc, pass 6.
-- **Open:** 35 of 44 nested repos carry uncommitted work (April wave) — needs per-repo review/commit; tracking decision for operational dirs (`review/`, `loops/`, `social/`, this file); two stale `projects/mdo3d/` landing copies pending Vercel dashboard check.
-
-## Management dashboard (`review/`, 2026-07-12)
-
-A single surface to manage the project portfolio, modeled on the Ridgefield review
-dashboard and rebranded. Stdlib only, no pip installs.
-
-- Run: `python3 review/app.py` at `http://127.0.0.1:8822`.
-- Lanes: **projects** (each `projects/*` with sub-tools, status file, git last-commit age,
-  next-actions from TODO.md, and a live deploy health check), **docs** (`documentation/*`),
-  and **social** (future review lane, empty until content lands in `social/data/`).
-- Projects sort attention-first: no status file, then stalest by last commit.
-- Social lane runs a voice QC gate (`review/voice_qc.py`); voice guide scaffold in
-  `comms/voice/`.
-- Full notes in `review/README.md`.
-
-**Health-check finding (2026-07-12):** `leads.mdo3d.com` returns 502 (see Leads below).
-
-## Content generation (metrics/plots → posts)
-
-**To generate content, start here.** The review surface exists; the generator does not yet.
-
-- **Review (built):** `python3 review/app.py` → :8822; social lane + voice-QC gate (`review/voice_qc.py`),
-  empty until content lands in `social/data/`.
-- **Loops:** `loops/social-content/` (candidate) drafts + schedules once a generator feeds it.
-- **Missing — the generator:** metrics/plots → styled branded cards. First candidate source is **DailyAIToll**
-  (`projects/external/dailyaitoll/data/daily_rollup.json`, real data), which maps onto AHL's `scorecard`
-  idiom. Leaning: generate via the central AHL hub (`~/ahl/distribution/tools/branded_results/` — add MDO3D
-  projects to `brand_tokens.json` + a small driver), review here on :8822.
-- **Central tracking / operating model:** `~/latarence/docs/CHIEFS_OF_STAFF.md`. Loops are ported
-  (`loops/`); a Chief-of-Staff seat is not yet stood up.
-
-## Leads (2026-05-26)
-
-- Frontend: https://leads.mdo3d.com  (returning 502 as of 2026-07-12)
-- API: https://leadsapi.mdo3d.com
-- Host: littlemini (Docker) via Cloudflare Tunnel
-- Stripe: MDO3D Stripe account
-- Pending: set `STRIPE_WEBHOOK_SECRET` (Stripe webhook signing secret) on littlemini backend.
+## Recent (newest first)
+- 2026-10-16: before/after proposal PDF; brand pass + round-2 preview; Principal review (Blacklab B approved, Rigor
+  yellow-and-black, mdo3d original + polish, no italics, 3 MDO variants still weighed); mdothree Pro built and staged;
+  BlacklabB / mdothree options doc; domain real-estate study; Runwae Apparel lineup + notes-only release notes; mdo3d
+  main synced; CoS seat state check (loops never fired).
+- 2026-10-15: Runwae feed/XSS hotfix live; MDO privacy disclosure live; seller = project name on legal pages.
+- 2026-10-14: "The Channels" = YouTube channel name only; pricing delegated to the Bridge (no *.99).
