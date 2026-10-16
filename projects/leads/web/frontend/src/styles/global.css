@@ -1,44 +1,46 @@
 /*
- * MDO3D Leads, MDO brand v1 "data" family (shared/brand/tokens.json, 2026-10-16).
- * Paper + ink, one red accent, IBM Plex Sans / Plex Mono with Inter Tight labels,
- * 1px hairlines, radius <= 4px, no pills, no one-sided accent borders.
- * Light by default; dark follows prefers-color-scheme (data.dark tokens).
+ * MDO3D Leads in the MDO3 family: the previous mdo3d.com design language (Principal 10-16:
+ * "names and leads mdo3 should be consistent with the rest of mdo3"). DM Serif Display headings,
+ * DM Sans text, JetBrains Mono labels and numbers, #f8f8fc paper, #0a0a0f ink, #e2e2ec hairlines,
+ * MDO3 violet accent, square M3 mark. Radius <= 4px, no pills, no one-sided accent borders.
+ * Light by default; dark follows prefers-color-scheme (the MDO3 dark palette).
  * Text pairs checked to WCAG AA (>= 4.5:1).
  */
 
 :root {
   color-scheme: light;
-  --bg: #F3F0E9;           /* paper */
-  --surface: #FBF9F4;      /* panels, table */
-  --surface-2: #ECE8DF;    /* quiet fills */
-  --fg: #141311;           /* 16.6:1 on paper */
-  --mute: #6E685F;         /* 5.0:1 on paper */
-  --rule: #D5CFC3;
-  --rule-strong: #8C857A;  /* control edges (>= 3:1 non-text) */
-  --accent: #B4381F;       /* 5.6:1 on surface */
-  --accent-hover: #962D18;
-  --on-accent: #FBF9F4;
-  --ok: #2F6B3E;
-  --warn: #9A6A12;
-  --error: #B4381F;
-  --focus: #141311;
-  --tile-coming: #E6E1D6;
-  --tile-coming-ink: #6E685F;
+  --bg: #F8F8FC;           /* paper */
+  --surface: #FFFFFF;      /* panels, table */
+  --surface-2: #EEEEF4;    /* quiet fills */
+  --fg: #0A0A0F;
+  --mute: #5A5A72;         /* 6.3:1 on paper */
+  --rule: #E2E2EC;
+  --rule-strong: #8C8CA3;  /* control edges (>= 3:1 non-text) */
+  --accent: #4C2FA0;       /* MDO3 violet, 9:1 on white */
+  --accent-hover: #3B2380;
+  --on-accent: #FFFFFF;
+  --ok: #0D7A4E;
+  --warn: #8A5A12;
+  --error: #A82040;
+  --focus: #4C2FA0;
+  --tile-coming: #EEEEF4;
+  --tile-coming-ink: #5A5A72;
 
-  --ui: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display: 'DM Serif Display', Georgia, serif;
+  --ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --t-label: 0.75rem;
   --t-small: 0.875rem;
   --t-body: 1rem;
   --t-lead: 1.1875rem;
   --t-h3: 1.125rem;
-  --t-h2: 1.375rem;
-  --t-h1: clamp(2.25rem, 1.4rem + 3.4vw, 3.5rem);
+  --t-h2: 1.5rem;
+  --t-h1: clamp(2.4rem, 1.5rem + 3.4vw, 3.6rem);
 
-  --r-sm: 2px;
-  --r-md: 3px;
+  --r-sm: 3px;
+  --r-md: 4px;
   --tap: 44px;
   --gutter: 16px;
   --maxw: 1264px;
@@ -48,22 +50,22 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #111111;
-    --surface: #181816;
-    --surface-2: #1F1F1C;
-    --fg: #ECE8E1;
-    --mute: #A29C92;
-    --rule: #2B2A28;
-    --rule-strong: #6F6A62;
-    --accent: #E0574A;
-    --accent-hover: #EA7166;
-    --on-accent: #111111;
-    --ok: #5FA36F;
-    --warn: #D4A23A;
-    --error: #EA7166;
-    --focus: #ECE8E1;
-    --tile-coming: #1C1C1A;
-    --tile-coming-ink: #8D877E;
+    --bg: #0A0A0F;
+    --surface: #131320;
+    --surface-2: #1A1A28;
+    --fg: #F8F8FC;
+    --mute: #9090A8;
+    --rule: #1E1E30;
+    --rule-strong: #5A5A72;
+    --accent: #A78BFA;
+    --accent-hover: #C4B1FC;
+    --on-accent: #0A0A0F;
+    --ok: #2EA86D;
+    --warn: #E0A83A;
+    --error: #E4728A;
+    --focus: #A78BFA;
+    --tile-coming: #131320;
+    --tile-coming-ink: #9090A8;
   }
 }
 
@@ -84,8 +86,8 @@ body {
 #root { display: flex; flex-direction: column; flex: 1; }
 main { flex: 1; outline: none; }
 h1, h2, h3 { font-family: var(--sans); line-height: 1.12; margin: 0 0 0.5em; }
-h1 { font-weight: 600; font-size: var(--t-h1); letter-spacing: -0.025em; max-width: 18ch; }
-h2 { font-weight: 600; font-size: var(--t-h2); letter-spacing: -0.01em; }
+h1 { font-family: var(--display); font-weight: 400; font-size: var(--t-h1); letter-spacing: -0.02em; max-width: 18ch; }
+h2 { font-family: var(--display); font-weight: 400; font-size: var(--t-h2); letter-spacing: -0.01em; }
 h3 { font-weight: 600; font-size: var(--t-h3); }
 p { margin: 0 0 1em; }
 a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
@@ -116,9 +118,9 @@ img, svg { max-width: 100%; }
 .text-error, .field-error { color: var(--error); }
 .text-ok { color: var(--ok); font-weight: 600; }
 
-/* Labels (the MDO throughline: Inter Tight, uppercase, tracked) */
+/* Labels (MDO3 family: JetBrains Mono, uppercase, tracked) */
 .eyebrow {
-  font: 600 var(--t-label)/1.4 var(--ui); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute);
+  font: 500 var(--t-label)/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute);
   margin: 0 0 12px;
 }
 
@@ -128,14 +130,14 @@ img, svg { max-width: 100%; }
 .brand { display: inline-flex; align-items: center; gap: 12px; min-height: var(--tap); color: var(--fg); text-decoration: none; font: 700 17px/1 var(--ui); letter-spacing: -0.01em; }
 .brand:hover { color: var(--fg); }
 .brand-mark {
-  display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: var(--r-sm);
-  border: 1px solid var(--fg); color: var(--fg); font: 600 12px/1 var(--mono); letter-spacing: 0.02em;
+  display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: var(--r-md);
+  background: var(--accent); color: var(--on-accent); font: 500 10.5px/1 var(--mono); letter-spacing: -0.03em;
 }
-.brand-sub { color: var(--accent); font-weight: 700; }
+.brand-sub { color: var(--mute); font-weight: 500; }
 .nav-list { display: flex; flex-wrap: wrap; gap: 4px 24px; list-style: none; margin: 0; padding: 0; }
 .nav-link {
   display: inline-flex; align-items: center; min-height: var(--tap); padding: 0;
-  color: var(--fg); text-decoration: none; font: 600 13px/1 var(--ui); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--mute); text-decoration: none; font: 500 13.5px/1 var(--ui);
 }
 .nav-link:hover { color: var(--accent); }
 .nav-link[aria-current='page'] { color: var(--accent); }
@@ -176,7 +178,7 @@ img, svg { max-width: 100%; }
 
 /* Panels & forms */
 .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r-md); padding: 24px; margin-bottom: 24px; }
-.panel-title { font: 600 var(--t-label)/1.4 var(--ui); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); margin: 0 0 16px; outline: none; }
+.panel-title { font: 500 var(--t-label)/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); margin: 0 0 16px; outline: none; }
 .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; min-width: 0; }
 label, legend { font: 600 0.8125rem/1.3 var(--ui); letter-spacing: 0.02em; color: var(--fg); }
 input, select {
@@ -281,7 +283,7 @@ input[type='date'] { font-family: var(--mono); font-size: 0.9375rem; }
 .results-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .results-table th, .results-table td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
 .results-table thead th {
-  background: var(--surface); font: 600 0.6875rem/1.3 var(--ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute);
+  background: var(--surface); font: 500 0.6875rem/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute);
   white-space: nowrap; position: sticky; top: 0; border-bottom: 1px solid var(--fg);
 }
 .results-table tbody tr:hover > * { background: var(--bg); }
@@ -299,7 +301,7 @@ input[type='date'] { font-family: var(--mono); font-size: 0.9375rem; }
 .card-id { margin-bottom: 12px; }
 .card-dl { margin: 0; display: grid; gap: 8px; }
 .card-dl > div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 8px; }
-.card-dl dt { color: var(--mute); font: 600 0.6875rem/1.6 var(--ui); letter-spacing: 0.1em; text-transform: uppercase; }
+.card-dl dt { color: var(--mute); font: 500 0.6875rem/1.6 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .card-dl dd { margin: 0; word-break: break-word; font-size: 0.9375rem; }
 .card .contacts a { min-height: var(--tap); display: inline-flex; align-items: center; }
 @media (max-width: 374px) { .card-dl > div { grid-template-columns: 1fr; gap: 0; } }
