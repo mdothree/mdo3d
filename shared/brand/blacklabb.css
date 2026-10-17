@@ -1,0 +1,42 @@
+/* Blacklab B brand v1 (2026-10-16). CSS mirror of brand-tokens.json "blacklabb". Its own identity, distinct from MDO:
+   cold graphite instrument panel, Space Grotesk + JetBrains Mono, crosshair mark, one signal colour per tracker.
+   Rules: radius <= 2px, no pills, no one-sided accent borders, no emoji, no gradients on surfaces or text.
+   Usage: <body class="blb t-quantum"> (t-space, t-neuro). Hosts come from js/sites.js, never hard-coded. */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+.blb{
+  --bg:#0A0B0D; --fg:#E6E8EB; --mute:#8A9099; --rule:#23272E; --surface:#111317; --grid:#16191E;
+  --signal:#E6E8EB; --danger:#FF5F56;
+  --sans:"Space Grotesk",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --r:2px; --maxw:1120px; --gutter:40px;
+  background:var(--bg) radial-gradient(circle at 1px 1px,var(--grid) 1px,transparent 1.2px) 0 0/8px 8px;
+  color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased
+}
+.blb.t-quantum{--signal:#7AA2FF}
+.blb.t-space{--signal:#FF8A3D}
+.blb.t-neuro{--signal:#C792FF}
+@media (max-width:720px){.blb{--gutter:16px}}
+
+.blb .label{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.blb .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.blb :focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+/* mark: crosshair + BLACKLAB + solid B square */
+.blb-mark{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.18em;color:var(--fg);text-decoration:none}
+.blb-mark .b{display:inline-grid;place-items:center;width:20px;height:20px;background:var(--fg);color:var(--bg);letter-spacing:0;font-weight:700}
+
+/* framed panel with corner ticks */
+.blb-frame{position:relative;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface)}
+.blb-frame::before,.blb-frame::after{content:"";position:absolute;width:9px;height:9px;border:1px solid var(--signal);pointer-events:none}
+.blb-frame::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.blb-frame::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+
+/* segmented filter (never pills) */
+.blb-seg{display:inline-flex;border:1px solid var(--rule);border-radius:var(--r)}
+.blb-seg button{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:transparent;border:0;padding:0 14px;min-height:40px;cursor:pointer}
+.blb-seg button+button{box-shadow:-1px 0 0 var(--rule)}
+.blb-seg button.active,.blb-seg button[aria-pressed=true]{background:var(--fg);color:var(--bg)}
+
+.blb-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;font:600 13px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--fg);color:var(--bg);border:1px solid var(--fg);border-radius:var(--r);cursor:pointer;text-decoration:none}
+.blb-btn.ghost{background:transparent;color:var(--fg);border-color:var(--rule)}
+.blb-tag{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px;border:1px solid currentColor;border-radius:var(--r);color:var(--signal)}
