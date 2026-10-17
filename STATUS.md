@@ -7,6 +7,12 @@ Seat: [`Organization/Chief-of-Staff/README.md`](Organization/Chief-of-Staff/READ
 · decisions: `~/latarence/docs/DECISIONS.md` · what is broken for real users: `~/latarence/coordination/BROKEN_NOW.md`
 · open calls: `~/jarvis/JARVIS QUESTIONS.md` · access steps: `~/latarence/coordination/SETUP_TODO.md`.*
 
+## 2026-10-17 (updated 2026-10-17 19:30 ET)
+Pointers only. Rows: `~/latarence/coordination/P0_SPRINT_2026-10-16.md` ("DEPLOY lane MDO3 + Butts Studios" section); ships: `~/latarence/coordination/MANUAL_SHIP_QUEUE.md` (S5).
+- **Shipped live (09:12–09:41Z, each cache-busted verify PASS, rollback `.prev`):** all redesigns: Rigor 8/8, Ronna + 5 sub-sites, mdo3d.com hub, names, mdothree + json, divination (oracle/tarot/dreams/numerology), no-italics 10/10 (astrology, iching, runes, pastlife, mdothree tools, layoffleads, promptsforbusiness); **Frontier Ledger** (blacklabb-frontier-ledger.vercel.app, checkout TEST-only); Daily AI Toll refund page (XE-11); Runwae L3 legal + payout guard (XE-6). Prophet 1.0.5 + DocScan 1.0.3 desktop releases (mac+linux) live 17:49Z.
+- **Verified, waiting:** Runwae security rules fix (114b63e, emulator 22/22; S5) needs the Principal's named GO; Daily AI Toll /trivia (213 q) + Tally at /play built, previews up, layout pass running, awaits the Principal's named GO (`DAILYAITOLL_TRIVIA_PLAY_GO_2026-10-17.sh`).
+- **Blocked:** Runwae Vercel project has no FIREBASE_* env (pay-influencer 500; SETUP_TODO `[runwae-vercel-firebase]`); leads.mdo3d.com 530 and Ronna api 525 (Cloudflare DNS token); names $3 needs a new live Payment Link; guidance stays gated.
+
 ## Now
 | Area | State | Next | Gate |
 |---|---|---|---|
