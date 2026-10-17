@@ -55,6 +55,7 @@ g_rigor() {  # P0 RIGOR-PAY-BEFORE-API + RIGOR-SUCCESS-CANCEL-404, -HEADER-SIGNI
     check "$t header #signin/#signup anchors" "n=\$(curl -sL https://$t.rigor.design/ | grep -oE 'href=\"#sign(in|up)\" id=\"nav-(login|signup)\"' | wc -l); [ \"\$n\" -ge 2 ] && echo yes" "yes"; done
 }
 g_runwae() {  # P0 RUNWAE-ERROR-LOG-PUBLIC, RUNWAE-PUBLIC-CONFIG-FILES + PINCH-ZOOM, SEO, UI, ASSETS, STATS, DEAD-HEADER-LINKS
+  echo "SUPERSEDED (g_runwae, 2026-10-17 P0 rework): deploys the local runwae checkout (pre-hf1, no payout guard, Runwae, LLC) and would revert RW-SEC-01 + XE-6. Runwae ships only via ~/mdo3d/staged/p0_sprint_2026-10-16/GO_runwae_L3_guard_legal.sh" >&2; exit 3
   deploy projects/external/runwae/runwae
   for p in error_log database-debug.log ui-debug.log firebase.json database.rules.json vercel.json deployment/inject-config.js deployment/prune-public.js README.md STATUS.md marketerLedger.txt; do
     check "runwae /$p → 404" "curl -s -o /dev/null -w '%{http_code}' https://runwae.com/$p" "404"; done
