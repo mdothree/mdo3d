@@ -1,0 +1,78 @@
+=== 2026-10-17T01:59:14Z 7a7663e
+tree test @ 7a7663e
+  FAIL hf2: util.js has rwExternalUrl
+  FAIL hf2: serviceworker cache v11-hf2
+  FAIL guard: pay-influencer X-Runwae-Payout-Guard
+  FAIL guard: pay-influencer payout_review
+  FAIL guard: connect-oauth X-Runwae-Connect-Guard
+  FAIL guard: connect-oauth account_exists
+  FAIL legal: terms.html 'Runwae, LLC' x0
+  FAIL legal: privacy.html 'Runwae, LLC' x0
+  ok   preview-off guard in vercel.json
+FAIL
+exit=1
+=== 2026-10-17T01:59:14Z 77131b1
+tree test @ 77131b1
+  ok   hf2: util.js has rwExternalUrl
+  ok   hf2: serviceworker cache v11-hf2
+  FAIL guard: pay-influencer X-Runwae-Payout-Guard
+  FAIL guard: pay-influencer payout_review
+  FAIL guard: connect-oauth X-Runwae-Connect-Guard
+  FAIL guard: connect-oauth account_exists
+  FAIL legal: terms.html 'Runwae, LLC' x0
+  FAIL legal: privacy.html 'Runwae, LLC' x0
+  ok   preview-off guard in vercel.json
+FAIL
+exit=1
+=== 2026-10-17T01:59:14Z ab50b05
+tree test @ ab50b05
+  ok   hf2: util.js has rwExternalUrl
+  ok   hf2: serviceworker cache v11-hf2
+  ok   guard: pay-influencer X-Runwae-Payout-Guard
+  ok   guard: pay-influencer payout_review
+  ok   guard: connect-oauth X-Runwae-Connect-Guard
+  ok   guard: connect-oauth account_exists
+  FAIL legal: terms.html 'Runwae, LLC' x0
+  FAIL legal: privacy.html 'Runwae, LLC' x0
+  ok   preview-off guard in vercel.json
+FAIL
+exit=1
+=== 2026-10-17T01:59:14Z 44baa40
+tree test @ 44baa40
+  ok   hf2: util.js has rwExternalUrl
+  ok   hf2: serviceworker cache v11-hf2
+  FAIL guard: pay-influencer X-Runwae-Payout-Guard
+  FAIL guard: pay-influencer payout_review
+  FAIL guard: connect-oauth X-Runwae-Connect-Guard
+  FAIL guard: connect-oauth account_exists
+  ok   legal: terms.html 'Runwae, LLC' x0
+  ok   legal: privacy.html 'Runwae, LLC' x0
+  ok   preview-off guard in vercel.json
+FAIL
+exit=1
+=== 2026-10-17T01:59:15Z 9d552ee
+tree test @ 9d552ee
+  FAIL hf2: util.js has rwExternalUrl
+  FAIL hf2: serviceworker cache v11-hf2
+  FAIL guard: pay-influencer X-Runwae-Payout-Guard
+  FAIL guard: pay-influencer payout_review
+  FAIL guard: connect-oauth X-Runwae-Connect-Guard
+  FAIL guard: connect-oauth account_exists
+  ok   legal: terms.html 'Runwae, LLC' x0
+  ok   legal: privacy.html 'Runwae, LLC' x0
+  ok   preview-off guard in vercel.json
+FAIL
+exit=1
+=== 2026-10-17T01:59:15Z bc0bf8f
+tree test @ bc0bf8f
+  ok   hf2: util.js has rwExternalUrl
+  ok   hf2: serviceworker cache v11-hf2
+  ok   guard: pay-influencer X-Runwae-Payout-Guard
+  ok   guard: pay-influencer payout_review
+  ok   guard: connect-oauth X-Runwae-Connect-Guard
+  ok   guard: connect-oauth account_exists
+  ok   legal: terms.html 'Runwae, LLC' x0
+  ok   legal: privacy.html 'Runwae, LLC' x0
+  ok   preview-off guard in vercel.json
+PASS
+exit=0

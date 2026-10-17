@@ -1,0 +1,28 @@
+2026-10-17T02:02:17Z === GO_runwae_L3_guard_legal start (pin bc0bf8f, mode=dry) ===
+2026-10-17T02:02:19Z   before (HQ repro): terms 'Runwae, LLC' x4, privacy x1, payout-guard header x0
+2026-10-17T02:02:19Z   preflight: 15 deployments in 24h (cap 100)
+2026-10-17T02:02:19Z   preflight: local + origin fix/runwae-l3-guard-legal-2026-10-17 == bc0bf8f
+2026-10-17T02:02:19Z   preflight: PIN = guard ab50b05 + legal patch (byte-identical to 44baa40's); ancestry hf1 -> hf2 -> guard -> PIN
+2026-10-17T02:02:19Z   preflight: tree has guard markers, 'Runwae, LLC' x0 in terms/privacy, hf2 helpers, preview-off guard
+2026-10-17T02:02:20Z   production state = hf1 (7a7663e): util.js match, terms 'Runwae, LLC' x4, guard header x0
+2026-10-17T02:02:22Z   production: every served JS file + /terms + /privacy line counts match hf1
+2026-10-17T02:02:22Z   hf1..PIN = exactly: api/payment/connect-oauth.js api/payment/pay-influencer.js css/chat-drawer.css privacy.html runwaejs/accountHQ.js runwaejs/display.js runwaejs/gigHQ.js runwaejs/util.js serviceworker.js terms.html tests/security/_mocks.js tests/security/interim-guard.test.js unobfrunwaejs/accountHQ.js unobfrunwaejs/display.js unobfrunwaejs/gigHQ.js unobfrunwaejs/util.js
+2026-10-17T02:02:22Z   archive: 1740 files from bc0bf8f
+2026-10-17T02:02:24Z   off-box (littlemini): node --check OK, interim-guard node --test 8/8 (ℹ pass 8 ℹ fail 0 ok=1)
+2026-10-17T02:02:24Z DRY PASS: state hf1 -> would deploy bc0bf8f; nothing deployed or pushed (run: GO_CONFIRM=GO bash GO_runwae_L3_guard_legal.sh go)
+2026-10-17T02:02:30Z === GO_runwae_L3_guard_legal start (pin bc0bf8f, mode=go) ===
+2026-10-17T02:02:30Z   before (HQ repro): terms 'Runwae, LLC' x4, privacy x1, payout-guard header x0
+2026-10-17T02:02:31Z   preflight: 15 deployments in 24h (cap 100)
+2026-10-17T02:02:31Z   preflight: local + origin fix/runwae-l3-guard-legal-2026-10-17 == bc0bf8f
+2026-10-17T02:02:31Z   preflight: PIN = guard ab50b05 + legal patch (byte-identical to 44baa40's); ancestry hf1 -> hf2 -> guard -> PIN
+2026-10-17T02:02:31Z   preflight: tree has guard markers, 'Runwae, LLC' x0 in terms/privacy, hf2 helpers, preview-off guard
+2026-10-17T02:02:32Z   production state = hf1 (7a7663e): util.js match, terms 'Runwae, LLC' x4, guard header x0
+2026-10-17T02:02:33Z   production: every served JS file + /terms + /privacy line counts match hf1
+2026-10-17T02:02:33Z   hf1..PIN = exactly: api/payment/connect-oauth.js api/payment/pay-influencer.js css/chat-drawer.css privacy.html runwaejs/accountHQ.js runwaejs/display.js runwaejs/gigHQ.js runwaejs/util.js serviceworker.js terms.html tests/security/_mocks.js tests/security/interim-guard.test.js unobfrunwaejs/accountHQ.js unobfrunwaejs/display.js unobfrunwaejs/gigHQ.js unobfrunwaejs/util.js
+2026-10-17T02:02:34Z   archive: 1740 files from bc0bf8f
+2026-10-17T02:02:35Z   off-box (littlemini): node --check OK, interim-guard node --test 8/8 (ℹ pass 8 ℹ fail 0 ok=1)
+2026-10-17T02:02:35Z STOP: GO_CONFIRM=GO not set (deploy L3 bc0bf8f (guard + legal) over hf1 to PRODUCTION runwae.com; pauses ALL automatic payouts)
+
+=================== MANUAL ROLLBACK (NOT RUN — the Bridge decides) ===================
+  (no previous production URL was recorded; nothing was deployed by this run)
+=======================================================================================

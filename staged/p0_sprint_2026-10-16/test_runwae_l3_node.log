@@ -1,0 +1,31 @@
+=== 2026-10-17T01:59:36Z littlemini node --test tests/security/interim-guard.test.js @ bc0bf8f
+✔ G5: guard marker header is present on 401/405 (live check without a session) (0.6385ms)
+✔ G6 (was A2): connect-oauth never overwrites an existing payout account (code not redeemed) (0.091333ms)
+✔ G7 control: a first payout account can still be connected (0.115583ms)
+✔ G8: connect-oauth does not echo Stripe error text (0.969042ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.308375
+exit=0
+=== 2026-10-17T01:59:39Z littlemini node --test tests/security/interim-guard.test.js @ 44baa40
+  tests/security/interim-guard.test.js absent at 44baa40 (L2 has no guard and no guard tests -> guard coverage FAILS)
+=== 2026-10-17T01:59:44Z littlemini: L3's interim-guard tests run against 44baa40 (L2) api code (expected FAIL: no guard)
+✖ G1 (was A1): creator self-sets status 6 after the brand paid -> payout refused 403 payout_review, no transfer (2.0275ms)
+✖ G2: legacy paid gig at status 4/5 (transaction_key set, no transfer) cannot be drained (0.173667ms)
+✖ G3: a verification record NOT written for the brand does not unlock payout (0.150583ms)
+✔ G4 control: with a server record by the brand, the normal payout still works once (0.621166ms)
+✖ G5: guard marker header is present on 401/405 (live check without a session) (0.176125ms)
+✖ G6 (was A2): connect-oauth never overwrites an existing payout account (code not redeemed) (0.561792ms)
+✔ G7 control: a first payout account can still be connected (0.114333ms)
+✖ G8: connect-oauth does not echo Stripe error text (5.69ms)
+✖ G1 (was A1): creator self-sets status 6 after the brand paid -> payout refused 403 payout_review, no transfer (2.0275ms)
+✖ G2: legacy paid gig at status 4/5 (transaction_key set, no transfer) cannot be drained (0.173667ms)
+ℹ tests 8
+ℹ pass 2
+ℹ fail 6
+exit=1
