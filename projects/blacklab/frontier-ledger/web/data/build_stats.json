@@ -13,8 +13,8 @@
  },
  "claims_by_status": {
   "on_track": 4,
-  "delivered": 3,
-  "slipped": 1,
+  "delivered": 2,
+  "slipped": 2,
   "dropped": 0,
   "pending": 6
  },
