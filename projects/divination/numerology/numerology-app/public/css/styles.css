@@ -291,7 +291,7 @@ input:focus {
   font-size: 1.1rem;
   color: var(--accent);
   margin-bottom: 1rem;
-  font-style: italic;
+  font-style: normal;
 }
 
 .reading-meaning {
@@ -559,3 +559,6 @@ html[data-theme="light"] input[aria-invalid="true"] { border-color: #B91C1C; }
 /* Display-settings bar above the title: the theme toggle, innermost/rightmost */
 .site-nav { display: flex; justify-content: flex-end; align-items: center; padding: 0.75rem 0 0; }
 html[data-theme="light"] footer a { color: #4338CA; }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

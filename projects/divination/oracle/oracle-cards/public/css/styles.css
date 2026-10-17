@@ -707,3 +707,6 @@ html[data-theme="dark"] footer { background: #0A0712; color: #F3F4F6; border-top
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }
