@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Method | Frontier Ledger</title>
+<meta name="description" content="How Frontier Ledger entries are sourced and checked.">
+<meta name="theme-color" content="#0A0B0D">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/blacklabb.css">
+<link rel="stylesheet" href="/css/ledger.css">
+</head>
+<body class="blb t-quantum">
+<header class="top"><div class="wrap">
+<a class="blb-mark" href="/"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><circle cx="9" cy="9" r="5"/><path d="M9 0v4M9 14v4M0 9h4M14 9h4"/></svg>BLACKLAB<span class="b">B</span></a>
+<span class="label sector">Frontier Ledger &middot; Quantum</span>
+<nav aria-label="Main"><a href="/">Overview</a><a href="/ledger">Ledger</a><a href="/promises">Promise Ledger</a><a href="/watchlist">Watchlist</a><a href="/method" aria-current="page">Method</a></nav>
+</div></header>
+<main class="wrap">
+<section class="pagehead"><div class="label">Method</div><h1>How an entry gets in</h1>
+<p class="lede">No evidence, no entry. This is the rule the whole ledger is built on.</p></section>
+<section class="prose blb-frame">
+<h2>What counts as an event</h2>
+<p>A dated, public, verifiable change at a company or program: a technical milestone, funding, a contract, a regulatory action, a product launch, a hiring move or a shutdown.
+Opinion pieces, forecasts and rumours are left out.</p>
+<h2>Sourcing</h2>
+<p>Each event carries a source link, the source title and a short excerpt copied word for word from that page. We prefer the company's own newsroom or filings, then regulators, then major outlets, then trade press.
+The confidence figure on each row reflects that order: 0.95 for a primary source, 0.85 for a major outlet, 0.70 for trade press. Rows below 0.50 are rejected.</p>
+<h2>How rows are collected and checked</h2>
+<p>A collector searches the web with Claude and proposes candidate rows. A validator then rejects any row without a source URL or excerpt, any duplicate (same source page, or the same company and event type with a near-identical title within ten days),
+and, when it can reach the page, any row whose excerpt is not on the source. Candidates go to a reviewed pull request; a person reads them before they enter the ledger.
+The seed rows were gathered by hand-run research and checked the same way.</p>
+<h2>The Promise Ledger</h2>
+<p>A claim is a dated public statement that something will ship by a date. We quote it and link it. Status starts at Pending.
+Delivered, Slipped, Dropped and On track each need a second source showing it, recorded as status evidence. We quote; we do not editorialise.</p>
+<h2>Corrections</h2>
+<p>If an entry is wrong, the source link is the fastest way to check it. Corrections replace the row and keep the source trail.</p>
+<h2>What is public and what is membership</h2>
+<p>Headline counts, the latest entries, the last 180 days of the ledger and the full Promise Ledger are open to read.
+Watchlist alerts, the full history and the CSV export are membership features, opening in early access.</p>
+<p class="mono built">Data: 40 events, 14 claims, 0 rows without a source. Built 17 Oct 2026.</p>
+</section>
+</main>
+<footer><div class="wrap"><span>Blacklab B &middot; Frontier Ledger &middot; an MDO3D division</span><span>Every entry links to its source &middot; <a href="/method">Method</a></span></div></footer>
+<script src="/js/ledger.js"></script>
+
+</body>
+</html>

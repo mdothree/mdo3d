@@ -1,0 +1,4 @@
+# STAGED, NOT ENABLED. bigmini2 crontab alternative to the GitHub Action (pick one, not both).
+# Install (after the Principal's OK):  crontab -l | cat - ops/bigmini2-cron.staged | crontab -
+# Needs ~/mdo3d checkout on bigmini2 and ANTHROPIC_API_KEY in ~/.config/frontier-ledger.env (read by name).
+20 4 * * * cd $HOME/mdo3d/projects/blacklab/frontier-ledger && bash ops/run_nightly.sh >> $HOME/logs/frontier-ledger.log 2>&1

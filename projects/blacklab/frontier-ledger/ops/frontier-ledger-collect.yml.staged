@@ -1,0 +1,36 @@
+# STAGED, NOT ENABLED. GitHub only runs workflows under .github/workflows/; this file lives in ops/ on purpose.
+# To enable (needs the Principal's OK for scheduled spend): copy to .github/workflows/frontier-ledger-collect.yml
+# in the repo that hosts this project and add the ANTHROPIC_API_KEY secret (by name).
+# Flow (Daily AI Toll pattern): collect -> validate (+ excerpt-at-source check) -> open a PR for human review.
+# Nothing is merged or deployed automatically.
+name: Frontier Ledger collect (quantum)
+on:
+  schedule:
+    - cron: '20 4 * * *'   # 04:20 UTC nightly
+  workflow_dispatch: {}
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    permissions: { contents: write, pull-requests: write }
+    defaults: { run: { working-directory: projects/blacklab/frontier-ledger } }
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -r requirements.txt
+      - run: python3 scripts/collect.py --sector quantum --verify-fetch
+      - run: python3 scripts/validate.py --sector quantum
+      - name: Open review PR when there are candidates
+        env: { GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        run: |
+          f=$(jq -r '.candidate_file // empty' collection_status.json)
+          [ -n "$f" ] || { echo "no candidates"; exit 0; }
+          b="fl/collect-$(date -u +%F)"
+          git config user.name "frontier-ledger-bot"; git config user.email "actions@users.noreply.github.com"
+          git checkout -b "$b"; git add data/quantum/candidates collection_status.json
+          git commit -m "Frontier Ledger candidates $(date -u +%F) (review before --promote)"
+          git push origin "$b"
+          gh pr create --title "Frontier Ledger candidates $(date -u +%F)" \
+            --body "Review each row against its source link, then run: python3 scripts/collect.py --promote $f"

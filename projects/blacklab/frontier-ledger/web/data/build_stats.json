@@ -1,0 +1,30 @@
+{
+ "events": 40,
+ "claims": 14,
+ "companies": 15,
+ "events_by_type": {
+  "milestone": 8,
+  "funding": 6,
+  "contract": 17,
+  "regulatory": 0,
+  "launch": 6,
+  "hiring": 3,
+  "shutdown": 0
+ },
+ "claims_by_status": {
+  "on_track": 4,
+  "delivered": 3,
+  "slipped": 1,
+  "dropped": 0,
+  "pending": 6
+ },
+ "rows_without_source": 0,
+ "first_date": "2025-10-22",
+ "last_date": "2026-10-15",
+ "window_events": 34,
+ "rendered_rows": {
+  "index.html": 8,
+  "ledger.html": 34,
+  "promises.html": 14
+ }
+}

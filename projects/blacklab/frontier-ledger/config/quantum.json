@@ -1,0 +1,15 @@
+{
+  "sector": "quantum",
+  "label": "Quantum",
+  "public_window_days": 180,
+  "scope": "Quantum computing, quantum networking and quantum sensing companies and the public programs that fund or regulate them.",
+  "companies": [
+    "IBM", "Google Quantum AI", "Microsoft", "Quantinuum", "IonQ", "Rigetti Computing", "D-Wave",
+    "PsiQuantum", "Atom Computing", "QuEra", "Pasqal", "Infleqtion", "Xanadu", "Alice & Bob",
+    "IQM", "Quantum Computing Inc", "Oxford Quantum Circuits", "Amazon Web Services", "NVIDIA", "DARPA"
+  ],
+  "keywords": [
+    "logical qubits", "error correction", "fault tolerant", "qubit", "quantum advantage",
+    "post-quantum cryptography", "quantum networking", "quantum sensing"
+  ]
+}

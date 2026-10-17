@@ -1,0 +1,7 @@
+{
+  "name": "blacklabb-frontier-ledger",
+  "private": true,
+  "description": "Frontier Ledger (Blacklab B): static pages + two serverless functions",
+  "engines": { "node": ">=20" },
+  "dependencies": { "stripe": "^14.0.0" }
+}
