@@ -79,8 +79,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232d1b69'/><text x='16' y='22' font-family='monospace' font-weight='600' font-size='12' fill='white'>M3</text></svg>">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -272,7 +272,7 @@ nav {
   line-height: 1.08; letter-spacing: -0.02em;
   color: var(--ink); margin-bottom: 1.5rem;
 }
-.hero h1 em { font-style: italic; color: var(--accent-mid); }
+.hero h1 em { font-style: normal; color: var(--accent-mid); }
 .hero-desc {
   font-size: 1.05rem; line-height: 1.75; color: var(--ink-40);
   margin-bottom: 2.5rem; font-weight: 300;
@@ -351,7 +351,7 @@ nav {
   letter-spacing: -0.02em; line-height: 1.15;
   color: var(--ink); margin-bottom: 1rem;
 }
-.section-h2 em { font-style: italic; color: var(--accent-mid); }
+.section-h2 em { font-style: normal; color: var(--accent-mid); }
 
 /* CATEGORIES */
 .categories { padding: 5rem 3rem; }
@@ -415,7 +415,7 @@ nav {
   line-height: 1.1; letter-spacing: -0.02em;
   color: white; margin-bottom: 1.25rem;
 }
-.gs-h2 em { font-style: italic; color: #c4b5f4; }
+.gs-h2 em { font-style: normal; color: #c4b5f4; }
 .gs-desc { font-size: 0.95rem; line-height: 1.75; color: #9090a8; margin-bottom: 2.5rem; font-weight: 300; }
 .btn-light {
   background: white; color: #0a0a0f; padding: 0.75rem 1.8rem;
@@ -645,6 +645,7 @@ footer { background: var(--ink-80); padding: 4rem 3rem 2rem; }
   .ptable th:nth-child(4), .ptable td:nth-child(4) { display: none; }
 }
 </style>
+<style>/* No italics (Principal 10-16) */em,i,cite,q,dfn,var,address{font-style:normal}</style>
 </head>
 <body>
 

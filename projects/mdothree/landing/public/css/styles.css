@@ -393,3 +393,6 @@ html[data-theme="dark"] .footer-bottom p { color: #A8B5C7; }
 html[data-theme="dark"] .legal-page h1, html[data-theme="dark"] .legal-page h2 { color: var(--text-primary); }
 html[data-theme="dark"] .legal-page .updated { color: var(--text-secondary); }
 html[data-theme="dark"] .legal-page p, html[data-theme="dark"] .legal-page li { color: #CBD5E1; }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }

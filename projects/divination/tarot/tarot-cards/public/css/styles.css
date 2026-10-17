@@ -461,7 +461,7 @@ nav {
 
 .meaning-brief {
     font-size: 1.25rem;
-    font-style: italic;
+    font-style: normal;
     color: var(--text-muted);
     margin-bottom: 1.5rem;
 }
@@ -763,3 +763,6 @@ html[data-theme="light"] .question-section textarea { background: #FFFFFF; }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }
