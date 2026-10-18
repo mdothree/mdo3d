@@ -4,6 +4,8 @@
 //   node src/build.mjs --brand glb --out public -> one brand (Vercel: set BRAND env)
 //   --now 2026-11-01T00:00:00Z                  -> render as of a date (preview a drop window)
 //   --holding --brand runwae --out holding-dist -> the pre-launch holding page
+//   --live                                      -> build as the live shop (no preview banner, indexable); fails while
+//                                                  any policy fact is unconfirmed. Checkout still needs CHECKOUT_ENABLED.
 // The all-brands run also writes dist/_admin/ (inventory admin + order email previews). LOCAL ONLY: the per-brand
 // deploy build (--brand X / BRAND env) never writes it, and .vercelignore drops dist/.
 // Item state is decided at build time for display and re-checked server-side by api/checkout.mjs,
@@ -23,7 +25,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const only = arg('--brand') ?? process.env.BRAND;
     for (const id of only ? [only] : brandIds()) {
       const out = arg('--out') && only ? resolve(arg('--out')) : join(ROOT, 'dist', id);
-      console.log(await buildBrand(id, out, { now }));
+      console.log(await buildBrand(id, out, { now, mode: process.argv.includes('--live') ? 'live' : null }));
     }
     if (!only) {
       const adminOut = join(ROOT, 'dist', '_admin');

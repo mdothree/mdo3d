@@ -39,7 +39,7 @@ function card(kit, p) {
 
 function specTable(kit, p) {
   const v = kit.view(p);
-  const rows = [['Ref', p.ref], ['Type', p.type], ['Colour', (p.colors ?? []).map((c) => c.name).join(', ')], ['Sizes', (p.sizes ?? []).join(' / ')], ['Status', v.label], ['Price', v.priceText || 'Price TBA']];
+  const rows = [['Ref', p.ref], ['Type', p.type], ['Colour', (p.colors ?? []).map((c) => c.name).join(', ')], ['Sizes', (p.sizes ?? []).join(' / ')], ['Status', v.label], ['Price', v.priceText]];
   return `<dl class="rf-spec">${rows.filter(([, x]) => x).map(([k, x]) => `<dt>${k}</dt><dd>${kit.esc(x)}</dd>`).join('')}</dl>`;
 }
 

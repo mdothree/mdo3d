@@ -5,6 +5,7 @@
 //   preorder        add to bag + ship-by date (from the item's drop window)
 //   next_drop       "Opens <date>" (or "Next drop") + Notify me; no buy control
 //   in_development  "Concept · not yet available"; no buy control
+//   unavailable     "Not available"; no buy control, no Notify me, no price line (the pre-launch default)
 //   archive         "Archive · <year>"; only for pieces that really existed (archive_year required)
 //   sold_out        "Sold out" (+ optional Notify me for a restock). Allowed ONLY with real backing:
 //                   an internal `sales_record` {channel, note} (never rendered) or sold_count >= stock.
@@ -51,7 +52,7 @@ export function printErrors(p, rules = {}) {
   return errs;
 }
 
-export const STATUSES = Object.freeze(['available', 'preorder', 'next_drop', 'in_development', 'archive', 'sold_out', 'live', 'draft']);
+export const STATUSES = Object.freeze(['available', 'preorder', 'next_drop', 'in_development', 'archive', 'sold_out', 'unavailable', 'live', 'draft']);
 
 /** brands/<id>/ + the shared inventory (inventory/inventory.csv at the storefront root) -> merged brand data.
  *  merge:false returns the raw catalog/drops (no inventory fields). now: for live availability from the ledger. */
@@ -161,6 +162,9 @@ export function productView(p, drops, now = new Date()) {
     }
     case 'in_development':
       v.label = 'Concept · not yet available';
+      break;
+    case 'unavailable':
+      v.label = 'Not available';
       break;
     case 'archive':
       v.label = `Archive · ${p.archive_year}`;

@@ -110,9 +110,10 @@ ${withLegal(withMainSite(L.footer(ctx), ctx), ctx)}
 }
 
 /** Build one brand into outDir. */
-export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, env = process.env } = {}) {
+export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, env = process.env, mode = null } = {}) {
   if (id.startsWith('_')) throw new Error(`"${id}" is not a shop (folders starting with _ are never built)`);
   const { dir, brand, catalog, drops, manifest } = readBrandDir(join(root, 'brands', id), { now });
+  if (mode) brand.mode = mode; // --live: build as the live shop without editing brand.json (launch checks, staging)
   validateCatalog(catalog, drops, brand.palette ?? null, brand.print_rules ?? {});
   const se = styleErrors(dir);
   if (se.length) throw new Error(`style rules:\n  ${se.join('\n  ')}`);

@@ -65,6 +65,7 @@ api/order-lookup.mjs POST {order, email} -> 503 until the order store exists. ST
 | `in_development` | Concept · not yet available | none |
 | `archive` | Archive · <archive_year> (pieces that really existed only) | none |
 | `sold_out` | Sold out (+ Notify me unless `restock_notify: false`) | none |
+| `unavailable` | Not available (no price line, no Notify me): the pre-launch default | none |
 
 `sold_out` needs real backing: `sales_record_channel` on the inventory row (where the real sales happened; never
 rendered or shipped to the browser), or real stock reaching 0 after real sales in the ledger. Without one the build

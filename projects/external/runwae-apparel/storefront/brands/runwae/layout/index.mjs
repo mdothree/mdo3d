@@ -70,8 +70,8 @@ function capsuleCard(kit, p, { big = false } = {}) {
   return `<a class="rw4-card${big ? ' rw4-card--big' : ''}" href="${kit.href.product(p)}"><span class="rw4-card-media">${kit.img(im, { sizes: big ? '(max-width: 820px) 50vw, 22vw' : '(max-width: 820px) 50vw, 13vw', alt: im.alt })}${im.concept ? '<span class="rw-tag">Concept</span>' : ''}</span>
 <span class="rw4-card-name">${kit.esc(p.name)}</span><span class="rw4-card-meta"><span class="rw4-price">${kit.esc(priceOf(v))}</span><span class="rw4-status">${kit.esc(v.label)}</span></span>${dots(kit, p)}</a>`;
 }
-/** The price line on the home capsule row: the real price, or "Price TBA" while none is set. */
-const priceOf = (v) => v.priceText || (v.price_cents == null ? 'Price TBA' : `$${(v.price_cents / 100).toFixed(2)}`);
+/** The price line on the home capsule row: the real price, "Price TBA" while a buyable piece has none, blank when not available. */
+const priceOf = (v) => v.priceText;
 
 /** Ideas · People · Places · Progress, one calm line each (the brand beliefs; beliefs, not slogans). */
 const BELIEFS = [
@@ -147,7 +147,7 @@ ${tile('v4-globe-patch', 'The globe patch: RUNWAE APPAREL COMPANY around a line 
 <section class="rw4-collection rw5-pieces" id="collection" aria-labelledby="col-t"><div class="rw-wrap rw4-col-grid">
 <div class="rw4-col-copy"><p class="rw4-num"><span>04</span> The pieces</p><h2 id="col-t" class="rw4-h2">Wear a brighter tomorrow.</h2>
 <p class="rw4-tracked">Release 01. Six pieces, numbered 01 to 06.</p>
-<p class="rw-note">Prices are set when each drop opens. Join the list on any piece for one email when it does.</p>
+<p class="rw-note">Prices are set when each piece opens.</p>
 <a class="rw4-link" href="${drawn}">Shop Release 01 <span aria-hidden="true">→</span></a></div>
 <div class="rw4-row">${capsule.map((p) => capsuleCard(kit, p)).join('')}</div>
 </div></section>

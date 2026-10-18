@@ -64,7 +64,7 @@ export function stockReport(root, now = new Date()) {
   return { rows: out, ledger, inv, errors: [...checkAll(inv, brands), ...reconcile(inv, ledger, now)], brands };
 }
 
-const STATUS_ORDER = ['available', 'preorder', 'next_drop', 'in_development', 'sold_out', 'archive'];
+const STATUS_ORDER = ['available', 'preorder', 'next_drop', 'in_development', 'unavailable', 'sold_out', 'archive'];
 
 /** Writes dist/_admin/{index.html, admin.css, admin.js, stock.csv, ledger.csv}. emails: [{brand, label, href}]. */
 export function buildAdmin(root, outDir, { now = new Date(), emails = [] } = {}) {

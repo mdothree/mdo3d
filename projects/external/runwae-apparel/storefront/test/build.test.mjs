@@ -50,22 +50,17 @@ for (const id of BRANDS) {
     assert.match(readFileSync(join(out, 'policies.html'), 'utf8'), /ships together when its latest item is ready/);
   });
 
-  test(`${id}: exactly one focus item can be added to the bag; the rest show their state`, async () => {
+  test(`${id}: pre-launch (Principal 2026-10-18): nothing can be added to the bag; every current item says Not available`, async () => {
     const out = await build(id);
     const data = JSON.parse(readFileSync(join(out, 'catalog.js'), 'utf8').replace(/^window\.SEED = /, '').replace(/;\s*$/, ''));
-    const addable = Object.entries(data.products).filter(([, p]) => p.canAdd);
-    assert.equal(addable.length, 1, `${id}: one focus item`);
-    const [fid, fp] = addable[0];
-    assert.ok(['preorder', 'available'].includes(fp.status));
-    assert.equal(fp.price_cents, null, 'Price TBA until the Principal sets it');
-    const pdp = readFileSync(join(out, 'products', `${fid}.html`), 'utf8');
-    assert.match(pdp, /data-add data-product="/);
-    assert.match(pdp, /Price TBA/);
-    for (const [pid, p] of Object.entries(data.products).filter(([, x]) => !x.canAdd)) {
-      const html = readFileSync(join(out, 'products', `${pid}.html`), 'utf8');
-      assert.doesNotMatch(html, /data-add /, pid);
-      if (p.status === 'next_drop') assert.match(html, /data-notify/, pid);
-      if (p.status === 'in_development') assert.match(html, /Concept · not yet available/, pid);
+    assert.equal(Object.values(data.products).filter((p) => p.canAdd).length, 0, `${id}: nothing addable before launch`);
+    for (const [pid, p] of Object.entries(data.products)) {
+      assert.ok(['unavailable', 'archive'].includes(p.status), `${pid}: ${p.status}`);
+      if (p.status === 'archive') continue;
+      const page = readFileSync(join(out, 'products', `${pid}.html`), 'utf8');
+      const html = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
+      assert.doesNotMatch(html, /data-add |data-notify|Price TBA/, pid);
+      assert.match(html, /Not available/, pid);
     }
   });
 
@@ -104,7 +99,7 @@ test('Butts Studios: approved scope only, tagline in sans, bag never purchasable
   assert.match(shop, /Rust/); assert.match(shop, /Black/);
   assert.doesNotMatch(shop, /button-up|backpack/i);
   const bag = readFileSync(join(out, 'products', 'studio-bag.html'), 'utf8');
-  assert.match(bag, /Concept · not yet available/);
+  assert.match(bag, /Not available/);
   assert.doesNotMatch(bag, /data-add|data-notify/);
   assert.doesNotMatch(readFileSync(join(out, 'styles.css'), 'utf8'), /--f-display:(?:(?!sans-serif)[^;}])*\bserif\b/, 'no serif display face');
   const { catalog } = loadBrand('buttsstudios');
@@ -127,14 +122,14 @@ test('Runwae v4 home follows cbce9be5: photo hero, 01 Built on, 02 dark band, de
   const order = ['id="story"', 'What we believe', 'The art behind the clothes', 'class="rw4-row"', 'id="enter-t"'].map((k) => main.indexOf(k));
   assert.ok(order.every((i) => i > 0), order.join()); assert.deepEqual([...order].sort((x, y) => x - y), order, 'who -> belief -> art -> pieces -> enter the shop');
   for (const [id, n] of [['tlt-neighbor-hoodie', 'Luv Thy Neighbor Hoodie'], ['globe-hoodie', 'Globe Hoodie'], ['flannel', 'Flannel']]) assert.match(main, new RegExp(`class="rw5-worn[^"]*" href="products/${id}\\.html"><span>Worn as:</span> ${n}`), n);
-  assert.equal((main.slice(main.indexOf('class="rw4-row"')).match(/class="rw4-price">Price TBA</g) ?? []).length >= 6, true, 'capsule prices shown');
+  assert.equal((main.slice(main.indexOf('class="rw4-row"')).match(/class="rw4-status">Not available</g) ?? []).length, 6, 'capsule statuses shown');
   assert.match(idx.slice(0, idx.indexOf('<main')), /class="rw-shoplink" href="shop\.html">Shop</, 'Shop always visible in the header (outside the phone menu)');
   for (const w of ['Ideas', 'People', 'Places', 'Progress']) assert.match(main, new RegExp(`<li>${w}</li>`));
   for (const f of ['v4-label', 'v4-button', 'v4-embroidery', 'v4-globe-patch', 'v4-band']) assert.match(main, new RegExp(f));
   const row = main.slice(main.indexOf('class="rw4-row"'));
   const names = [...row.matchAll(/rw4-card-name">([^<]+)</g)].map((m) => m[1]);
   assert.deepEqual(names.slice(0, 6), ['Field Overshirt', 'Globe Hoodie', 'Luv Thy Neighbor Hoodie', 'Knit Polo', 'Beanie', 'Flannel']);
-  assert.match(main, /class="rw4-focus"[\s\S]*Luv Thy Neighbor Hoodie/, 'the focus piece stays reachable from home');
+  assert.doesNotMatch(main, /class="rw4-focus"/, 'no Now/pre-order strip while nothing is available');
   const foot = idx.slice(idx.lastIndexOf('<footer'));
   for (const w of ['Art', 'People', 'Places', 'Progress']) assert.match(foot, new RegExp(`<li>${w}</li>`));
   assert.match(foot, /Join the journey/);
@@ -203,7 +198,7 @@ test('Runwae Release 01 (Principal 2026-10-18 renders, numbered 01 to 06): hones
   for (const p of cap) { assert.equal(p.line, 'Release 01'); assert.equal(p.price_cents, null, 'concept prices ignored'); assert.ok(p.images[0].concept); assert.match(p.images[0].file, /^rel-/); }
   for (const p of catalog) assert.ok(!(p.images ?? []).some((i) => /^art-/.test(i.file)), `${p.id}: drawings are art panels on the Release 01 page only`);
   const focus = catalog.filter((p) => ['preorder', 'available'].includes(p.status));
-  assert.deepEqual(focus.map((p) => p.id), ['tlt-neighbor-hoodie'], 'focus item kept: Luv Thy Neighbor Hoodie');
+  assert.deepEqual(focus.map((p) => p.id), [], 'pre-launch: nothing on sale');
 });
 
 test('Runwae shop = Release 01 + the real archive (Principal 2026-10-18); retired concepts gone, off-limits sources unused', async () => {

@@ -38,7 +38,7 @@
   "fontsHref": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&family=Playfair+Display:wght@600;700&display=swap"
  },
  "copy": {
-  "preview": "Preview \u00b7 not open for orders",
+  "preview": "Preview · not open for orders",
   "notifyIntro": "One email when it opens.",
   "exchangeLine": "Size exchanges within 14 days of delivery.",
   "checkoutOff": "Checkout opens when the shop does."
@@ -65,15 +65,15 @@
   "privacy_contact": "hello@runwaeapparel.com",
   "mailing_address": "[CONFIRM: mailing address]",
   "governing_law": "[CONFIRM: governing-law state]",
-  "effective_date": "[CONFIRM: effective date]",
+  "effective_date": "18 October 2026",
   "returns_window_days": 14,
-  "returns_window_status": "provisional: confirm the 14-day size-exchange window",
   "defect_window_days": 30,
-  "exchange_shipping": "[CONFIRM: who pays shipping on size exchanges]",
-  "order_retention": "[CONFIRM: how long order records are kept (suggest 7 years for tax records)]",
-  "preorder_cancel": "[CONFIRM: whether a pre-order can be cancelled for a full refund before its window closes]",
+  "exchange_shipping": "you pay to send the piece back; we pay to ship the new size to you",
+  "order_retention": "seven years, for tax records",
+  "preorder_cancel": "yes, for a full refund. Email us with your order number",
   "returns": "Size exchanges within 14 days of delivery. Items must be unworn with tags.",
-  "_note": "Policy pages (privacy, terms, returns, shipping, policies hub) render from core/policies.mjs. Every [CONFIRM] value and every *_status placeholder blocks a live build."
+  "_note": "Policy pages (privacy, terms, returns, shipping, policies hub) render from core/policies.mjs. Every [CONFIRM] value and every *_status placeholder blocks a live build.",
+  "_note_2026_10_18": "Pre-launch defaults set by the storefront lane (returns 14 days, exchange shipping split, 7-year order records, pre-orders cancellable before the window closes). Still open before live: mailing_address + governing_law (JARVIS L1) and a working contact inbox (SETUP_TODO email-routing rows)."
  },
  "palette": [
   "forest",

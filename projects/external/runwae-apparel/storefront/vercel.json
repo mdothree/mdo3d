@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node src/build.mjs --brand $BRAND --out public",
+  "buildCommand": "node src/build.mjs --brand $BRAND --out public $BUILD_FLAGS",
   "outputDirectory": "public",
   "functions": {
     "api/checkout.mjs": {

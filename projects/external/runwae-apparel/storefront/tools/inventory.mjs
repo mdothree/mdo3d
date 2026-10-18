@@ -146,7 +146,7 @@ export async function main(argv, { root: rootIn, log = console.log } = {}) {
       if (errors.length) fail(`${errors.length} problem(s):\n  ${errors.join('\n  ')}`);
       const prod = readInventory(root).filter((r) => r.variant === '-');
       const by = (s) => prod.filter((r) => r.status === s).length;
-      log(`ok: ${prod.length} products, ${rows.filter((r) => r.variant !== '-').length} SKUs across ${new Set(prod.map((r) => r.brand)).size} shops; ledger reconciles. ${['available', 'preorder', 'next_drop', 'in_development', 'archive', 'sold_out'].map((s) => `${s} ${by(s)}`).join(', ')}`);
+      log(`ok: ${prod.length} products, ${rows.filter((r) => r.variant !== '-').length} SKUs across ${new Set(prod.map((r) => r.brand)).size} shops; ledger reconciles. ${['available', 'preorder', 'next_drop', 'in_development', 'unavailable', 'archive', 'sold_out'].map((s) => `${s} ${by(s)}`).join(', ')}`);
       return { ok: true, rows: rows.length };
     }
     default:

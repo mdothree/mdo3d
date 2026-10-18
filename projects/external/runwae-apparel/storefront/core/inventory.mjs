@@ -25,7 +25,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from '
 import { join, dirname } from 'node:path';
 
 export const COLUMNS = Object.freeze(['brand', 'product_id', 'variant', 'status', 'price_cents', 'fulfilment', 'stock', 'preorder_cap', 'low_stock', 'drop_id', 'sales_record_channel', 'notes']);
-export const INV_STATUSES = Object.freeze(['available', 'preorder', 'next_drop', 'in_development', 'archive', 'sold_out']);
+export const INV_STATUSES = Object.freeze(['available', 'preorder', 'next_drop', 'in_development', 'archive', 'sold_out', 'unavailable']);
 export const FULFILMENT = Object.freeze(['stock', 'preorder', 'pod']);
 /** Fields that live ONLY in the inventory; a catalog.json product carrying one is a build error. */
 export const INVENTORY_FIELDS = Object.freeze(['status', 'price_cents', 'stock', 'sales_record', 'sold_count']);
