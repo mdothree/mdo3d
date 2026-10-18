@@ -19,31 +19,31 @@ LABEL = {"preorder": "Pre-order · focus", "next_drop": "Next drop", "in_develop
 SHOPS = [
     dict(id="buttsstudios", name="Butts Studios",
          ident="They make things. Under it: works in progress, playing the long game.",
-         look="Dark editorial. The C5 mark (square and X) with Archivo Bold, cream on near-black, rust and olive accents, a contour-line graphic. Built from the early lookbook and the &ldquo;Made of Story&rdquo; first pass. The Claude design version (concept 06) was set aside.",
+         look="Dark editorial. The C5 mark (square and X) with Archivo Bold, cream on near-black, rust and olive accents, a contour-line graphic. Built from the early lookbook and the &ldquo;Made of Story&rdquo; first pass. Product shots are now the final front and back renders (2026-10-18): rust and black contour hoodies, the olive/black windbreaker, the plaid flannel and the knit beanie. Lookbook images stay for the hero, detail and story.",
          keys=["bg", "cream", "rust", "olive", "charcoal"], type="Archivo Bold display · clean sans body · mono labels",
          decisions=["Prices, materials and sizing for each piece, and when the first drop opens",
-                    "The Studio Bag: shape and materials still in rework (shown as a concept, never buyable)",
+                    "The Studio Bag: still in rework, no render yet (shown as a concept, never buyable)",
                     "Vector logo files and font licences for production"]),
     dict(id="runwae", name="Runwae Apparel",
          ident="They influence. Under it: they notice the little things.",
-         look="v5, still identity- and story-led, now the doorway into the shop. Home: the golden-hour hero (RUNWAE / APPAREL, IDEAS · PEOPLE · PLACES · PROGRESS) with &ldquo;Explore the story&rdquo; and &ldquo;Shop the Drawn Series&rdquo;; 01 who Runwae is (&ldquo;Clothes that start as drawings.&rdquo;); 02 the belief (&ldquo;Everyone influences.&rdquo;, one line per word); 03 the art behind the clothes; then the seven pieces with Price TBA and status, and a final &ldquo;Enter the shop&rdquo;. Each story section ends on the piece it is worn as. Shop always visible in the header. The Story page is on palette (2021 originals in ivory frames, captioned). The Drawn Series artwork row is one treatment: cream ground, dark line. Forest, ivory, washed black, rust. Focus piece stays the Luv Thy Neighbor Hoodie.",
+         look="Still story-led (hero, who we are, the belief, the art, then the pieces), now built around <b>Release 01</b>: the six numbered renders from 2026-10-18. 01 Field Overshirt (rust), 02 Globe Hoodie (forest: RUNWAE APPAREL on the chest, globe emblem on the back), 03 Luv Thy Neighbor Hoodie (creme, new face-and-plants back), 04 Knit Polo (charcoal), 05 Beanie (forest, creme, black, rust), 06 Flannel (forest/rust plaid). Every other concept (Drawn Series, Essentials, The Little Things, reissues) is off the shop; the real Fall &rsquo;21 archive stays. Focus pre-order stays the Luv Thy Neighbor Hoodie.",
          keys=["forest", "paper", "rust", "washed"], type="Playfair Display bold headlines · Inter tracked small caps · Instrument Serif accents",
-         decisions=["Master logo: handoff variants A / B / C / globe (current wordmark is provisional)",
-                    "Whether &ldquo;The Runwae Company&rdquo; is used as an umbrella name",
+         decisions=["Name for the six-piece line: &ldquo;Release 01&rdquo; is a working label (it replaced &ldquo;The Drawn Series&rdquo;, which no longer fits a beanie, polo and flannel)",
+                    "The black beanie: this release was meant to be no-black; kept because it is in the render",
+                    "Master logo: handoff variants A / B / C / globe (current wordmark is provisional)",
                     "Model releases for the 2021 photos of real people (preview-only until then)",
-                    "The Drawn Series capsule (seven pieces): fabric, print method and prices; the Globe Hoodie lettering is from the concept, not final",
-                    "Whether the capsule replaces the Luv Thy Neighbor Hoodie as the focus pre-order (kept for now)"]),
+                    "Fabric, print method and prices for the six pieces"]),
     dict(id="glb", name="Girls Love Butts (GLB)",
          ident="Every body is worth drawing. (Both lines provisional.)",
-         look="Bright and hand-drawn: pink, yellow and blue, marker type and stickers, body-positive and playful. &ldquo;Clothes for every body.&rdquo; Shirt-sized art sits on the back; chest marks stay medium.",
+         look="Bright and hand-drawn: pink, yellow and blue, marker type and stickers, body-positive and playful. &ldquo;Clothes for every body.&rdquo; The shop is now the approved Batch 1 (2026-10-18), eight pieces: Icon Tee, Curves Tee, Curves Hoodie, Icon Hoodie, Curves Crewneck, Mini Logo Crew, Chill Shorts and the Good Energy Tote. The other concept-board pieces and both hats are off the shop. Big art leads from the back; chest marks stay medium.",
          keys=["pink", "yellow", "blue", "orange", "cream"], type="Marker display · rounded sans body",
          decisions=["Approve or replace the headline and tagline", "Prices, materials and sizing",
-                    "Final illustration files from your line art (back-print renders to re-render)"]),
+                    "Print-ready files for the curves and icon-grid art (the renders are mockups from your illustrations)"]),
     dict(id="ridgefield", name="Ridgefield",
          ident="Headline borrowed from the site; provisional for the store.",
-         look="Measured and technical, matching ridgefieldtech.com: ink background, mono labels, terrain contours, spec-sheet product pages, the real square mark and the ember-orange accent. No em dashes (Ridgefield voice).",
+         look="Measured and technical, matching ridgefieldtech.com: ink background, mono labels, terrain contours, spec-sheet product pages, the square mark and the ember-orange accent. No em dashes (Ridgefield voice). Product images are the new front and back studio renders (2026-10-18), which carry the real marks: the RIDGEFIELD wordmark on the chest and the square mark on the beanie and pack. The old chevron images are gone.",
          keys=["ink", "bone", "olive", "ember", "panel"], type="JetBrains Mono labels · Inter display and body",
-         decisions=["The product renders show an AI mountain logo; final pieces need the real Ridgefield square mark",
+         decisions=["Chest wordmark size: the renders show it small; the shop rule is medium",
                     "Store headline (currently the site line, provisional)",
                     "Prices, materials and specs (no performance claims stated as fact)"]),
 ]
@@ -64,11 +64,30 @@ def shot(url, out, size):
     raise RuntimeError(f"screenshot failed: {url}")
 
 
+def to_jpg(src, out, width=None, square=None):
+    """Resize to a JPEG (width) or a centre-cropped square. ImageMagick when present, else macOS sips."""
+    import shutil
+    if shutil.which("magick"):
+        args = ["-resize", f"{width}x"] if width else ["-resize", f"{square}x{square}^", "-gravity", "center", "-extent", f"{square}x{square}"]
+        subprocess.run(["magick", src, *args, "-quality", "80", out], check=True)
+        return
+    q = ["-s", "format", "jpeg", "-s", "formatOptions", "80"]
+    if width:
+        subprocess.run(["sips", *q, "--resampleWidth", str(width), src, "--out", out], stdout=subprocess.DEVNULL, check=True)
+        return
+    o = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", src], capture_output=True, text=True).stdout
+    w, h = int(re.search(r"pixelWidth: (\d+)", o).group(1)), int(re.search(r"pixelHeight: (\d+)", o).group(1))
+    side = ["--resampleHeight", str(square)] if w >= h else ["--resampleWidth", str(square)]
+    subprocess.run(["sips", *q, *side, src, "--out", out], stdout=subprocess.DEVNULL, check=True)
+    subprocess.run(["sips", "-c", str(square), str(square), out], stdout=subprocess.DEVNULL, check=True)
+
+
 def items_of(b):
     # Product definitions from the catalog; status/price from the shared inventory (inventory/inventory.csv).
     import csv
     cat = json.load(open(f"{SF}/brands/{b}/catalog.json"))
     items = cat if isinstance(cat, list) else cat.get("products") or cat.get("items") or []
+    items = [i for i in items if i.get("listed") is not False]  # hidden on the site -> hidden here too
     inv = {r["product_id"]: r for r in csv.DictReader(open(f"{SF}/inventory/inventory.csv")) if r["brand"] == b and r["variant"] == "-"}
     for it in items:
         r = inv.get(it["id"], {})
@@ -104,8 +123,7 @@ def main():
                                 ("phone", f"{P}/{b}/index.html", "500,1000")]:
             png = f"{W}/{b}-{kind}.png"
             shot("file://" + url, png, size)
-            subprocess.run(["magick", png, "-resize", "1440x" if kind != "phone" else "500x", "-quality", "80",
-                            f"{W}/{b}-{kind}.jpg"], check=True)
+            to_jpg(png, f"{W}/{b}-{kind}.jpg", width=1440 if kind != "phone" else 500)
         s.update(bj=bj, items=items)
     # pieces
     for s in SHOPS:
@@ -118,8 +136,7 @@ def main():
                     break
             if img:
                 out = f"{W}/piece-{b}-{n}.jpg"
-                subprocess.run(["magick", img, "-resize", "520x520^", "-gravity", "center", "-extent", "520x520",
-                                "-quality", "80", out], check=True)
+                to_jpg(img, out, square=520)
                 img = out
             cols = it.get("colors") or []
             cname = ", ".join((c.get("name") if isinstance(c, dict) else str(c)) for c in cols[:3])

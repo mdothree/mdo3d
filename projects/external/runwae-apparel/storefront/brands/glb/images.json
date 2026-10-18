@@ -1,85 +1,27 @@
 {
- "_note": "GLB concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (AI-generated, captioned 'Concept render'; low resolution, so layouts cap display size) plus LB's own sketchbook line art (~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design). Hats and the tote are allowed for GLB (the bans were Butts Studios only). IMG_3206 and the 2022 screenshot in that folder are third-party and unused.",
+ "_note": "GLB concept renders from ~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14 (AI-generated, captioned 'Concept render'; low resolution, so layouts cap display size) plus LB's own sketchbook line art (~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design). Hats and the tote are allowed for GLB (the bans were Butts Studios only). IMG_3206 and the 2022 screenshot in that folder are third-party and unused. | 2026-10-18 (Principal): the shop lineup is the approved Batch 1 renders in design/renders_2026-10-18/glb (front + back product mockups composed from GLB's own illustrations; concept renders, not physical product photos). Board crops for retired products are removed; the illustrations and sketchbook stay.",
  "sources": {
   "home": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/5012cf0a-631d-463f-a536-0c86d6d400c6.png",
-  "pdp": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/37791f90-3c0c-469b-af64-b88fbe6c8581.png",
   "sketch6": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66969223584__F71501C5-4E4C-4FA5-A66D-CB8A5495F878.JPG",
   "sketch1": "~/mdo3d/projects/external/runwae-apparel/design/glb/source_line_art/Design/66817852402__A8E496D6-14A6-46A6-A87D-4A5990D9F736.JPG",
-  "shop": "~/mdo3d/projects/external/runwae-apparel/design/glb/concepts_2026-10-14/4a224517-9cd3-4d71-9c66-2437aa778ebb.png"
+  "icon-tee-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/01_Icon_Tee_back.png",
+  "icon-tee-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/01_Icon_Tee_front.png",
+  "curves-tee-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/02_Curves_Tee_back.png",
+  "curves-tee-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/02_Curves_Tee_front.png",
+  "curves-hoodie-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/03_Curves_Hoodie_back.png",
+  "curves-hoodie-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/03_Curves_Hoodie_front.png",
+  "icon-hoodie-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/04_Icon_Hoodie_back.png",
+  "icon-hoodie-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/04_Icon_Hoodie_front.png",
+  "curves-crew-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/05_Curves_Crewneck_back.png",
+  "curves-crew-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/05_Curves_Crewneck_front.png",
+  "logo-crew-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/black_crew_front.png",
+  "logo-crew-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/black_crew_back.png",
+  "shorts-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/shorts_front.png",
+  "shorts-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/shorts_back.png",
+  "tote-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/tote_front.png",
+  "tote-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/glb/tote_back.png"
  },
  "crops": [
-  {
-   "out": "icon-tee-front",
-   "src": "pdp",
-   "x": 152,
-   "y": 128,
-   "w": 362,
-   "h": 410
-  },
-  {
-   "out": "icon-tee-back",
-   "src": "pdp",
-   "x": 522,
-   "y": 128,
-   "w": 366,
-   "h": 410
-  },
-  {
-   "out": "icon-tee-detail",
-   "src": "pdp",
-   "x": 400,
-   "y": 545,
-   "w": 236,
-   "h": 240
-  },
-  {
-   "out": "icon-tee-label",
-   "src": "pdp",
-   "x": 152,
-   "y": 545,
-   "w": 240,
-   "h": 240
-  },
-  {
-   "out": "logo-crew",
-   "src": "home",
-   "x": 287,
-   "y": 504,
-   "w": 206,
-   "h": 196
-  },
-  {
-   "out": "line-art-tee",
-   "src": "home",
-   "x": 511,
-   "y": 504,
-   "w": 206,
-   "h": 196
-  },
-  {
-   "out": "brighter-hoodie",
-   "src": "home",
-   "x": 734,
-   "y": 504,
-   "w": 206,
-   "h": 196
-  },
-  {
-   "out": "nice-butts-tee",
-   "src": "home",
-   "x": 957,
-   "y": 504,
-   "w": 206,
-   "h": 196
-  },
-  {
-   "out": "hero-tee",
-   "src": "home",
-   "x": 540,
-   "y": 76,
-   "w": 330,
-   "h": 380
-  },
   {
    "out": "hero-girl",
    "src": "home",
@@ -113,92 +55,132 @@
    ]
   },
   {
-   "out": "sh-crew-love",
-   "src": "shop",
-   "x": 241,
-   "y": 539,
-   "w": 221,
-   "h": 206
+   "out": "icon-tee-back",
+   "src": "icon-tee-back",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-brighter-black",
-   "src": "shop",
-   "x": 483,
-   "y": 539,
-   "w": 221,
-   "h": 206
+   "out": "icon-tee-front",
+   "src": "icon-tee-front",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-good-views",
-   "src": "shop",
-   "x": 724,
-   "y": 539,
-   "w": 221,
-   "h": 206
+   "out": "curves-tee-back",
+   "src": "curves-tee-back",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-chill-shorts",
-   "src": "shop",
-   "x": 966,
-   "y": 539,
-   "w": 221,
-   "h": 206
+   "out": "curves-tee-front",
+   "src": "curves-tee-front",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-low-key-hat",
-   "src": "shop",
-   "x": 1208,
-   "y": 539,
-   "w": 216,
-   "h": 206
+   "out": "curves-hoodie-back",
+   "src": "curves-hoodie-back",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-more-good-days",
-   "src": "shop",
-   "x": 241,
-   "y": 816,
-   "w": 221,
-   "h": 202
+   "out": "curves-hoodie-front",
+   "src": "curves-hoodie-front",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-all-shapes",
-   "src": "shop",
-   "x": 483,
-   "y": 816,
-   "w": 221,
-   "h": 202
+   "out": "icon-hoodie-back",
+   "src": "icon-hoodie-back",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-nicer-world",
-   "src": "shop",
-   "x": 724,
-   "y": 816,
-   "w": 221,
-   "h": 202
+   "out": "icon-hoodie-front",
+   "src": "icon-hoodie-front",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-little-booty",
-   "src": "shop",
-   "x": 966,
-   "y": 816,
-   "w": 221,
-   "h": 202
+   "out": "curves-crew-back",
+   "src": "curves-crew-back",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "sh-good-energy-tote",
-   "src": "shop",
-   "x": 1208,
-   "y": 816,
-   "w": 216,
-   "h": 202
+   "out": "curves-crew-front",
+   "src": "curves-crew-front",
+   "widths": [
+    480,
+    960
+   ]
   },
   {
-   "out": "dad-hat",
-   "src": "home",
-   "x": 1180,
-   "y": 504,
-   "w": 206,
-   "h": 196
+   "out": "logo-crew-front",
+   "src": "logo-crew-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "logo-crew-back",
+   "src": "logo-crew-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "shorts-front",
+   "src": "shorts-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "shorts-back",
+   "src": "shorts-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "tote-front",
+   "src": "tote-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "tote-back",
+   "src": "tote-back",
+   "widths": [
+    480,
+    960
+   ]
   }
  ]
 }

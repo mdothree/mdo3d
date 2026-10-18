@@ -2,314 +2,9 @@
  "_note": "Runwae Apparel shop (developer handoff 2026-10-14). Shown now: one focus piece (pre-order), The Little Things next drop, the Drawn Series as concepts (AI concept photography of the owner's drawings on garments, captioned Concept; bare sketches are not featured, Principal 2026-10-14). Archive: real Fall '21 pieces only. Poison and Pave hoodies are removed for good. images[].file: an assets/manifest.json key, or a pre-seed file name. source_images: originals under ../design for tools/assets.py. Principal 2026-10-14: True Grit Tee, Crafting Tee, The Little Things Tee, Luv Thy Neighbor Tee and RWA Sweatpants removed (future sweatpants get a new design); Faces Tee is a maybe (in_development). Runwae Apparel Tee stays front-only: the FB2 back is third-party art (#82-d). Principal 2026-10-14 adds from the concept boards: Essentials (Sketch, Chest-Drawing, Runwae Company hoodies, Knit Polo, Field Jacket) and Drawn Series shirts (Garden, Rust Corduroy). Board logos and prices are not used. RWA Tee removed (Principal). The Runwae Company Tee added from a_clean_editorial_product_catalog_style_layout_i. Reissues (Principal 2026-10-14): Runwae Apparel Hoodie, TRC Hoodie, The Runwae Company Hoodie in the cohesive palette; original 2021 photos shown as 'Original 2021' (preview only, people listed in images.json _people). v4 (2026-10-14): The Drawn Series capsule of seven (Foundation Hoodie = Runwae Apparel + Sketch hoodies; Atelier Shirt = Botanical Button-Down; Field Overshirt = Field Jacket; Figure Overshirt; new Globe Hoodie, Sketch Tee, Botanical Tee). Other concepts sit behind the capsule as Next drop / Essentials / The Little Things / Archive. The owner's bare drawings (art-*) appear only as art panels on the Drawn Series page (Principal 2026-10-14). Focus item stays the Luv Thy Neighbor Hoodie: a real, finished design with its own artwork, while the capsule is concept renders with fabric and print still open. Concept prices are ignored.",
  "products": [
   {
-   "id": "foundation-hoodie",
-   "name": "Foundation Hoodie",
-   "line": "The Drawn Series",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "forest",
-     "name": "Forest",
-     "hex": "#263a2d"
-    },
-    {
-     "id": "ivory",
-     "name": "Ivory",
-     "hex": "#e9e3d4"
-    }
-   ],
-   "images": [
-    {
-     "file": "v4-foundation",
-     "alt": "Forest hoodie with a small RUNWAE wordmark at the chest",
-     "concept": true,
-     "color": "forest"
-    },
-    {
-     "file": "re-ra-forest",
-     "alt": "Forest hoodie with RUNWAE APPAREL at the left chest in cream",
-     "concept": true,
-     "caption": "Mockup · original lettering",
-     "color": "forest"
-    },
-    {
-     "file": "re-ra-ivory",
-     "alt": "Ivory hoodie with RUNWAE APPAREL at the left chest, medium",
-     "concept": true,
-     "caption": "Mockup · original lettering",
-     "color": "ivory"
-    },
-    {
-     "file": "fl-sketch-hoodie",
-     "alt": "Ivory hoodie with RUNWAE APPAREL at the chest",
-     "concept": true,
-     "color": "ivory"
-    },
-    {
-     "file": "orig-ra-cream",
-     "alt": "The original cream Runwae Apparel hoodie, worn",
-     "caption": "Original 2021"
-    }
-   ],
-   "summary": "The capsule's quiet base: a heavyweight hoodie with RUNWAE APPAREL small at the chest. Forest or ivory. The 2021 Runwae Apparel hoodie, reissued.",
-   "print": [
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    }
-   ],
-   "details": [
-    [
-     "The design",
-     "From the 2021 Runwae Apparel hoodie: the chest lettering, medium."
-    ],
-    [
-     "Merged",
-     "Also shown on the concept boards as the Sketch Hoodie."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "capsule": 1,
-   "decision_pending": "2026-10-16 Principal: Foundation Hoodie and Figure Hoodie may become the front and back of one hoodie. Hold until decided."
-  },
-  {
-   "id": "globe-hoodie",
-   "name": "Globe Hoodie",
-   "line": "The Drawn Series",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "ivory",
-     "name": "Ivory",
-     "hex": "#e9e3d4"
-    }
-   ],
-   "images": [
-    {
-     "file": "v4-globe",
-     "alt": "Ivory hoodie, back: the globe emblem large",
-     "concept": true
-    },
-    {
-     "file": "v4-coll-hero",
-     "alt": "The ivory Globe Hoodie worn on concrete steps, seen from behind",
-     "concept": true
-    },
-    {
-     "file": "v4-globe-patch",
-     "alt": "The globe emblem as a woven patch on rust",
-     "concept": true
-    }
-   ],
-   "summary": "Ivory hoodie with the globe emblem large across the back.",
-   "print": [
-    {
-     "placement": "back",
-     "size": "full_back"
-    }
-   ],
-   "details": [
-    [
-     "The emblem",
-     "The globe is the owner's favoured mark option; the lettering around it is from the concept and is not final."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "capsule": 2
-  },
-  {
-   "id": "drawn-overshirt",
-   "name": "Figure Overshirt",
-   "line": "The Drawn Series",
-   "category": "apparel",
-   "type": "Overshirt",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "forest",
-     "name": "Forest",
-     "hex": "#263a2d"
-    }
-   ],
-   "images": [
-    {
-     "file": "v4-figure-overshirt",
-     "alt": "Forest overshirt with the figure and plant drawing across the front",
-     "concept": true
-    },
-    {
-     "file": "mock-figure-overshirt",
-     "alt": "Forest overshirt, back: the owner's paired figures and plant in clean cream line, full size",
-     "concept": true,
-     "caption": "Mockup · original drawing"
-    },
-    {
-     "file": "drawn-overshirt",
-     "alt": "Olive overshirt with figure and plant line work on the back",
-     "concept": true
-    }
-   ],
-   "summary": "Forest overshirt carrying the owner's paired-figures-and-plant drawing.",
-   "details": [
-    [
-     "Status",
-     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
-    ]
-   ],
-   "rights_hold": null,
-   "print": [
-    {
-     "placement": "back",
-     "size": "full_back"
-    }
-   ],
-   "capsule": 3,
-   "listed": false,
-   "dropped": "2026-10-16 Principal: dropped from this release"
-  },
-  {
-   "id": "atelier-shirt",
-   "name": "Atelier Shirt",
-   "line": "The Drawn Series",
-   "category": "apparel",
-   "type": "Shirt",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "ivory",
-     "name": "Ivory",
-     "hex": "#e9e3d4"
-    }
-   ],
-   "images": [
-    {
-     "file": "v4-atelier",
-     "alt": "Ivory button-down with tree drawings down the front",
-     "concept": true
-    },
-    {
-     "file": "drawn-buttondown",
-     "alt": "Ivory button-down with a small plant drawing on the chest",
-     "concept": true
-    },
-    {
-     "file": "v4-portrait",
-     "alt": "The Atelier Shirt worn, seated against concrete",
-     "concept": true
-    }
-   ],
-   "summary": "Ivory button-down with the owner's tree and plant drawings on the front.",
-   "details": [
-    [
-     "Merged",
-     "Shown earlier as the Botanical Button-Down."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "print": [
-    {
-     "placement": "front_panel",
-     "size": "half_front"
-    }
-   ],
-   "capsule": 4
-  },
-  {
-   "id": "sketch-tee",
-   "name": "Sketch Tee",
-   "line": "The Drawn Series",
-   "category": "apparel",
-   "type": "Tee",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "ivory",
-     "name": "Ivory",
-     "hex": "#e9e3d4"
-    }
-   ],
-   "images": [
-    {
-     "file": "v4-sketch-tee",
-     "alt": "Ivory tee with the crowded portrait drawing large on the front",
-     "concept": true
-    }
-   ],
-   "summary": "Ivory tee with the owner's crowded portrait drawing printed large on the front.",
-   "print": [
-    {
-     "placement": "front_panel",
-     "size": "full_front"
-    }
-   ],
-   "details": [
-    [
-     "The drawing",
-     "The owner's original portrait sketch (Sketch 03)."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "capsule": 5
-  },
-  {
    "id": "field-overshirt",
    "name": "Field Overshirt",
-   "line": "The Drawn Series",
+   "line": "Release 01",
    "category": "apparel",
    "type": "Jacket",
    "channel": "preorder",
@@ -329,42 +24,28 @@
    ],
    "images": [
     {
-     "file": "v4-field-overshirt",
-     "alt": "Rust field overshirt with four patch pockets",
-     "concept": true
-    },
-    {
-     "file": "fl-field-jacket",
-     "alt": "Rust field jacket with patch pockets and a small chest wordmark",
+     "file": "rel-field",
+     "alt": "Rust field overshirt, front and back: four flap pockets, metal buttons, no lettering",
      "concept": true
     }
    ],
-   "summary": "Rust field overshirt with patch pockets. Quiet: no large lettering.",
-   "print": [
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    }
-   ],
+   "summary": "Rust field overshirt with four flap pockets and metal buttons. Quiet: no lettering.",
+   "print": [],
    "details": [
-    [
-     "Merged",
-     "Shown earlier as the Field Jacket."
-    ],
     [
      "Materials and fit",
      "To be confirmed with the maker."
     ]
    ],
    "rights_hold": null,
-   "capsule": 6
+   "capsule": 1
   },
   {
-   "id": "botanical-tee",
-   "name": "Botanical Tee",
-   "line": "The Drawn Series",
+   "id": "globe-hoodie",
+   "name": "Globe Hoodie",
+   "line": "Release 01",
    "category": "apparel",
-   "type": "Tee",
+   "type": "Hoodie",
    "channel": "preorder",
    "sizes": [
     "S",
@@ -382,22 +63,36 @@
    ],
    "images": [
     {
-     "file": "v4-botanical-tee",
-     "alt": "Forest tee with the figure-and-plant drawing on the front",
+     "file": "rel-globe",
+     "alt": "Forest hoodie, front and back: RUNWAE APPAREL at the chest, the globe emblem large on the back",
+     "concept": true
+    },
+    {
+     "file": "rel-globe-back",
+     "alt": "Forest hoodie, back: the globe emblem with RUNWAE APPAREL COMPANY around it",
+     "concept": true
+    },
+    {
+     "file": "rel-globe-front",
+     "alt": "Forest hoodie, front: RUNWAE APPAREL lettered small at the left chest",
      "concept": true
     }
    ],
-   "summary": "Forest tee with the owner's figure-and-plant drawing in cream line on the front.",
+   "summary": "Forest hoodie. RUNWAE APPAREL at the chest, the globe emblem large across the back.",
    "print": [
     {
-     "placement": "front_panel",
-     "size": "full_front"
+     "placement": "back",
+     "size": "full_back"
+    },
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
     }
    ],
    "details": [
     [
-     "The drawing",
-     "The owner's original Sketch 04."
+     "The marks",
+     "One hoodie, two marks: the Foundation chest lettering on the front and the globe emblem on the back (Principal, 2026-10-16)."
     ],
     [
      "Materials and fit",
@@ -405,14 +100,12 @@
     ]
    ],
    "rights_hold": null,
-   "capsule": 7,
-   "listed": false,
-   "dropped": "2026-10-16 Principal: dropped from this release"
+   "capsule": 2
   },
   {
    "id": "tlt-neighbor-hoodie",
    "name": "Luv Thy Neighbor Hoodie",
-   "line": "The Little Things",
+   "line": "Release 01",
    "category": "apparel",
    "type": "Hoodie",
    "channel": "preorder",
@@ -425,43 +118,33 @@
    ],
    "colors": [
     {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
+     "id": "ivory",
+     "name": "Creme",
+     "hex": "#efe6d2"
     }
    ],
    "images": [
     {
-     "file": "tlt-neighbor-hoodie-1.jpg",
-     "width": 1000,
-     "height": 1000,
-     "alt": "Black hoodie, back: three line-drawn faces over LUV THY NEIGHBOR"
+     "file": "rel-neighbor",
+     "alt": "Creme hoodie, front and back: THE RUNWAE COMPANY lettered at the chest, a hand-drawn face crowned with plants on the back",
+     "concept": true
     },
     {
-     "file": "tlt-neighbor-hoodie-2.jpg",
-     "width": 1000,
-     "height": 1000,
-     "alt": "Black hoodie, front: the hand-drawn RWA monogram on the chest"
+     "file": "rel-neighbor-back",
+     "alt": "Creme hoodie, back: a hand-drawn face crowned with plants, in forest line",
+     "concept": true
     },
     {
-     "file": "green-figures-hoodie",
-     "alt": "An earlier Runwae hoodie in green carrying the same line-drawn figures",
-     "caption": "Archive · the same drawing on an earlier green hoodie"
+     "file": "rel-neighbor-front",
+     "alt": "Creme hoodie, front: THE RUNWAE COMPANY in hand lettering at the left chest",
+     "concept": true
     }
    ],
-   "source_images": [
-    "TLT/1x/Artboard 1 copy 30 v2.png",
-    "TLT/1x/Artboard 1 copy 27 v2.png"
-   ],
-   "summary": "Three line-drawn faces and LUV THY NEIGHBOR across the back; the RWA monogram on the chest.",
+   "summary": "Creme hoodie. A hand-drawn face crowned with plants across the back, THE RUNWAE COMPANY lettered at the chest.",
    "details": [
     [
      "The drawing",
-     "Hand-drawn faces from The Little Things line, printed as drawn."
-    ],
-    [
-     "Print",
-     "Screen print. Placement as shown on the mockup."
+     "The owner's line drawing, printed in forest as drawn."
     ],
     [
      "Materials and fit",
@@ -483,371 +166,13 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
-  },
-  {
-   "id": "tlt-face-hoodie",
-   "name": "The Little Things Hoodie",
-   "line": "The Little Things",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
    ],
-   "colors": [
-    {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
-    }
-   ],
-   "images": [
-    {
-     "file": "tlt-face-hoodie-1.jpg",
-     "width": 1000,
-     "height": 1000,
-     "alt": "Black hoodie, back: one oversized line-drawn face"
-    },
-    {
-     "file": "tlt-face-hoodie-2.jpg",
-     "width": 1000,
-     "height": 1000,
-     "alt": "Black hoodie, front: THE LITTLE THINGS on the chest"
-    }
-   ],
-   "source_images": [
-    "TLT/1x/Artboard 1 copy 29 v2.png",
-    "TLT/1x/Artboard 1 copy 26 v2.png"
-   ],
-   "summary": "The oversized line-drawn face across the back; THE LITTLE THINGS on the chest.",
-   "details": [
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "printful_variant_ids": null,
-   "print": [
-    {
-     "placement": "back",
-     "size": "full_back"
-    },
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    }
-   ]
-  },
-  {
-   "id": "tlt-faces-tee",
-   "name": "Faces Tee",
-   "line": "The Little Things",
-   "type": "Tee",
-   "channel": "printful",
-   "method": "screen print",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "printful_variant_ids": null,
-   "rights_hold": null,
-   "source_images": [
-    "TLT/1x/Artboard 1 copy 21.png"
-   ],
-   "images": [
-    {
-     "file": "tlt-faces-tee-1.jpg",
-     "width": 1000,
-     "height": 1000,
-     "alt": "Black tee with a grid of line-drawn faces"
-    }
-   ],
-   "listed": false,
-   "category": "apparel",
-   "summary": "A grid of line-drawn faces. Black.",
-   "colors": [
-    {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
-    }
-   ],
-   "details": [
-    [
-     "Status",
-     "A maybe for The Little Things. Not yet available."
-    ]
-   ],
-   "print": [
-    {
-     "placement": "back",
-     "size": "full_back"
-    }
-   ],
-   "dropped": "2026-10-16 Principal: dropped from this release"
-  },
-  {
-   "id": "trc-hoodie",
-   "name": "TRC Hoodie",
-   "line": "Essentials",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "forest",
-     "name": "Forest, gold-cream",
-     "hex": "#263a2d"
-    }
-   ],
-   "images": [
-    {
-     "file": "re-trc-front",
-     "alt": "Forest hoodie with four drawn faces over TRC at the chest in gold-cream",
-     "concept": true,
-     "caption": "Mockup · original design"
-    },
-    {
-     "file": "re-trc-detail",
-     "alt": "Close view: the four drawn faces over TRC, extracted from the 2021 embroidery",
-     "concept": true,
-     "caption": "Mockup · original design, detail"
-    },
-    {
-     "file": "re-trc-back",
-     "alt": "Forest hoodie, back: the TRC monogram in cream",
-     "concept": true,
-     "caption": "Mockup · original monogram"
-    },
-    {
-     "file": "orig-trc-red",
-     "alt": "The original 2021 TRC hoodie in red, worn",
-     "caption": "Original 2021"
-    }
-   ],
-   "summary": "The Runwae Company hoodie from 2021, reissued in forest: the four drawn faces over TRC at centre chest (medium), the TRC monogram on the upper back.",
-   "print": [
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    },
-    {
-     "placement": "back",
-     "size": "back_medium"
-    }
-   ],
-   "details": [
-    [
-     "The design",
-     "Front: the faces and TRC from the 2021 hoodie, medium at the chest. Back: the TRC monogram."
-    ],
-    [
-     "Not reissued",
-     "The 2021 back illustration (head with trees) was another artist's work and is not used (#82-d)."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "decision_pending": "2026-10-16 Principal: colors are wrong; TRC Hoodie and The Runwae Company Hoodie may become the front and back of one hoodie. Hold until decided."
-  },
-  {
-   "id": "runwae-company-hoodie",
-   "name": "The Runwae Company Hoodie",
-   "line": "Essentials",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "ivory",
-     "name": "Ivory",
-     "hex": "#e9e3d4"
-    },
-    {
-     "id": "forest",
-     "name": "Forest",
-     "hex": "#263a2d"
-    }
-   ],
-   "images": [
-    {
-     "file": "re-co-ivory",
-     "alt": "Ivory hoodie, back: THE RUNWAE COMPANY in the original hand lettering",
-     "concept": true,
-     "caption": "Mockup · original lettering",
-     "color": "ivory"
-    },
-    {
-     "file": "re-co-forest",
-     "alt": "Forest hoodie, back: THE RUNWAE COMPANY in cream",
-     "concept": true,
-     "caption": "Mockup · original lettering",
-     "color": "forest"
-    },
-    {
-     "file": "orig-company-blue",
-     "alt": "The original light-blue Runwae Company hoodie, worn",
-     "caption": "Original 2021"
-    },
-    {
-     "file": "orig-company-bagged",
-     "alt": "Bagged light-blue Runwae Company hoodies from the 2021 run",
-     "caption": "Original 2021"
-    }
-   ],
-   "summary": "THE RUNWAE COMPANY in the original hand lettering across the back. The 2021 light-blue run, reissued in ivory or forest. A maybe.",
-   "print": [
-    {
-     "placement": "back",
-     "size": "back_medium"
-    }
-   ],
-   "details": [
-    [
-     "Status",
-     "A maybe. Not yet available."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null,
-   "decision_pending": "2026-10-16 Principal: colors are wrong; TRC Hoodie and The Runwae Company Hoodie may become the front and back of one hoodie. Hold until decided."
-  },
-  {
-   "id": "chest-drawing-hoodie",
-   "name": "Chest-Drawing Hoodie",
-   "line": "Essentials",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "ivory",
-     "name": "Ivory",
-     "hex": "#e9e3d4"
-    }
-   ],
-   "images": [
-    {
-     "file": "ed-cream-detail",
-     "alt": "Ivory hoodie with a small figure drawing and RUNWAE on the chest",
-     "concept": true
-    },
-    {
-     "file": "cj-cream-hood",
-     "alt": "The hood, drawcords and a woven neck label",
-     "concept": true
-    }
-   ],
-   "summary": "Ivory hoodie with a small figure drawing and RUNWAE on the chest.",
-   "print": [
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    },
-    {
-     "placement": "neck",
-     "size": "label"
-    }
-   ],
-   "details": [
-    [
-     "Print",
-     "Chest drawing at medium size."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null
-  },
-  {
-   "id": "company-hoodie",
-   "name": "Company Hood Hoodie",
-   "line": "Essentials",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
-    }
-   ],
-   "images": [
-    {
-     "file": "ed-black-hood",
-     "alt": "Black hoodie with RUNWAE COMPANY written on the back of the hood",
-     "concept": true
-    }
-   ],
-   "summary": "Hoodie. RUNWAE COMPANY written on the hood itself; nothing else.",
-   "print": [
-    {
-     "placement": "hood",
-     "size": "back_medium"
-    }
-   ],
-   "details": [
-    [
-     "Print",
-     "On the back of the hood, medium size."
-    ],
-    [
-     "Materials and fit",
-     "To be confirmed with the maker."
-    ]
-   ],
-   "rights_hold": null
+   "capsule": 3
   },
   {
    "id": "knit-polo",
    "name": "Knit Polo",
-   "line": "Essentials",
+   "line": "Release 01",
    "category": "apparel",
    "type": "Polo",
    "channel": "preorder",
@@ -867,17 +192,13 @@
    ],
    "images": [
     {
-     "file": "fl-knit-polo",
-     "alt": "Black knit polo with a small chest mark and a checker block on the sleeve",
+     "file": "rel-polo",
+     "alt": "Charcoal knit polo with a checker block in creme on the sleeve, and a close view of the sleeve",
      "concept": true
     }
    ],
-   "summary": "Charcoal knit polo with a small chest mark and a checker detail on one sleeve.",
+   "summary": "Charcoal knit polo with a creme checker block on the sleeve.",
    "print": [
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    },
     {
      "placement": "sleeve",
      "size": "patch_medium"
@@ -885,245 +206,40 @@
    ],
    "details": [
     [
-     "Status",
-     "A concept. Knit and fit are still open."
-    ]
-   ],
-   "rights_hold": null
-  },
-  {
-   "id": "drawn-figure-hoodie",
-   "name": "Figure Hoodie",
-   "line": "Next drop",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "forest",
-     "name": "Forest, cream line",
-     "hex": "#263a2d"
-    },
-    {
-     "id": "ivory",
-     "name": "Ivory, dark line",
-     "hex": "#e9e3d4"
-    }
-   ],
-   "images": [
-    {
-     "file": "drawn-figure-hoodie",
-     "alt": "Forest Figure Hoodie: the domed figure drawn in cream line across the back",
-     "concept": true,
-     "color": "forest"
-    },
-    {
-     "file": "ed-green-back",
-     "alt": "The forest Figure Hoodie against a concrete wall",
-     "concept": true,
-     "color": "forest"
-    },
-    {
-     "file": "drawn-cream-hoodie",
-     "alt": "Ivory Figure Hoodie: the domed figure drawn in dark line across the back",
-     "concept": true,
-     "color": "ivory"
-    },
-    {
-     "file": "ed-cream-back",
-     "alt": "The ivory Figure Hoodie worn, seen from behind",
-     "concept": true,
-     "color": "ivory"
-    },
-    {
-     "file": "drawn-illustrated-hoodie",
-     "alt": "The ivory Figure Hoodie worn, with plant line work on the sleeve",
-     "concept": true,
-     "color": "ivory"
-    }
-   ],
-   "summary": "The domed, dripping-head figure drawn large across the back. Forest with cream line, or ivory with dark line.",
-   "details": [
-    [
-     "Status",
-     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
-    ]
-   ],
-   "rights_hold": null,
-   "print": [
-    {
-     "placement": "back",
-     "size": "full_back"
-    }
-   ],
-   "decision_pending": "2026-10-16 Principal: Foundation Hoodie and Figure Hoodie may become the front and back of one hoodie. Hold until decided."
-  },
-  {
-   "id": "drawn-portrait-hoodie",
-   "name": "Portrait Hoodie",
-   "line": "Next drop",
-   "category": "apparel",
-   "type": "Hoodie",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
-    }
-   ],
-   "images": [
-    {
-     "file": "mock-portrait-hoodie",
-     "alt": "Black hoodie, back: the owner's crowded portrait drawing in clean cream line, full size",
-     "concept": true,
-     "caption": "Mockup · original drawing"
-    },
-    {
-     "file": "drawn-sketch-hoodie",
-     "alt": "Black hoodie with the crowded portrait sketch in cream line",
-     "concept": true
-    }
-   ],
-   "summary": "The owner's crowded portrait drawing in cream line, full size across the back of a black hoodie.",
-   "details": [
-    [
-     "Status",
-     "A concept for the Drawn Series: the owner's drawings, worn. Fabric, print method and fit are still open."
-    ]
-   ],
-   "rights_hold": null,
-   "print": [
-    {
-     "placement": "back",
-     "size": "full_back"
-    }
-   ]
-  },
-  {
-   "id": "company-tee",
-   "name": "The Runwae Company Tee",
-   "line": "Next drop",
-   "category": "apparel",
-   "type": "Tee",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
-    {
-     "id": "washed-black",
-     "name": "Washed black",
-     "hex": "#1d1d1b"
-    }
-   ],
-   "images": [
-    {
-     "file": "ed-black-tee",
-     "alt": "Black tee with three line-drawn figures above THE RUNWAE COMPANY",
-     "concept": true
-    }
-   ],
-   "summary": "Black tee: three line-drawn figures over THE RUNWAE COMPANY, kept at chest scale.",
-   "print": [
-    {
-     "placement": "front_chest",
-     "size": "chest_medium"
-    }
-   ],
-   "details": [
-    [
-     "Print",
-     "Chest art at medium size."
-    ],
-    [
      "Materials and fit",
-     "To be confirmed with the maker."
+     "Knit and fit to be confirmed with the maker."
     ]
    ],
-   "rights_hold": null
+   "rights_hold": null,
+   "capsule": 4
   },
   {
-   "id": "garden-shirt",
-   "name": "Garden Shirt",
-   "line": "Next drop",
-   "category": "apparel",
-   "type": "Shirt",
+   "id": "beanie",
+   "name": "Beanie",
+   "line": "Release 01",
+   "capsule": 5,
+   "category": "accessories",
+   "type": "Beanie",
    "channel": "preorder",
    "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
+    "One size"
    ],
    "colors": [
     {
      "id": "forest",
      "name": "Forest",
      "hex": "#263a2d"
-    }
-   ],
-   "images": [
-    {
-     "file": "fl-garden-shirt",
-     "alt": "Forest button-down with a floral line drawing down one side of the front",
-     "concept": true
     },
     {
-     "file": "ed-green-shirt",
-     "alt": "The forest botanical shirt laid flat, the plant drawing on the lower front",
-     "concept": true
-    }
-   ],
-   "summary": "Forest button-down with a floral line drawing down one side of the front.",
-   "print": [
+     "id": "ivory",
+     "name": "Creme",
+     "hex": "#efe6d2"
+    },
     {
-     "placement": "front_panel",
-     "size": "half_front"
-    }
-   ],
-   "details": [
-    [
-     "Status",
-     "A concept for the Drawn Series. Fabric and print method are still open."
-    ]
-   ],
-   "rights_hold": null
-  },
-  {
-   "id": "rust-corduroy-shirt",
-   "name": "Rust Corduroy Shirt",
-   "line": "Next drop",
-   "category": "apparel",
-   "type": "Shirt",
-   "channel": "preorder",
-   "sizes": [
-    "S",
-    "M",
-    "L",
-    "XL",
-    "2XL"
-   ],
-   "colors": [
+     "id": "washed-black",
+     "name": "Black",
+     "hex": "#1d1d1b"
+    },
     {
      "id": "rust",
      "name": "Rust",
@@ -1132,34 +248,79 @@
    ],
    "images": [
     {
-     "file": "ed-rust-shirt",
-     "alt": "Rust corduroy shirt with a figure drawing near the hem and no writing",
-     "concept": true
-    },
-    {
-     "file": "cj-rust-button",
-     "alt": "A metal button on rust cloth",
+     "file": "rel-beanie",
+     "alt": "Four rib-knit beanies in forest, creme, black and rust, each with a woven RUNWAE APPAREL label on the cuff",
      "concept": true
     }
    ],
-   "summary": "Rust corduroy shirt with one figure drawing near the hem. No writing.",
+   "summary": "Rib-knit beanie with a woven RUNWAE APPAREL label on the cuff. Forest, creme, black or rust.",
+   "details": [
+    [
+     "Materials",
+     "Yarn and knit to be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null,
    "print": [
     {
-     "placement": "front_panel",
-     "size": "panel_medium"
+     "placement": "cuff",
+     "size": "patch_medium"
+    }
+   ]
+  },
+  {
+   "id": "flannel",
+   "name": "Flannel",
+   "line": "Release 01",
+   "capsule": 6,
+   "category": "apparel",
+   "type": "Shirt",
+   "channel": "preorder",
+   "sizes": [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL"
+   ],
+   "colors": [
+    {
+     "id": "forest-rust-plaid",
+     "name": "Forest / rust plaid",
+     "hex": "repeating-linear-gradient(90deg,#263a2d 0 6px,#a9573e 6px 8px,#efe6d2 8px 9px)"
+    }
+   ],
+   "images": [
+    {
+     "file": "rel-flannel",
+     "alt": "Forest and rust plaid flannel shirt, front and back",
+     "concept": true
     },
+    {
+     "file": "rel-flannel-front",
+     "alt": "Forest and rust plaid flannel, front, with two chest pockets",
+     "concept": true
+    },
+    {
+     "file": "rel-flannel-back",
+     "alt": "Forest and rust plaid flannel, back",
+     "concept": true
+    }
+   ],
+   "summary": "Forest and rust plaid flannel with two chest pockets and a small neck label.",
+   "details": [
+    [
+     "Materials and fit",
+     "To be confirmed with the maker."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [
     {
      "placement": "neck",
      "size": "label"
     }
-   ],
-   "details": [
-    [
-     "Status",
-     "A concept for the Drawn Series. Fabric and print method are still open."
-    ]
-   ],
-   "rights_hold": null
+   ]
   },
   {
    "id": "true-grit-hoodie",
@@ -1269,5 +430,6 @@
     "hex": "#5b4030"
    }
   ]
- }
+ },
+ "_note_2026_10_18": "Release 01 (Principal, 2026-10-18 renders, numbered 01-06): Field Overshirt (rust), Globe Hoodie (forest; Foundation chest lettering + globe back), Luv Thy Neighbor Hoodie (creme; new face-and-plants back), Knit Polo (charcoal), Beanie (forest/creme/black/rust), Flannel (forest/rust plaid). The shop shows only these six plus the real Fall '21 archive pieces. Every other concept (Drawn Series, Essentials, The Little Things, reissues) is retired from the shop; the curation notes stay in ../RELEASE_NOTES_PENDING_2026-10-16.md."
 }

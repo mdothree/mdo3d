@@ -1,31 +1,21 @@
 {
  "icon-tee-front": {
   "widths": [
-   362
+   480,
+   960,
+   1400
   ],
-  "w": 362,
-  "h": 410
+  "w": 1400,
+  "h": 1400
  },
  "icon-tee-back": {
   "widths": [
-   366
+   480,
+   960,
+   1400
   ],
-  "w": 366,
-  "h": 410
- },
- "icon-tee-detail": {
-  "widths": [
-   236
-  ],
-  "w": 236,
-  "h": 240
- },
- "icon-tee-label": {
-  "widths": [
-   240
-  ],
-  "w": 240,
-  "h": 240
+  "w": 1400,
+  "h": 1400
  },
  "logo-crew": {
   "widths": [
@@ -33,34 +23,6 @@
   ],
   "w": 206,
   "h": 196
- },
- "line-art-tee": {
-  "widths": [
-   206
-  ],
-  "w": 206,
-  "h": 196
- },
- "brighter-hoodie": {
-  "widths": [
-   206
-  ],
-  "w": 206,
-  "h": 196
- },
- "nice-butts-tee": {
-  "widths": [
-   206
-  ],
-  "w": 206,
-  "h": 196
- },
- "hero-tee": {
-  "widths": [
-   330
-  ],
-  "w": 330,
-  "h": 380
  },
  "hero-girl": {
   "widths": [
@@ -96,145 +58,130 @@
   "h": 1400,
   "rotated": true
  },
- "line-art-tee-back": {
+ "curves-tee-back": {
   "widths": [
-   640,
-   1000
+   480,
+   960,
+   1400
   ],
-  "w": 1000,
-  "h": 1000
+  "w": 1400,
+  "h": 1400
  },
- "line-art-tee-front": {
+ "curves-tee-front": {
   "widths": [
-   640,
-   1000
+   480,
+   960,
+   1400
   ],
-  "w": 1000,
-  "h": 1000
+  "w": 1400,
+  "h": 1400
  },
- "nice-butts-tee-back": {
+ "curves-hoodie-back": {
   "widths": [
-   640,
-   1000
+   480,
+   960,
+   1400
   ],
-  "w": 1000,
-  "h": 1000
+  "w": 1400,
+  "h": 1400
  },
- "nice-butts-tee-front": {
+ "curves-hoodie-front": {
   "widths": [
-   640,
-   1000
+   480,
+   960,
+   1400
   ],
-  "w": 1000,
-  "h": 1000
+  "w": 1400,
+  "h": 1400
  },
- "sh-crew-love": {
+ "icon-hoodie-back": {
   "widths": [
-   221
+   480,
+   960,
+   1400
   ],
-  "w": 221,
-  "h": 206
+  "w": 1400,
+  "h": 1400
  },
- "sh-brighter-black": {
+ "icon-hoodie-front": {
   "widths": [
-   221
+   480,
+   960,
+   1400
   ],
-  "w": 221,
-  "h": 206
+  "w": 1400,
+  "h": 1400
  },
- "sh-good-views": {
+ "curves-crew-back": {
   "widths": [
-   221
+   480,
+   960,
+   1400
   ],
-  "w": 221,
-  "h": 206
+  "w": 1400,
+  "h": 1400
  },
- "sh-chill-shorts": {
+ "curves-crew-front": {
   "widths": [
-   221
+   480,
+   960,
+   1400
   ],
-  "w": 221,
-  "h": 206
+  "w": 1400,
+  "h": 1400
  },
- "sh-low-key-hat": {
+ "logo-crew-front": {
   "widths": [
-   216
+   480,
+   960,
+   1254
   ],
-  "w": 216,
-  "h": 206
+  "w": 1254,
+  "h": 1254
  },
- "sh-more-good-days": {
+ "logo-crew-back": {
   "widths": [
-   221
+   480,
+   960,
+   1254
   ],
-  "w": 221,
-  "h": 202
+  "w": 1254,
+  "h": 1254
  },
- "sh-all-shapes": {
+ "shorts-front": {
   "widths": [
-   221
+   480,
+   960,
+   1254
   ],
-  "w": 221,
-  "h": 202
+  "w": 1254,
+  "h": 1254
  },
- "sh-nicer-world": {
+ "shorts-back": {
   "widths": [
-   221
+   480,
+   960,
+   1254
   ],
-  "w": 221,
-  "h": 202
+  "w": 1254,
+  "h": 1254
  },
- "sh-little-booty": {
+ "tote-front": {
   "widths": [
-   221
+   480,
+   960,
+   1254
   ],
-  "w": 221,
-  "h": 202
+  "w": 1254,
+  "h": 1254
  },
- "sh-good-energy-tote": {
+ "tote-back": {
   "widths": [
-   216
+   480,
+   960,
+   1254
   ],
-  "w": 216,
-  "h": 202
- },
- "dad-hat": {
-  "widths": [
-   206
-  ],
-  "w": 206,
-  "h": 196
- },
- "nicer-world-tee-back": {
-  "widths": [
-   640,
-   1000
-  ],
-  "w": 1000,
-  "h": 1000
- },
- "nicer-world-tee-front": {
-  "widths": [
-   640,
-   1000
-  ],
-  "w": 1000,
-  "h": 1000
- },
- "more-good-days-back": {
-  "widths": [
-   640,
-   1000
-  ],
-  "w": 1000,
-  "h": 1000
- },
- "more-good-days-front": {
-  "widths": [
-   640,
-   1000
-  ],
-  "w": 1000,
-  "h": 1000
+  "w": 1254,
+  "h": 1254
  }
 }

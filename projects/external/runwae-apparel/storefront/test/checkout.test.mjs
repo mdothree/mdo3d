@@ -152,7 +152,7 @@ test('handler: valid request posts form params to Stripe with the test key', asy
     Object.assign(process.env, { CHECKOUT_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_abc', BRAND: 'runwae', SITE_URL: 'https://x.test' });
     process.chdir(ROOT);
     const res = fakeRes();
-    await handler({ method: 'POST', body: JSON.stringify({ product: 'tlt-face-hoodie', size: 'M' }) }, res);
+    await handler({ method: 'POST', body: JSON.stringify({ product: 'tlt-neighbor-hoodie', size: 'M' }) }, res);
     // the real catalog is all draft -> 409, and Stripe is never called
     assert.equal(res.statusCode, 409);
     assert.equal(seen, undefined);

@@ -1,5 +1,5 @@
 {
- "_note": "Approved scope only (developer handoff §2): rust hoodie, black hoodie, olive/black windbreaker, dark plaid flannel (no front logo), black knit beanie. The bag is in rework: in_development, never purchasable. Removed and never listed: cap, tote, flap backpack, orange printed button-up. Every image is a concept render. Prices, materials and specs are unconfirmed, so none are stated.",
+ "_note": "Approved scope only (developer handoff §2): rust hoodie, black hoodie, olive/black windbreaker, dark plaid flannel (no front logo), black knit beanie. The bag is in rework: in_development, never purchasable. Removed and never listed: cap, tote, flap backpack, orange printed button-up. Every image is a concept render. Prices, materials and specs are unconfirmed, so none are stated. Product images updated 2026-10-18 to the final front/back renders.",
  "products": [
   {
    "id": "contour-hoodie-rust",
@@ -25,22 +25,22 @@
    ],
    "images": [
     {
-     "file": "rust-hoodie",
-     "alt": "Rust hoodie, back, with contour-line artwork and the Butts Studios mark",
+     "file": "rust-back",
+     "alt": "Rust hoodie, back: contour-line artwork with the Butts Studios mark and Made of Story.",
+     "concept": true
+    },
+    {
+     "file": "rust-front",
+     "alt": "Rust hoodie, front: the square-and-X mark, medium, on the left chest",
      "concept": true
     },
     {
      "file": "look-rust-back",
      "alt": "Close view of the contour artwork on the rust hoodie",
      "concept": true
-    },
-    {
-     "file": "contour",
-     "alt": "Contour-line artwork with Made of Story.",
-     "concept": true
     }
    ],
-   "summary": "Rust hoodie with the contour-line artwork across the back.",
+   "summary": "Rust hoodie. Contour artwork on the back, a small mark on the chest.",
    "details": [
     [
      "Design",
@@ -64,6 +64,10 @@
     {
      "placement": "back",
      "size": "full_back"
+    },
+    {
+     "placement": "front_chest",
+     "size": "chest_medium"
     },
     {
      "placement": "neck",
@@ -95,13 +99,13 @@
    ],
    "images": [
     {
-     "file": "black-hoodie-back",
-     "alt": "Black hoodie, back, with contour-line artwork",
+     "file": "black-back",
+     "alt": "Black hoodie, back: contour-line artwork with the Butts Studios mark and Made of Story.",
      "concept": true
     },
     {
-     "file": "black-hoodie-front",
-     "alt": "Black hoodie, front, with a small studio mark on the chest",
+     "file": "black-front",
+     "alt": "Black hoodie, front: the square-and-X mark, medium, on the left chest",
      "concept": true
     },
     {
@@ -157,8 +161,13 @@
    ],
    "images": [
     {
-     "file": "windbreaker",
-     "alt": "Olive and black colour-blocked windbreaker, front",
+     "file": "jacket-front",
+     "alt": "Olive and black colour-blocked windbreaker, front, with the square-and-X mark on the chest and a rust zip pull",
+     "concept": true
+    },
+    {
+     "file": "jacket-back",
+     "alt": "Olive and black windbreaker, back",
      "concept": true
     },
     {
@@ -224,18 +233,18 @@
    ],
    "images": [
     {
-     "file": "flannel",
-     "alt": "Dark plaid flannel shirt, front, with no logo",
+     "file": "flannel-front",
+     "alt": "Dark plaid flannel shirt, front, with no logo; a small woven label inside the neck",
+     "concept": true
+    },
+    {
+     "file": "flannel-back",
+     "alt": "Dark plaid flannel shirt, back",
      "concept": true
     },
     {
      "file": "look-flannel",
      "alt": "The flannel laid on a leather chair",
-     "concept": true
-    },
-    {
-     "file": "detail-flannel",
-     "alt": "Close view of the plaid weave",
      "concept": true
     }
    ],
@@ -278,8 +287,13 @@
    ],
    "images": [
     {
-     "file": "beanie",
-     "alt": "Black ribbed knit beanie with a woven square-and-X patch",
+     "file": "beanie-front",
+     "alt": "Black rib-knit beanie with a woven square-and-X patch on the cuff",
+     "concept": true
+    },
+    {
+     "file": "beanie-back",
+     "alt": "Black rib-knit beanie, back, plain",
      "concept": true
     },
     {

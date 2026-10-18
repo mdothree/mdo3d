@@ -79,7 +79,9 @@
   "forest",
   "ivory",
   "washed-black",
-  "rust"
+  "rust",
+  "charcoal",
+  "forest-rust-plaid"
  ],
  "_palette": "Principal 2026-10-14: 'lets do some of our origianl designs on more cohesive colors'. Forest, ivory, washed black, rust as the single accent. Archive pieces keep their 2021 colours. v5 (2026-10-14, 'stay on style'): lime token removed; every UI colour is forest / paper / washed black / rust. 2021 colours appear only inside the original photos.",
  "order_prefix": "RW",

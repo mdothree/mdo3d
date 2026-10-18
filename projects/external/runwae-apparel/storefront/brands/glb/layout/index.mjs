@@ -42,7 +42,7 @@ export const pages = {
     return {
       title: 'Girls Love Butts · Clothes for every body',
       description: brand.description,
-      image: kit.imgData('hero-tee').src,
+      image: kit.imgData('icon-tee-back').src,
       body: `
 <section class="g-hero"><div class="g-wrap g-hero-grid">
 <div class="g-hero-copy">
@@ -52,7 +52,7 @@ export const pages = {
 <p class="g-sub">Every body is worth drawing.</p>
 <a class="g-pill" href="${kit.href.shop()}">Shop all <span aria-hidden="true">→</span></a>
 </div>
-<div class="g-hero-tee">${kit.figure('hero-tee', { concept: true, caption: 'Icon Tee', sizes: '(max-width: 820px) 70vw, 26vw', eager: true, alt: 'The Icon Tee: a grid of line-drawn figures on a white tee' })}
+<div class="g-hero-tee">${kit.figure('icon-tee-back', { concept: true, caption: 'Icon Tee', sizes: '(max-width: 820px) 70vw, 26vw', eager: true, alt: 'The Icon Tee, back: a grid of hand-drawn figures on warm ivory' })}
 <span class="g-sticker g-sticker--yellow" aria-hidden="true">Real bodies, brighter days ${heart}</span></div>
 <div class="g-hero-art">${kit.figure('hero-girl', { concept: true, caption: 'Illustration', sizes: '(max-width: 820px) 90vw, 34vw', alt: 'Illustration of a smiling woman with blue hair sitting on a yellow shape' })}</div>
 </div></section>

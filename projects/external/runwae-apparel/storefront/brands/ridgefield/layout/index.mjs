@@ -1,12 +1,12 @@
 // Ridgefield layout. Measured and technical, matching ridgefieldtech.com: ink/bone, olive + ember signal,
 // JetBrains Mono labels, terrain contours, spec-sheet product pages. Mountain imagery is atmosphere only.
 // MARK: the real Ridgefield square mark (solid square, square cut-out) + RIDGEFIELD in JetBrains Mono.
-// The chevron that appears on the AI renders is a placeholder and is called out on the pages.
+// Product images are the 2026-10-18 studio renders, which carry the real marks (the chevron concepts are retired).
 // COPY: Ridgefield voice (~/latarence/emails/docs + the Ridgefield voice docs): composed, minimal, no em dashes,
 // no promotional or intensifying language. The home headline is PROVISIONAL (Ridgefield's site line).
 
 const mark = '<svg class="rf-sq" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M0 0h18v18H0z M5 5v8h8V5z"/></svg>';
-const MARK_NOTE = 'Concept renders. The chevron shown on the pieces is a render placeholder; final pieces use the Ridgefield square mark.';
+const MARK_NOTE = 'Concept renders. Final pieces are confirmed with the maker before the pre-order opens.';
 
 export function header({ kit, page }) {
   const cur = (k) => (page === k ? ' aria-current="page"' : '');
@@ -50,14 +50,14 @@ export const pages = {
     return {
       title: 'Ridgefield Store · Capsule 01',
       description: brand.description,
-      image: kit.imgData('hero-field').src,
+      image: kit.imgData('hoodie-front').src,
       body: `
 <section class="rf-hero"><div class="rf-wrap rf-hero-grid">
 <div class="rf-hero-copy">${label('Ridgefield / Capsule 01')}
 <h1 class="rf-h1">${kit.esc(brand.tagline)}</h1>
 <p class="rf-lede">Six pieces. Pricing and dates to follow.</p>
 <a class="rf-btn" href="${kit.href.shop()}">View the capsule</a></div>
-<div class="rf-hero-media">${kit.figure('hero-field', { concept: true, caption: 'Fig. 01 · Field', sizes: '(max-width: 820px) 100vw, 56vw', eager: true, alt: 'A person in a dark jacket and beanie with a backpack, seated on a ridge at sunset' })}
+<div class="rf-hero-media">${kit.figure('hoodie-front', { concept: true, caption: 'Fig. 01 · RF-01 Hoodie', sizes: '(max-width: 820px) 100vw, 56vw', eager: true, alt: 'Ink hoodie with a small RIDGEFIELD wordmark on the left chest' })}
 <span class="rf-corner rf-corner--tl" aria-hidden="true"></span><span class="rf-corner rf-corner--br" aria-hidden="true"></span></div>
 </div></section>
 
@@ -77,15 +77,15 @@ ${specTable(kit, focus)}
 </div></section>
 
 <section class="rf-sec" aria-labelledby="mat-t"><div class="rf-wrap">
-<div class="rf-sec-head">${label('Detail')}<h2 id="mat-t" class="rf-h2">Materials and hardware</h2><p class="rf-mono">Specs to be confirmed</p></div>
+<div class="rf-sec-head">${label('Detail')}<h2 id="mat-t" class="rf-h2">Back views</h2><p class="rf-mono">Specs to be confirmed</p></div>
 <div class="rf-figs">
-${kit.figure('hoodie-cord', { concept: true, caption: 'Fig. 02 · Cord tips', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Hoodie drawcords with metal tips' })}
-${kit.figure('windbreaker-zip', { concept: true, caption: 'Fig. 03 · Zip pull', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Zip with an olive cord pull' })}
-${kit.figure('flannel-weave', { concept: true, caption: 'Fig. 04 · Weave', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Plaid weave close-up' })}
-${kit.figure('tee-neck', { concept: true, caption: 'Fig. 05 · Neck print', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'RIDGEFIELD printed inside the neck with an ember rule' })}
+${kit.figure('hoodie-back', { concept: true, caption: 'Fig. 02 · RF-01 back', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Ink hoodie, back' })}
+${kit.figure('tee-back', { concept: true, caption: 'Fig. 03 · RF-02 back', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Charcoal tee, back' })}
+${kit.figure('windbreaker-back', { concept: true, caption: 'Fig. 04 · RF-04 back', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Ink windbreaker, back' })}
+${kit.figure('flannel-back', { concept: true, caption: 'Fig. 05 · RF-05 back', sizes: '(max-width: 820px) 50vw, 25vw', alt: 'Ink and tan plaid overshirt, back' })}
 </div></div></section>
 
-${pack ? `<section class="rf-pack" aria-labelledby="pack-t"><div class="rf-pack-media">${kit.img('pack-field', { sizes: '100vw', alt: 'The Ridgeline Pack on a ridge at sunset' })}</div>
+${pack ? `<section class="rf-pack" aria-labelledby="pack-t"><div class="rf-pack-media">${kit.img('field-walker', { sizes: '100vw', alt: 'A figure with a backpack walking along a ridge' })}</div>
 <div class="rf-wrap rf-pack-copy"><div class="rf-pack-card">${label(`${kit.esc(pack.ref)} / In development`)}
 <h2 id="pack-t" class="rf-h2">${kit.esc(pack.name)}</h2><p>${kit.esc(pack.summary)}</p><a class="rf-link" href="${kit.href.product(pack)}">Details</a><p class="rf-fine">Concept render</p></div></div></section>` : ''}`,
     };

@@ -1,23 +1,20 @@
 {
- "_note": "Ridgefield shop concepts (~/ridgefield/design/store_concepts_2026-10-14, ChatGPT renders, captioned 'Concept render'). The chevron mark that appears on the garments is an AI placeholder, NOT the Ridgefield mark (the real mark is the solid square); captions say so. Crops avoid the renders' AI taglines and claim text.",
+ "_note": "Ridgefield Capsule 01 product renders (Principal, 2026-10-18): front + back studio renders in design/renders_2026-10-18/ridgefield (ChatGPT, captioned 'Concept render'). They carry the real marks: RIDGEFIELD wordmark on the chest, the square mark on the beanie and pack. field-walker stays from the 2026-10-14 concepts (no mark visible); the chevron images are retired.",
  "sources": {
   "home": "~/ridgefield/design/store_concepts_2026-10-14/01_ridgefield_concept.png",
-  "hoodie": "~/ridgefield/design/store_concepts_2026-10-14/03_ridgefield_concept.png",
-  "wind": "~/ridgefield/design/store_concepts_2026-10-14/04_ridgefield_concept.png",
-  "tee": "~/ridgefield/design/store_concepts_2026-10-14/05_ridgefield_concept.png",
-  "flannel": "~/ridgefield/design/store_concepts_2026-10-14/06_ridgefield_concept.png",
-  "beanie": "~/ridgefield/design/store_concepts_2026-10-14/07_ridgefield_concept.png",
-  "pack": "~/ridgefield/design/store_concepts_2026-10-14/08_ridgefield_concept.png"
+  "hoodie-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/hoodie_front.png",
+  "hoodie-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/hoodie_back.png",
+  "tee-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/tee_front.png",
+  "tee-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/tee_back.png",
+  "windbreaker-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/windbreaker_front.png",
+  "windbreaker-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/windbreaker_back.png",
+  "flannel-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/flannel_front.png",
+  "flannel-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/flannel_back.png",
+  "beanie-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/beanie_front.png",
+  "pack-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/pack_front.png",
+  "pack-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/ridgefield/pack_back.png"
  },
  "crops": [
-  {
-   "out": "hero-field",
-   "src": "home",
-   "x": 470,
-   "y": 58,
-   "w": 498,
-   "h": 362
-  },
   {
    "out": "field-walker",
    "src": "home",
@@ -27,134 +24,92 @@
    "h": 264
   },
   {
-   "out": "hoodie",
-   "src": "hoodie",
-   "x": 140,
-   "y": 60,
-   "w": 850,
-   "h": 870,
+   "out": "hoodie-front",
+   "src": "hoodie-front",
    "widths": [
-    480
+    480,
+    960
    ]
   },
   {
-   "out": "hoodie-detail",
-   "src": "hoodie",
-   "x": 0,
-   "y": 958,
-   "w": 560,
-   "h": 444
-  },
-  {
-   "out": "hoodie-cord",
-   "src": "hoodie",
-   "x": 563,
-   "y": 958,
-   "w": 559,
-   "h": 444
-  },
-  {
-   "out": "windbreaker",
-   "src": "wind",
-   "x": 402,
-   "y": 34,
-   "w": 600,
-   "h": 876,
+   "out": "hoodie-back",
+   "src": "hoodie-back",
    "widths": [
-    480
+    480,
+    960
    ]
   },
   {
-   "out": "windbreaker-zip",
-   "src": "wind",
-   "x": 378,
-   "y": 925,
-   "w": 367,
-   "h": 355
-  },
-  {
-   "out": "tee",
-   "src": "tee",
-   "x": 200,
-   "y": 30,
-   "w": 720,
-   "h": 920,
+   "out": "tee-front",
+   "src": "tee-front",
    "widths": [
-    480
+    480,
+    960
    ]
   },
   {
-   "out": "tee-neck",
-   "src": "tee",
-   "x": 572,
-   "y": 1050,
-   "w": 518,
-   "h": 315
-  },
-  {
-   "out": "flannel",
-   "src": "flannel",
-   "x": 10,
-   "y": 110,
-   "w": 765,
-   "h": 925,
+   "out": "tee-back",
+   "src": "tee-back",
    "widths": [
-    480
+    480,
+    960
    ]
   },
   {
-   "out": "flannel-weave",
-   "src": "flannel",
-   "x": 780,
-   "y": 490,
-   "w": 340,
-   "h": 270
-  },
-  {
-   "out": "beanie",
-   "src": "beanie",
-   "x": 396,
-   "y": 170,
-   "w": 494,
-   "h": 730
-  },
-  {
-   "out": "beanie-knit",
-   "src": "beanie",
-   "x": 565,
-   "y": 925,
-   "w": 557,
-   "h": 365
-  },
-  {
-   "out": "pack",
-   "src": "pack",
-   "x": 190,
-   "y": 20,
-   "w": 760,
-   "h": 820,
+   "out": "windbreaker-front",
+   "src": "windbreaker-front",
    "widths": [
-    480
+    480,
+    960
    ]
   },
   {
-   "out": "pack-field",
-   "src": "pack",
-   "x": 0,
-   "y": 0,
-   "w": 1122,
-   "h": 840,
+   "out": "windbreaker-back",
+   "src": "windbreaker-back",
    "widths": [
-    640
+    480,
+    960
    ]
   },
   {
-   "out": "pack-open",
-   "src": "pack",
-   "x": 0,
-   "y": 848,
-   "w": 636,
-   "h": 554
+   "out": "flannel-front",
+   "src": "flannel-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "flannel-back",
+   "src": "flannel-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "beanie-front",
+   "src": "beanie-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "pack-front",
+   "src": "pack-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "pack-back",
+   "src": "pack-back",
+   "widths": [
+    480,
+    960
+   ]
   }
  ]
 }

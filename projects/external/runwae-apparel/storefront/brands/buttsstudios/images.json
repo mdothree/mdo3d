@@ -1,59 +1,20 @@
 {
- "_note": "All sources are concept renders from the developer handoff (~/buttsstudios/design/apparel_handoff_2026-10-14). They are moodboards, not product photography: every image is captioned 'Concept render' on the site. 06_latest_site_concept_NOT_APPROVED is deliberately unused. Flannel crops come only from 03 (the no-front-logo flannel). Cap, tote, backpack, button-up and the duffel are never cropped.",
+ "_note": "All sources are concept renders from the developer handoff (~/buttsstudios/design/apparel_handoff_2026-10-14). They are moodboards, not product photography: every image is captioned 'Concept render' on the site. 06_latest_site_concept_NOT_APPROVED is deliberately unused. Flannel crops come only from 03 (the no-front-logo flannel). Cap, tote, backpack, button-up and the duffel are never cropped. | 2026-10-18: product images are the final front/back renders in design/renders_2026-10-18/buttsstudios (1400 px, concept renders, not manufacturer photos). Lookbook crops stay for hero/detail/story.",
  "sources": {
-  "c02": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/02_made_of_story_first_pass.png",
   "c03": "~/buttsstudios/design/apparel_handoff_2026-10-14/images/concept_iterations/03_refined_beanie_flannel.png",
-  "look": "~/buttsstudios/design/apparel_handoff_2026-10-14/Rust Trails_ Alpine Outdoor Lookbook.png"
+  "look": "~/buttsstudios/design/apparel_handoff_2026-10-14/Rust Trails_ Alpine Outdoor Lookbook.png",
+  "rust-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/01_Rust_Hoodie_Front.png",
+  "rust-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/02_Rust_Hoodie_Back.png",
+  "black-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/03_Black_Hoodie_Front.png",
+  "black-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/04_Black_Hoodie_Back.png",
+  "jacket-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/05_Olive_Black_Jacket_Front.png",
+  "jacket-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/06_Olive_Black_Jacket_Back.png",
+  "flannel-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/07_Plaid_Flannel_Front.png",
+  "flannel-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/08_Plaid_Flannel_Back.png",
+  "beanie-front": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/09_Black_Beanie_Front.png",
+  "beanie-back": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/buttsstudios/10_Black_Beanie_Back.png"
  },
  "crops": [
-  {
-   "out": "rust-hoodie",
-   "src": "c02",
-   "x": 920,
-   "y": 2,
-   "w": 326,
-   "h": 392
-  },
-  {
-   "out": "black-hoodie-back",
-   "src": "c03",
-   "x": 918,
-   "y": 2,
-   "w": 322,
-   "h": 392
-  },
-  {
-   "out": "black-hoodie-front",
-   "src": "c02",
-   "x": 1252,
-   "y": 2,
-   "w": 284,
-   "h": 392
-  },
-  {
-   "out": "windbreaker",
-   "src": "c03",
-   "x": 1246,
-   "y": 2,
-   "w": 290,
-   "h": 392
-  },
-  {
-   "out": "flannel",
-   "src": "c03",
-   "x": 2,
-   "y": 402,
-   "w": 464,
-   "h": 356
-  },
-  {
-   "out": "beanie",
-   "src": "c03",
-   "x": 474,
-   "y": 402,
-   "w": 386,
-   "h": 174
-  },
   {
    "out": "detail-label",
    "src": "c03",
@@ -173,6 +134,86 @@
    "y": 373,
    "w": 265,
    "h": 288
+  },
+  {
+   "out": "rust-front",
+   "src": "rust-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rust-back",
+   "src": "rust-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "black-front",
+   "src": "black-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "black-back",
+   "src": "black-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "jacket-front",
+   "src": "jacket-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "jacket-back",
+   "src": "jacket-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "flannel-front",
+   "src": "flannel-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "flannel-back",
+   "src": "flannel-back",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "beanie-front",
+   "src": "beanie-front",
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "beanie-back",
+   "src": "beanie-back",
+   "widths": [
+    480,
+    960
+   ]
   }
  ]
 }

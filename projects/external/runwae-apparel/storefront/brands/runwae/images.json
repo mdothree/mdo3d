@@ -28,7 +28,13 @@
   "o_blue": "~/mdo3d/projects/external/runwae-apparel/design/original_apparel_photos/IMG_5546.JPG",
   "bankC": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/90209e16-32ce-43a7-83de-e7b11a8e1c7c.png",
   "v4home": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/added_2026-10-14/cbce9be5-c9e6-4493-8c38-9d3c995e8280.png",
-  "v4coll": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/added_2026-10-14/38b3982c-c185-46d5-895c-800673095dc9.png"
+  "v4coll": "~/mdo3d/projects/external/runwae-apparel/design/handoff_2026-10-14/added_2026-10-14/38b3982c-c185-46d5-895c-800673095dc9.png",
+  "r-field": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/runwae/field_overshirt.png",
+  "r-globe": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/runwae/globe_hoodie.png",
+  "r-neighbor": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/runwae/neighbor_hoodie.png",
+  "r-polo": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/runwae/knit_polo.png",
+  "r-beanie": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/runwae/beanie.png",
+  "r-flannel": "~/mdo3d/projects/external/runwae-apparel/design/renders_2026-10-18/runwae/flannel.png"
  },
  "crops": [
   {
@@ -650,6 +656,150 @@
    "y": 1118,
    "w": 166,
    "h": 112
+  },
+  {
+   "out": "rel-field",
+   "src": "r-field",
+   "x": 0,
+   "y": 200,
+   "w": 1122,
+   "h": 800,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-globe",
+   "src": "r-globe",
+   "x": 0,
+   "y": 100,
+   "w": 1254,
+   "h": 930,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-globe-front",
+   "src": "r-globe",
+   "x": 0,
+   "y": 120,
+   "w": 600,
+   "h": 900,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-globe-back",
+   "src": "r-globe",
+   "x": 660,
+   "y": 120,
+   "w": 594,
+   "h": 900,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-neighbor",
+   "src": "r-neighbor",
+   "x": 0,
+   "y": 260,
+   "w": 1122,
+   "h": 820,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-neighbor-front",
+   "src": "r-neighbor",
+   "x": 0,
+   "y": 300,
+   "w": 550,
+   "h": 760,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-neighbor-back",
+   "src": "r-neighbor",
+   "x": 575,
+   "y": 300,
+   "w": 547,
+   "h": 760,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-polo",
+   "src": "r-polo",
+   "x": 0,
+   "y": 160,
+   "w": 1122,
+   "h": 940,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-beanie",
+   "src": "r-beanie",
+   "x": 0,
+   "y": 420,
+   "w": 1122,
+   "h": 440,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-flannel",
+   "src": "r-flannel",
+   "x": 0,
+   "y": 230,
+   "w": 1122,
+   "h": 780,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-flannel-front",
+   "src": "r-flannel",
+   "x": 0,
+   "y": 250,
+   "w": 545,
+   "h": 760,
+   "widths": [
+    480,
+    960
+   ]
+  },
+  {
+   "out": "rel-flannel-back",
+   "src": "r-flannel",
+   "x": 600,
+   "y": 250,
+   "w": 522,
+   "h": 760,
+   "widths": [
+    480,
+    960
+   ]
   }
  ],
  "_people": {
@@ -668,5 +818,6 @@
    "IMG_3514, IMG_3515, IMG_5585, IMG_5588: Poison hoodie",
    "Tri County items: not Runwae"
   ]
- }
+ },
+ "_note_2026_10_18": "Release 01 product renders (Principal, 2026-10-18): six numbered cards in design/renders_2026-10-18/runwae (ChatGPT, concept renders). Crops drop the card captions; rel-<id> = the front+back card, -front/-back = single views where the two garments don't overlap."
 }
