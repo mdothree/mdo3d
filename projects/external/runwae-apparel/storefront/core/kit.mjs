@@ -123,7 +123,8 @@ ${lead ? `<span class="seed-card-lead">${lead}</span>` : ''}<span class="seed-ca
 <span class="seed-card-meta">${v.priceText ? `<span class="seed-card-price">${esc(v.priceText)}</span>` : ''}<span class="seed-status seed-status--${v.status}">${esc(v.label)}</span></span></a>`;
   };
   /** Product detail rows: p.details = [["Design", "..."], ["Materials", "..."]]. Rendered as disclosure widgets. */
-  k.details = (p, { open = 0 } = {}) => (p.details ?? []).map(([h, t], i) => `<details class="seed-details"${i < open ? ' open' : ''}><summary>${esc(h)}</summary><p>${esc(t)}</p></details>`).join('');
+  // Pre-order shipping notes only make sense once an item can be ordered: hidden while it is not available.
+  k.details = (p, { open = 0 } = {}) => (p.details ?? []).filter(([h, t]) => !(k.view(p).status === 'unavailable' && /pre-?order/i.test(`${h} ${t}`))).map(([h, t], i) => `<details class="seed-details"${i < open ? ' open' : ''}><summary>${esc(h)}</summary><p>${esc(t)}</p></details>`).join('');
   /** Gallery: every image of a product as captioned figures. */
   k.gallery = (p, { sizes = '(max-width: 820px) 100vw, 55vw', cls = 'seed-gallery' } = {}) => `<div class="${esc(cls)}">${(p.images ?? []).map((im, i) => k.figure(im, { sizes, eager: i === 0, alt: im.alt ?? `${p.name}, view ${i + 1}` })).join('')}</div>`;
 
