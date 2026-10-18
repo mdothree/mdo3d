@@ -1,0 +1,14 @@
+{
+  "allow": [
+    {
+      "file": "src/tarotDatabase.js",
+      "re": "\\bfree\\b",
+      "why": "card meaning text (freedom as a theme), not an offer"
+    },
+    {
+      "file": "public/src/tarotDatabase.js",
+      "re": "\\bfree\\b",
+      "why": "card meaning text (freedom as a theme), not an offer"
+    }
+  ]
+}

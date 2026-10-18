@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx http-server public -p 8081 -o",
+    "prebuild": "node scripts/copy-lint.mjs",
     "build": "echo 'Static site - no build needed'",
     "deploy": "vercel --prod"
   },

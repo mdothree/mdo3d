@@ -1,0 +1,9 @@
+{
+  "allow": [
+    {
+      "file": "public/js/services/database.js",
+      "re": "free spirit",
+      "why": "numerology reading text (personality phrase), not an offer"
+    }
+  ]
+}

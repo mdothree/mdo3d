@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx http-server public -p 8080 -o",
+    "prebuild": "node scripts/copy-lint.mjs",
     "build": "echo 'Static site - no build required'",
     "preview": "npx http-server public -p 8080"
   },

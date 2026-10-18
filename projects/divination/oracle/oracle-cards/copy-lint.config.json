@@ -1,0 +1,14 @@
+{
+  "allow": [
+    {
+      "file": "src/cardDatabase.js",
+      "re": "\\bfree\\b",
+      "why": "card meaning text (freedom as a theme), not an offer"
+    },
+    {
+      "file": "public/src/cardDatabase.js",
+      "re": "\\bfree\\b",
+      "why": "card meaning text (freedom as a theme), not an offer"
+    }
+  ]
+}

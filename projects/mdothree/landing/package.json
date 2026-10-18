@@ -4,6 +4,7 @@
   "description": "Hub landing page for mdothree.com utilities",
   "scripts": {
     "dev": "node scripts/inject-config.js && node scripts/stamp-versions.mjs && npx serve public",
+    "prebuild": "node scripts/copy-lint.mjs",
     "build": "node scripts/inject-config.js && node scripts/stamp-versions.mjs",
     "stamp": "node scripts/stamp-versions.mjs",
     "start": "npx serve public",
