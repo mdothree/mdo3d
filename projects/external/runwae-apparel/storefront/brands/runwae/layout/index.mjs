@@ -30,14 +30,16 @@ ${kit.menuButton('Menu')}
 </div></header>`;
 }
 
+// The Join the journey sign-up shows only once brand.json `signup_list` is true: api/notify is a stub that cannot
+// keep emails on serverless hosting, so the form stays off until a real list (Resend audience) is wired.
 export function footer({ brand, kit }) {
   return `<footer class="rw-foot rw4-foot"><div class="rw-wrap">
 <div class="rw4-foot-row">${wordmark(kit, ' rw-mark--foot')}
 <ul class="rw4-foot-words" aria-label="What Runwae is built on"><li>Art</li><li>People</li><li>Places</li><li>Progress</li></ul>
 ${globe('rw4-globe rw4-globe--foot')}
-<form class="seed-notify rw4-join" data-notify data-product="journey" novalidate><label for="notify-journey" class="sr-only">Join the journey: your email</label>
+${brand.signup_list ? `<form class="seed-notify rw4-join" data-notify data-product="journey" novalidate><label for="notify-journey" class="sr-only">Join the journey: your email</label>
 <div class="seed-notify-row"><input id="notify-journey" type="email" name="email" autocomplete="email" placeholder="Join the journey" required><button type="submit" aria-label="Join the journey">→</button></div>
-<p class="seed-msg" role="status" aria-live="polite"></p></form></div>
+<p class="seed-msg" role="status" aria-live="polite"></p></form>` : ''}</div>
 <div class="rw-foot-grid">
 <nav aria-label="Footer"><a href="${kit.href.shop()}">Shop</a><a href="${kit.root}${DRAWN}">Release 01</a><a href="${kit.href.story()}">Story</a></nav>
 <nav aria-label="Help"><a href="${kit.href.orders()}">Order lookup</a><a href="${kit.href.policies()}">Shipping and exchanges</a></nav>

@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SF = os.path.dirname(HERE)
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 LABEL = {"preorder": "Pre-order · focus", "next_drop": "Next drop", "in_development": "In development",
-         "archive": "Archive", "available": "Available", "sold_out": "Sold out"}
+         "archive": "Archive", "available": "Available", "sold_out": "Sold out", "unavailable": "Not available"}
 
 SHOPS = [
     dict(id="buttsstudios", name="Butts Studios",
@@ -26,7 +26,7 @@ SHOPS = [
                     "Vector logo files and font licences for production"]),
     dict(id="runwae", name="Runwae Apparel",
          ident="They influence. Under it: they notice the little things.",
-         look="Still story-led (hero, who we are, the belief, the art, then the pieces), now built around <b>Release 01</b>: the six numbered renders from 2026-10-18. 01 Field Overshirt (rust), 02 Globe Hoodie (forest: RUNWAE APPAREL on the chest, globe emblem on the back), 03 Luv Thy Neighbor Hoodie (creme, new face-and-plants back), 04 Knit Polo (charcoal), 05 Beanie (forest, creme, black, rust), 06 Flannel (forest/rust plaid). Every other concept (Drawn Series, Essentials, The Little Things, reissues) is off the shop; the real Fall &rsquo;21 archive stays. Focus pre-order stays the Luv Thy Neighbor Hoodie.",
+         look="Still story-led (hero, who we are, the belief, the art, then the pieces), now built around <b>Release 01</b>: the six numbered renders from 2026-10-18. 01 Field Overshirt (rust), 02 Globe Hoodie (forest: RUNWAE APPAREL on the chest, globe emblem on the back), 03 Luv Thy Neighbor Hoodie (creme, new face-and-plants back), 04 Knit Polo (charcoal), 05 Beanie (forest, creme, black, rust), 06 Flannel (forest/rust plaid). Every other concept (Drawn Series, Essentials, The Little Things, reissues) is off the shop; the real Fall &rsquo;21 archive stays.",
          keys=["forest", "paper", "rust", "washed"], type="Playfair Display bold headlines · Inter tracked small caps · Instrument Serif accents",
          decisions=["Name for the six-piece line: &ldquo;Release 01&rdquo; is a working label (it replaced &ldquo;The Drawn Series&rdquo;, which no longer fits a beanie, polo and flannel)",
                     "The black beanie: this release was meant to be no-black; kept because it is in the render",
@@ -149,14 +149,14 @@ def main():
         return "".join(f'<span class="sw"><i style="background:{c[k]}"></i>{E(k)} <b>{c[k].upper()}</b></span>'
                        for k in s["keys"] if k in c)
 
-    pages.append('<section class="page cover"><div class="kicker">Overview · preview, not open for orders</div>'
+    pages.append('<section class="page cover"><div class="kicker">Overview · pre-launch, not open for orders</div>'
                  '<h1>Apparel shops</h1><p class="lede">Four brand shops on one shared storefront. Each has its own layout and look; '
                  'the cart, checkout, pre-order drops and order pages are shared code.</p><div class="grid4">'
                  + "".join(f'<figure><img src="{W}/{s["id"]}-home.jpg"><figcaption><b>{E(s["name"])}</b>'
                            f'<span>{E(s["bj"].get("domain", ""))}</span></figcaption></figure>' for s in SHOPS)
                  + '</div><div class="facts"><div><b>Shared seed</b><span>One core (catalog, cart, checkout, drops, order lookup, policies); '
-                   'a brand is added by copying a template folder.</span></div><div><b>One focus item per shop</b><span>Everything else shows '
-                   'honestly: next drop (Notify me), in development, or archive.</span></div><div><b>Design rules</b><span>Chest marks medium everywhere; '
+                   'a brand is added by copying a template folder.</span></div><div><b>Pre-launch</b><span>Every item shows '
+                   '&ldquo;Not available&rdquo;: no prices, no bag, checkout off, until each shop goes live.</span></div><div><b>Design rules</b><span>Chest marks medium everywhere; '
                    'shirt-sized art on the back for GLB; corners 4px or less (circles only when round). Enforced by the build.</span></div>'
                    '<div><b>One inventory</b><span>One file for all four shops: status, price, per-size stock, a stock ledger and a local admin page.</span></div>'
                    '<div><b>Order emails</b><span>A &ldquo;New order&rdquo; email to each shop and a confirmation to the customer, one shared template.</span></div></div></section>')
@@ -178,10 +178,10 @@ def main():
             rows_html = table(cs)
         pages.append(f'<section class="page"><div class="kicker">{E(n)} · pages</div><div class="three">'
                      f'<figure><img src="{W}/{b}-shop.jpg"><figcaption>Collection</figcaption></figure>'
-                     f'<figure><img src="{W}/{b}-product.jpg"><figcaption>Focus product</figcaption></figure>'
+                     f'<figure><img src="{W}/{b}-product.jpg"><figcaption>Product page</figcaption></figure>'
                      f'<figure class="phone"><img src="{W}/{b}-phone.jpg"><figcaption>Phone</figcaption></figure></div>'
                      f'<div class="two b"><div><h4>Products ({len(s["cards"])})</h4>{rows_html}'
-                     f'<p class="note">Prices show &ldquo;Price TBA&rdquo; until set.</p></div>'
+                     f'<p class="note">Pre-launch: every item shows &ldquo;Not available&rdquo;; prices are set at launch.</p></div>'
                      f'<div><h4>Your open decisions</h4><ul>{"".join(f"<li>{x}</li>" for x in s["decisions"])}</ul></div></div></section>')
         chunks = [s["cards"][i:i + 8] for i in range(0, len(s["cards"]), 8)]
         for ci, ch in enumerate(chunks):

@@ -132,7 +132,7 @@ test('Runwae v4 home follows cbce9be5: photo hero, 01 Built on, 02 dark band, de
   assert.doesNotMatch(main, /class="rw4-focus"/, 'no Now/pre-order strip while nothing is available');
   const foot = idx.slice(idx.lastIndexOf('<footer'));
   for (const w of ['Art', 'People', 'Places', 'Progress']) assert.match(foot, new RegExp(`<li>${w}</li>`));
-  assert.match(foot, /Join the journey/);
+  assert.doesNotMatch(foot, /Join the journey/, 'sign-up hidden until a real list exists (api/notify is a stub)');
   assert.ok((idx.match(/class="rw-ptag">Concept</g) ?? []).length >= 7, 'concept photography is captioned');
   const { catalog } = loadBrand('runwae');
   for (const p of catalog.filter((x) => x.status === 'archive')) { assert.equal(p.archive_year, 2021); assert.equal(p.line, "Fall '21"); }
