@@ -28,6 +28,7 @@ need CLOUDFLARE_API_TOKEN "Cloudflare DNS"
 command -v vercel >/dev/null || { log "MISSING vercel CLI (npm i -g vercel)"; MISSING=1; }
 [ "$MISSING" = 0 ] || exit 1
 SCOPE=${VERCEL_SCOPE:+--scope "$VERCEL_SCOPE"}
+TQ=${VERCEL_SCOPE:+slug=$VERCEL_SCOPE}
 CF=https://api.cloudflare.com/client/v4
 cf() { curl -s -X "$1" "$CF$2" -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' ${3:+-d "$3"}; }
 js() { python3 -c "import json,sys; d=json.load(sys.stdin); print($1)" 2>/dev/null; }
@@ -70,13 +71,16 @@ up() { # brand project zone mode(subdomain|apex)
   vercel project add "$P" --token "$VERCEL_TOKEN" $SCOPE >/dev/null 2>&1 || true
   vercel link --yes --project "$P" --token "$VERCEL_TOKEN" $SCOPE >/dev/null 2>&1 || { log "$B: vercel link failed"; return 1; }
   URL=$(vercel deploy --prod --yes --build-env BRAND="$B" --build-env BUILD_FLAGS= --env BRAND="$B" --token "$VERCEL_TOKEN" $SCOPE 2>>"$LOG" | tail -1)
-  c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$URL"); log "$B: deployed $URL -> ${c%% *}"
-  # Vercel Authentication (default on new projects) 302s *.vercel.app deployment URLs to vercel.com/sso-api;
-  # custom domains are exempt, so that redirect still means the build is up.
-  case "$c" in 200*) ;; 302\ https://vercel.com/sso-api*) log "$B: deployment URL behind Vercel Authentication (custom domains exempt): OK" ;;
-    *) log "$B: deployment not 200; stopping before DNS"; return 1 ;; esac
+  # Judge the build by Vercel's own state (the *.vercel.app URL sits behind Vercel Authentication: 302 either way).
+  st=$(curl -s "https://api.vercel.com/v13/deployments/${URL#https://}?$TQ" -H "Authorization: Bearer $VERCEL_TOKEN" | js "d.get('readyState','?')")
+  log "$B: deployed $URL -> $st"
+  [ "$st" = READY ] || { log "$B: deployment not READY ($st); stopping before DNS"; return 1; }
   if [ "$M" = subdomain ]; then DOMAINS="store.$Z"; else DOMAINS="$Z www.$Z"; fi
-  for d in $DOMAINS; do vercel domains add "$d" "$P" --token "$VERCEL_TOKEN" $SCOPE >>"$LOG" 2>&1; log "$B: domain $d attached to $P"; done
+  for d in $DOMAINS; do  # API attach (CLI 50+ `domains add` takes one argument); 409 = already on this project
+    r=$(curl -s -o /tmp/vd.$$ -w '%{http_code}' -X POST "https://api.vercel.com/v10/projects/$P/domains?$TQ" -H "Authorization: Bearer $VERCEL_TOKEN" -H 'Content-Type: application/json' -d "{\"name\":\"$d\"}")
+    case "$r" in 200|409) log "$B: domain $d attached to $P ($r)" ;; *) log "$B: domain $d attach FAILED $r $(head -c 200 /tmp/vd.$$)"; rm -f /tmp/vd.$$; return 1 ;; esac
+    rm -f /tmp/vd.$$
+  done
   if [ "$M" = subdomain ]; then
     zid=$(zone_id "$Z") || return 1; [ -n "$zid" ] || { log "$Z: zone not visible to this Cloudflare token"; return 1; }
     set_record "$zid" CNAME "store.$Z" cname.vercel-dns.com

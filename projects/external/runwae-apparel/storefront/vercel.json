@@ -12,8 +12,8 @@
     "api/stripe-webhook.mjs": {
       "includeFiles": "{brands/**/*.json,inventory/*.csv}"
     },
-    "api/notify.mjs": {},
-    "api/order-lookup.mjs": {}
+    "api/notify.mjs": { "maxDuration": 10 },
+    "api/order-lookup.mjs": { "maxDuration": 10 }
   },
   "headers": [
     {
