@@ -14,6 +14,9 @@
 # Needs: vercel CLI, curl, python3. Vercel builds on its own servers (nothing builds on this machine).
 # Log: deploy/shops_up.log (original nameservers and records are logged before anything changes).
 #
+# apex-godaddy (default for glb + runwae since 2026-10-20): DNS stays at GoDaddy; needs GODADDY_PAT (Bearer) for the
+#   Butts Studios GoDaddy account. Sets A @ 76.76.21.21 + CNAME www cname.vercel-dns.com; originals in deploy/godaddy_before_<domain>.json.
+#   GLB_MODE=apex / RUNWAE_MODE=apex keeps the old Cloudflare-zone + nameserver-switch path.
 # ROLLBACK (per domain): GoDaddy → the domain → Nameservers → back to the values logged as "original NS"
 # (girlslovebutts.com was ns21/ns22.domaincontrol.com, runwaeapparel.com ns47/ns48.domaincontrol.com on 2026-10-19);
 # for store.* subdomains delete the `store` CNAME in Cloudflare; `vercel domains rm <domain>`.
@@ -81,6 +84,12 @@ up() { # brand project zone mode(subdomain|apex)
     case "$r" in 200|409) log "$B: domain $d attached to $P ($r)" ;; *) log "$B: domain $d attach FAILED $r $(head -c 200 /tmp/vd.$$)"; rm -f /tmp/vd.$$; return 1 ;; esac
     rm -f /tmp/vd.$$
   done
+  if [ "$M" = apex-godaddy ]; then  # DNS stays at GoDaddy (GODADDY_PAT Bearer); old records saved first; MX/TXT untouched
+    gd_set "$Z" A @ 76.76.21.21 || return 1
+    gd_set "$Z" CNAME www cname.vercel-dns.com || return 1
+    for d in $DOMAINS; do gd_verify "$P" "$d" "$Z"; done
+    return 0
+  fi
   if [ "$M" = subdomain ]; then
     zid=$(zone_id "$Z") || return 1; [ -n "$zid" ] || { log "$Z: zone not visible to this Cloudflare token"; return 1; }
     set_record "$zid" CNAME "store.$Z" cname.vercel-dns.com
@@ -92,6 +101,25 @@ up() { # brand project zone mode(subdomain|apex)
     godaddy_ns "$Z" $ns
   fi
   for d in $DOMAINS; do vercel_verify "$P" "$d" "$zid"; done
+}
+
+gd() { # GoDaddy API: personal access token (GODADDY_PAT, Bearer) or key/secret (sso-key)
+  if [ -n "${GODADDY_PAT:-}" ]; then H="Authorization: Bearer $GODADDY_PAT"; else H="Authorization: sso-key $GODADDY_API_KEY:$GODADDY_API_SECRET"; fi
+  curl -s -m 30 -X "$1" "https://api.godaddy.com/v1/domains$2" -H "$H" -H 'Content-Type: application/json' ${3:+-d "$3"}
+}
+gd_set() { # domain type name value: logs the old records once per domain, then replaces that type+name
+  [ -f "deploy/godaddy_before_$1.json" ] || { gd GET "/$1/records" > "deploy/godaddy_before_$1.json"; log "$1: original GoDaddy records saved to deploy/godaddy_before_$1.json"; }
+  code=$(H=; if [ -n "${GODADDY_PAT:-}" ]; then H="Authorization: Bearer $GODADDY_PAT"; else H="Authorization: sso-key $GODADDY_API_KEY:$GODADDY_API_SECRET"; fi
+    curl -s -o /tmp/gd.$$ -w '%{http_code}' -X PUT "https://api.godaddy.com/v1/domains/$1/records/$2/$3" -H "$H" -H 'Content-Type: application/json' -d "[{\"data\":\"$4\",\"ttl\":600}]")
+  if [ "$code" = 200 ]; then log "  GoDaddy $2 $3.$1 -> $4"; rm -f /tmp/gd.$$; else log "  GoDaddy $2 $3.$1 FAILED $code $(head -c 200 /tmp/gd.$$)"; rm -f /tmp/gd.$$; return 1; fi
+}
+gd_verify() { # project domain zone: Vercel verification TXT at GoDaddy when asked, then verify
+  v=$(curl -s "https://api.vercel.com/v9/projects/$1/domains/$2?$TQ" -H "Authorization: Bearer $VERCEL_TOKEN" \
+    | js "'ok' if d.get('verified') else ' '.join(x['domain']+'|'+x['value'] for x in d.get('verification') or [] if x.get('type')=='TXT')")
+  [ "$v" = ok ] && { log "  $2: Vercel verified"; return 0; }
+  for pair in $v; do n=${pair%%|*}; gd_set "$3" TXT "${n%.$3}" "${pair#*|}"; done
+  sleep 20
+  log "  $2: Vercel verify -> $(curl -s -X POST "https://api.vercel.com/v9/projects/$1/domains/$2/verify?$TQ" -H "Authorization: Bearer $VERCEL_TOKEN" | js "d.get('verified')")"
 }
 
 vercel_verify() { # project domain zone_id: add the _vercel TXT Vercel asks for (domain claimed elsewhere), then verify
@@ -112,8 +140,8 @@ for b in $BRANDS; do
   case $b in
     buttsstudios) up buttsstudios shop-buttsstudios buttsstudios.com subdomain ;;
     ridgefield)   up ridgefield shop-ridgefield ridgefieldtech.com subdomain ;;
-    glb)          up glb shop-glb girlslovebutts.com apex ;;
-    runwae)       up runwae runwae-apparel runwaeapparel.com apex ;;
+    glb)          up glb shop-glb girlslovebutts.com ${GLB_MODE:-apex-godaddy} ;;
+    runwae)       up runwae runwae-apparel runwaeapparel.com ${RUNWAE_MODE:-apex-godaddy} ;;
     *) log "unknown brand $b" ;;
   esac
 done

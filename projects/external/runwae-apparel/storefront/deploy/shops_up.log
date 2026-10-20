@@ -1,0 +1,247 @@
+2026-10-19T14:22:10Z MISSING env VERCEL_TOKEN (Vercel hosting)
+2026-10-19T14:22:10Z MISSING env CLOUDFLARE_API_TOKEN (Cloudflare DNS)
+2026-10-20T05:58:11Z == ridgefield: deploy to Vercel project shop-ridgefield (preview build, checkout off)
+WARN! Did you mean to deploy the subdirectory "deploy"? Use `vc --cwd deploy` instead.
+Retrieving project…
+Deploying buttsstudios-projects/shop-ridgefield
+Uploading [--------------------] (0.0B/39.9MB)
+Uploading [=====---------------] (10.0MB/39.9MB)
+Uploading [==========----------] (20.0MB/39.9MB)
+Uploading [===============-----] (30.0MB/39.9MB)
+Uploading [====================] (39.9MB/39.9MB)
+Inspect: https://vercel.com/buttsstudios-projects/shop-ridgefield/zAUR8hsPy976RwjwGJSucyumzQFK [6s]
+Production: https://shop-ridgefield-5x5htj0dk-buttsstudios-projects.vercel.app [6s]
+Building...
+Building...
+Error: Function must contain at least one property.
+2026-10-20T05:58:32Z ridgefield: deployed https://shop-ridgefield-5x5htj0dk-buttsstudios-projects.vercel.app -> 302
+2026-10-20T05:58:32Z ridgefield: deployment not 200; stopping before DNS
+2026-10-20T05:58:32Z verify (DNS + certificates can take up to an hour after a nameserver change)
+2026-10-20T05:58:32Z   https://store.buttsstudios.com -> 000000  NS: uma.ns.cloudflare.com. weston.ns.cloudflare.com. 
+2026-10-20T05:58:32Z   https://store.ridgefieldtech.com -> 000000  NS: tosana.ns.cloudflare.com. wally.ns.cloudflare.com. 
+2026-10-20T05:58:33Z   https://girlslovebutts.com -> 200  NS: ns22.domaincontrol.com. ns21.domaincontrol.com. 
+2026-10-20T05:58:33Z   https://runwaeapparel.com -> 000000  NS: ns47.domaincontrol.com. ns48.domaincontrol.com. 
+2026-10-20T05:58:33Z done. Not 200 yet after a nameserver change usually means DNS is still propagating; re-run the script (it is idempotent).
+2026-10-20T06:01:08Z == ridgefield: deploy to Vercel project shop-ridgefield (preview build, checkout off)
+WARN! Did you mean to deploy the subdirectory "deploy"? Use `vc --cwd deploy` instead.
+Retrieving project…
+Deploying buttsstudios-projects/shop-ridgefield
+Inspect: https://vercel.com/buttsstudios-projects/shop-ridgefield/CA9cAGFuhnVhwN9CQrDEDuLLn4Bu [1s]
+Production: https://shop-ridgefield-7qj9i8xuj-buttsstudios-projects.vercel.app [1s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 415 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 64.3.1
+Building: Error: [invalid_function] Function must contain at least one property.
+Error: Function must contain at least one property.
+2026-10-20T06:01:19Z ridgefield: deployed https://shop-ridgefield-7qj9i8xuj-buttsstudios-projects.vercel.app -> 302
+2026-10-20T06:01:19Z ridgefield: deployment URL behind Vercel Authentication (custom domains exempt): OK
+Retrieving project…
+Error: `vercel domains add <domain>` expects one argument.
+2026-10-20T06:01:20Z ridgefield: domain store.ridgefieldtech.com attached to shop-ridgefield
+2026-10-20T06:01:22Z   DNS CNAME store.ridgefieldtech.com -> cname.vercel-dns.com
+2026-10-20T06:01:22Z verify (DNS + certificates can take up to an hour after a nameserver change)
+2026-10-20T06:01:22Z   https://store.buttsstudios.com -> 000000  NS: weston.ns.cloudflare.com. uma.ns.cloudflare.com. 
+2026-10-20T06:01:22Z   https://store.ridgefieldtech.com -> 000000  NS: tosana.ns.cloudflare.com. wally.ns.cloudflare.com. 
+2026-10-20T06:01:23Z   https://girlslovebutts.com -> 200  NS: ns21.domaincontrol.com. ns22.domaincontrol.com. 
+2026-10-20T06:01:23Z   https://runwaeapparel.com -> 000000  NS: ns47.domaincontrol.com. ns48.domaincontrol.com. 
+2026-10-20T06:01:23Z done. Not 200 yet after a nameserver change usually means DNS is still propagating; re-run the script (it is idempotent).
+2026-10-20T06:06:55Z == ridgefield: deploy to Vercel project shop-ridgefield (preview build, checkout off)
+WARN! Did you mean to deploy the subdirectory "deploy"? Use `vc --cwd deploy` instead.
+Retrieving project…
+Deploying buttsstudios-projects/shop-ridgefield
+Uploading [--------------------] (0.0B/1.2KB)
+Uploading [====================] (1.2KB/1.2KB)
+Inspect: https://vercel.com/buttsstudios-projects/shop-ridgefield/3sh15f1VyD4iQX7XK65499yv8S4d [2s]
+Production: https://shop-ridgefield-huahm2bhw-buttsstudios-projects.vercel.app [2s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 415 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 64.3.1
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Installing dependencies...
+Building: npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Building: up to date in 485ms
+Building: {
+Building: brand: 'ridgefield',
+Building: pages: 17,
+Building: products: 6,
+Building: out: '/vercel/path0/public'
+Building: }
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Build Completed in /vercel/output [1s]
+Building: Deploying outputs...
+[2K[1A[2K[GProduction: https://shop-ridgefield-huahm2bhw-buttsstudios-projects.vercel.app [11s]
+Completing...
+Aliased: https://shop-ridgefield.vercel.app [13s]
+
+Common next commands:
+- `vercel inspect shop-ridgefield-huahm2bhw-buttsstudios-projects.vercel.app --logs`
+- `vercel redeploy shop-ridgefield-huahm2bhw-buttsstudios-projects.vercel.app`
+2026-10-20T06:07:13Z ridgefield: deployed https://shop-ridgefield-huahm2bhw-buttsstudios-projects.vercel.app -> READY
+2026-10-20T06:07:14Z ridgefield: domain store.ridgefieldtech.com attached to shop-ridgefield (200)
+2026-10-20T06:07:15Z   DNS CNAME store.ridgefieldtech.com -> cname.vercel-dns.com
+2026-10-20T06:07:15Z verify (DNS + certificates can take up to an hour after a nameserver change)
+2026-10-20T06:07:15Z   https://store.buttsstudios.com -> 000000  NS: uma.ns.cloudflare.com. weston.ns.cloudflare.com. 
+2026-10-20T06:07:15Z   https://store.ridgefieldtech.com -> 000000  NS: tosana.ns.cloudflare.com. wally.ns.cloudflare.com. 
+2026-10-20T06:07:15Z   https://girlslovebutts.com -> 200  NS: ns22.domaincontrol.com. ns21.domaincontrol.com. 
+2026-10-20T06:07:16Z   https://runwaeapparel.com -> 000000  NS: ns47.domaincontrol.com. ns48.domaincontrol.com. 
+2026-10-20T06:07:16Z done. Not 200 yet after a nameserver change usually means DNS is still propagating; re-run the script (it is idempotent).
+2026-10-20T07:59:48Z == buttsstudios: deploy to Vercel project shop-buttsstudios (preview build, checkout off)
+WARN! Did you mean to deploy the subdirectory "deploy"? Use `vc --cwd deploy` instead.
+Retrieving project…
+Deploying buttsstudios-projects/shop-buttsstudios
+Inspect: https://vercel.com/buttsstudios-projects/shop-buttsstudios/3BkfBdGDfdbQiGFVDoqvYxegRiTh [1s]
+Production: https://shop-buttsstudios-3dn796imd-buttsstudios-projects.vercel.app [1s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 415 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 64.3.1
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Installing dependencies...
+Building: npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Building: up to date in 707ms
+Building: {
+Building: brand: 'buttsstudios',
+Building: pages: 17,
+Building: products: 6,
+Building: out: '/vercel/path0/public'
+Building: }
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Build Completed in /vercel/output [2s]
+Building: Deploying outputs...
+[2K[1A[2K[GProduction: https://shop-buttsstudios-3dn796imd-buttsstudios-projects.vercel.app [13s]
+Completing...
+Aliased: https://shop-buttsstudios.vercel.app [13s]
+
+Common next commands:
+- `vercel inspect shop-buttsstudios-3dn796imd-buttsstudios-projects.vercel.app --logs`
+- `vercel redeploy shop-buttsstudios-3dn796imd-buttsstudios-projects.vercel.app`
+2026-10-20T08:00:08Z buttsstudios: deployed https://shop-buttsstudios-3dn796imd-buttsstudios-projects.vercel.app -> READY
+2026-10-20T08:00:08Z buttsstudios: domain store.buttsstudios.com attached to shop-buttsstudios (200)
+2026-10-20T08:00:15Z   DNS CNAME store.buttsstudios.com -> cname.vercel-dns.com
+2026-10-20T08:00:16Z   store.buttsstudios.com: Vercel verified
+2026-10-20T08:00:16Z verify (DNS + certificates can take up to an hour after a nameserver change)
+2026-10-20T08:00:16Z   https://store.buttsstudios.com -> 000000  NS: uma.ns.cloudflare.com. weston.ns.cloudflare.com. 
+2026-10-20T08:00:16Z   https://store.ridgefieldtech.com -> 200  NS: wally.ns.cloudflare.com. tosana.ns.cloudflare.com. 
+2026-10-20T08:00:17Z   https://girlslovebutts.com -> 200  NS: ns22.domaincontrol.com. ns21.domaincontrol.com. 
+2026-10-20T08:00:17Z   https://runwaeapparel.com -> 000000  NS: ns48.domaincontrol.com. ns47.domaincontrol.com. 
+2026-10-20T08:00:17Z done. Not 200 yet after a nameserver change usually means DNS is still propagating; re-run the script (it is idempotent).
+2026-10-20T14:20:57Z == glb: deploy to Vercel project shop-glb (preview build, checkout off)
+WARN! Did you mean to deploy the subdirectory "deploy"? Use `vc --cwd deploy` instead.
+Retrieving project…
+Deploying buttsstudios-projects/shop-glb
+Inspect: https://vercel.com/buttsstudios-projects/shop-glb/Cz1Q93B7sBhWNj472Nncy3geJ8Pk [1s]
+Production: https://shop-q9928vrtw-buttsstudios-projects.vercel.app [1s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 415 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 64.5.0
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Installing dependencies...
+Building: npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Building: up to date in 460ms
+Building: { brand: 'glb', pages: 19, products: 8, out: '/vercel/path0/public' }
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Build Completed in /vercel/output [1s]
+Building: Deploying outputs...
+[2K[1A[2K[GProduction: https://shop-q9928vrtw-buttsstudios-projects.vercel.app [11s]
+Completing...
+Aliased: https://shop-glb.vercel.app [13s]
+
+Common next commands:
+- `vercel inspect shop-q9928vrtw-buttsstudios-projects.vercel.app --logs`
+- `vercel redeploy shop-q9928vrtw-buttsstudios-projects.vercel.app`
+2026-10-20T14:21:17Z glb: deployed https://shop-q9928vrtw-buttsstudios-projects.vercel.app -> READY
+2026-10-20T14:21:18Z glb: domain girlslovebutts.com attached to shop-glb (200)
+2026-10-20T14:21:19Z glb: domain www.girlslovebutts.com attached to shop-glb (200)
+2026-10-20T14:21:20Z girlslovebutts.com: original GoDaddy records saved to deploy/godaddy_before_girlslovebutts.com.json
+2026-10-20T14:21:21Z   GoDaddy A @.girlslovebutts.com -> 76.76.21.21
+2026-10-20T14:21:22Z   GoDaddy CNAME www.girlslovebutts.com -> cname.vercel-dns.com
+2026-10-20T14:21:23Z   girlslovebutts.com: Vercel verified
+2026-10-20T14:21:23Z   www.girlslovebutts.com: Vercel verified
+2026-10-20T14:21:23Z == runwae: deploy to Vercel project runwae-apparel (preview build, checkout off)
+WARN! Did you mean to deploy the subdirectory "deploy"? Use `vc --cwd deploy` instead.
+Retrieving project…
+Deploying buttsstudios-projects/runwae-apparel
+Inspect: https://vercel.com/buttsstudios-projects/runwae-apparel/CPcD6YZa4e6e5JPEcPDZ1x92USBh [3s]
+Production: https://runwae-apparel-klj9ajk1f-buttsstudios-projects.vercel.app [3s]
+Building...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 415 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 64.5.0
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Installing dependencies...
+Building: npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Building: up to date in 567ms
+Building: {
+Building: brand: 'runwae',
+Building: pages: 19,
+Building: products: 7,
+Building: out: '/vercel/path0/public'
+Building: }
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Warning: Detected "engines": { "node": ">=20" } in your `package.json` that will automatically upgrade when a new major Node.js Version is released. Learn More: https://vercel.link/node-version
+Building: Build Completed in /vercel/output [2s]
+Building: Deploying outputs...
+[2K[1A[2K[GProduction: https://runwae-apparel-klj9ajk1f-buttsstudios-projects.vercel.app [14s]
+Completing...
+Aliased: https://runwae-apparel.vercel.app [14s]
+
+Common next commands:
+- `vercel inspect runwae-apparel-klj9ajk1f-buttsstudios-projects.vercel.app --logs`
+- `vercel redeploy runwae-apparel-klj9ajk1f-buttsstudios-projects.vercel.app`
+2026-10-20T14:21:48Z runwae: deployed https://runwae-apparel-klj9ajk1f-buttsstudios-projects.vercel.app -> READY
+2026-10-20T14:21:50Z runwae: domain runwaeapparel.com attached to runwae-apparel (200)
+2026-10-20T14:21:51Z runwae: domain www.runwaeapparel.com attached to runwae-apparel (200)
+2026-10-20T14:21:52Z runwaeapparel.com: original GoDaddy records saved to deploy/godaddy_before_runwaeapparel.com.json
+2026-10-20T14:21:53Z   GoDaddy A @.runwaeapparel.com -> 76.76.21.21
+2026-10-20T14:21:54Z   GoDaddy CNAME www.runwaeapparel.com -> cname.vercel-dns.com
+2026-10-20T14:21:54Z   runwaeapparel.com: Vercel verified
+2026-10-20T14:21:55Z   www.runwaeapparel.com: Vercel verified
+2026-10-20T14:21:55Z verify (DNS + certificates can take up to an hour after a nameserver change)
+2026-10-20T14:21:55Z   https://store.buttsstudios.com -> 200  NS: uma.ns.cloudflare.com. weston.ns.cloudflare.com. 
+2026-10-20T14:21:56Z   https://store.ridgefieldtech.com -> 200  NS: wally.ns.cloudflare.com. tosana.ns.cloudflare.com. 
+2026-10-20T14:21:56Z   https://girlslovebutts.com -> 200  NS: ns22.domaincontrol.com. ns21.domaincontrol.com. 
+2026-10-20T14:21:56Z   https://runwaeapparel.com -> 000000  NS: ns47.domaincontrol.com. ns48.domaincontrol.com. 
+2026-10-20T14:21:56Z done. Not 200 yet after a nameserver change usually means DNS is still propagating; re-run the script (it is idempotent).

@@ -11,3 +11,4 @@ outbox/
 inventory/.lock
 inventory/*.tmp
 docs/Apparel_Shops_Overview.pdf
+.vercel
