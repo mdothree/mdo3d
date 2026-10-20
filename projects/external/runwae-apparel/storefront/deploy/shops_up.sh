@@ -91,6 +91,20 @@ up() { # brand project zone mode(subdomain|apex)
     ns=$(cf GET "/zones/$zid" | js "' '.join(d['result']['name_servers'])")
     godaddy_ns "$Z" $ns
   fi
+  for d in $DOMAINS; do vercel_verify "$P" "$d" "$zid"; done
+}
+
+vercel_verify() { # project domain zone_id: add the _vercel TXT Vercel asks for (domain claimed elsewhere), then verify
+  v=$(curl -s "https://api.vercel.com/v9/projects/$1/domains/$2?$TQ" -H "Authorization: Bearer $VERCEL_TOKEN" \
+    | js "'ok' if d.get('verified') else ' '.join(x['domain']+'|'+x['value'] for x in d.get('verification') or [] if x.get('type')=='TXT')")
+  [ "$v" = ok ] && { log "  $2: Vercel verified"; return 0; }
+  for pair in $v; do
+    r=$(cf POST "/zones/$3/dns_records" "{\"type\":\"TXT\",\"name\":\"${pair%%|*}\",\"content\":\"${pair#*|}\",\"ttl\":300}")
+    echo "$r" | js "d.get('success')" | grep -q True && log "  $2: added Vercel verify TXT ${pair%%|*}" || log "  $2: verify TXT add: $(echo "$r" | js "d.get('errors')")"
+  done
+  sleep 15
+  r=$(curl -s -X POST "https://api.vercel.com/v9/projects/$1/domains/$2/verify?$TQ" -H "Authorization: Bearer $VERCEL_TOKEN" | js "d.get('verified')")
+  log "  $2: Vercel verify -> $r (re-run the script if False; DNS may still be propagating)"
 }
 
 BRANDS=${*:-"buttsstudios ridgefield glb runwae"}
