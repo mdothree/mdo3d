@@ -70,8 +70,11 @@ up() { # brand project zone mode(subdomain|apex)
   vercel project add "$P" --token "$VERCEL_TOKEN" $SCOPE >/dev/null 2>&1 || true
   vercel link --yes --project "$P" --token "$VERCEL_TOKEN" $SCOPE >/dev/null 2>&1 || { log "$B: vercel link failed"; return 1; }
   URL=$(vercel deploy --prod --yes --build-env BRAND="$B" --build-env BUILD_FLAGS= --env BRAND="$B" --token "$VERCEL_TOKEN" $SCOPE 2>>"$LOG" | tail -1)
-  c=$(curl -s -o /dev/null -w '%{http_code}' "$URL"); log "$B: deployed $URL -> $c"
-  [ "$c" = 200 ] || { log "$B: deployment not 200; stopping before DNS"; return 1; }
+  c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$URL"); log "$B: deployed $URL -> ${c%% *}"
+  # Vercel Authentication (default on new projects) 302s *.vercel.app deployment URLs to vercel.com/sso-api;
+  # custom domains are exempt, so that redirect still means the build is up.
+  case "$c" in 200*) ;; 302\ https://vercel.com/sso-api*) log "$B: deployment URL behind Vercel Authentication (custom domains exempt): OK" ;;
+    *) log "$B: deployment not 200; stopping before DNS"; return 1 ;; esac
   if [ "$M" = subdomain ]; then DOMAINS="store.$Z"; else DOMAINS="$Z www.$Z"; fi
   for d in $DOMAINS; do vercel domains add "$d" "$P" --token "$VERCEL_TOKEN" $SCOPE >>"$LOG" 2>&1; log "$B: domain $d attached to $P"; done
   if [ "$M" = subdomain ]; then
