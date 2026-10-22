@@ -29,3 +29,7 @@ ul{margin:0;padding-left:16px;font-size:10pt;line-height:1.45}li{margin-bottom:4
 .pc h5{font:700 10pt/1.2 "Helvetica Neue";margin:6px 0 2px}.pc .ln{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:#8a857b}
 .pc p{font-size:8.3pt;line-height:1.35;color:#3a3833;margin-top:3px}.pc .st{display:inline-block;margin-top:4px}
 .tcols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tcols table{font-size:8.3pt}
+.bcov{display:grid;grid-template-columns:1fr .3fr;gap:16px;align-items:start}.bcov img{height:3.9in;object-fit:cover;object-position:top}
+.bfacts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;border:1px solid #ddd8cd;border-radius:4px;padding:12px 14px}
+.bfacts b{display:block;font-size:10pt;margin-bottom:3px}.bfacts span{font-size:8.5pt;color:#3a3833;line-height:1.4}
+.solo .pgrid{gap:8px 16px}.solo .pgrid+.note{margin-top:6px!important}.solo .page h2{margin-bottom:8px}
