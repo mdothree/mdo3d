@@ -23,9 +23,9 @@ Weighted to educational + build so the page reads as a maker/domain voice, not a
 >
 > The idea is simple. Large language models made it cheap to build a focused, useful tool in a weekend. So instead of one big product, MDO3D is many small ones, each on its own site, each doing one thing well.
 >
-> I will use this page to show the building. What shipped, what broke, what I learned. If you build software or you are curious what a one-person AI studio actually looks like week to week, follow along.
+> I will use this page to show the building. What shipped, what broke, what I learned. If you build software or you are curious what an AI studio actually looks like week to week, follow along.
 
-**CTA:** Follow the page. **Hashtags:** #BuildInPublic #AI #IndieHackers #SaaS #SoloFounder
+**CTA:** Follow the page. **Hashtags:** #BuildInPublic #AI #IndieHackers #SaaS
 
 ---
 
@@ -77,9 +77,9 @@ Weighted to educational + build so the page reads as a maker/domain voice, not a
 **Type:** Founder lesson · **Status:** drafted
 > Running many small products at once teaches you where your time actually goes. It is rarely the feature work. It is the shared plumbing: auth, payments, deploys, the same three bugs in slightly different shapes across every app.
 >
-> The thing that made a portfolio manageable for one person was pushing that plumbing into shared code, so a fix in one place lands everywhere. When that broke down, every tool drifted into its own subtle version of the same problem.
+> The thing that made a portfolio of many tools manageable was pushing that plumbing into shared code, so a fix in one place lands everywhere. When that broke down, every tool drifted into its own subtle version of the same problem.
 
-**CTA:** none. **Hashtags:** #SoloFounder #IndieHackers #BuildInPublic #SaaS #Startups
+**CTA:** none. **Hashtags:** #IndieHackers #BuildInPublic #SaaS #Startups
 
 ---
 
@@ -143,7 +143,7 @@ Weighted to educational + build so the page reads as a maker/domain voice, not a
 >
 > The hard part is drawing the line. Give away too little and no one sticks. Give away everything and there is nothing to charge for. I am still moving that line, per tool, and watching what happens.
 
-**CTA:** none. **Hashtags:** #IndieHackers #SaaS #Pricing #BuildInPublic #SoloFounder
+**CTA:** none. **Hashtags:** #IndieHackers #SaaS #Pricing #BuildInPublic
 
 ---
 

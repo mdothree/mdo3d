@@ -14,7 +14,7 @@ MDO3D social content and its brand voice are defined.
 **a maker running a small AI studio**: plainspoken, specific, a little wry, technically
 honest. It shows the building. It never adopts a mystical or hype register, even when the
 subject is a divination tool. The engineer's voice, not the oracle's. Reader: someone who
-builds software, hires, or is job hunting, and is curious what a one-person AI studio looks
+builds software, hires, or is job hunting, and is curious what an AI studio looks
 like week to week. Open with a plain observation; close open and non-promotional. See
 [`../../social/MDO3D_SOCIAL_STRATEGY.md`](../../social/MDO3D_SOCIAL_STRATEGY.md).
 
