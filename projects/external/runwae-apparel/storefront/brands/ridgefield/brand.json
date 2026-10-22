@@ -47,9 +47,9 @@
  },
  "policies": {
   "entity": "Ridgefield",
-  "contact": "store@ridgefieldtech.com",
+  "contact": "contact@ridgefieldtech.com",
   "contact_status": "placeholder: confirm the inbox before launch",
-  "privacy_contact": "store@ridgefieldtech.com",
+  "privacy_contact": "contact@ridgefieldtech.com",
   "mailing_address": "[CONFIRM: mailing address]",
   "governing_law": "[CONFIRM: governing-law state]",
   "effective_date": "18 October 2026",

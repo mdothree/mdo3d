@@ -60,9 +60,9 @@
  },
  "policies": {
   "entity": "Runwae Apparel",
-  "contact": "hello@runwaeapparel.com",
+  "contact": "hello@buttsstudios.com",
   "contact_status": "placeholder: confirm the inbox exists before launch. Domain has no MX record on 2026-10-14, so mail to it bounces",
-  "privacy_contact": "hello@runwaeapparel.com",
+  "privacy_contact": "hello@buttsstudios.com",
   "mailing_address": "[CONFIRM: mailing address]",
   "governing_law": "[CONFIRM: governing-law state]",
   "effective_date": "18 October 2026",
