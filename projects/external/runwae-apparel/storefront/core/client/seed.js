@@ -135,8 +135,30 @@ function initAdd() {
   });
 }
 
-// ---------- notify me (next_drop / sold_out) ----------
+// ---------- notify me (next_drop / sold_out) + release sign-ups (reserve / waitlist) ----------
+// A reserve form whose box has data-limit checks the server count once; at the limit it shows the waitlist copy.
+function fullCopy(f, k) { var box = f.closest('[data-release]'); return box ? box.getAttribute('data-full-' + k) : ''; }
+function showFull(box) {
+  if (!box || box.getAttribute('data-full') === '1') return;
+  box.setAttribute('data-full', '1');
+  var f = box.querySelector('form[data-notify]');
+  var st = box.querySelector('.seed-status'); if (st) st.textContent = box.getAttribute('data-full-status');
+  var b = f.querySelector('button'); if (b) b.textContent = box.getAttribute('data-full-button');
+  var l = f.querySelector('label'); if (l) l.textContent = box.getAttribute('data-full-helper');
+  var t = f.querySelector('.seed-notify-terms'); if (t) t.hidden = true;
+  var c = f.querySelector('.seed-notify-consent'); if (c && c.firstChild) c.firstChild.nodeValue = box.getAttribute('data-full-consent') + ' ';
+  f.setAttribute('data-list', 'waitlist'); f.setAttribute('data-done', box.getAttribute('data-full-done'));
+}
+function initReserveLimits() {
+  document.querySelectorAll('[data-release][data-limit]').forEach(function (box) {
+    fetch(API + '/notify?brand=' + encodeURIComponent(SEED.brand.id) + '&product=' + encodeURIComponent(box.getAttribute('data-release')))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && j.list === 'waitlist') showFull(box); })
+      .catch(function () {});
+  });
+}
 function initNotify() {
+  initReserveLimits();
   document.querySelectorAll('form[data-notify]').forEach(function (f) {
     f.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -144,9 +166,10 @@ function initNotify() {
       var email = f.querySelector('input[name="email"]');
       if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value)) { say(msg, 'Please enter a valid email address.'); email.focus(); return; }
       var btn = f.querySelector('button'); btn.disabled = true;
-      fetch(API + '/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ brand: SEED.brand.id, product: f.getAttribute('data-product'), email: email.value }) })
+      fetch(API + '/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ brand: SEED.brand.id, product: f.getAttribute('data-product'), list: f.getAttribute('data-list') || 'notify', email: email.value }) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-        .then(function (x) { say(msg, x.ok ? "You're on the list. One email when it opens." : (x.j.error || COPY.notifyOff)); if (x.ok) email.value = ''; })
+        .then(function (x) { say(msg, x.ok ? ((x.j.list === 'waitlist' && f.getAttribute('data-list') === 'reserve' && fullCopy(f, 'done')) || f.getAttribute('data-done') || "You're on the list. One email when it opens.") : (x.j.error || COPY.notifyOff));
+          if (x.ok && x.j.list === 'waitlist' && f.getAttribute('data-list') === 'reserve') showFull(f.closest('[data-release]')); if (x.ok) email.value = ''; })
         .catch(function () { say(msg, COPY.notifyOff); })
         .then(function () { btn.disabled = false; });
     });

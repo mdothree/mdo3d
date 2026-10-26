@@ -71,7 +71,7 @@ export function privacyBody(f, href) {
 <ul>
 <li><strong>When you order.</strong> Checkout runs on Stripe. Stripe collects your name, email, shipping address and payment details. We receive your name, email, shipping address, the items, sizes and amounts, the ship-by date and the Stripe payment reference. We never see or store your full card number.</li>
 <li><strong>Stripe Link.</strong> If you choose to save your details with Link, Stripe stores them under its own privacy policy so later checkouts can fill them in.</li>
-<li><strong>Notify me.</strong> If you ask to hear when a piece opens, we keep your email, the piece and the time you asked. We use it to send that email and nothing else. Every such email has an unsubscribe link.</li>
+<li><strong>Waitlists and reservations.</strong> If you join a waitlist or reserve a place for a piece, we keep your email, the piece, the time you signed up and your place in line. We use it to email you about that piece and nothing else. A reservation is not an order and nothing is charged. Every such email has an unsubscribe link.</li>
 <li><strong>Order lookup.</strong> The order number and email you enter are used to find your order. Both must match.</li>
 <li><strong>Emails to us.</strong> If you write to us, we keep the conversation to answer you.</li>
 <li><strong>Technical data.</strong> Our host receives your IP address, browser type and the pages you request, as every web server does, and keeps short-lived request logs for security and troubleshooting.</li>
@@ -80,19 +80,20 @@ export function privacyBody(f, href) {
 <p>Your bag is saved in your own browser (localStorage) so it survives a page reload. It stays on your device until you check out. The shop sets no cookies of its own and runs no analytics, advertising pixels or cross-site tracking. Stripe's checkout pages use cookies of their own for fraud prevention and to run Link.</p>
 <p><strong>Do Not Track and Global Privacy Control.</strong> Because we do no cross-site tracking and never sell or share personal information for advertising, these signals do not change anything here; you are already opted out.</p>
 <h2>How we use it</h2>
-<p>To take payment, make and ship your order, send order emails (confirmation, production, shipping, and delay notices with the option to cancel), handle exchanges and refunds, calculate sales tax, prevent fraud, keep tax and accounting records, and send a Notify me email you asked for. We send marketing email only if you sign up for it.</p>
+<p>To take payment, make and ship your order, send order emails (confirmation, production, shipping, and delay notices with the option to cancel), handle exchanges and refunds, calculate sales tax, prevent fraud, keep tax and accounting records, and send a waitlist or reservation email you asked for. We send marketing email only if you sign up for it.</p>
 <h2>Who we share it with</h2>
 <p>Only the service providers that run the shop, each limited to its part of the job:</p>
 <ul>
 <li><strong>Stripe</strong>: payments, Link, fraud checks and sales tax calculation.</li>
 <li><strong>Resend</strong>: sends our order emails.</li>
 <li><strong>Vercel</strong>: hosts the shop and runs checkout and sign-up functions.</li>
+<li><strong>Cloudflare</strong>: stores waitlist and reservation sign-ups (email, piece, time) in a private database.</li>
 <li><strong>Printful</strong>: for pieces marked made to order, receives your name, shipping address and the items so it can print and ship them.</li>
 <li><strong>Shipping carriers</strong>: receive your name and address to deliver your order.</li>
 ${f.fonts ? '<li><strong>Google Fonts</strong>: your browser loads the shop\'s typefaces from Google, which receives your IP address.</li>\n' : ''}</ul>
 <p>We may also disclose information when the law requires it, to protect our rights or our customers, or as part of a sale or transfer of the business. We do not sell your personal information.</p>
 <h2>How long we keep it</h2>
-<p>Order records: ${esc(f.retention)}. Notify me sign-ups: until the email is sent or you unsubscribe. Correspondence: as long as needed to help you. Request logs: kept briefly by our host.</p>
+<p>Order records: ${esc(f.retention)}. Waitlist and reservation sign-ups: until the piece is released or you unsubscribe. Correspondence: as long as needed to help you. Request logs: kept briefly by our host.</p>
 <h2>Your rights</h2>
 <p>You can ask to see, correct or delete your personal information, or for a copy of it. Residents of California and other US states with privacy laws, and of the UK and EU, have these rights by law; we extend them to everyone. We will confirm the request comes from you (usually by replying from the email on the order), answer within 30 days, and never treat you differently for asking. Some order records must be kept for tax law even after a deletion request. UK and EU visitors may also complain to their data protection authority. Write to ${mail(f.privacy)}.</p>
 <h2>Children</h2>

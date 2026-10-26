@@ -168,3 +168,42 @@ a{text-decoration-thickness:1px;text-underline-offset:3px}
   .bs-sticky{position:static}
   .bs-sec-head{flex-direction:column;gap:6px}
 }
+
+/* Collection 2027: its own photo-led feel inside the same shop (warm lifestyle renders, large media, quiet facts).
+   Full even borders only; the layout fills the width at every size. */
+.c27-hero{padding:0 0 64px;border-bottom:1px solid var(--c-line)}
+.c27-hero-media img{width:100%;aspect-ratio:1600/565;object-fit:cover;display:block}
+.c27-hero-media figcaption{max-width:1320px;margin:8px auto 0;padding:0 32px}
+.c27-hero-copy{padding-top:48px}
+.c27-hero-copy .bs-lede{max-width:40ch}
+.c27-list{padding-top:24px;padding-bottom:24px}
+.c27-row{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:center;padding:56px 0;border-bottom:1px solid var(--c-line)}
+.c27-row--flip .c27-row-media{order:2}
+.c27-row-media{display:block}
+.c27-row-media img{width:100%;aspect-ratio:1;object-fit:cover;border:1px solid var(--c-line)}
+.c27-row-copy p{max-width:44ch}
+.c27-row-copy .bs-h2 a{color:var(--c-fg);text-decoration:none}
+.c27-row-copy .bs-h2 a:hover{color:var(--c-accent)}
+.c27-row-meta{display:flex;flex-wrap:wrap;gap:8px 18px;font:500 14px/1.4 var(--f-mono);color:var(--c-muted)}
+.c27-row-thumb{display:block;width:120px;margin-top:18px}
+.c27-row-thumb img{width:120px;height:120px;object-fit:cover;border:1px solid var(--c-line)}
+.c27-wide{padding:56px 0;border-bottom:1px solid var(--c-line)}
+.c27-wide img{width:100%;aspect-ratio:1440/561;object-fit:cover;display:block;border:1px solid var(--c-line)}
+.c27-note{padding-top:40px;padding-bottom:20px}
+.c27-note p{max-width:60ch;color:var(--c-muted)}
+.seed-status--waitlist,.seed-status--reserve{color:var(--c-fg)}
+.c27-band{padding:88px 0;border-bottom:1px solid var(--c-line)}
+.c27-band-media{display:block;margin-top:24px}
+.c27-band-media img{width:100%;aspect-ratio:1600/565;object-fit:cover;display:block;border:1px solid var(--c-line)}
+.c27-band-lede{max-width:52ch;color:var(--c-muted);margin:20px 0 24px}
+.seed-notify-terms{color:var(--c-muted)}
+.bs-pdp .seed-note{color:var(--c-fg)}
+@media (max-width:820px){
+  .c27-hero{padding-bottom:40px}
+  .c27-hero-media img,.c27-band-media img,.c27-wide img{aspect-ratio:4/3}
+  .c27-hero-media figcaption{padding:0 16px}
+  .c27-hero-copy{padding-top:28px}
+  .c27-row{grid-template-columns:minmax(0,1fr);gap:24px;padding:40px 0}
+  .c27-row--flip .c27-row-media{order:0}
+  .c27-band{padding:56px 0}
+  }

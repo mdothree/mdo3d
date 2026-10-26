@@ -41,7 +41,10 @@
   "intro": "Books, comics, channels, cartoons and art. The clothes come from the same studio.",
   "notifyIntro": "One email when it opens. Nothing else.",
   "exchangeLine": "Size exchanges within 14 days of delivery.",
-  "checkoutOff": "Checkout opens when the shop does."
+  "checkoutOff": "Checkout opens when the shop does.",
+  "notifyLabel": "Join the waitlist",
+  "c27Intro": "Lamps, power, air and seating for the desk and the room. Planned for 2027.",
+  "c27Note": "Every piece starts on the waitlist. When a piece opens for reservations or orders, the waitlist hears first. Images are concept renders; sizes and specs are still being set."
  },
  "shipping": {
   "flat_cents": null,
@@ -73,5 +76,37 @@
  "from_name": "Butts Studios",
  "orders_from": "orders@buttsstudios.com",
  "orders_inbox": "orders@buttsstudios.com",
- "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout."
+ "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout.",
+ "release_states": {
+  "_note": "Labels and helper lines for release-managed items (catalog `release`; core/catalog.mjs RELEASE_COPY has the defaults). Change any word here; no code. {window} = the item's release.window, {limit} = its reserve_limit. Principal 2026-10-26: Order (in stock) / Pre-order (paid, ship window, checkout open) / Reserve (free, holds a place, not an order; capped by reserve_limit) / Waitlist (not taking reservations, or reservations full; reason shown).",
+  "order": {
+   "status": "In stock",
+   "button": "Add to bag"
+  },
+  "preorder": {
+   "status": "Pre-order · ships {window}",
+   "button": "Pre-order",
+   "helper": "Paid now, made after the pre-order window closes. Ships {window}."
+  },
+  "reserve": {
+   "status": "Reserve · planned for {window}",
+   "button": "Reserve",
+   "helper": "Reserving holds your place. It isn't an order and you won't be charged.",
+   "terms": "Places are kept in the order they arrive. When orders open, everyone who reserved gets a {priority_window} head start by email before the public.",
+   "priority_window": "48-hour",
+   "done": "Your place is held. We'll email you before orders open to everyone.",
+   "price_suffix": "· planned price"
+  },
+  "waitlist": {
+   "status": "Waitlist · planned for {window}",
+   "button": "Join the waitlist",
+   "reason": "Not taking reservations yet.",
+   "helper": "We'll email you when it's available to reserve or order.",
+   "done": "You're on the waitlist. We'll email you when it's available to reserve or order.",
+   "price_suffix": "· planned price"
+  },
+  "waitlist_full": {
+   "reason": "All {limit} reservations are taken."
+  }
+ }
 }

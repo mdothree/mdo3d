@@ -11,6 +11,17 @@
 //                   an internal `sales_record` {channel, note} (never rendered) or sold_count >= stock.
 //                   The build refuses a sold_out item without one. No fake scarcity.
 //   live | draft    pre-seed spellings, still accepted (live = available, or preorder on channel "preorder")
+// Release-managed items (catalog `release`: {state, window, reserve_limit?, reason?}; Principal 2026-10-26, every shop).
+// Four states, set per product in data:
+//   order     in stock: the normal buy box. Needs the inventory status `available` and checkout open.
+//   preorder  accepting pre-orders: paid, ship window shown. Needs inventory `preorder` and checkout open.
+//   reserve   pre-orders will be limited and orders aren't open yet: free, email only, holds a PLACE (not an
+//             order). Optional reserve_limit: at that many reservations new sign-ups join the waitlist (the server
+//             counts; the page switches in the browser).
+//   waitlist  not taking reservations (or reservations full): a notify list, with the reason on the page
+//             (release.reason, else the brand's default line).
+// order/preorder with checkout closed render as waitlist, so they stay wired but off until CHECKOUT_ENABLED.
+// Every label, button and helper line comes from brand.json `release_states` over RELEASE_COPY below.
 // Price: price_cents null renders "Price TBA". Checkout stays off unless the brand is live AND a Stripe test
 // (or explicitly allowed live) key is configured server-side.
 import { readFileSync, existsSync } from 'node:fs';
@@ -49,6 +60,19 @@ export function printErrors(p, rules = {}) {
     if (x?.size === 'half_front' && x.placement !== 'front_panel') errs.push(`${p.id}: half_front art belongs on a front_panel`);
     if (x?.placement === 'front_chest' && x.size !== 'chest_medium') errs.push(`${p.id}: chest marks must be chest_medium, not "${x.size}"`);
   }
+  return errs;
+}
+
+export const RELEASE_STATES = Object.freeze(['order', 'preorder', 'reserve', 'waitlist']);
+/** Errors for one item's release spec (empty = ok). */
+export function releaseErrors(p) {
+  const r = p.release;
+  if (r == null) return [];
+  const errs = [];
+  if (!RELEASE_STATES.includes(r.state)) errs.push(`${p.id}: release.state must be one of ${RELEASE_STATES.join(', ')}`);
+  if (typeof r.window !== 'string' || !r.window.trim()) errs.push(`${p.id}: release.window is required (an honest window, e.g. "2027")`);
+  if (r.reserve_limit != null && !(Number.isInteger(r.reserve_limit) && r.reserve_limit >= 0)) errs.push(`${p.id}: release.reserve_limit must be a whole number >= 0 (leave it out for no limit)`);
+  if (r.reason != null && typeof r.reason !== 'string') errs.push(`${p.id}: release.reason must be text`);
   return errs;
 }
 
@@ -114,6 +138,7 @@ export function validateCatalog(products, drops = [], palette = null, printRules
     if (p.status === 'archive' && !Number.isInteger(p.archive_year)) errors.push(`${p.id}: archive needs archive_year (pieces that really existed only)`);
     if (p.status === 'preorder' && !drops.some((d) => d.products.includes(p.id))) errors.push(`${p.id}: preorder needs a drop in drops.json`);
     errors.push(...printErrors(p, printRules));
+    errors.push(...releaseErrors(p));
     if (p.price_cents != null && (!Number.isInteger(p.price_cents) || p.price_cents <= 0)) errors.push(`${p.id}: price_cents must be a positive integer or null`);
   }
   if (errors.length) throw new Error(`catalog invalid:\n  ${errors.join('\n  ')}`);
@@ -122,8 +147,54 @@ export function validateCatalog(products, drops = [], palette = null, printRules
 
 const dropFor = (p, drops) => drops.find((d) => d.products.includes(p.id)) ?? null;
 
-/** Everything a page needs to show one item's state. Pure. */
-export function productView(p, drops, now = new Date()) {
+/** Default release copy (every shop). A brand overrides any line in brand.json `release_states`.
+ *  Placeholders: {window} = the item's release.window, {limit} = its reserve_limit, {priority_window} = reserve.priority_window. */
+export const RELEASE_COPY = Object.freeze({
+  order: { status: 'In stock', button: 'Add to bag', helper: '' },
+  preorder: { status: 'Pre-order · ships {window}', button: 'Pre-order', helper: 'Paid now, made after the pre-order window closes. Ships {window}.' },
+  reserve: { status: 'Reserve · planned for {window}', button: 'Reserve', helper: "Reserving holds your place. It isn't an order and you won't be charged.",
+    terms: 'Places are kept in the order they arrive. When orders open, everyone who reserved gets a {priority_window} head start by email before the public.',
+    priority_window: '48-hour', done: "Your place is held. We'll email you before orders open to everyone.", consent: 'We use your email only for this reservation. Unsubscribe any time.', price_suffix: '· planned price' },
+  waitlist: { status: 'Waitlist · planned for {window}', button: 'Join the waitlist', reason: "Not taking reservations yet.", helper: "We'll email you when it's available to reserve or order.",
+    done: "You're on the waitlist. We'll email you when it's available to reserve or order.", consent: 'We use your email only for this waitlist. Unsubscribe any time.', price_suffix: '· planned price' },
+  waitlist_full: { reason: 'All {limit} reservations are taken.' },
+});
+/** brand.json release_states merged over the defaults, one state at a time. */
+export const releaseCopy = (brandStates = {}) => Object.fromEntries(Object.entries(RELEASE_COPY).map(([k, d]) => [k, { ...d, ...(brandStates?.[k] ?? {}) }]));
+export const fillRelease = (t, r, copy) => String(t ?? '').replaceAll('{window}', r?.window ?? '').replaceAll('{limit}', String(r?.reserve_limit ?? ''))
+  .replaceAll('{priority_window}', copy?.reserve?.priority_window ?? '').trim();
+
+/** Everything a page needs to show one item's state. Pure.
+ *  opts.checkout: checkout is open for this build; opts.release: brand.json `release_states` (release-managed items). */
+export function productView(p, drops, now = new Date(), opts = {}) {
+  const v = productViewBase(p, drops, now);
+  if (!p.release) return v;
+  const r = p.release;
+  const copy = releaseCopy(opts.release);
+  const open = opts.checkout === true && v.canAdd;
+  const st = r.state === 'order' && open && v.status === 'available' ? 'order'
+    : r.state === 'preorder' && open && v.status === 'preorder' ? 'preorder'
+      : r.state === 'reserve' ? 'reserve' : 'waitlist';
+  const f = (t) => fillRelease(t, r, copy);
+  const c = copy[st];
+  const wl = copy.waitlist;
+  v.release = { state: st, list: st === 'reserve' ? 'reserve' : 'waitlist', window: r.window, limit: Number.isInteger(r.reserve_limit) ? r.reserve_limit : null,
+    status: f(c.status), button: f(c.button), helper: f(c.helper), terms: f(c.terms), done: f(c.done), consent: f(c.consent),
+    reason: st === 'waitlist' ? (r.reason?.trim() || f(wl.reason)) : '',
+    // reserve with a limit: the waitlist copy the page switches to when the server says the reservations are full
+    full: st === 'reserve' && Number.isInteger(r.reserve_limit) ? { status: f(wl.status), button: f(wl.button), helper: `${f(copy.waitlist_full.reason)} ${f(wl.helper)}`.trim(), done: f(wl.done), consent: f(wl.consent) } : null };
+  v.label = v.release.status || v.label;
+  if (st === 'order' || st === 'preorder') {
+    v.note = [v.release.helper, v.note].filter(Boolean).join(' ');
+    return v;
+  }
+  // Reserve / waitlist: email only, never addable, whatever the inventory says.
+  v.canAdd = false; v.preorder = false; v.notify = true;
+  v.note = v.release.reason;
+  if (v.price_cents !== null) v.priceText = [v.priceText, f(c.price_suffix)].filter(Boolean).join(' ');
+  return v;
+}
+function productViewBase(p, drops, now) {
   const status = p.status === 'live' ? (p.channel === 'preorder' ? 'preorder' : 'available') : p.status === 'draft' ? 'in_development' : p.status;
   const drop = dropFor(p, drops);
   const price_cents = Number.isInteger(p.price_cents) ? p.price_cents : null;
@@ -182,10 +253,10 @@ export function productView(p, drops, now = new Date()) {
 }
 
 /** Public data for window.SEED (cart page, add-to-bag). No internal fields (sales_record, stock, notes). */
-export function publicCatalog(products, drops, now, { imageFor, urlFor }) {
+export function publicCatalog(products, drops, now, { imageFor, urlFor, viewOpts = {} }) {
   const out = {};
   for (const p of products) {
-    const v = productView(p, drops, now);
+    const v = productView(p, drops, now, viewOpts);
     out[p.id] = {
       name: p.name, url: urlFor(p), image: imageFor(p), status: v.status, price_cents: v.price_cents,
       canAdd: v.canAdd, preorder: v.preorder, drop: v.drop, ship_by: v.ship_by,

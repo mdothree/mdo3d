@@ -158,6 +158,7 @@ export function purchasable(product, drops, now = new Date()) {
   if (!product) return { ok: false, reason: 'unknown product' };
   if (product.rights_hold) return { ok: false, reason: 'rights hold' };
   if (!SELLABLE.includes(product.status)) return { ok: false, reason: 'not released' };
+  if (product.release && product.release.state !== 'preorder') return { ok: false, reason: `${product.release.state} only` };
   if (!Number.isInteger(product.price_cents) || product.price_cents <= 0) return { ok: false, reason: 'no price' };
   const preorder = product.status === 'preorder' || (product.status === 'live' && product.channel === 'preorder');
   if (!preorder) return { ok: true, price_cents: product.price_cents };

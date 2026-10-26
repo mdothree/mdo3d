@@ -59,7 +59,10 @@ for (const id of BRANDS) {
     const out = await build(id);
     const data = JSON.parse(readFileSync(join(out, 'catalog.js'), 'utf8').replace(/^window\.SEED = /, '').replace(/;\s*$/, ''));
     assert.equal(Object.values(data.products).filter((p) => p.canAdd).length, 0, `${id}: nothing addable before launch`);
+    // Release-managed pieces (Collection 2027, Principal 2026-10-26) show their waitlist/reserve state instead (test/release.test.mjs).
+    const released = new Set(loadBrand(id).catalog.filter((p) => p.release).map((p) => p.id));
     for (const [pid, p] of Object.entries(data.products)) {
+      if (released.has(pid)) continue;
       assert.ok(['unavailable', 'archive'].includes(p.status), `${pid}: ${p.status}`);
       if (p.status === 'archive') continue;
       const page = readFileSync(join(out, 'products', `${pid}.html`), 'utf8');
@@ -77,7 +80,8 @@ for (const id of BRANDS) {
     assert.doesNotMatch(all, /\bAHL\b|Anne Huntington/);
     if (id !== 'glb') assert.doesNotMatch(all, /\btote\b|dad hat|ball cap|baseball cap|\bcap\b/i, 'caps/totes are banned outside GLB');
     assert.doesNotMatch(all, /third_party|04_third_party|internal_only/i);
-    assert.doesNotMatch(all, /\$\d/, 'no prices are set, so no dollar amounts render');
+    // Release-managed pieces may show a delegated planned price (Collection 2027, 2026-10-26), always labelled as planned.
+    assert.doesNotMatch(all.replace(/\$\d+\.\d{2} · planned price/g, ''), /\$\d/, 'no prices are set, so no dollar amounts render');
     assert.doesNotMatch(all, /\d(\.\d)? ?\(\d[\d.,]*k? reviews\)|★/i, 'no fake reviews');
     const assets = readdirSync(join(out, 'assets'));
     assert.ok(assets.every((a) => !/poison|pave|backpack-flap/i.test(a) && (id === 'glb' || !/tote|cap-/i.test(a))), assets.join(','));
@@ -317,7 +321,7 @@ for (const id of BRANDS) {
       assert.match(nav[1], /href="mailto:/, `${f}: footer contact`);
     }
     const priv = readFileSync(join(out, 'privacy.html'), 'utf8');
-    for (const must of [/Stripe/, /Link/, /localStorage/, /Resend/, /Vercel/, /Printful/, /Notify me/, /Do Not Track/, /under 13/, /California/, /do not sell/i]) assert.match(priv, must, `privacy mentions ${must}`);
+    for (const must of [/Stripe/, /Link/, /localStorage/, /Resend/, /Vercel/, /Printful/, /Waitlists and reservations/, /Do Not Track/, /under 13/, /California/, /do not sell/i]) assert.match(priv, must, `privacy mentions ${must}`);
     assert.equal(/Google Fonts/.test(priv), !!brand.tokens?.fontsHref, 'Google Fonts disclosed exactly when loaded');
     const ret = readFileSync(join(out, 'returns.html'), 'utf8');
     assert.match(ret, /before it passes/); assert.match(ret, /more than 30 days/); assert.match(ret, /minimum production run/);

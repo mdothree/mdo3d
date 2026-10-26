@@ -128,11 +128,13 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   if (se.length) throw new Error(`style rules:\n  ${se.join('\n  ')}`);
   const L = await import(pathToFileURL(join(dir, 'layout', 'index.mjs')).href);
   const listed = catalog.filter((p) => p.listed !== false);
-  const views = Object.fromEntries(listed.map((p) => [p.id, productView(p, drops, now)]));
+  const checkout = brand.mode === 'live' && env.CHECKOUT_ENABLED === 'true';
+  // Release-managed items (catalog `release`) read their labels from brand.json and pre-order only while checkout is open.
+  const viewOpts = { checkout, release: brand.release_states ?? {} };
+  const views = Object.fromEntries(listed.map((p) => [p.id, productView(p, drops, now, viewOpts)]));
   // Archive pieces live in their own section; everything else is the current shop.
   const shown = listed.filter((p) => views[p.id].status !== 'archive');
   const archive = listed.filter((p) => views[p.id].status === 'archive');
-  const checkout = brand.mode === 'live' && env.CHECKOUT_ENABLED === 'true';
   // Launch gate: a live shop may not publish policy pages with unconfirmed facts (entity, inbox, address, law...).
   const gaps = brand.mode === 'live' ? policyGaps(brand) : [];
   if (gaps.length) throw new Error(`policies: confirm before going live:\n  ${gaps.join('\n  ')}`);
@@ -198,8 +200,8 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
     brand: { id: brand.id, name: brand.name }, preview: brand.mode !== 'live', checkout, api: `${base}/api`,
     copy: { checkoutOff: brand.copy?.checkoutOff ?? 'Checkout opens when the shop does.', lookupOff: 'Order lookup opens when the shop does.', notifyOff: 'Sign-ups open when the shop does. Nothing was saved.' },
     products: publicCatalog(listed, drops, now, {
-      imageFor: (p) => (p.images?.[0] ? kit0.imgData(p.images[0]).src.replace(/-\d+\.jpg$/, (m) => { const w = manifest[p.images[0].file]?.widths?.[0]; return w ? `-${w}.jpg` : m; }) : ''),
-      urlFor: (p) => `products/${p.id}.html`,
+      imageFor: (p) => (p.images?.[0] ? kit0.imgData(p.images[0]).src.replace(/-\d+\.(jpg|webp)$/, (m, ext) => { const w = manifest[p.images[0].file]?.widths?.[0]; return w ? `-${w}.${ext}` : m; }) : ''),
+      urlFor: (p) => `products/${p.id}.html`, viewOpts,
     }),
   };
   writeFileSync(join(outDir, 'catalog.js'), `window.SEED = ${JSON.stringify(data)};\n`);

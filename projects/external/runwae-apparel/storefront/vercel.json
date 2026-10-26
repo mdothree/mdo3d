@@ -13,6 +13,7 @@
       "includeFiles": "{brands/**/*.json,inventory/*.csv}"
     },
     "api/notify.mjs": {
+      "includeFiles": "brands/**/catalog.json",
       "maxDuration": 10
     },
     "api/order-lookup.mjs": {

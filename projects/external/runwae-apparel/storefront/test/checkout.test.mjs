@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import handler, { sessionParams, keyAllowed, loadCatalog } from '../api/checkout.mjs';
+import { purchasable } from '../core/drop.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -58,7 +59,9 @@ test('every real brand catalog has nothing purchasable (unpriced) and no Poison/
     const real = loadCatalog(id, ROOT);
     assert.ok(real.products.length >= 1, id);
     for (const p of real.products) {
-      assert.equal(p.price_cents, null, `${id}/${p.id} must stay unpriced until the Principal sets a price`);
+      // Release-managed pieces (Collection 2027): planned price delegated 2026-10-26, never purchasable while on reserve/waitlist.
+      if (p.release) assert.equal(purchasable(p, real.drops).ok, false, `${id}/${p.id} must not be purchasable on ${p.release.state}`);
+      else assert.equal(p.price_cents, null, `${id}/${p.id} must stay unpriced until the Principal sets a price`);
       assert.doesNotMatch(p.id, /poison|pave/);
       if (p.sizes?.length) assert.equal(sessionParams(real, { product: p.id, size: p.sizes[0], color: p.colors?.[0]?.id }, opts).status, 409, `${id}/${p.id}`);
     }

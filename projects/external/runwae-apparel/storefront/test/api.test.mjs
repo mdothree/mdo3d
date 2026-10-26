@@ -21,7 +21,7 @@ test('notify: validates, then appends one JSON line to the local log (stub)', as
     await notify({ method: 'POST', body: JSON.stringify({ brand: 'glb', product: 'icon-tee', email: 'fan@example.com' }) }, res);
     assert.equal(res.statusCode, 200);
     res = fakeRes();
-    await notify({ method: 'GET' }, res);
+    await notify({ method: 'PUT' }, res);
     assert.equal(res.statusCode, 405);
     const lines = readFileSync(log, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
     assert.equal(lines.length, 1);

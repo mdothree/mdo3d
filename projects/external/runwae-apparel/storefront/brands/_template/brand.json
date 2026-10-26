@@ -64,5 +64,37 @@
  "from_name": "Example Brand",
  "orders_from": "orders@example.com",
  "orders_inbox": "orders@example.com",
- "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout."
+ "_orders": "Order emails (core/email.mjs): the shop notification goes to orders_inbox; the customer confirmation comes from orders_from as from_name. PLACEHOLDER inboxes: confirm they exist (and verify the domain in Resend) before live checkout.",
+ "release_states": {
+  "_note": "Labels and helper lines for release-managed items (catalog `release`: order | preorder | reserve | waitlist, optional reserve_limit). Off until a product carries `release`. Defaults: core/catalog.mjs RELEASE_COPY. {window} = the item's release.window, {limit} = its reserve_limit.",
+  "order": {
+   "status": "In stock",
+   "button": "Add to bag"
+  },
+  "preorder": {
+   "status": "Pre-order · ships {window}",
+   "button": "Pre-order",
+   "helper": "Paid now, made after the pre-order window closes. Ships {window}."
+  },
+  "reserve": {
+   "status": "Reserve · planned for {window}",
+   "button": "Reserve",
+   "helper": "Reserving holds your place. It isn't an order and you won't be charged.",
+   "terms": "Places are kept in the order they arrive. When orders open, everyone who reserved gets a {priority_window} head start by email before the public.",
+   "priority_window": "48-hour",
+   "done": "Your place is held. We'll email you before orders open to everyone.",
+   "price_suffix": "· planned price"
+  },
+  "waitlist": {
+   "status": "Waitlist · planned for {window}",
+   "button": "Join the waitlist",
+   "reason": "Not taking reservations yet.",
+   "helper": "We'll email you when it's available to reserve or order.",
+   "done": "You're on the waitlist. We'll email you when it's available to reserve or order.",
+   "price_suffix": "· planned price"
+  },
+  "waitlist_full": {
+   "reason": "All {limit} reservations are taken."
+  }
+ }
 }

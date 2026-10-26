@@ -7,6 +7,15 @@
 // C5 mark: inline SVG from ~/buttsstudios/site/index.html (square + X, stroke 12 of 100, X into the corners).
 const C5 = '<svg class="bs-x" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="12"><rect x="10" y="10" width="80" height="80"/><path d="M10 10 L90 90 M90 10 L10 90"/></g></svg>';
 
+// Collection 2027 (Principal 2026-10-26): home objects in the same shop (one bag, one checkout) as their own
+// collection. Everything for it keys off `collection: "2027"` so it could move to its own site later.
+const C27 = '2027';
+const isC27 = (p) => p.collection === C27;
+const c27Href = (kit) => `${kit.root}collection-2027.html`;
+
+// Collection 2027 images are concept renders and say so.
+const fig = (kit, im, opts = {}) => kit.figure(im, { concept: true, ...opts });
+
 const STAGES = [['in_development', 'Concept'], ['next_drop', 'Next drop'], ['preorder', 'Pre-order'], ['available', 'Available']];
 function stageBar(kit, p) {
   const s = kit.view(p).status;
@@ -21,14 +30,14 @@ export function header({ kit, page }) {
 <a class="bs-mark" href="${kit.href.home()}" aria-label="Butts Studios, shop home">${C5}<span class="bs-word">Butts<br>Studios</span></a>
 ${kit.menuButton('Menu')}
 <nav id="site-nav" class="bs-nav" aria-label="Main">
-<a href="${kit.href.shop()}"${cur('collection')}>Collection</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${kit.href.story()}"${cur('story')}>Story</a>${kit.bagLink('Bag')}
+<a href="${kit.href.shop()}"${cur('collection')}>Apparel</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${c27Href(kit)}"${cur('collection-2027')}>Collection 2027</a><a href="${kit.href.story()}"${cur('story')}>Story</a>${kit.bagLink('Bag')}
 </nav></div></header>`;
 }
 
 export function footer({ brand, kit }) {
   return `<footer class="bs-foot"><div class="bs-wrap bs-foot-grid">
 <div><a class="bs-mark bs-mark--sm" href="${kit.href.home()}" aria-label="Butts Studios">${C5}<span class="bs-word">Butts<br>Studios</span></a><p class="bs-foot-tag">Made of Story.</p></div>
-<div><p class="bs-mono">Shop</p><a href="${kit.href.shop()}">Collection</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${kit.href.cart()}">Bag</a></div>
+<div><p class="bs-mono">Shop</p><a href="${kit.href.shop()}">Apparel</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${c27Href(kit)}">Collection 2027</a><a href="${kit.href.cart()}">Bag</a></div>
 <div><p class="bs-mono">Help</p><a href="${kit.href.orders()}">Order lookup</a><a href="${kit.href.policies()}">Shipping and exchanges</a><a href="mailto:${kit.esc(brand.policies.contact)}">${kit.esc(brand.policies.contact)}</a></div>
 <div><p class="bs-mono">Studio</p><a href="${kit.href.story()}">Story</a></div>
 </div><div class="bs-wrap"><p class="bs-fine">© ${new Date().getUTCFullYear()} Butts Studios. Images on this preview are concept renders.</p></div></footer>`;
@@ -61,7 +70,9 @@ function indexRow(kit, p) {
 }
 
 export const pages = {
-  home({ brand, kit, shown }) {
+  home({ brand, kit, shown: all }) {
+    const shown = all.filter((p) => !isC27(p));
+    const c27 = all.filter(isC27);
     const focus = shown.find((p) => ['preorder', 'available'].includes(kit.view(p).status)) ?? shown[0];
     const fv = kit.view(focus);
     return {
@@ -98,6 +109,8 @@ ${stageBar(kit, focus)}
 <ol class="bs-rows">${shown.map((p) => indexRow(kit, p)).join('')}</ol>
 </div></section>
 
+${c27.length ? c27Band(kit, brand, c27) : ''}
+
 <section class="bs-detail" aria-labelledby="detail-title"><div class="bs-wrap">
 <div class="bs-sec-head"><h2 id="detail-title" class="bs-h3">Detail</h2><p class="bs-mono">Concept renders · materials to be confirmed</p></div>
 <div class="bs-detail-grid">
@@ -116,7 +129,9 @@ ${kit.figure('look-reader', { concept: true, caption: 'Plaid Flannel, in the stu
     };
   },
 
-  collection({ kit, shown }) {
+  collection({ kit, brand, shown: all }) {
+    const shown = all.filter((p) => !isC27(p));
+    const c27 = all.filter(isC27);
     const apparel = shown.filter((p) => p.category === 'apparel');
     const acc = shown.filter((p) => p.category === 'accessories');
     return {
@@ -128,24 +143,25 @@ ${kit.figure('look-reader', { concept: true, caption: 'Plaid Flannel, in the stu
 <div class="bs-grid">${apparel.map((p) => card(kit, p, '(max-width: 820px) 100vw, 50vw')).join('')}</div>
 <h2 id="accessories" class="bs-h3 bs-coll-sec">Accessories</h2>
 <div class="bs-grid">${acc.map((p) => card(kit, p, '(max-width: 820px) 100vw, 50vw')).join('')}</div>
-</section>`,
+</section>${c27.length ? c27Band(kit, brand, c27) : ''}`,
     };
   },
 
   product({ kit }, p) {
     const imgs = p.images ?? [];
     const media = imgs.length
-      ? `<div class="bs-pdp-main">${kit.figure(imgs[0], { concept: true, sizes: '(max-width: 820px) 100vw, 58vw', eager: true })}</div>
-<div class="bs-pdp-more">${imgs.slice(1).map((im) => kit.figure(im, { concept: true, sizes: '(max-width: 820px) 50vw, 29vw' })).join('')}</div>`
+      ? `<div class="bs-pdp-main">${fig(kit, imgs[0], { sizes: '(max-width: 820px) 100vw, 58vw', eager: true })}</div>
+<div class="bs-pdp-more">${imgs.slice(1).map((im) => fig(kit, im, { sizes: '(max-width: 820px) 50vw, 29vw' })).join('')}</div>`
       : `<div class="bs-pdp-main"><div class="bs-ph bs-ph--lg"><span class="bs-ph-x">${C5}</span><span class="bs-mono">In rework · no image yet</span></div></div>`;
-    return `<div class="bs-wrap"><p class="bs-crumb bs-mono"><a href="${kit.href.shop()}">Collection</a> / No. ${kit.esc(p.no)}</p></div>
+    const crumb = isC27(p) ? `<a href="${c27Href(kit)}">Collection 2027</a>` : `<a href="${kit.href.shop()}">Apparel</a>`;
+    return `<div class="bs-wrap"><p class="bs-crumb bs-mono">${crumb} / No. ${kit.esc(p.no)}</p></div>
 <section class="bs-wrap bs-pdp"><div class="bs-pdp-media">${media}</div>
 <div class="bs-pdp-panel"><div class="bs-sticky">
 <p class="bs-mono">No. ${kit.esc(p.no)} · ${kit.esc(p.type)}</p>
 <h1 class="bs-h1">${kit.esc(p.name)}</h1>
 ${p.colors?.length === 1 ? `<p class="bs-pdp-color">${kit.esc(p.colors[0].name)}</p>` : ''}
 <p>${kit.esc(p.summary)}</p>
-${stageBar(kit, p)}
+${p.release ? '' : stageBar(kit, p)}
 ${kit.buyBox(p)}
 <div class="bs-pdp-details">${kit.details(p, { open: 1 })}</div>
 </div></div></section>`;
@@ -173,4 +189,55 @@ ${kit.figure('detail-neck', { concept: true, caption: 'Labels', sizes: '(max-wid
 <section class="bs-wrap bs-story-end"><a class="bs-btn" href="${kit.href.shop()}">View the collection</a></section>`,
     };
   },
+
+  extra: {
+    'collection-2027'({ brand, kit, shown }) {
+      const items = shown.filter(isC27);
+      const rows = items.map((p, i) => c27Row(kit, p, i));
+      if (rows.length > 4) rows.splice(4, 0, `<div class="c27-wide">${fig(kit, { file: 'c27-ed-studio', alt: 'Several Collection 2027 pieces together on a desk and floor in warm light', concept: true }, { sizes: '100vw' })}</div>`);
+      return {
+        title: 'Collection 2027 | Butts Studios',
+        description: brand.copy?.c27Intro ?? 'Collection 2027 from Butts Studios.',
+        image: kit.imgData('c27-ed-hero').src,
+        body: `<section class="c27-hero">
+<div class="c27-hero-media">${fig(kit, { file: 'c27-ed-hero', alt: 'The Collection 2027 pieces lined up on a stone ledge over a checker mat, in late sun', concept: true }, { sizes: '100vw', eager: true })}</div>
+<div class="bs-wrap c27-hero-copy"><p class="bs-mono bs-eyebrow">Butts Studios · Collection 2027</p>
+<h1 class="bs-display bs-display--md">Collection 2027</h1>
+<p class="bs-lede">${kit.esc(brand.copy?.c27Intro ?? '')}</p>
+<p class="bs-mono">${String(items.length).padStart(2, '0')} pieces · concept renders</p></div>
+</section>
+<section class="bs-wrap c27-list" aria-label="Collection 2027 pieces">
+${rows.join('')}
+</section>
+<section class="bs-wrap c27-note"><p>${kit.esc(brand.copy?.c27Note ?? '')}</p><a class="bs-link" href="${kit.href.shop()}">Apparel <span aria-hidden="true">→</span></a></section>`,
+      };
+    },
+  },
 };
+
+/** One Collection 2027 piece on its landing page: lifestyle photo first, the facts beside it. */
+function c27Row(kit, p, i) {
+  const v = kit.view(p);
+  const life = p.images.find((im) => im.file.endsWith('-lifestyle')) ?? p.images[0];
+  const prod = p.images.find((im) => im.file.endsWith('-product'));
+  return `<article class="c27-row${i % 2 ? ' c27-row--flip' : ''}">
+<a class="c27-row-media" href="${kit.href.product(p)}">${fig(kit, life, { sizes: '(max-width: 820px) 100vw, 58vw' })}</a>
+<div class="c27-row-copy">
+<p class="bs-mono">No. ${kit.esc(p.no)} · ${kit.esc(p.type)} · ${kit.esc(p.colors?.[0]?.name ?? '')}</p>
+<h2 class="bs-h2"><a href="${kit.href.product(p)}">${kit.esc(p.name)}</a></h2>
+<p>${kit.esc(p.summary)}</p>
+<p class="c27-row-meta">${v.priceText ? `<span>${kit.esc(v.priceText)}</span>` : ''}<span class="seed-status seed-status--${kit.esc(v.release?.state ?? v.status)}">${kit.esc(v.label)}</span></p>
+${prod ? `<a class="c27-row-thumb" href="${kit.href.product(p)}">${kit.img(prod, { sizes: '160px', alt: '' })}</a>` : ''}
+<a class="bs-btn" href="${kit.href.product(p)}">View the piece</a>
+</div></article>`;
+}
+
+/** Collection 2027 band on the shop home and the apparel page: one wide lifestyle photo, links to its landing page. */
+function c27Band(kit, brand, items) {
+  return `<section class="c27-band" aria-labelledby="c27-band-title"><div class="bs-wrap">
+<div class="bs-sec-head"><h2 id="c27-band-title" class="bs-h3">Collection 2027</h2><p class="bs-mono">${String(items.length).padStart(2, '0')} pieces · planned for 2027</p></div>
+<a class="c27-band-media" href="${c27Href(kit)}">${fig(kit, { file: 'c27-ed-hero', alt: 'The Collection 2027 pieces lined up on a stone ledge over a checker mat, in late sun', concept: true }, { sizes: '(max-width: 1320px) 100vw, 1320px' })}</a>
+<p class="c27-band-lede">${kit.esc(brand.copy?.c27Intro ?? '')}</p>
+<a class="bs-link" href="${c27Href(kit)}">View Collection 2027 <span aria-hidden="true">→</span></a>
+</div></section>`;
+}

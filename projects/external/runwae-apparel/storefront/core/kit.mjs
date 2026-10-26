@@ -31,7 +31,8 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
     const m = manifest[r.file];
     if (m) {
       const max = m.widths[m.widths.length - 1];
-      return { src: `${root}assets/${r.file}-${max}.jpg`, srcset: m.widths.map((w) => `${root}assets/${r.file}-${w}.jpg ${w}w`).join(', '), w: m.w, h: m.h, r };
+      const ext = m.ext ?? 'jpg'; // manifest entries may carry ext (e.g. "webp"); tools/images.mjs writes .jpg
+      return { src: `${root}assets/${r.file}-${max}.${ext}`, srcset: m.widths.map((w) => `${root}assets/${r.file}-${w}.${ext} ${w}w`).join(', '), w: m.w, h: m.h, r };
     }
     if (/\.(jpe?g|png|webp|svg)$/i.test(r.file)) return { src: `${root}assets/${r.file}`, srcset: '', w: r.width ?? 1000, h: r.height ?? 1000, r };
     throw new Error(`image "${r.file}" is not in assets/manifest.json`);
@@ -78,10 +79,11 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
     const gone = (s) => av.length > 0 && av.filter(([k]) => k.endsWith(`/${s}`)).every(([, a]) => !(a.available > 0));
     return `<fieldset class="seed-sizes"><legend>${esc(legend)}</legend><div class="seed-options">${ss.map((s) => `<label class="seed-size"><input type="radio" name="size" value="${esc(s)}" required${gone(s) ? ' disabled' : ''}><span>${esc(s)}</span></label>`).join('')}</div></fieldset>`;
   };
-  k.notifyForm = (p, { label = 'Notify me', intro } = {}) => `<form class="seed-notify" data-notify data-product="${esc(p.id)}" novalidate>
+  // list: which sign-up list (notify | reserve | waitlist); done: the success line; consent: the fine print.
+  k.notifyForm = (p, { label = k.copy('notifyLabel', 'Join the waitlist'), intro, list = 'notify', done = '', consent = '', after = '' } = {}) => `<form class="seed-notify seed-notify--${esc(list)}" data-notify data-product="${esc(p.id)}" data-list="${esc(list)}"${done ? ` data-done="${esc(done)}"` : ''} novalidate>
 <label for="notify-${esc(p.id)}">${esc(intro ?? k.copy('notifyIntro', 'Get one email when it opens.'))}</label>
 <div class="seed-notify-row"><input id="notify-${esc(p.id)}" type="email" name="email" autocomplete="email" placeholder="you@example.com" required><button type="submit">${esc(label)}</button></div>
-<p class="seed-fine seed-notify-consent">We use your email only to tell you when this piece opens. Unsubscribe any time. <a href="${k.href.privacy()}">Privacy</a></p>
+${after ? `<p class="seed-fine seed-notify-terms">${esc(after)}</p>` : ''}<p class="seed-fine seed-notify-consent">${esc(consent || 'We use your email only to tell you when this piece opens. Unsubscribe any time.')} <a href="${k.href.privacy()}">Privacy</a></p>
 <p class="seed-msg" role="status" aria-live="polite"></p></form>`;
 
   /** Per-colour galleries: images carry `color` (a colour id). Returns one block per colour, each wrapped in
@@ -99,16 +101,23 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
   /** "Print: Back print · full size · Chest mark · medium" from item.print. */
   k.printLine = (p) => { const l = printList(p).map(printLabel); return l.length ? `<p class="seed-print"><span>Print</span> ${esc(l.join(' · '))}</p>` : ''; };
 
-  /** The buy box: status, price, ship-by note, variants, add to bag or Notify me. */
+  /** The buy box: status, price, ship-by note, variants, add to bag, or a waitlist / reservation form. */
   k.buyBox = (p, { addLabel = 'Add to bag', preorderLabel = 'Pre-order', showStatus = true } = {}) => {
     const v = views[p.id];
     const head = `<div class="seed-buy-head">${k.price(p)}${showStatus ? k.status(p) : ''}</div>${v.note ? `<p class="seed-note">${esc(v.note)}</p>` : ''}${k.printLine(p)}`;
     if (v.canAdd) {
       const avail = v.stock ? `<p class="seed-avail" data-avail role="status" aria-live="polite">${esc(v.stock.text)}</p>` : '';
       return `<div class="seed-buy">${head}${avail}<form class="seed-add" data-add data-product="${esc(p.id)}" novalidate>${k.swatches(p)}${k.sizes(p)}
-<button class="seed-add-btn" type="submit">${esc(v.preorder ? preorderLabel : addLabel)}</button>
+<button class="seed-add-btn" type="submit">${esc(v.release?.button || (v.preorder ? preorderLabel : addLabel))}</button>
 <p class="seed-msg" role="status" aria-live="polite"></p></form>
 <p class="seed-fine">${esc(k.copy('exchangeLine', 'Size exchanges within 14 days.'))} <a href="${k.href.policies()}">Shipping and exchanges</a></p></div>`;
+    }
+    if (v.release) { // release-managed: reserve or waitlist (labels from brand.json release_states)
+      const r = v.release;
+      const form = k.notifyForm(p, { label: r.button || 'Reserve', intro: r.helper, list: r.list, done: r.done, consent: r.consent, after: r.terms });
+      // reserve_limit: seed.js asks /api/notify whether reservations are full and swaps to the waitlist copy below.
+      const full = r.full ? ` data-limit="${r.limit}" data-full-status="${esc(r.full.status)}" data-full-button="${esc(r.full.button)}" data-full-helper="${esc(r.full.helper)}" data-full-done="${esc(r.full.done)}" data-full-consent="${esc(r.full.consent)}"` : '';
+      return `<div class="seed-buy" data-release="${esc(p.id)}"${full}>${head}${form}</div>`;
     }
     return `<div class="seed-buy">${head}${v.notify ? k.notifyForm(p) : ''}</div>`;
   };

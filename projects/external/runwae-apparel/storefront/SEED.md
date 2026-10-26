@@ -75,6 +75,19 @@ An empty `price_cents` renders **Price TBA** and keeps checkout off for that ite
 `brand.mode` is `live` and `CHECKOUT_ENABLED=true` (and the server only accepts Stripe test keys unless
 `ALLOW_LIVE_STRIPE=true`).
 
+## Release states (per product, catalog.json `release`; Principal 2026-10-26, every shop)
+Optional. `release: {state, window, reserve_limit?, reason?}` with `state` one of:
+- `order`: in stock, normal buy box (inventory `available`, checkout open).
+- `preorder`: paid pre-order with the ship window (inventory `preorder`, checkout open).
+- `reserve`: free, email only; holds a place, not an order. `reserve_limit` caps it: at the limit the server files
+  new sign-ups on the waitlist and the page switches (GET /api/notify). Unset = no limit.
+- `waitlist`: not taking reservations (or full); the reason shows (`reason`, else the brand's default line).
+`order`/`preorder` render as waitlist while checkout is closed. Every label and helper line is in brand.json
+`release_states` (defaults in core/catalog.mjs RELEASE_COPY). Sign-ups: api/notify.mjs (Cloudflare D1 when
+CLOUDFLARE_ACCOUNT_ID + NOTIFY_D1_DATABASE_ID + NOTIFY_D1_TOKEN are set, else a local JSONL; 503 and "nothing was
+saved" when neither works). Export in arrival order: `node tools/signups.mjs export --brand <id> [--list waitlist]`.
+Nothing is emailed automatically.
+
 ## Design rules (every brand inherits these; the build enforces them)
 
 Principal, 2026-10-14, verbatim:

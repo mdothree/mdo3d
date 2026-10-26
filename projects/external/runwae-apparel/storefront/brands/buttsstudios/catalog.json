@@ -342,6 +342,506 @@
    ],
    "rights_hold": null,
    "print": []
+  },
+  {
+   "id": "table-lamp",
+   "no": "27.01",
+   "name": "Table Lamp",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Table lamp",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "mustard",
+     "name": "Mustard",
+     "hex": "#c9932b"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-table-lamp-product",
+     "alt": "Mustard table lamp: a rounded base under a wide, tilted shade, lit from below the shade",
+     "concept": true
+    },
+    {
+     "file": "c27-table-lamp-lifestyle",
+     "alt": "The mustard lamp on a wooden desk by a window",
+     "concept": true
+    },
+    {
+     "file": "c27-table-lamp-closeup",
+     "alt": "Close view of the textured mustard finish and the lit underside of the shade",
+     "concept": true
+    }
+   ],
+   "summary": "A table lamp in two rounded forms, a rounded base and a wide tilted shade, both in a textured mustard finish. The light sits under the shade.",
+   "details": [
+    [
+     "Design",
+     "Two rounded forms in one colour. The shade tilts forward and glows from underneath."
+    ],
+    [
+     "Materials, light and power",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "power-strip",
+   "no": "27.02",
+   "name": "Power Strip",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Power strip",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "cream",
+     "name": "Cream",
+     "hex": "#e6dccb"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-power-strip-product",
+     "alt": "Rounded cream power strip with three outlets, two USB-C ports and a switch on top",
+     "concept": true
+    },
+    {
+     "file": "c27-power-strip-lifestyle",
+     "alt": "The cream power strip on a wooden desk beside a notebook",
+     "concept": true
+    },
+    {
+     "file": "c27-power-strip-closeup",
+     "alt": "Close view of the outlets, USB-C ports and switch",
+     "concept": true
+    }
+   ],
+   "summary": "A rounded power strip in a speckled cream finish, with three US outlets, two USB-C ports and a switch on top.",
+   "details": [
+    [
+     "Design",
+     "Rounded body. Outlets, ports and the switch sit in one recessed panel on top."
+    ],
+    [
+     "Ratings, cable length and certification",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "desk-ups",
+   "no": "27.03",
+   "name": "Desk UPS",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Desk UPS",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "rust",
+     "name": "Rust",
+     "hex": "#b4532d"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-desk-ups-product",
+     "alt": "Rust desk UPS: a capsule with four small indicator lights and a round button on the front",
+     "concept": true
+    },
+    {
+     "file": "c27-desk-ups-lifestyle",
+     "alt": "The rust capsule on a wooden desk by a window",
+     "concept": true
+    },
+    {
+     "file": "c27-desk-ups-closeup",
+     "alt": "Close view of the indicator lights and button on the textured rust finish",
+     "concept": true
+    }
+   ],
+   "summary": "A desk UPS (backup power) in a textured rust capsule, with a row of four indicator lights and a round button on the front.",
+   "details": [
+    [
+     "Design",
+     "One rounded capsule, larger than the earliest renders. Four lights and a single button are the only controls shown."
+    ],
+    [
+     "Battery, capacity and outlets",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "mini-pc-rack",
+   "no": "27.04",
+   "name": "Mini-PC Rack",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Mini-PC rack",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "charcoal",
+     "name": "Charcoal",
+     "hex": "#2b2b29"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-mini-pc-rack-product",
+     "alt": "Charcoal frame with perforated sides and two shelves, each lit along its top edge, holding two small desktop computers",
+     "concept": true
+    },
+    {
+     "file": "c27-mini-pc-rack-lifestyle",
+     "alt": "The charcoal frame on a desk in a sunlit room",
+     "concept": true
+    },
+    {
+     "file": "c27-mini-pc-rack-closeup",
+     "alt": "Close view of the lit shelves and the perforated side panel",
+     "concept": true
+    }
+   ],
+   "summary": "An open charcoal rack for small desktop computers: perforated sides and two shelves, each lit along its top edge. The computers in the images are not included.",
+   "details": [
+    [
+     "Design",
+     "Open front, perforated sides, two shelves with a light strip above each. The plan is height-adjustable shelves and modules that stack; both are still being validated."
+    ],
+    [
+     "What it fits, cooling and connectors",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "air-purifier",
+   "no": "27.05",
+   "name": "Air Purifier",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Air purifier",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "cream",
+     "name": "Cream",
+     "hex": "#e6dccb"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-air-purifier-product",
+     "alt": "Rounded cream air purifier with a circular grille on top, vertical slots near the base and one light line on the front",
+     "concept": true
+    },
+    {
+     "file": "c27-air-purifier-lifestyle",
+     "alt": "The cream purifier on a wooden desk by a window",
+     "concept": true
+    },
+    {
+     "file": "c27-air-purifier-closeup",
+     "alt": "Close view of the speckled cream finish, the light line and the slots",
+     "concept": true
+    }
+   ],
+   "summary": "A rounded cream cylinder in a speckled finish, with a circular grille on top, vertical slots near the base and a single light line on the front.",
+   "details": [
+    [
+     "Design",
+     "One soft cylinder sized for a desk. Air openings top and bottom; one light line for status. It is an air purifier, not a humidifier."
+    ],
+    [
+     "Filter, room size and noise",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "aura-diffuser",
+   "no": "27.06",
+   "name": "Aura Diffuser",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Diffuser",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "rust",
+     "name": "Rust",
+     "hex": "#b4532d"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-aura-diffuser-product",
+     "alt": "Rounded rust-coloured diffuser with one light line on the front and mist rising from the top",
+     "concept": true
+    },
+    {
+     "file": "c27-aura-diffuser-lifestyle",
+     "alt": "The rust diffuser on a wooden shelf by a window",
+     "concept": true
+    },
+    {
+     "file": "c27-aura-diffuser-closeup",
+     "alt": "Close view of the textured rust finish and the light line",
+     "concept": true
+    }
+   ],
+   "summary": "A rounded diffuser in a textured rust finish, with one light line on the front. Mist rises from the opening on top.",
+   "details": [
+    [
+     "Design",
+     "A separate desktop diffuser in rust, close in height to the Air Purifier."
+    ],
+    [
+     "Capacity, refill and mist",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "bloom-pot",
+   "no": "27.07",
+   "name": "Bloom Pot",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Planter",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "cream",
+     "name": "Cream",
+     "hex": "#ddd2bf"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-bloom-pot-product",
+     "alt": "Planter made of two stacked rounded forms in a pitted cream stone-like finish, holding a leafy plant",
+     "concept": true
+    },
+    {
+     "file": "c27-bloom-pot-lifestyle",
+     "alt": "The planter on a wooden desk in a sunlit room",
+     "concept": true
+    },
+    {
+     "file": "c27-bloom-pot-closeup",
+     "alt": "Close view of the pitted cream surface",
+     "concept": true
+    }
+   ],
+   "summary": "A planter made of two stacked, rounded forms in a pitted, stone-like cream finish. The plant in the images is not included.",
+   "details": [
+    [
+     "Design",
+     "Two stacked forms; the upper one holds the plant."
+    ],
+    [
+     "Material and drainage",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "boucle-stool",
+   "no": "27.08",
+   "name": "Bouclé Stool",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Stool",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "olive",
+     "name": "Olive",
+     "hex": "#5f6344"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-boucle-stool-product",
+     "alt": "Low stool with a round padded top on three thick legs, covered in olive bouclé",
+     "concept": true
+    },
+    {
+     "file": "c27-boucle-stool-lifestyle",
+     "alt": "The olive stool on a woven rug in a sunlit room",
+     "concept": true
+    },
+    {
+     "file": "c27-boucle-stool-closeup",
+     "alt": "Close view of the looped olive bouclé",
+     "concept": true
+    }
+   ],
+   "summary": "A low stool with a round, padded top on three thick legs, covered all over in a looped olive bouclé.",
+   "details": [
+    [
+     "Design",
+     "Seat and legs in one continuous bouclé covering."
+    ],
+    [
+     "Frame, fill and fabric",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
+  },
+  {
+   "id": "check-mat",
+   "no": "27.09",
+   "name": "Check Mat",
+   "line": "Collection 2027",
+   "collection": "2027",
+   "category": "home",
+   "type": "Accent mat",
+   "channel": "preorder",
+   "sizes": [],
+   "colors": [
+    {
+     "id": "black-cream",
+     "name": "Black / Cream",
+     "hex": "linear-gradient(135deg,#151514 50%,#efe9dd 50%)"
+    }
+   ],
+   "images": [
+    {
+     "file": "c27-check-mat-product",
+     "alt": "Small high-pile mat in a black and cream checker pattern",
+     "concept": true
+    },
+    {
+     "file": "c27-ed-rug",
+     "alt": "Close view of the black and cream checker pile",
+     "concept": true
+    }
+   ],
+   "summary": "A compact, plush high-pile mat in a black and cream checker. An accent mat, not an area rug.",
+   "details": [
+    [
+     "Design",
+     "Large checks in two colours, deep pile."
+    ],
+    [
+     "Material and backing",
+     "Details coming."
+    ],
+    [
+     "Size",
+     "Details coming."
+    ]
+   ],
+   "rights_hold": null,
+   "print": [],
+   "release": {
+    "state": "waitlist",
+    "window": "2027"
+   }
   }
- ]
+ ],
+ "_note_collection_2027": "Collection 2027 (Principal 2026-10-26; names are placeholders until he picks, no NEXUS/Soft, colour is a variant; ids = slug of the name): home objects in the same shop, own collection. Images are concept renders (Butts_Studios_27_Individual_Images, Butts_Studios_Website/assets). No process sketches on the site (Principal 2026-10-26: 'leave those sketches out'), so Arc Lounge Chair and Axis Book Holder (sketch-only) are not listed. All concept-stage per PRODUCT_STATUS.md, so every piece starts on waitlist (not taking reservations yet); state per product in `release`. No specs beyond what the images show: 'Details coming.'"
 }

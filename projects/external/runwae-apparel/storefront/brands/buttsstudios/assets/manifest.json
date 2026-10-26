@@ -200,5 +200,257 @@
   ],
   "w": 1400,
   "h": 1400
+ },
+ "c27-table-lamp-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-table-lamp-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-table-lamp-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-power-strip-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-power-strip-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-power-strip-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-desk-ups-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-desk-ups-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-desk-ups-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-mini-pc-rack-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-mini-pc-rack-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-mini-pc-rack-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-air-purifier-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-air-purifier-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-air-purifier-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-aura-diffuser-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-aura-diffuser-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-aura-diffuser-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-bloom-pot-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-bloom-pot-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-bloom-pot-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-boucle-stool-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-boucle-stool-lifestyle": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-boucle-stool-closeup": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
+ },
+ "c27-ed-hero": {
+  "widths": [
+   800,
+   1600
+  ],
+  "w": 1600,
+  "h": 565,
+  "ext": "webp"
+ },
+ "c27-ed-studio": {
+  "widths": [
+   800,
+   1440
+  ],
+  "w": 1440,
+  "h": 561,
+  "ext": "webp"
+ },
+ "c27-ed-rug": {
+  "widths": [
+   640,
+   850
+  ],
+  "w": 850,
+  "h": 860,
+  "ext": "webp"
+ },
+ "c27-check-mat-product": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 1200,
+  "ext": "webp"
  }
 }
