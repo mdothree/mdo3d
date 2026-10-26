@@ -46,17 +46,6 @@
   ],
   "redirects": [
     {
-      "source": "/shop/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "store.buttsstudios.com"
-        }
-      ],
-      "destination": "https://buttsstudios.com/shop/:path*",
-      "statusCode": 301
-    },
-    {
       "source": "/shop",
       "has": [
         {
@@ -65,6 +54,17 @@
         }
       ],
       "destination": "https://buttsstudios.com/shop",
+      "statusCode": 301
+    },
+    {
+      "source": "/shop/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.buttsstudios.com"
+        }
+      ],
+      "destination": "https://buttsstudios.com/shop/:path*",
       "statusCode": 301
     },
     {
@@ -101,17 +101,6 @@
       "statusCode": 307
     },
     {
-      "source": "/shop/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "store.ridgefieldtech.com"
-        }
-      ],
-      "destination": "https://ridgefieldtech.com/shop/:path*",
-      "statusCode": 301
-    },
-    {
       "source": "/shop",
       "has": [
         {
@@ -120,6 +109,17 @@
         }
       ],
       "destination": "https://ridgefieldtech.com/shop",
+      "statusCode": 301
+    },
+    {
+      "source": "/shop/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.ridgefieldtech.com"
+        }
+      ],
+      "destination": "https://ridgefieldtech.com/shop/:path*",
       "statusCode": 301
     },
     {
