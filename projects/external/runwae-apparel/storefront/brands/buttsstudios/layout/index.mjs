@@ -221,7 +221,7 @@ ${kit.figure('detail-neck', { concept: true, caption: 'Labels', sizes: '(max-wid
 };
 
 const c27Price = (v) => (v.price_cents !== null ? `$${(v.price_cents / 100).toFixed(2)}` : '');
-const viewLabel = (im) => (/-lifestyle$/.test(im.file) ? 'In the room' : /-closeup$/.test(im.file) ? 'Close-up' : 'Product');
+const viewLabel = (im) => (/-(lifestyle|room)$/.test(im.file) ? 'In the room' : /-closeup$/.test(im.file) ? 'Close-up' : 'Product');
 
 /** Collection 2027 card: product image, the lifestyle image on hover/focus, state tag, No. / name / price / type. */
 function c27Card(kit, p) {

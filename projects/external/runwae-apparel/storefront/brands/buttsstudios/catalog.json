@@ -806,7 +806,7 @@
    "line": "Collection 2027",
    "collection": "2027",
    "category": "home",
-   "type": "Rug",
+   "type": "Mat",
    "channel": "preorder",
    "sizes": [],
    "colors": [
@@ -818,21 +818,31 @@
    ],
    "images": [
     {
+     "file": "c27-check-mat-product",
+     "alt": "High-pile checkerboard mat in deep green and cream, seen from above",
+     "concept": true
+    },
+    {
      "file": "c27-check-mat-lifestyle",
-     "alt": "High-pile checkerboard rug in deep green and cream on a concrete floor in warm side light, a low bench and a planter behind",
+     "alt": "The checkerboard mat inside an entry door in warm light, a planter and bench behind",
+     "concept": true
+    },
+    {
+     "file": "c27-check-mat-room",
+     "alt": "The mat on a stone floor near a low wooden bench",
      "concept": true
     },
     {
      "file": "c27-check-mat-closeup",
-     "alt": "Close view of the shaggy deep green and cream pile",
+     "alt": "Close view of the shaggy deep green and cream pile at a corner",
      "concept": true
     }
    ],
-   "summary": "A high-pile checkerboard rug: shaggy deep green and cream squares, shown on a floor in warm side light.",
+   "summary": "A high-pile checkerboard mat: shaggy deep green and cream squares, shown inside an entry door and beside a bench.",
    "details": [
     [
      "Design",
-     "Large squares in two colours, deep shag pile."
+     "Large squares in two colours, deep shag pile, square corners."
     ],
     [
      "Material and backing",

@@ -435,22 +435,40 @@
   "h": 561,
   "ext": "webp"
  },
+ "c27-check-mat-product": {
+  "widths": [
+   640,
+   1122
+  ],
+  "w": 1122,
+  "h": 1402,
+  "ext": "webp"
+ },
  "c27-check-mat-lifestyle": {
   "widths": [
    640,
-   1200
+   1122
   ],
-  "w": 1200,
-  "h": 822,
+  "w": 1122,
+  "h": 1402,
+  "ext": "webp"
+ },
+ "c27-check-mat-room": {
+  "widths": [
+   640,
+   1122
+  ],
+  "w": 1122,
+  "h": 1402,
   "ext": "webp"
  },
  "c27-check-mat-closeup": {
   "widths": [
-   480,
-   660
+   640,
+   1122
   ],
-  "w": 660,
-  "h": 1122,
+  "w": 1122,
+  "h": 1402,
   "ext": "webp"
  }
 }
