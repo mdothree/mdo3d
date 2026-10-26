@@ -56,7 +56,8 @@ const absUrl = (brand, p) => {
 };
 
 function head({ brand, title, description, path, image, preview, jsonld, root }) {
-  const url = `${shopUrl(brand)}/${path === 'index.html' ? '' : path}`;
+  // A shop under a path has its home at https://<domain>/shop (no slash: a main site may run trailingSlash:false).
+  const url = path === 'index.html' ? (basePath(brand) ? shopUrl(brand) : `${shopUrl(brand)}/`) : `${shopUrl(brand)}/${path}`;
   const og = image ? absUrl(brand, image) : null;
   const fonts = brand.tokens?.fontsHref
     ? `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="${esc(brand.tokens.fontsHref)}">` : '';

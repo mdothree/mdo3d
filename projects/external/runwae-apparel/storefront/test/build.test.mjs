@@ -355,7 +355,7 @@ test('shop path: Butts Studios and Ridgefield build under /shop with root-absolu
     assert.match(data, /"api":"\/shop\/api"/, id);
     for (const f of pagesOf(out)) {
       const html = readFileSync(join(out, f), 'utf8');
-      assert.match(html, new RegExp(`<link rel="canonical" href="https://${host.replace(/\./g, '\\.')}/shop/`), `${id} ${f}`);
+      assert.match(html, new RegExp(`<link rel="canonical" href="https://${host.replace(/\./g, '\\.')}/shop[/"]`), `${id} ${f}`);
       assert.match(html, /data-root="\/shop\/"/, `${id} ${f}`);
       assert.doesNotMatch(html, /store\.(buttsstudios|ridgefieldtech)\.com\/?["' <]/, `${id} ${f}: old store host`);
       for (const m of html.matchAll(/(?:href|src)="([^"#]+)"/g)) {
@@ -378,7 +378,8 @@ test('shop path: vercel.json 301s store.* deep links to the path, keeps /api on 
   assert.deepEqual(v.rewrites, [{ source: '/shop/api/:path*', destination: '/api/:path*' }]);
   for (const [host, main] of [['store.buttsstudios.com', 'buttsstudios.com'], ['store.ridgefieldtech.com', 'ridgefieldtech.com']]) {
     const rs = v.redirects.filter((r) => r.has?.[0]?.value === host);
-    assert.ok(rs.length >= 2 && rs.every((r) => r.statusCode === 301 && r.destination.startsWith(`https://${main}/shop/`)), host);
+    assert.ok(rs.length >= 3 && rs.every((r) => r.statusCode === 301 && r.destination.startsWith(`https://${main}/shop`)), host);
+    assert.ok(rs.some((r) => r.source === '/' && r.destination === `https://${main}/shop`), `${host}/ -> ${main}/shop in one hop`);
     const catchAll = rs.find((r) => r.source.startsWith('/:path('));
     const re = new RegExp(`^/${catchAll.source.slice('/:path'.length)}$`);
     for (const p of ['/', '/cart.html', '/products/a.html', '/a/b']) assert.ok(re.test(p), `${host}${p} redirects`);

@@ -64,7 +64,18 @@
           "value": "store.buttsstudios.com"
         }
       ],
-      "destination": "https://buttsstudios.com/shop/",
+      "destination": "https://buttsstudios.com/shop",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.buttsstudios.com"
+        }
+      ],
+      "destination": "https://buttsstudios.com/shop",
       "statusCode": 301
     },
     {
@@ -108,7 +119,18 @@
           "value": "store.ridgefieldtech.com"
         }
       ],
-      "destination": "https://ridgefieldtech.com/shop/",
+      "destination": "https://ridgefieldtech.com/shop",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.ridgefieldtech.com"
+        }
+      ],
+      "destination": "https://ridgefieldtech.com/shop",
       "statusCode": 301
     },
     {
