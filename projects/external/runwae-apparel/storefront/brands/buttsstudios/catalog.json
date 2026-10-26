@@ -456,13 +456,13 @@
    }
   },
   {
-   "id": "desk-ups",
+   "id": "desktop-power-backup",
    "no": "27.03",
-   "name": "Desk UPS",
+   "name": "Desktop Power Backup",
    "line": "Collection 2027",
    "collection": "2027",
    "category": "home",
-   "type": "Desk UPS",
+   "type": "Desktop UPS",
    "channel": "preorder",
    "sizes": [],
    "colors": [
@@ -474,29 +474,29 @@
    ],
    "images": [
     {
-     "file": "c27-desk-ups-product",
-     "alt": "Rust desk UPS: a capsule with four small indicator lights and a round button on the front",
+     "file": "c27-desktop-power-backup-product",
+     "alt": "Desktop power backup (UPS): a rust capsule with four small indicator lights and a round button on the front",
      "concept": true
     },
     {
-     "file": "c27-desk-ups-lifestyle",
-     "alt": "The rust capsule on a wooden desk by a window",
+     "file": "c27-desktop-power-backup-lifestyle",
+     "alt": "The rust power backup on a wooden desk by a window",
      "concept": true
     },
     {
-     "file": "c27-desk-ups-closeup",
+     "file": "c27-desktop-power-backup-closeup",
      "alt": "Close view of the indicator lights and button on the textured rust finish",
      "concept": true
     }
    ],
-   "summary": "A desk UPS (backup power) in a textured rust capsule, with a row of four indicator lights and a round button on the front.",
+   "summary": "A desktop UPS: a power backup that keeps a computer, router or lamp running through a power cut, made to sit on a desk as a lifestyle object. A textured rust capsule with four indicator lights and a round button.",
    "details": [
     [
      "Design",
-     "One rounded capsule, larger than the earliest renders. Four lights and a single button are the only controls shown."
+     "One rounded capsule, larger than the earliest renders, meant to stay in view on a desk. Four lights and a single button are the only controls shown."
     ],
     [
-     "Battery, capacity and outlets",
+     "Battery, capacity, runtime and outlets",
      "Details coming."
     ],
     [
@@ -545,7 +545,7 @@
      "concept": true
     }
    ],
-   "summary": "An open charcoal rack for small desktop computers: perforated sides and two shelves, each lit along its top edge. The computers in the images are not included.",
+   "summary": "A rack for small desktop computers: open charcoal frame, perforated sides and two shelves, each lit along its top edge. The computers in the images are not included.",
    "details": [
     [
      "Design",
@@ -601,7 +601,7 @@
      "concept": true
     }
    ],
-   "summary": "A rounded cream cylinder in a speckled finish, with a circular grille on top, vertical slots near the base and a single light line on the front.",
+   "summary": "An air purifier for the desk: a rounded cream cylinder in a speckled finish, with a circular grille on top, vertical slots near the base and a single light line on the front.",
    "details": [
     [
      "Design",
@@ -657,7 +657,7 @@
      "concept": true
     }
    ],
-   "summary": "A rounded diffuser in a textured rust finish, with one light line on the front. Mist rises from the opening on top.",
+   "summary": "A desktop mist diffuser: a rounded form in a textured rust finish, with one light line on the front. Mist rises from the opening on top.",
    "details": [
     [
      "Design",
@@ -713,7 +713,7 @@
      "concept": true
     }
    ],
-   "summary": "A planter made of two stacked, rounded forms in a pitted, stone-like cream finish. The plant in the images is not included.",
+   "summary": "A planter: two stacked, rounded forms in a pitted, stone-like cream finish. The plant in the images is not included.",
    "details": [
     [
      "Design",
@@ -769,7 +769,7 @@
      "concept": true
     }
    ],
-   "summary": "A low stool with a round, padded top on three thick legs, covered all over in a looped olive bouclé.",
+   "summary": "A low stool: a round, padded top on three thick legs, covered all over in a looped olive bouclé.",
    "details": [
     [
      "Design",
@@ -820,7 +820,7 @@
      "concept": true
     }
    ],
-   "summary": "A compact, plush high-pile mat in a black and cream checker. An accent mat, not an area rug.",
+   "summary": "A small accent mat, not an area rug: compact and plush, with a high pile in a black and cream checker.",
    "details": [
     [
      "Design",
