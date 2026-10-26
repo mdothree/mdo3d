@@ -12,8 +12,12 @@
     "api/stripe-webhook.mjs": {
       "includeFiles": "{brands/**/*.json,inventory/*.csv}"
     },
-    "api/notify.mjs": { "maxDuration": 10 },
-    "api/order-lookup.mjs": { "maxDuration": 10 }
+    "api/notify.mjs": {
+      "maxDuration": 10
+    },
+    "api/order-lookup.mjs": {
+      "maxDuration": 10
+    }
   },
   "headers": [
     {
@@ -32,6 +36,102 @@
           "value": "default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; form-action 'self' https://checkout.stripe.com; frame-ancestors 'none'; base-uri 'self'"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/shop/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/shop/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.buttsstudios.com"
+        }
+      ],
+      "destination": "https://buttsstudios.com/shop/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/shop",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.buttsstudios.com"
+        }
+      ],
+      "destination": "https://buttsstudios.com/shop/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path((?!api/|api$|shop/|shop$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.buttsstudios.com"
+        }
+      ],
+      "destination": "https://buttsstudios.com/shop/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "shop-buttsstudios.vercel.app"
+        }
+      ],
+      "destination": "/shop/",
+      "statusCode": 307
+    },
+    {
+      "source": "/shop/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.ridgefieldtech.com"
+        }
+      ],
+      "destination": "https://ridgefieldtech.com/shop/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/shop",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.ridgefieldtech.com"
+        }
+      ],
+      "destination": "https://ridgefieldtech.com/shop/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path((?!api/|api$|shop/|shop$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.ridgefieldtech.com"
+        }
+      ],
+      "destination": "https://ridgefieldtech.com/shop/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "shop-ridgefield.vercel.app"
+        }
+      ],
+      "destination": "/shop/",
+      "statusCode": 307
     }
   ]
 }

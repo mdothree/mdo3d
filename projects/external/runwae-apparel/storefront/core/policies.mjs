@@ -12,6 +12,7 @@
 // Unknown facts stay as "[CONFIRM: ...]" in brand.json; a live build refuses to ship while any remain.
 // Copy rules: no em dashes, no "including", never call anything "free", no dollar amounts.
 import { esc } from './kit.mjs';
+import { shopLabel } from './site.mjs';
 
 export const POLICY_PAGES = Object.freeze([
   { id: 'privacy', path: 'privacy.html', label: 'Privacy' },
@@ -28,7 +29,7 @@ export function policyFields(brand) {
   const days = Number.isInteger(p.returns_window_days) ? p.returns_window_days : null;
   return {
     shop: brand.name,
-    domain: brand.domain,
+    domain: shopLabel(brand),
     entity: p.entity ?? brand.name, // the project itself is the seller (DECISIONS 2026-10-15: project names, no entity name)
     contact: p.contact ?? C('customer service inbox'),
     privacy: p.privacy_contact ?? p.contact ?? C('privacy inbox'),

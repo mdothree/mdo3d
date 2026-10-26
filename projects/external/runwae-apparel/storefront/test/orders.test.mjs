@@ -8,6 +8,7 @@ import handler, { verifySignature, signPayload, processEvent } from '../api/stri
 import { customerEmail, shopEmail, sampleOrder, shipRule, deliver, orderFromSession, ordersInbox, ordersFrom } from '../core/email.mjs';
 import { receive, readLedger, replay } from '../core/stock.mjs';
 import { loadBrand, ROOT, brandIds } from '../core/build.mjs';
+import { shopUrl } from '../core/site.mjs';
 import { templateRoot } from './_fixtures.mjs';
 
 const SECRET = 'whsec_test_secret';
@@ -124,7 +125,7 @@ test('both emails render for every brand: branded, accessible, small corners, wi
       assert.ok(m.text.length > 50 && !/<[a-z]/.test(m.text), 'plain-text version');
       assert.doesNotMatch(m.html + m.text, /\bAHL\b|Anne Huntington|digital only/i);
     }
-    assert.match(c.text, new RegExp(`https://${brand.domain.replace(/\./g, '\\.')}/orders\\.html`));
+    assert.match(c.text, new RegExp(`${shopUrl(brand).replace(/\./g, '\\.')}/orders\\.html`));
     assert.match(c.html, /policies\.html/);
     assert.match(c.text, new RegExp(o.number));
     assert.match(s.html, /localhost\/_admin/);

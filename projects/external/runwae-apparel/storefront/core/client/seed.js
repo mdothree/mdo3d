@@ -5,6 +5,7 @@ var SEED = window.SEED || { brand: { id: 'shop' }, products: {}, copy: {} };
 var ROOT = document.documentElement.getAttribute('data-root') || '';
 var KEY = 'seed-cart:' + SEED.brand.id;
 var COPY = SEED.copy || {};
+var API = SEED.api || '/api'; // '/shop/api' when the shop is served under its main site
 
 function loadCart() {
   try { return normaliseCart(JSON.parse(window.localStorage.getItem(KEY) || '[]')); } catch (e) { return []; }
@@ -92,7 +93,7 @@ function paintAvail(f) {
 }
 function refreshAvailability(done) {
   if (!window.fetch || location.protocol === 'file:') { if (done) done(); return; }
-  fetch('/api/availability?brand=' + encodeURIComponent(SEED.brand.id), { headers: { accept: 'application/json' } })
+  fetch(API + '/availability?brand=' + encodeURIComponent(SEED.brand.id), { headers: { accept: 'application/json' } })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (j) {
       if (j && j.products) for (var id in j.products) if (SEED.products[id]) SEED.products[id].avail = j.products[id];
@@ -143,7 +144,7 @@ function initNotify() {
       var email = f.querySelector('input[name="email"]');
       if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value)) { say(msg, 'Please enter a valid email address.'); email.focus(); return; }
       var btn = f.querySelector('button'); btn.disabled = true;
-      fetch('/api/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ brand: SEED.brand.id, product: f.getAttribute('data-product'), email: email.value }) })
+      fetch(API + '/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ brand: SEED.brand.id, product: f.getAttribute('data-product'), email: email.value }) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
         .then(function (x) { say(msg, x.ok ? "You're on the list. One email when it opens." : (x.j.error || COPY.notifyOff)); if (x.ok) email.value = ''; })
         .catch(function () { say(msg, COPY.notifyOff); })
@@ -215,7 +216,7 @@ function checkout(root) {
   var msg = root.querySelector('[data-checkout-msg]');
   if (SEED.checkout !== true) { say(msg, COPY.checkoutOff); return; }
   btn.disabled = true; say(msg, 'Starting checkout…');
-  fetch('/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(checkoutBody(SEED.brand.id, loadCart())) })
+  fetch(API + '/checkout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(checkoutBody(SEED.brand.id, loadCart())) })
     .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
     .then(function (x) { if (x.ok && x.j.url) { window.location.href = x.j.url; return; } say(msg, x.j.error || 'Checkout is unavailable right now.'); btn.disabled = false; })
     .catch(function () { say(msg, 'Checkout is unavailable right now.'); btn.disabled = false; });
@@ -229,7 +230,7 @@ function initLookup() {
     e.preventDefault();
     var msg = f.querySelector('.seed-msg');
     if (!f.order.value.trim() || !f.email.value.trim()) { say(msg, 'Enter your order number and email.'); return; }
-    fetch('/api/order-lookup', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ order: f.order.value, email: f.email.value }) })
+    fetch(API + '/order-lookup', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ order: f.order.value, email: f.email.value }) })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
       .then(function (x) {
         if (!x.ok) { say(msg, x.j.error || COPY.lookupOff); return; }

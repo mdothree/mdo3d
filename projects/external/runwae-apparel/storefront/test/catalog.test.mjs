@@ -50,8 +50,7 @@ test('sold out renders only with a real sales_record or sold_count >= stock; oth
 
 test('no shop renders "sold out" without backing data (all four built brands)', async () => {
   for (const id of ['buttsstudios', 'runwae', 'glb', 'ridgefield']) {
-    const out = mkdtempSync(join(tmpdir(), `sf-so-${id}-`));
-    await buildBrand(id, out, { now: new Date('2026-10-14') });
+    const out = (await buildBrand(id, mkdtempSync(join(tmpdir(), `sf-so-${id}-`)), { now: new Date('2026-10-14') })).out; // shop dir (out/shop for base_path shops)
     const cat = loadBrand(id).catalog;
     const backed = cat.some((p) => p.status === 'sold_out' && soldOutBacked(p));
     const files = ['index.html', 'shop.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
@@ -108,8 +107,7 @@ test('every real catalog follows its print rules (GLB back-only) and every produ
     if (id === 'glb') assert.equal(brand.print_rules?.large_art, 'back_only');
     else assert.notEqual(brand.print_rules?.large_art, 'back_only', `${id}: back-only is GLB-only`);
     for (const p of cat) assert.deepEqual(printErrors(p, brand.print_rules ?? {}), [], `${id}/${p.id}`);
-    const out = mkdtempSync(join(tmpdir(), `sf-pr-${id}-`));
-    await buildBrand(id, out, { now: new Date('2026-10-14') });
+    const out = (await buildBrand(id, mkdtempSync(join(tmpdir(), `sf-pr-${id}-`)), { now: new Date('2026-10-14') })).out; // shop dir (out/shop for base_path shops)
     for (const p of cat.filter((x) => x.listed !== false && x.status !== 'archive' && (x.print ?? []).length)) {
       assert.match(readFileSync(join(out, 'products', `${p.id}.html`), 'utf8'), /class="seed-print"/, `${id}/${p.id}`);
     }

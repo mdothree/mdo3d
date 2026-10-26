@@ -39,8 +39,7 @@ test('footer-only interlinks: main site link in the footer for Butts Studios and
     const { brand } = loadBrand(id);
     if (want[id]) assert.deepEqual([brand.main_site.label, brand.main_site.url], want[id]);
     else assert.equal(brand.main_site, undefined, `${id} is its own main site`);
-    const out = mkdtempSync(join(tmpdir(), `sf-ml-${id}-`));
-    await buildBrand(id, out, { now: new Date('2026-10-14') });
+    const out = (await buildBrand(id, mkdtempSync(join(tmpdir(), `sf-ml-${id}-`)), { now: new Date('2026-10-14') })).out; // shop dir (out/shop for base_path shops)
     for (const f of ['index.html', 'shop.html', 'story.html', 'cart.html', ...readdirSync(join(out, 'products')).map((x) => `products/${x}`)]) {
       const html = readFileSync(join(out, f), 'utf8');
       const head = html.slice(html.indexOf('<body'), html.indexOf('<main'));

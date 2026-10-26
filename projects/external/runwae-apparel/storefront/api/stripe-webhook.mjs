@@ -14,6 +14,7 @@ import { join } from 'node:path';
 import { commitSale, release } from '../core/stock.mjs';
 import { orderFromSession, customerEmail, shopEmail, deliver } from '../core/email.mjs';
 import { keyAllowed } from './checkout.mjs';
+import { shopUrl } from '../core/site.mjs';
 
 export const config = { api: { bodyParser: false } };
 
@@ -72,7 +73,7 @@ export async function processEvent(event, { root = process.cwd(), env = process.
     record(ordersRoot, 'orders.jsonl', { ...order, status: 'confirmed', low_alerts: sale.lowAlerts });
     const opts = { env, outbox: join(ordersRoot, 'outbox'), livemode: order.livemode, fetchImpl, tag: order.number };
     emails.push(await deliver(shopEmail(order, brand, { adminUrl: env.ADMIN_URL, lowAlerts: sale.lowAlerts }), opts));
-    emails.push(await deliver(customerEmail(order, brand, { siteUrl: env.SITE_URL ?? `https://${brand.domain}` }), opts));
+    emails.push(await deliver(customerEmail(order, brand, { siteUrl: env.SITE_URL ?? shopUrl(brand) }), opts));
   }
   record(ordersRoot, 'events.jsonl', { id: event.id, type: event.type, at: now.toISOString(), order: order.number });
   return { status: 200, body: { received: true, order: order.number, duplicate: sale.duplicate, emails: emails.map((e) => ({ sent: e.sent, reason: e.reason })) } };

@@ -10,8 +10,13 @@ import { templateRoot } from './_fixtures.mjs';
 const BRANDS = ['buttsstudios', 'glb', 'ridgefield', 'runwae'];
 const NOW = new Date('2026-10-14T12:00:00Z');
 const built = {};
+const sites = {};
 async function build(id) {
-  if (!built[id]) { const out = mkdtempSync(join(tmpdir(), `sf-${id}-`)); await buildBrand(id, out, { now: NOW, env: {} }); built[id] = out; }
+  if (!built[id]) {
+    const out = mkdtempSync(join(tmpdir(), `sf-${id}-`)); await buildBrand(id, out, { now: NOW, env: {} });
+    const base = loadBrand(id).brand.base_path; // shops served under their main site build into out/<base>/
+    built[id] = base ? join(out, base) : out; sites[id] = out;
+  }
   return built[id];
 }
 const pagesOf = (out) => [...(existsSync(join(out, 'release-01.html')) ? ['release-01.html'] : []), 'index.html', 'shop.html', 'story.html', 'cart.html', 'orders.html', 'policies.html', 'privacy.html', 'terms.html', 'returns.html', 'shipping.html', 'thanks.html', ...readdirSync(join(out, 'products')).map((f) => `products/${f}`)];
@@ -308,7 +313,7 @@ for (const id of BRANDS) {
       const foot = html.slice(html.lastIndexOf('<footer'));
       const nav = foot.match(/<nav class="seed-legal" aria-label="Policies">([\s\S]*?)<\/nav>/);
       assert.ok(nav, `${f}: footer legal nav`);
-      for (const pg of ['privacy', 'terms', 'returns', 'shipping']) assert.match(nav[1], new RegExp(`href="(\\.\\./)?${pg}\\.html"`), `${f}: footer links ${pg}`);
+      for (const pg of ['privacy', 'terms', 'returns', 'shipping']) assert.match(nav[1], new RegExp(`href="(\\.\\./|/shop/)?${pg}\\.html"`), `${f}: footer links ${pg}`);
       assert.match(nav[1], /href="mailto:/, `${f}: footer contact`);
     }
     const priv = readFileSync(join(out, 'privacy.html'), 'utf8');
@@ -338,4 +343,45 @@ test('a live build refuses unconfirmed policy facts; a confirmed one builds with
   await buildBrand('gate', out, { root, now: NOW, env: {} });
   for (const f of LEGAL) assert.doesNotMatch(readFileSync(join(out, f), 'utf8'), /CONFIRM|Draft for review/, f);
   assert.equal(policyGaps({ ...tb, policies: { ...policies, contact_status: 'placeholder: no MX' } }).length, 1, 'a placeholder status blocks launch');
+});
+
+// Principal 2026-10-26 STUDIOS-SHOP-PATH DECIDED: buttsstudios.com/shop + ridgefieldtech.com/shop; store.* 301 to the path.
+test('shop path: Butts Studios and Ridgefield build under /shop with root-absolute links; Runwae + GLB stay at their root', async () => {
+  for (const [id, host] of [['buttsstudios', 'buttsstudios.com'], ['ridgefield', 'ridgefieldtech.com']]) {
+    const out = await build(id);
+    assert.ok(out.endsWith('/shop'), id);
+    assert.ok(existsSync(join(sites[id], '404.html')) && existsSync(join(sites[id], 'robots.txt')), `${id}: origin 404 + robots`);
+    const data = readFileSync(join(out, 'catalog.js'), 'utf8');
+    assert.match(data, /"api":"\/shop\/api"/, id);
+    for (const f of pagesOf(out)) {
+      const html = readFileSync(join(out, f), 'utf8');
+      assert.match(html, new RegExp(`<link rel="canonical" href="https://${host.replace(/\./g, '\\.')}/shop/`), `${id} ${f}`);
+      assert.match(html, /data-root="\/shop\/"/, `${id} ${f}`);
+      assert.doesNotMatch(html, /store\.(buttsstudios|ridgefieldtech)\.com\/?["' <]/, `${id} ${f}: old store host`);
+      for (const m of html.matchAll(/(?:href|src)="([^"#]+)"/g)) {
+        const u = m[1];
+        if (/^(https?:|mailto:|data:)/.test(u)) continue;
+        assert.ok(u.startsWith('/shop/'), `${id} ${f}: relative link ${u} would break at /shop without a slash`);
+      }
+    }
+  }
+  for (const id of ['runwae', 'glb']) {
+    const out = await build(id);
+    assert.ok(!out.endsWith('/shop'), id);
+    assert.match(readFileSync(join(out, 'catalog.js'), 'utf8'), /"api":"\/api"/, id);
+    assert.match(readFileSync(join(out, 'index.html'), 'utf8'), /data-root=""/, id);
+  }
+});
+
+test('shop path: vercel.json 301s store.* deep links to the path, keeps /api on the old host, proxies /shop/api', () => {
+  const v = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+  assert.deepEqual(v.rewrites, [{ source: '/shop/api/:path*', destination: '/api/:path*' }]);
+  for (const [host, main] of [['store.buttsstudios.com', 'buttsstudios.com'], ['store.ridgefieldtech.com', 'ridgefieldtech.com']]) {
+    const rs = v.redirects.filter((r) => r.has?.[0]?.value === host);
+    assert.ok(rs.length >= 2 && rs.every((r) => r.statusCode === 301 && r.destination.startsWith(`https://${main}/shop/`)), host);
+    const catchAll = rs.find((r) => r.source.startsWith('/:path('));
+    const re = new RegExp(`^/${catchAll.source.slice('/:path'.length)}$`);
+    for (const p of ['/', '/cart.html', '/products/a.html', '/a/b']) assert.ok(re.test(p), `${host}${p} redirects`);
+    for (const p of ['/api/checkout', '/api/stripe-webhook', '/shop/x']) assert.ok(!re.test(p), `${host}${p} not caught by the catch-all`);
+  }
 });

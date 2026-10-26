@@ -15,6 +15,7 @@ import { readBrandDir, validateCatalog, productView, publicCatalog } from './cat
 import { createKit, esc } from './kit.mjs';
 import { radiusErrors, templateRadiusErrors } from './style-rules.mjs';
 import { POLICY_PAGES, POLICY_BODIES, policyFields, policyGaps, legalNav } from './policies.mjs';
+import { basePath, shopUrl } from './site.mjs';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CORE = dirname(fileURLToPath(import.meta.url));
@@ -47,9 +48,16 @@ function tokensCss(brand, products) {
   return `:root{${vars.join(';')}}\n${[...sw].map(([id, hex]) => `.sw-${id}{background:${hex}}`).join('\n')}\n`;
 }
 
+/** Absolute URL of a page-relative or root-absolute asset path ("../assets/x.jpg", "/shop/assets/x.jpg"). */
+const absUrl = (brand, p) => {
+  const base = basePath(brand);
+  const rel = String(p).replace(/^(\.\.\/)+/, '');
+  return base && rel.startsWith(`${base}/`) ? `https://${brand.domain}${rel}` : `${shopUrl(brand)}/${rel.replace(/^\//, '')}`;
+};
+
 function head({ brand, title, description, path, image, preview, jsonld, root }) {
-  const url = `https://${brand.domain}/${path === 'index.html' ? '' : path}`;
-  const og = image ? `https://${brand.domain}/${image.replace(/^(\.\.\/)+/, '')}` : null;
+  const url = `${shopUrl(brand)}/${path === 'index.html' ? '' : path}`;
+  const og = image ? absUrl(brand, image) : null;
   const fonts = brand.tokens?.fontsHref
     ? `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="${esc(brand.tokens.fontsHref)}">` : '';
   return `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -129,6 +137,12 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   if (gaps.length) throw new Error(`policies: confirm before going live:\n  ${gaps.join('\n  ')}`);
 
   rmSync(outDir, { recursive: true, force: true });
+  // base_path (e.g. /shop): the shop is served under its main site. Files go to outDir/shop/ and every link is
+  // root-absolute ("/shop/..."), so /shop, /shop/ and the main-site rewrite all resolve the same assets.
+  const base = basePath(brand);
+  const siteDir = outDir;
+  outDir = base ? join(outDir, ...base.split('/').filter(Boolean)) : outDir;
+  const R = (rel) => (base ? `${base}/` : rel);
   mkdirSync(join(outDir, 'products'), { recursive: true });
   if (existsSync(join(dir, 'assets'))) cpSync(join(dir, 'assets'), join(outDir, 'assets'), { recursive: true, filter: (s) => !s.endsWith('manifest.json') });
   writeFileSync(join(outDir, 'base.css'), readFileSync(join(CORE, 'base.css'), 'utf8'));
@@ -136,7 +150,8 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   writeFileSync(join(outDir, 'seed.js'), clientBundle());
 
   const pages = [];
-  const make = (pid, path, rootRel, fn) => {
+  const make = (pid, path, rel, fn) => {
+    const rootRel = R(rel);
     const kit = createKit({ brand, manifest, root: rootRel, views });
     const ctx = { brand, products: listed, shown, archive, drops, now, kit, root: rootRel, page: pid };
     const html = shell(L, ctx, { id: pid, path }, fn(ctx));
@@ -171,15 +186,15 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
         const img = p.images?.[0] ? c.kit.imgData(p.images[0]).src : undefined;
         const v = views[p.id];
         const jsonld = { '@context': 'https://schema.org', '@type': 'Product', name: p.name, brand: { '@type': 'Brand', name: brand.name }, description: p.summary ?? p.description ?? '',
-          ...(img ? { image: `https://${brand.domain}/${img.replace(/^(\.\.\/)+/, '')}` } : {}),
+          ...(img ? { image: absUrl(brand, img) } : {}),
           ...(v.price_cents !== null && v.canAdd ? { offers: { '@type': 'Offer', price: (v.price_cents / 100).toFixed(2), priceCurrency: 'USD', availability: v.preorder ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock' } } : {}) };
         return { title: `${p.name} | ${brand.name}`, description: p.summary ?? p.description, image: img, jsonld, ...(typeof r === 'string' ? { body: r } : r) };
       });
     }
   }
-  const kit0 = createKit({ brand, manifest, root: '', views });
+  const kit0 = createKit({ brand, manifest, root: '', views }); // page-relative: seed.js prefixes data-root
   const data = {
-    brand: { id: brand.id, name: brand.name }, preview: brand.mode !== 'live', checkout,
+    brand: { id: brand.id, name: brand.name }, preview: brand.mode !== 'live', checkout, api: `${base}/api`,
     copy: { checkoutOff: brand.copy?.checkoutOff ?? 'Checkout opens when the shop does.', lookupOff: 'Order lookup opens when the shop does.', notifyOff: 'Sign-ups open when the shop does. Nothing was saved.' },
     products: publicCatalog(listed, drops, now, {
       imageFor: (p) => (p.images?.[0] ? kit0.imgData(p.images[0]).src.replace(/-\d+\.jpg$/, (m) => { const w = manifest[p.images[0].file]?.widths?.[0]; return w ? `-${w}.jpg` : m; }) : ''),
@@ -189,6 +204,10 @@ export async function buildBrand(id, outDir, { now = new Date(), root = ROOT, en
   writeFileSync(join(outDir, 'catalog.js'), `window.SEED = ${JSON.stringify(data)};\n`);
   writeFileSync(join(outDir, 'robots.txt'), brand.mode === 'live' ? 'User-agent: *\nAllow: /\n' : 'User-agent: *\nDisallow: /\n');
   if (existsSync(join(outDir, 'index.html'))) cpSync(join(outDir, 'index.html'), join(outDir, '404.html'));
+  if (base) { // the shop project's own origin: its robots + 404 (links are root-absolute, so the 404 renders anywhere)
+    writeFileSync(join(siteDir, 'robots.txt'), readFileSync(join(outDir, 'robots.txt'), 'utf8'));
+    cpSync(join(outDir, '404.html'), join(siteDir, '404.html'));
+  }
   return { brand: id, pages: pages.length, products: listed.length, out: outDir };
 }
 

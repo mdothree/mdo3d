@@ -13,6 +13,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fmtDay } from './cart.mjs';
 import { esc } from './kit.mjs';
+import { shopUrl } from './site.mjs';
 
 const money = (c) => (Number.isInteger(c) ? `$${(c / 100).toFixed(2)}` : '');
 export const rootDomain = (d) => String(d ?? '').replace(/^(store|shop|www)\./, '');
@@ -85,8 +86,8 @@ function itemsTable(brand, o) {
 const itemsText = (o) => [...o.lines.map((l) => `- ${l.name}${variant(l) ? ` (${variant(l)})` : ''} x ${l.qty}  ${money(l.line_cents)}${l.preorder ? `  [pre-order${l.ship_by ? `, ships by ${fmtDay(l.ship_by)}` : ''}]` : ''}`),
   ...[['Subtotal', o.subtotal_cents], ['Shipping', o.shipping_cents], ['Tax', o.tax_cents], ['Total', o.total_cents]].filter(([, v]) => Number.isInteger(v)).map(([k, v]) => `${k}: ${money(v)}`)].join('\n');
 
-/** (b) The customer's order confirmation. siteUrl: https://<shop domain> (no trailing slash). */
-export function customerEmail(o, brand, { siteUrl = `https://${brand.domain}` } = {}) {
+/** (b) The customer's order confirmation. siteUrl: https://<shop domain><base_path> (no trailing slash). */
+export function customerEmail(o, brand, { siteUrl = shopUrl(brand) } = {}) {
   const c = brand.tokens?.colors ?? {};
   const accent = c.accent ?? '#111111', onAccent = c['on-accent'] ?? '#ffffff';
   const lookup = `${siteUrl}/orders.html`, policies = `${siteUrl}/policies.html`, contact = brand.policies?.contact ?? ordersFrom(brand);
