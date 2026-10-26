@@ -108,5 +108,90 @@
   "waitlist_full": {
    "reason": "All {limit} reservations are taken."
   }
+ },
+ "footer": {
+  "_note": "Mirrors the buttsstudios.com footer (~/buttsstudios/site/index.html): Work, Studio, Shop, Contact, with absolute links back to the main site; Shop = this shop's own pages. Principal 2026-10-26. Policy links + main-site link are appended by the core.",
+  "line": "Made of story. Since 2018.",
+  "columns": [
+   {
+    "title": "Work",
+    "links": [
+     {
+      "label": "Slate",
+      "href": "https://buttsstudios.com/slate.html"
+     },
+     {
+      "label": "Books",
+      "href": "https://buttsstudios.com/books.html"
+     },
+     {
+      "label": "Video",
+      "href": "https://buttsstudios.com/video.html"
+     },
+     {
+      "label": "Games",
+      "href": "https://buttsstudios.com/games.html"
+     }
+    ]
+   },
+   {
+    "title": "Studio",
+    "links": [
+     {
+      "label": "How we work",
+      "href": "https://buttsstudios.com/how-we-work.html"
+     },
+     {
+      "label": "Partnerships",
+      "href": "https://buttsstudios.com/partnerships.html"
+     },
+     {
+      "label": "Portfolio",
+      "href": "https://buttsstudios.com/portfolio.html"
+     }
+    ]
+   },
+   {
+    "title": "Shop",
+    "links": [
+     {
+      "label": "Apparel",
+      "shop": "shop"
+     },
+     {
+      "label": "Collection 2027",
+      "shop": "page:collection-2027"
+     },
+     {
+      "label": "Shipping",
+      "shop": "shipping"
+     },
+     {
+      "label": "Returns",
+      "shop": "returns"
+     },
+     {
+      "label": "Order lookup",
+      "shop": "orders"
+     }
+    ]
+   },
+   {
+    "title": "Contact",
+    "links": [
+     {
+      "label": "hello@buttsstudios.com",
+      "href": "mailto:hello@buttsstudios.com"
+     },
+     {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/buttsstudios/",
+      "external": true
+     }
+    ]
+   }
+  ],
+  "copyright": "Butts Studios",
+  "note": "Images in the shop are concept renders."
  }
 }

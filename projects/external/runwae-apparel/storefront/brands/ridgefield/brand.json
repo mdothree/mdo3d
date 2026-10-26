@@ -104,5 +104,133 @@
   "waitlist_full": {
    "reason": "All {limit} reservations are taken."
   }
+ },
+ "footer": {
+  "_note": "Mirrors the ridgefieldtech.com footer (live 2026-10-26): Solutions, Process, Company, Connect, with absolute links back to the main site; Shop = this shop's own pages. Principal 2026-10-26. Policy links + main-site link are appended by the core.",
+  "line": "Systems That Perform",
+  "brand_links": [
+   {
+    "label": "contact@ridgefieldtech.com",
+    "href": "mailto:contact@ridgefieldtech.com"
+   }
+  ],
+  "columns": [
+   {
+    "title": "Solutions",
+    "links": [
+     {
+      "label": "Hardware",
+      "href": "https://ridgefieldtech.com/solutions-hardware.html"
+     },
+     {
+      "label": "Software",
+      "href": "https://ridgefieldtech.com/solutions-software.html"
+     },
+     {
+      "label": "Simulation",
+      "href": "https://ridgefieldtech.com/solutions-simulation.html"
+     },
+     {
+      "label": "AI",
+      "href": "https://ridgefieldtech.com/solutions-ai.html"
+     },
+     {
+      "label": "Operations",
+      "href": "https://ridgefieldtech.com/solutions-operations.html"
+     }
+    ]
+   },
+   {
+    "title": "Process",
+    "links": [
+     {
+      "label": "Assess",
+      "href": "https://ridgefieldtech.com/services.html#assessment"
+     },
+     {
+      "label": "Design",
+      "href": "https://ridgefieldtech.com/services.html#design"
+     },
+     {
+      "label": "Build & Deploy",
+      "href": "https://ridgefieldtech.com/services.html#build"
+     },
+     {
+      "label": "Advise & Improve",
+      "href": "https://ridgefieldtech.com/services.html#advise"
+     }
+    ]
+   },
+   {
+    "title": "Company",
+    "links": [
+     {
+      "label": "About",
+      "href": "https://ridgefieldtech.com/about.html"
+     },
+     {
+      "label": "Process",
+      "href": "https://ridgefieldtech.com/services.html"
+     },
+     {
+      "label": "Partners",
+      "href": "https://ridgefieldtech.com/partners.html"
+     },
+     {
+      "label": "Performance",
+      "href": "https://ridgefieldtech.com/performance.html"
+     },
+     {
+      "label": "Products",
+      "href": "https://ridgefieldtech.com/products.html"
+     },
+     {
+      "label": "Demos",
+      "href": "https://ridgefieldtech.com/demos/index.html"
+     },
+     {
+      "label": "Trivia",
+      "href": "https://ridgefieldtech.com/trivia/"
+     },
+     {
+      "label": "Contact",
+      "href": "https://ridgefieldtech.com/contact.html"
+     }
+    ]
+   },
+   {
+    "title": "Shop",
+    "links": [
+     {
+      "label": "Capsule 01",
+      "shop": "shop"
+     },
+     {
+      "label": "About the shop",
+      "shop": "story"
+     },
+     {
+      "label": "Order lookup",
+      "shop": "orders"
+     },
+     {
+      "label": "Shipping and exchanges",
+      "shop": "policies"
+     }
+    ]
+   },
+   {
+    "title": "Connect",
+    "links": [
+     {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/company/ridgefieldtech",
+      "external": true
+     }
+    ]
+   }
+  ],
+  "copyright": "Ridgefield LLC",
+  "note": "Concept renders. Final pieces are confirmed with the maker before the pre-order opens."
  }
 }

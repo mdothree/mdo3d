@@ -798,33 +798,33 @@
    "line": "Collection 2027",
    "collection": "2027",
    "category": "home",
-   "type": "Accent mat",
+   "type": "Rug",
    "channel": "preorder",
    "sizes": [],
    "colors": [
     {
-     "id": "black-cream",
-     "name": "Black / Cream",
-     "hex": "linear-gradient(135deg,#151514 50%,#efe9dd 50%)"
+     "id": "green-cream",
+     "name": "Deep green / Cream",
+     "hex": "linear-gradient(135deg,#1c2a1f 50%,#efe3cc 50%)"
     }
    ],
    "images": [
     {
-     "file": "c27-check-mat-product",
-     "alt": "Small high-pile mat in a black and cream checker pattern",
+     "file": "c27-check-mat-lifestyle",
+     "alt": "High-pile checkerboard rug in deep green and cream on a concrete floor in warm side light, a low bench and a planter behind",
      "concept": true
     },
     {
-     "file": "c27-ed-rug",
-     "alt": "Close view of the black and cream checker pile",
+     "file": "c27-check-mat-closeup",
+     "alt": "Close view of the shaggy deep green and cream pile",
      "concept": true
     }
    ],
-   "summary": "A small accent mat, not an area rug: compact and plush, with a high pile in a black and cream checker.",
+   "summary": "A high-pile checkerboard rug: shaggy deep green and cream squares, shown on a floor in warm side light.",
    "details": [
     [
      "Design",
-     "Large checks in two colours, deep pile."
+     "Large squares in two colours, deep shag pile."
     ],
     [
      "Material and backing",

@@ -435,22 +435,22 @@
   "h": 561,
   "ext": "webp"
  },
- "c27-ed-rug": {
-  "widths": [
-   640,
-   850
-  ],
-  "w": 850,
-  "h": 860,
-  "ext": "webp"
- },
- "c27-check-mat-product": {
+ "c27-check-mat-lifestyle": {
   "widths": [
    640,
    1200
   ],
   "w": 1200,
-  "h": 1200,
+  "h": 822,
+  "ext": "webp"
+ },
+ "c27-check-mat-closeup": {
+  "widths": [
+   480,
+   660
+  ],
+  "w": 660,
+  "h": 1122,
   "ext": "webp"
  }
 }

@@ -18,6 +18,8 @@ ${kit.menuButton('Menu')}
 }
 
 export function footer({ brand, kit }) {
+  // brand.json `footer` mirrors ridgefieldtech.com's footer (Principal 2026-10-26); the older shop footer stays as the fallback.
+  if (brand.footer) return kit.configFooter({ cls: 'rf-foot', wrap: 'rf-wrap', mark: `<a class="rf-logo" href="https://ridgefieldtech.com/" aria-label="Ridgefield home">${mark}<span>RIDGEFIELD</span></a>` });
   return `<footer class="rf-foot"><div class="rf-wrap rf-foot-grid">
 <div><a class="rf-logo" href="${kit.href.home()}" aria-label="Ridgefield store">${mark}<span>RIDGEFIELD</span></a></div>
 <nav aria-label="Footer"><a href="${kit.href.shop()}">Capsule 01</a><a href="${kit.href.story()}">About</a></nav>

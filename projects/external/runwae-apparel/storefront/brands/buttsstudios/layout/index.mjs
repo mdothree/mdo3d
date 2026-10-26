@@ -35,6 +35,8 @@ ${kit.menuButton('Menu')}
 }
 
 export function footer({ brand, kit }) {
+  // brand.json `footer` mirrors buttsstudios.com's footer (Principal 2026-10-26); the older shop footer stays as the fallback.
+  if (brand.footer) return kit.configFooter({ cls: 'bs-foot', wrap: 'bs-wrap', mark: `<a class="bs-mark bs-mark--sm" href="https://buttsstudios.com/" aria-label="Butts Studios home">${C5}<span class="bs-word">Butts<br>Studios</span></a>` });
   return `<footer class="bs-foot"><div class="bs-wrap bs-foot-grid">
 <div><a class="bs-mark bs-mark--sm" href="${kit.href.home()}" aria-label="Butts Studios">${C5}<span class="bs-word">Butts<br>Studios</span></a><p class="bs-foot-tag">Made of Story.</p></div>
 <div><p class="bs-mono">Shop</p><a href="${kit.href.shop()}">Apparel</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${c27Href(kit)}">Collection 2027</a><a href="${kit.href.cart()}">Bag</a></div>

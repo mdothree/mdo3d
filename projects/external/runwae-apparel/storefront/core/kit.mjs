@@ -137,6 +137,30 @@ ${lead ? `<span class="seed-card-lead">${lead}</span>` : ''}<span class="seed-ca
   /** Gallery: every image of a product as captioned figures. */
   k.gallery = (p, { sizes = '(max-width: 820px) 100vw, 55vw', cls = 'seed-gallery' } = {}) => `<div class="${esc(cls)}">${(p.images ?? []).map((im, i) => k.figure(im, { sizes, eager: i === 0, alt: im.alt ?? `${p.name}, view ${i + 1}` })).join('')}</div>`;
 
+  // ---------- footer from brand.json `footer` (Principal 2026-10-26) ----------
+  // A shop footer mirrors its main site's footer: the same columns with absolute links back to the main site, and a
+  // Shop column of the shop's own links. Config: {line, brand_links, columns: [{title, links}], copyright, note};
+  // a link is {label, href} (absolute; external: true opens a new tab) or {label, shop: "<kit.href key>" | "page:<slug>"}.
+  // The core still appends the policy links and the main-site link after it (build.mjs).
+  k.footerLink = (l) => {
+    let href = l.href;
+    if (l.shop) {
+      if (l.shop.startsWith('page:')) href = `${root}${l.shop.slice(5)}.html`;
+      else if (k.href[l.shop] && l.shop !== 'product' && l.shop !== 'asset') href = k.href[l.shop]();
+      else throw new Error(`footer link "${l.label}": unknown shop page "${l.shop}"`);
+    }
+    if (!href) throw new Error(`footer link "${l.label}" has no href`);
+    return `<a href="${esc(href)}"${l.external ? ' target="_blank" rel="noopener"' : ''}>${esc(l.label)}</a>`;
+  };
+  k.configFooter = ({ cls = '', wrap = '', mark = '' } = {}) => {
+    const f = brand.footer;
+    if (!f) return '';
+    const cols = (f.columns ?? []).map((c) => `<nav class="seed-foot-col" aria-label="${esc(c.title)}"><p class="seed-foot-h">${esc(c.title)}</p>${(c.links ?? []).map(k.footerLink).join('')}</nav>`).join('');
+    return `<footer class="seed-foot${cls ? ` ${esc(cls)}` : ''}"><div class="${wrap ? `${esc(wrap)} ` : ''}seed-foot-grid">
+<div class="seed-foot-brand">${mark}${f.line ? `<p class="seed-foot-line">${esc(f.line)}</p>` : ''}${(f.brand_links ?? []).map(k.footerLink).join('')}</div>
+${cols}</div><div class="${wrap ? `${esc(wrap)} ` : ''}seed-foot-base"><span>© ${new Date().getUTCFullYear()} ${esc(f.copyright ?? brand.name)}</span>${f.note ? `<span class="seed-foot-note">${esc(f.note)}</span>` : ''}</div></footer>`;
+  };
+
   // ---------- shared page bodies (layouts wrap or replace these) ----------
   k.cartBody = ({ title = 'Your bag', emptyText = 'Your bag is empty.', shopLabel = 'Back to the shop' } = {}) => `<section class="seed-cart" data-cart aria-labelledby="cart-title">
 <h1 id="cart-title" class="seed-cart-title">${esc(title)}</h1>
