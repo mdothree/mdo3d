@@ -151,5 +151,7 @@ body:not(.page-home) .rf-foot{margin-top:96px}
 .rf-foot .seed-foot-col a:hover,.rf-foot .seed-foot-brand a:not(.rf-logo):hover{color:var(--c-ember)}
 .rf-foot .seed-foot-base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font:400 12px/1.5 var(--f-mono);color:var(--c-bone);opacity:.75;margin-top:40px}
 @media (max-width:1020px){.rf-foot .seed-foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rf-foot .seed-foot-brand{grid-column:1/-1}}
-.rf-foot .seed-mainsite,.rf-foot .seed-legal{max-width:1320px;margin:16px auto 0;padding:0 32px;font:400 12px/1.5 var(--f-mono)}
-@media (max-width:820px){.rf-foot .seed-mainsite,.rf-foot .seed-legal{padding:0 16px}}
+.rf-foot .seed-foot-legal{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:24px;padding-top:20px;border-top:1px solid var(--c-line);font-size:13px;color:var(--c-muted)}
+.rf-foot .seed-foot-legal .seed-mainsite,.rf-foot .seed-foot-legal .seed-legal{margin:0}
+.rf-foot .seed-foot-legal a{color:var(--c-muted)}
+.rf-foot .seed-foot-legal a:hover{color:var(--c-fg)}

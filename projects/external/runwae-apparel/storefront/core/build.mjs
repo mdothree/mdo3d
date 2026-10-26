@@ -72,6 +72,10 @@ ${fonts}<link rel="stylesheet" href="${root}base.css"><link rel="stylesheet" hre
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}`;
 }
 
+/** A footer may carry this marker (inside its own wrap) to place the main-site and policy links; else they go
+ *  right before </footer>. */
+export const LEGAL_SLOT = '<!--seed-legal-->';
+
 /** brand.json `main_site` {label, url}: the only link between a shop and its main site, rendered by the core in
  *  the footer (Principal 2026-10-14: "it shold only be footer link to get betweeen main site and shop for now").
  *  Shops that ARE their brand's main site leave it out. Headers and navs never carry it (a test checks). */
@@ -79,7 +83,7 @@ function withMainSite(footer, { brand }) {
   const m = brand.main_site;
   if (!m?.url) return footer;
   const link = `<p class="seed-mainsite"><a href="${esc(m.url)}">${esc(m.label ?? m.url)}</a></p>`;
-  const i = footer.lastIndexOf('</footer>');
+  const i = footer.includes(LEGAL_SLOT) ? footer.indexOf(LEGAL_SLOT) : footer.lastIndexOf('</footer>');
   return i < 0 ? footer + link : `${footer.slice(0, i)}${link}${footer.slice(i)}`;
 }
 
@@ -87,7 +91,7 @@ function withMainSite(footer, { brand }) {
  *  rendered by the core so no shop can ship without them (a test checks every page). */
 function withLegal(footer, { brand, kit }) {
   const nav = legalNav(brand, (id) => kit.href[id]());
-  const i = footer.lastIndexOf('</footer>');
+  const i = footer.includes(LEGAL_SLOT) ? footer.indexOf(LEGAL_SLOT) : footer.lastIndexOf('</footer>');
   return i < 0 ? footer + nav : `${footer.slice(0, i)}${nav}${footer.slice(i)}`;
 }
 

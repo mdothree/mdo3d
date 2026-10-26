@@ -43,8 +43,35 @@
   "exchangeLine": "Size exchanges within 14 days of delivery.",
   "checkoutOff": "Checkout opens when the shop does.",
   "notifyLabel": "Join the waitlist",
-  "c27Intro": "Lamps, power, air and seating for the desk and the room. Planned for 2027.",
-  "c27Note": "Every piece starts on the waitlist. When a piece opens for reservations or orders, the waitlist hears first. Images are concept renders; sizes and specs are still being set."
+  "c27Intro": "Lamps, power, air and seating. Planned for 2027.",
+  "c27Note": "Images are concept renders. Sizes, materials and specs are still being set; each product page marks what is confirmed and what is still to come. Every piece starts on the waitlist, and the waitlist hears first when a piece opens for reservations or orders.",
+  "c27Groups": [
+   [
+    "all",
+    "All"
+   ],
+   [
+    "light",
+    "Light"
+   ],
+   [
+    "power",
+    "Power"
+   ],
+   [
+    "air",
+    "Air"
+   ],
+   [
+    "desk",
+    "Desk"
+   ],
+   [
+    "room",
+    "Room"
+   ]
+  ],
+  "c27Headline": "For the desk and the room."
  },
  "shipping": {
   "flat_cents": null,
@@ -80,15 +107,19 @@
  "release_states": {
   "_note": "Labels and helper lines for release-managed items (catalog `release`; core/catalog.mjs RELEASE_COPY has the defaults). Change any word here; no code. {window} = the item's release.window, {limit} = its reserve_limit. Principal 2026-10-26: Order (in stock) / Pre-order (paid, ship window, checkout open) / Reserve (free, holds a place, not an order; capped by reserve_limit) / Waitlist (not taking reservations, or reservations full; reason shown).",
   "order": {
+   "tag": "In stock",
    "status": "In stock",
-   "button": "Add to bag"
+   "button": "Add to bag",
+   "helper": "In stock. The ship date shows at checkout."
   },
   "preorder": {
+   "tag": "Pre-order",
    "status": "Pre-order · ships {window}",
    "button": "Pre-order",
    "helper": "Paid now, made after the pre-order window closes. Ships {window}."
   },
   "reserve": {
+   "tag": "Reserve",
    "status": "Reserve · planned for {window}",
    "button": "Reserve",
    "helper": "Reserving holds your place. It isn't an order and you won't be charged.",
@@ -98,6 +129,7 @@
    "price_suffix": "· planned price"
   },
   "waitlist": {
+   "tag": "Waitlist",
    "status": "Waitlist · planned for {window}",
    "button": "Join the waitlist",
    "reason": "Not taking reservations yet.",

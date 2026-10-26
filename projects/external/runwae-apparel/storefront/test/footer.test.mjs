@@ -28,7 +28,7 @@ test('buttsstudios footer: Work / Studio / Shop / Contact like buttsstudios.com,
     assert.match(foot, /href="\/shop\/returns\.html">Returns</);
     assert.match(foot, /Made of story\. Since 2018\./);
     assert.match(foot, /target="_blank" rel="noopener">Instagram</);
-    assert.match(foot, /<nav class="seed-legal" aria-label="Policies">/, 'policy links still appended');
+    assert.match(foot, /<div class="bs-wrap seed-foot-legal"><p class="seed-mainsite">.*<nav class="seed-legal" aria-label="Policies">.*<\/nav><!--seed-legal--><\/div><\/footer>/s, 'main-site + policy links inside the footer wrap');
   }
 });
 

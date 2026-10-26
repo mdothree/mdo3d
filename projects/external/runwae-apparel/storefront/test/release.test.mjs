@@ -161,11 +161,22 @@ test('buttsstudios: Collection 2027 landing + product pages, waitlist forms, no 
     assert.match(main, /Concept render/, `${p.id}: renders captioned`);
     assert.doesNotMatch(main, /sketch|Design study/i, `${p.id}: no process sketches on the site`);
     assert.ok(priced.has(p.id), `${p.id}: priced`);
-    assert.match(main, /\$\d+\.00 · planned price/, `${p.id}: planned price`);
+    assert.match(main, /class="buy-price">\$\d+\.00<small>Planned price<\/small>/, `${p.id}: planned price in the state block`);
+    assert.equal((main.match(/class="buy" id="buy"/g) ?? []).length, 1, `${p.id}: one state block`);
+    assert.match(main, /data-tag-text>Waitlist · 2027</, `${p.id}: state tag`);
+    assert.match(main, /Not taking reservations yet\./, `${p.id}: waitlist reason`);
+    assert.match(main, /data-gallery/, `${p.id}: gallery`);
+    assert.equal((main.match(/>Concept render</g) ?? []).length, 1, `${p.id}: one Concept render tag`);
+    assert.equal((main.slice(main.indexOf('class="related"')).match(/class="card"/g) ?? []).length, 4, `${p.id}: 4 related pieces`);
+    assert.match(main, /No change-of-mind returns\./, `${p.id}: returns copy matches the policy`);
+    assert.doesNotMatch(main, /14-day returns|Example price|\$140/, `${p.id}: no prototype-only copy`);
     assert.doesNotMatch(`${p.name} ${p.id} ${main}`, /nexus|\bsoft (lamp|power|backup)\b/i, `${p.id}: no NEXUS/Soft names`);
     assert.doesNotMatch(main, /Notify me|Follow this piece|limited|few left|\.99/i, `${p.id}: copy rules`);
     assert.match(main, /Details coming/, `${p.id}: no invented specs`);
   }
+  assert.match(land, /data-filter>.*data-k="all".*data-k="light".*data-k="room"/s, 'filter bar');
+  assert.equal((land.match(/class="card" href=/g) ?? []).length, cat.length, 'one card per piece');
+  assert.match(land, /class="card-price">\$\d+\.00 <small>planned<\/small>/);
   const head = readFileSync(join(shop, 'index.html'), 'utf8');
   assert.match(head.slice(0, head.indexOf('<main')), />Apparel<\/a>.*>Collection 2027<\/a>/s, 'nav splits Apparel / Collection 2027');
   const data = JSON.parse(readFileSync(join(shop, 'catalog.js'), 'utf8').replace(/^window\.SEED = /, '').replace(/;\s*$/, ''));

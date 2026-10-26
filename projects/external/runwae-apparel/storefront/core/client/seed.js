@@ -142,9 +142,20 @@ function showFull(box) {
   if (!box || box.getAttribute('data-full') === '1') return;
   box.setAttribute('data-full', '1');
   var f = box.querySelector('form[data-notify]');
-  var st = box.querySelector('.seed-status'); if (st) st.textContent = box.getAttribute('data-full-status');
-  var b = f.querySelector('button'); if (b) b.textContent = box.getAttribute('data-full-button');
-  var l = f.querySelector('label'); if (l) l.textContent = box.getAttribute('data-full-helper');
+  var A = function (k) { return box.getAttribute('data-full-' + k) || ''; };
+  var tt = box.querySelector('[data-tag-text]');
+  if (tt) { tt.textContent = A('tag'); var tg = tt.closest('[data-state]'); if (tg) tg.setAttribute('data-state', 'waitlist'); }
+  else { var st = box.querySelector('.seed-status'); if (st) st.textContent = A('status'); }
+  var b = f.querySelector('button'); if (b) b.textContent = A('button');
+  var hp = box.querySelector('[data-helper]');
+  if (hp) { // state block layout: reason line + plain helper
+    hp.textContent = A('plain-helper');
+    var rs = box.querySelector('[data-reason]');
+    if (!rs) { rs = document.createElement('p'); rs.className = 'buy-reason'; rs.setAttribute('data-reason', ''); f.parentNode.insertBefore(rs, f); }
+    rs.textContent = A('reason');
+    var tm = box.querySelector('[data-terms]'); if (tm) tm.hidden = true;
+    var cs = box.querySelector('[data-consent]'); if (cs && cs.firstChild) cs.firstChild.nodeValue = A('consent') + ' ';
+  } else { var l = f.querySelector('label'); if (l) l.textContent = A('helper'); }
   var t = f.querySelector('.seed-notify-terms'); if (t) t.hidden = true;
   var c = f.querySelector('.seed-notify-consent'); if (c && c.firstChild) c.firstChild.nodeValue = box.getAttribute('data-full-consent') + ' ';
   f.setAttribute('data-list', 'waitlist'); f.setAttribute('data-done', box.getAttribute('data-full-done'));
@@ -169,7 +180,8 @@ function initNotify() {
       fetch(API + '/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ brand: SEED.brand.id, product: f.getAttribute('data-product'), list: f.getAttribute('data-list') || 'notify', email: email.value }) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
         .then(function (x) { say(msg, x.ok ? ((x.j.list === 'waitlist' && f.getAttribute('data-list') === 'reserve' && fullCopy(f, 'done')) || f.getAttribute('data-done') || "You're on the list. One email when it opens.") : (x.j.error || COPY.notifyOff));
-          if (x.ok && x.j.list === 'waitlist' && f.getAttribute('data-list') === 'reserve') showFull(f.closest('[data-release]')); if (x.ok) email.value = ''; })
+          if (x.ok && x.j.list === 'waitlist' && f.getAttribute('data-list') === 'reserve') showFull(f.closest('[data-release]'));
+          if (x.ok && f.hasAttribute('data-replace')) { var done = el('p', { text: msg.textContent }); done.className = 'buy-reason'; done.setAttribute('role', 'status'); f.parentNode.replaceChild(done, f); } if (x.ok) email.value = ''; })
         .catch(function () { say(msg, COPY.notifyOff); })
         .then(function () { btn.disabled = false; });
     });
@@ -263,5 +275,57 @@ function initLookup() {
   });
 }
 
-function init() { initColors(); initMenu(); initAdd(); if (document.querySelector('form[data-add]')) refreshAvailability(function () { document.querySelectorAll('form[data-add]').forEach(paintAvail); }); initNotify(); initCart(); initLookup(); paintCount(); }
+// ---------- gallery (data-gallery): thumbs, swipe track, dots, counter, arrow keys, zoom ----------
+function initGallery() {
+  var g = document.querySelector('[data-gallery]'); if (!g) return;
+  var track = g.querySelector('[data-gal-track]'); if (!track) return;
+  var thumbs = g.querySelectorAll('[data-gal-thumb]'), dots = g.querySelectorAll('[data-gal-dot]');
+  var view = g.querySelector('[data-gal-view]'), labels = view ? (view.getAttribute('data-labels') || '').split('|') : [];
+  var n = track.children.length;
+  var at = function () { return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); };
+  var go = function (i) { track.scrollTo({ left: i * track.clientWidth }); };
+  Array.prototype.forEach.call(thumbs, function (b) { b.addEventListener('click', function () { go(+b.getAttribute('data-gal-thumb')); }); });
+  track.addEventListener('scroll', function () {
+    var i = at();
+    Array.prototype.forEach.call(thumbs, function (b, j) { b.setAttribute('aria-current', String(i === j)); });
+    Array.prototype.forEach.call(dots, function (d, j) { d.setAttribute('aria-current', String(i === j)); });
+    if (view) view.textContent = (labels[i] || '') + ' · ' + (i + 1) + ' / ' + n;
+  }, { passive: true });
+  var zoom = document.querySelector('[data-zoom]');
+  var close = function () { if (zoom) zoom.removeAttribute('open'); };
+  document.addEventListener('keydown', function (e) {
+    if (zoom && zoom.hasAttribute('open')) { if (e.key === 'Escape') close(); return; }
+    if (/input|textarea|select/i.test((e.target && e.target.tagName) || '')) return;
+    if (e.key === 'ArrowRight') go(Math.min(at() + 1, n - 1));
+    if (e.key === 'ArrowLeft') go(Math.max(at() - 1, 0));
+  });
+  if (zoom) {
+    track.addEventListener('click', function (e) {
+      var fg = e.target.closest('figure'); if (!fg) return;
+      var im = zoom.querySelector('img'); im.src = fg.getAttribute('data-full'); im.alt = (fg.querySelector('img') || {}).alt || '';
+      zoom.setAttribute('open', '');
+    });
+    zoom.addEventListener('click', close);
+  }
+}
+// ---------- filter bar (data-filter): buttons data-k, cards data-group, count ----------
+function initFilter() {
+  var f = document.querySelector('[data-filter]'), grid = document.querySelector('[data-filter-grid]'); if (!f || !grid) return;
+  var count = document.querySelector('[data-filter-count]');
+  f.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    Array.prototype.forEach.call(f.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    var k = b.getAttribute('data-k'), n = 0;
+    Array.prototype.forEach.call(grid.children, function (c) { var on = k === 'all' || c.getAttribute('data-group') === k; c.hidden = !on; if (on) n++; });
+    if (count) count.textContent = n + ' ' + count.getAttribute(n === 1 ? 'data-one' : 'data-many');
+  });
+}
+// ---------- mobile action bar (data-mbar): shows once the state block (#buy) scrolls off the top ----------
+function initMbar() {
+  var bar = document.querySelector('[data-mbar]'), buy = document.getElementById('buy');
+  if (!bar || !buy || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (en) { bar.classList.toggle('show', !en[0].isIntersecting && en[0].boundingClientRect.top < 0); }).observe(buy);
+}
+
+function init() { initColors(); initMenu(); initAdd(); if (document.querySelector('form[data-add]')) refreshAvailability(function () { document.querySelectorAll('form[data-add]').forEach(paintAvail); }); initNotify(); initGallery(); initFilter(); initMbar(); initCart(); initLookup(); paintCount(); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

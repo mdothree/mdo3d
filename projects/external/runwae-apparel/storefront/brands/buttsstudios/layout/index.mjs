@@ -149,7 +149,9 @@ ${kit.figure('look-reader', { concept: true, caption: 'Plaid Flannel, in the stu
     };
   },
 
-  product({ kit }, p) {
+  product(ctx, p) {
+    const { kit } = ctx;
+    if (isC27(p) && p.release) return c27Product(ctx, p);
     const imgs = p.images ?? [];
     const media = imgs.length
       ? `<div class="bs-pdp-main">${fig(kit, imgs[0], { sizes: '(max-width: 820px) 100vw, 58vw', eager: true })}</div>
@@ -195,43 +197,109 @@ ${kit.figure('detail-neck', { concept: true, caption: 'Labels', sizes: '(max-wid
   extra: {
     'collection-2027'({ brand, kit, shown }) {
       const items = shown.filter(isC27);
-      const rows = items.map((p, i) => c27Row(kit, p, i));
-      if (rows.length > 4) rows.splice(4, 0, `<div class="c27-wide">${fig(kit, { file: 'c27-ed-studio', alt: 'Several Collection 2027 pieces together on a desk and floor in warm light', concept: true }, { sizes: '100vw' })}</div>`);
+      const groups = (brand.copy?.c27Groups ?? [['all', 'All']]).filter(([k]) => k === 'all' || items.some((p) => p.group === k));
+      const n = (x) => `${x} ${x === 1 ? 'piece' : 'pieces'}`;
       return {
         title: 'Collection 2027 | Butts Studios',
         description: brand.copy?.c27Intro ?? 'Collection 2027 from Butts Studios.',
         image: kit.imgData('c27-ed-hero').src,
-        body: `<section class="c27-hero">
-<div class="c27-hero-media">${fig(kit, { file: 'c27-ed-hero', alt: 'The Collection 2027 pieces lined up on a stone ledge over a checker mat, in late sun', concept: true }, { sizes: '100vw', eager: true })}</div>
-<div class="bs-wrap c27-hero-copy"><p class="bs-mono bs-eyebrow">Butts Studios · Collection 2027</p>
-<h1 class="bs-display bs-display--md">Collection 2027</h1>
-<p class="bs-lede">${kit.esc(brand.copy?.c27Intro ?? '')}</p>
-<p class="bs-mono">${String(items.length).padStart(2, '0')} pieces · concept renders</p></div>
+        body: `<div class="c27x"><div class="wrap">
+<section class="c-hero">
+<div class="c-hero-copy"><p class="t-label">Collection 2027 · ${n(items.length)}</p>
+<h1 class="t-display">${kit.esc(brand.copy?.c27Headline ?? 'Collection 2027')}</h1>
+<p class="t-lede">${kit.esc(brand.copy?.c27Intro ?? '')}</p></div>
+<figure class="c-hero-media">${kit.img('c27-ed-hero', { sizes: '(max-width: 860px) 100vw, 58vw', eager: true, alt: 'The Collection 2027 pieces lined up on a stone ledge over a checker rug, in late sun' })}<figcaption><span class="tag">Concept render</span></figcaption></figure>
 </section>
-<section class="bs-wrap c27-list" aria-label="Collection 2027 pieces">
-${rows.join('')}
-</section>
-<section class="bs-wrap c27-note"><p>${kit.esc(brand.copy?.c27Note ?? '')}</p><a class="bs-link" href="${kit.href.shop()}">Apparel <span aria-hidden="true">→</span></a></section>`,
+<div class="c-bar"><div class="c-filters" role="group" aria-label="Filter by type" data-filter>${groups.map(([k, l], i) => `<button type="button" data-k="${kit.esc(k)}" aria-pressed="${i === 0}">${kit.esc(l)}</button>`).join('')}</div>
+<p class="t-label" data-filter-count data-one="piece" data-many="pieces">${n(items.length)}</p></div>
+<div class="c-grid" data-filter-grid>${items.map((p) => c27Card(kit, p)).join('')}</div>
+<section class="c-note"><h2 class="t-h2">About these images</h2><p class="t-body">${kit.esc(brand.copy?.c27Note ?? '')}</p></section>
+</div></div>`,
       };
     },
   },
 };
 
-/** One Collection 2027 piece on its landing page: lifestyle photo first, the facts beside it. */
-function c27Row(kit, p, i) {
+const c27Price = (v) => (v.price_cents !== null ? `$${(v.price_cents / 100).toFixed(2)}` : '');
+const viewLabel = (im) => (/-lifestyle$/.test(im.file) ? 'In the room' : /-closeup$/.test(im.file) ? 'Close-up' : 'Product');
+
+/** Collection 2027 card: product image, the lifestyle image on hover/focus, state tag, No. / name / price / type. */
+function c27Card(kit, p) {
   const v = kit.view(p);
-  const life = p.images.find((im) => im.file.endsWith('-lifestyle')) ?? p.images[0];
-  const prod = p.images.find((im) => im.file.endsWith('-product'));
-  return `<article class="c27-row${i % 2 ? ' c27-row--flip' : ''}">
-<a class="c27-row-media" href="${kit.href.product(p)}">${fig(kit, life, { sizes: '(max-width: 820px) 100vw, 58vw' })}</a>
-<div class="c27-row-copy">
-<p class="bs-mono">No. ${kit.esc(p.no)} · ${kit.esc(p.type)} · ${kit.esc(p.colors?.[0]?.name ?? '')}</p>
-<h2 class="bs-h2"><a href="${kit.href.product(p)}">${kit.esc(p.name)}</a></h2>
-<p>${kit.esc(p.summary)}</p>
-<p class="c27-row-meta">${v.priceText ? `<span>${kit.esc(v.priceText)}</span>` : ''}<span class="seed-status seed-status--${kit.esc(v.release?.state ?? v.status)}">${kit.esc(v.label)}</span></p>
-${prod ? `<a class="c27-row-thumb" href="${kit.href.product(p)}">${kit.img(prod, { sizes: '160px', alt: '' })}</a>` : ''}
-<a class="bs-btn" href="${kit.href.product(p)}">View the piece</a>
-</div></article>`;
+  const r = v.release ?? {};
+  const a = p.images.find((im) => /-product$/.test(im.file)) ?? p.images[0];
+  const b = p.images.find((im) => im !== a && /-lifestyle$/.test(im.file)) ?? p.images.find((im) => im !== a);
+  const sizes = '(max-width: 860px) 50vw, (max-width: 1100px) 50vw, 33vw';
+  const price = c27Price(v);
+  return `<a class="card" href="${kit.href.product(p)}" data-group="${kit.esc(p.group ?? '')}">
+<span class="card-media"><span class="tag" data-state="${kit.esc(r.state ?? v.status)}"><i></i>${kit.esc([r.tag, r.window].filter(Boolean).join(' · ') || v.label)}</span>${kit.img(a, { sizes, alt: a.alt })}${b ? kit.img(b, { sizes, alt: '' }) : ''}</span>
+<span class="card-body"><span class="t-label card-no">No. ${kit.esc(p.no)}</span><span class="card-name">${kit.esc(p.name)}</span><span class="card-price">${price ? `${price} <small>planned</small>` : 'Price to be set'}</span><span class="card-type">${kit.esc([p.type, p.colors?.[0]?.name].filter(Boolean).join(' · '))}</span></span></a>`;
+}
+
+/** Collection 2027 product page (DESIGN_SPEC.md): gallery, one state block for the four states, details, related. */
+function c27Product({ brand, kit, shown }, p) {
+  const v = kit.view(p);
+  const r = v.release;
+  const imgs = p.images ?? [];
+  const tag = [r.tag, r.state === 'order' ? '' : r.window].filter(Boolean).join(' · ');
+  const price = c27Price(v);
+  const full = r.full ? ` data-limit="${r.limit}" data-full-tag="${kit.esc([r.full.tag, r.window].filter(Boolean).join(' · '))}" data-full-status="${kit.esc(r.full.status)}" data-full-button="${kit.esc(r.full.button)}" data-full-helper="${kit.esc(r.full.helper)}" data-full-plain-helper="${kit.esc(r.full.plainHelper)}" data-full-reason="${kit.esc(r.full.reason)}" data-full-done="${kit.esc(r.full.done)}" data-full-consent="${kit.esc(r.full.consent)}"` : '';
+  const action = v.canAdd
+    ? `<form class="seed-add" data-add data-product="${kit.esc(p.id)}" novalidate>${kit.swatches(p)}${kit.sizes(p)}<button class="btn seed-add-btn" type="submit">${kit.esc(r.button)}</button><p class="seed-msg" role="status" aria-live="polite"></p></form>`
+    : `<form class="seed-notify" data-notify data-replace data-product="${kit.esc(p.id)}" data-list="${kit.esc(r.list)}" data-done="${kit.esc(r.done)}" novalidate>
+<label class="sr-only" for="notify-${kit.esc(p.id)}">Email address</label><input id="notify-${kit.esc(p.id)}" type="email" name="email" autocomplete="email" placeholder="Email address" required><button class="btn" type="submit">${kit.esc(r.button)}</button>
+<p class="seed-msg buy-reason" role="status" aria-live="polite"></p></form>`;
+  const [design, ...rest] = p.details ?? [];
+  const pending = (t) => /^details coming\.?$/i.test(String(t).trim());
+  const pol = brand.policies ?? {};
+  const shipText = [brand.shipping?.note, 'No change-of-mind returns.', `Faulty or wrong items are replaced or refunded; report them within ${Number.isInteger(pol.defect_window_days) ? pol.defect_window_days : 30} days of delivery.`].filter(Boolean).join(' ');
+  const others = shown.filter((x) => isC27(x) && x.id !== p.id && x.release);
+  const related = [...others.filter((x) => x.group === p.group), ...others.filter((x) => x.group !== p.group)].slice(0, 4);
+  const count = shown.filter(isC27).length;
+  return {
+    body: `<div class="c27x"><div class="wrap">
+<nav class="crumb t-label" aria-label="Breadcrumb"><a href="${c27Href(kit)}">Collection 2027</a> / No. ${kit.esc(p.no)}</nav>
+<section class="pdp">
+<div class="gal" data-gallery>
+<div class="gal-thumbs">${imgs.map((im, i) => `<button type="button" data-gal-thumb="${i}" aria-current="${i === 0}" aria-label="View ${kit.esc(viewLabel(im).toLowerCase())}">${kit.img(im, { sizes: '72px', alt: '' })}</button>`).join('')}</div>
+<div><div class="gal-stage">
+<div class="gal-track" data-gal-track>${imgs.map((im, i) => `<figure data-i="${i}" data-full="${kit.esc(kit.imgData(im).src)}">${kit.img(im, { sizes: '(max-width: 860px) 100vw, 52vw', eager: i === 0, alt: im.alt })}</figure>`).join('')}</div>
+<div class="gal-meta"><span class="tag">Concept render</span><span class="gal-view tag" data-gal-view data-labels="${kit.esc(imgs.map(viewLabel).join('|'))}">${kit.esc(viewLabel(imgs[0]))} · 1 / ${imgs.length}</span></div>
+</div>
+<div class="gal-dots">${imgs.map((_, i) => `<i data-gal-dot="${i}" aria-current="${i === 0}"></i>`).join('')}</div></div>
+</div>
+<div class="panel">
+<div class="p-head"><p class="t-label">No. ${kit.esc(p.no)} · ${kit.esc(p.type)}</p>
+<h1 class="t-h1">${kit.esc(p.name)}</h1>
+<p class="t-lede">${kit.esc(p.summary)}</p>
+${p.colors?.[0] ? `<p class="swatch"><i class="sw-${kit.esc(p.colors[0].id)}" aria-hidden="true"></i>${kit.esc(p.colors[0].name)}</p>` : ''}</div>
+<div class="buy" id="buy" data-release="${kit.esc(p.id)}"${full}>
+<div class="buy-top"><div class="buy-price">${price ? `${price}<small>Planned price</small>` : `Price to be set<small>Shown before ${r.state === 'reserve' ? 'orders' : 'reservations'} open</small>`}</div><span class="tag" data-state="${kit.esc(r.state)}"><i></i><span data-tag-text>${kit.esc(tag)}</span></span></div>
+${r.reason ? `<p class="buy-reason" data-reason>${kit.esc(r.reason)}</p>` : ''}
+${action}
+${r.helper ? `<p class="buy-helper" data-helper>${kit.esc(r.helper)}</p>` : ''}
+${r.terms ? `<p class="buy-fine" data-terms>${kit.esc(r.terms)}</p>` : ''}
+${v.canAdd ? '' : `<p class="buy-fine" data-consent>${kit.esc(r.consent || 'We use your email only for this piece. Unsubscribe any time.')} <a href="${kit.href.privacy()}">Privacy</a></p>`}
+</div>
+<div class="acc">
+${design ? `<details open><summary>${kit.esc(design[0])}</summary><div class="acc-body"><p class="t-body">${kit.esc(design[1])}</p></div></details>` : ''}
+${rest.length ? `<details><summary>Details and dimensions</summary><div class="acc-body"><dl>${rest.map(([k, t]) => `<dt>${kit.esc(k)}</dt><dd>${pending(t) ? '<span class="pending">Details coming</span>' : kit.esc(t)}</dd>`).join('')}</dl></div></details>` : ''}
+<details><summary>Shipping and returns</summary><div class="acc-body"><p class="t-body">${kit.esc(shipText)} <a href="${kit.href.returns()}">Returns and pre-orders</a> · <a href="${kit.href.shipping()}">Shipping</a></p></div></details>
+</div>
+<div class="assure">
+<div><b>US shipping</b><span>Rate shown at checkout</span></div>
+<div><b>Faulty or wrong items</b><span>Replaced or refunded</span></div>
+<div><b>Questions</b><span>${kit.esc(pol.contact ?? '')}</span></div>
+</div>
+</div>
+</section>
+${related.length ? `<section class="related"><div class="related-head"><h2 class="t-h2">More from Collection 2027</h2><a class="t-label" href="${c27Href(kit)}">All ${count} pieces</a></div>
+<div class="c-grid">${related.map((x) => c27Card(kit, x)).join('')}</div></section>` : ''}
+</div>
+<div class="mbar" data-mbar><div><b>${kit.esc(p.name)}</b><span>${kit.esc(price ? `${price} planned · ${tag}` : tag)}</span></div><a class="btn" href="#buy">${kit.esc(r.button)}</a></div>
+<div class="zoom" data-zoom role="dialog" aria-label="Zoomed image"><img alt=""><button type="button" aria-label="Close">×</button></div>
+</div>`,
+  };
 }
 
 /** Collection 2027 band on the shop home and the apparel page: one wide lifestyle photo, links to its landing page. */

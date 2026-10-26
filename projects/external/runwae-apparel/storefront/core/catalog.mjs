@@ -150,12 +150,12 @@ const dropFor = (p, drops) => drops.find((d) => d.products.includes(p.id)) ?? nu
 /** Default release copy (every shop). A brand overrides any line in brand.json `release_states`.
  *  Placeholders: {window} = the item's release.window, {limit} = its reserve_limit, {priority_window} = reserve.priority_window. */
 export const RELEASE_COPY = Object.freeze({
-  order: { status: 'In stock', button: 'Add to bag', helper: '' },
-  preorder: { status: 'Pre-order · ships {window}', button: 'Pre-order', helper: 'Paid now, made after the pre-order window closes. Ships {window}.' },
-  reserve: { status: 'Reserve · planned for {window}', button: 'Reserve', helper: "Reserving holds your place. It isn't an order and you won't be charged.",
+  order: { tag: 'In stock', status: 'In stock', button: 'Add to bag', helper: 'In stock. The ship date shows at checkout.' },
+  preorder: { tag: 'Pre-order', status: 'Pre-order · ships {window}', button: 'Pre-order', helper: 'Paid now, made after the pre-order window closes. Ships {window}.' },
+  reserve: { tag: 'Reserve', status: 'Reserve · planned for {window}', button: 'Reserve', helper: "Reserving holds your place. It isn't an order and you won't be charged.",
     terms: 'Places are kept in the order they arrive. When orders open, everyone who reserved gets a {priority_window} head start by email before the public.',
     priority_window: '48-hour', done: "Your place is held. We'll email you before orders open to everyone.", consent: 'We use your email only for this reservation. Unsubscribe any time.', price_suffix: '· planned price' },
-  waitlist: { status: 'Waitlist · planned for {window}', button: 'Join the waitlist', reason: "Not taking reservations yet.", helper: "We'll email you when it's available to reserve or order.",
+  waitlist: { tag: 'Waitlist', status: 'Waitlist · planned for {window}', button: 'Join the waitlist', reason: "Not taking reservations yet.", helper: "We'll email you when it's available to reserve or order.",
     done: "You're on the waitlist. We'll email you when it's available to reserve or order.", consent: 'We use your email only for this waitlist. Unsubscribe any time.', price_suffix: '· planned price' },
   waitlist_full: { reason: 'All {limit} reservations are taken.' },
 });
@@ -179,10 +179,10 @@ export function productView(p, drops, now = new Date(), opts = {}) {
   const c = copy[st];
   const wl = copy.waitlist;
   v.release = { state: st, list: st === 'reserve' ? 'reserve' : 'waitlist', window: r.window, limit: Number.isInteger(r.reserve_limit) ? r.reserve_limit : null,
-    status: f(c.status), button: f(c.button), helper: f(c.helper), terms: f(c.terms), done: f(c.done), consent: f(c.consent),
+    tag: f(c.tag), status: f(c.status), button: f(c.button), helper: f(c.helper), terms: f(c.terms), done: f(c.done), consent: f(c.consent),
     reason: st === 'waitlist' ? (r.reason?.trim() || f(wl.reason)) : '',
     // reserve with a limit: the waitlist copy the page switches to when the server says the reservations are full
-    full: st === 'reserve' && Number.isInteger(r.reserve_limit) ? { status: f(wl.status), button: f(wl.button), helper: `${f(copy.waitlist_full.reason)} ${f(wl.helper)}`.trim(), done: f(wl.done), consent: f(wl.consent) } : null };
+    full: st === 'reserve' && Number.isInteger(r.reserve_limit) ? { tag: f(wl.tag), status: f(wl.status), reason: f(copy.waitlist_full.reason), plainHelper: f(wl.helper), button: f(wl.button), helper: `${f(copy.waitlist_full.reason)} ${f(wl.helper)}`.trim(), done: f(wl.done), consent: f(wl.consent) } : null };
   v.label = v.release.status || v.label;
   if (st === 'order' || st === 'preorder') {
     v.note = [v.release.helper, v.note].filter(Boolean).join(' ');

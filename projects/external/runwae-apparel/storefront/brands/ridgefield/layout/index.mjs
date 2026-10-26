@@ -126,7 +126,7 @@ ${kit.buyBox(p, { showStatus: false })}
     return {
       title: 'About | Ridgefield Store',
       body: `<section class="rf-wrap rf-about">${label('About')}<h1 class="rf-h1 rf-h1--md">Ridgefield</h1>
-<p class="rf-lede">Ridgefield works on technology assessment, design and development for systems that operate outside controlled conditions. Capsule 01 carries the same marks: the square, the mono type and the terrain line.</p>
+<p class="rf-lede">Ridgefield develops advanced technology for systems that have to perform in the field, from RF hardware and sensing to the software that runs them. Capsule 01 carries the same marks: the square, the mono type and the terrain line.</p>
 <p class="rf-lede">Specifications are published when confirmed with the maker.</p>
 </section>
 <section class="rf-wrap rf-about-fig">${kit.figure('field-walker', { concept: true, caption: 'Fig. 06 · Field', sizes: '(max-width: 820px) 100vw, 70vw', alt: 'A figure with a backpack walking along a ridge' })}</section>`,

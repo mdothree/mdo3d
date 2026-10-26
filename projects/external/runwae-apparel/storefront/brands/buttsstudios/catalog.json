@@ -397,7 +397,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "light"
   },
   {
    "id": "power-strip",
@@ -453,7 +454,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "power"
   },
   {
    "id": "desktop-power-backup",
@@ -509,7 +511,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "power"
   },
   {
    "id": "mini-pc-rack",
@@ -565,7 +568,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "desk"
   },
   {
    "id": "air-purifier",
@@ -621,7 +625,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "air"
   },
   {
    "id": "aura-diffuser",
@@ -677,7 +682,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "air"
   },
   {
    "id": "bloom-pot",
@@ -733,7 +739,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "room"
   },
   {
    "id": "boucle-stool",
@@ -789,7 +796,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "room"
   },
   {
    "id": "check-mat",
@@ -840,7 +848,8 @@
    "release": {
     "state": "waitlist",
     "window": "2027"
-   }
+   },
+   "group": "room"
   }
  ],
  "_note_collection_2027": "Collection 2027 (Principal 2026-10-26; names are placeholders until he picks, no NEXUS/Soft, colour is a variant; ids = slug of the name): home objects in the same shop, own collection. Images are concept renders (Butts_Studios_27_Individual_Images, Butts_Studios_Website/assets). No process sketches on the site (Principal 2026-10-26: 'leave those sketches out'), so Arc Lounge Chair and Axis Book Holder (sketch-only) are not listed. All concept-stage per PRODUCT_STATUS.md, so every piece starts on waitlist (not taking reservations yet); state per product in `release`. No specs beyond what the images show: 'Details coming.'"

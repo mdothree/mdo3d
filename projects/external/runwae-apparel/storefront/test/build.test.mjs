@@ -81,7 +81,7 @@ for (const id of BRANDS) {
     if (id !== 'glb') assert.doesNotMatch(all, /\btote\b|dad hat|ball cap|baseball cap|\bcap\b/i, 'caps/totes are banned outside GLB');
     assert.doesNotMatch(all, /third_party|04_third_party|internal_only/i);
     // Release-managed pieces may show a delegated planned price (Collection 2027, 2026-10-26), always labelled as planned.
-    assert.doesNotMatch(all.replace(/\$\d+\.\d{2} · planned price/g, ''), /\$\d/, 'no prices are set, so no dollar amounts render');
+    assert.doesNotMatch(all.replace(/\$\d+\.\d{2}(?: · | |<small>| <small>)planned(?: price)?/gi, ''), /\$\d/, 'no prices are set, so no dollar amounts render');
     assert.doesNotMatch(all, /\d(\.\d)? ?\(\d[\d.,]*k? reviews\)|★/i, 'no fake reviews');
     const assets = readdirSync(join(out, 'assets'));
     assert.ok(assets.every((a) => !/poison|pave|backpack-flap/i.test(a) && (id === 'glb' || !/tote|cap-/i.test(a))), assets.join(','));

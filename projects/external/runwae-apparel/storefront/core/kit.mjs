@@ -158,7 +158,7 @@ ${lead ? `<span class="seed-card-lead">${lead}</span>` : ''}<span class="seed-ca
     const cols = (f.columns ?? []).map((c) => `<nav class="seed-foot-col" aria-label="${esc(c.title)}"><p class="seed-foot-h">${esc(c.title)}</p>${(c.links ?? []).map(k.footerLink).join('')}</nav>`).join('');
     return `<footer class="seed-foot${cls ? ` ${esc(cls)}` : ''}"><div class="${wrap ? `${esc(wrap)} ` : ''}seed-foot-grid">
 <div class="seed-foot-brand">${mark}${f.line ? `<p class="seed-foot-line">${esc(f.line)}</p>` : ''}${(f.brand_links ?? []).map(k.footerLink).join('')}</div>
-${cols}</div><div class="${wrap ? `${esc(wrap)} ` : ''}seed-foot-base"><span>© ${new Date().getUTCFullYear()} ${esc(f.copyright ?? brand.name)}</span>${f.note ? `<span class="seed-foot-note">${esc(f.note)}</span>` : ''}</div></footer>`;
+${cols}</div><div class="${wrap ? `${esc(wrap)} ` : ''}seed-foot-base"><span>© ${new Date().getUTCFullYear()} ${esc(f.copyright ?? brand.name)}</span>${f.note ? `<span class="seed-foot-note">${esc(f.note)}</span>` : ''}</div><div class="${wrap ? `${esc(wrap)} ` : ''}seed-foot-legal"><!--seed-legal--></div></footer>`;
   };
 
   // ---------- shared page bodies (layouts wrap or replace these) ----------

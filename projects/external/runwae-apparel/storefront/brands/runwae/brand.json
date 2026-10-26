@@ -93,15 +93,19 @@
  "release_states": {
   "_note": "Labels and helper lines for release-managed items (catalog `release`: order | preorder | reserve | waitlist, optional reserve_limit). Off until a product carries `release`. Defaults: core/catalog.mjs RELEASE_COPY. {window} = the item's release.window, {limit} = its reserve_limit.",
   "order": {
+   "tag": "In stock",
    "status": "In stock",
-   "button": "Add to bag"
+   "button": "Add to bag",
+   "helper": "In stock. The ship date shows at checkout."
   },
   "preorder": {
+   "tag": "Pre-order",
    "status": "Pre-order · ships {window}",
    "button": "Pre-order",
    "helper": "Paid now, made after the pre-order window closes. Ships {window}."
   },
   "reserve": {
+   "tag": "Reserve",
    "status": "Reserve · planned for {window}",
    "button": "Reserve",
    "helper": "Reserving holds your place. It isn't an order and you won't be charged.",
@@ -111,6 +115,7 @@
    "price_suffix": "· planned price"
   },
   "waitlist": {
+   "tag": "Waitlist",
    "status": "Waitlist · planned for {window}",
    "button": "Join the waitlist",
    "reason": "Not taking reservations yet.",
