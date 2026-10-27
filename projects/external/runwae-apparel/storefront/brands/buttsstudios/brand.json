@@ -133,7 +133,7 @@
    "status": "Waitlist · planned for {window}",
    "button": "Join the waitlist",
    "reason": "Not taking reservations yet.",
-   "helper": "We'll email you when it's available to reserve or order.",
+   "helper": "Join the waitlist to help us decide what to make. We will email you when this piece is available.",
    "done": "You're on the waitlist. We'll email you when it's available to reserve or order.",
    "price_suffix": "· planned price"
   },

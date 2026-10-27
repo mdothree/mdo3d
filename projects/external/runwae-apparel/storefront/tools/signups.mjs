@@ -13,14 +13,15 @@ export const SIGNUP_COLUMNS = Object.freeze(['seq', 'at', 'brand', 'product', 'l
 const flag = (args, k) => { const i = args.indexOf(`--${k}`); return i > -1 ? args[i + 1] : undefined; };
 
 /** Filter + order rows (seq, then time). Pure. */
-export function selectSignups(rows, { brand, product, list } = {}) {
-  return rows.filter((r) => (!brand || r.brand === brand) && (!product || r.product === product) && (!list || (r.list ?? 'notify') === list))
+export function selectSignups(rows, { brand, product, list, includeTest = false } = {}) {
+  // Browser/API verification uses reserved example.invalid addresses, never real demand.
+  return rows.filter((r) => (includeTest || !String(r.email ?? '').toLowerCase().endsWith('@example.invalid')) && (!brand || r.brand === brand) && (!product || r.product === product) && (!list || (r.list ?? 'notify') === list))
     .sort((a, b) => (Number(a.seq) || 0) - (Number(b.seq) || 0) || String(a.at).localeCompare(String(b.at)));
 }
 
 export async function main(args = process.argv.slice(2), store = storeFrom()) {
   const cmd = args[0];
-  const rows = selectSignups(await store.all(), { brand: flag(args, 'brand'), product: flag(args, 'product'), list: flag(args, 'list') });
+  const rows = selectSignups(await store.all(), { brand: flag(args, 'brand'), product: flag(args, 'product'), list: flag(args, 'list'), includeTest: args.includes('--include-test') });
   if (cmd === 'export') {
     const csv = toCsv(rows.map((r) => ({ ...r, list: r.list ?? 'notify', reason: r.reason ?? '' })), SIGNUP_COLUMNS);
     const out = flag(args, 'out');
@@ -33,7 +34,7 @@ export async function main(args = process.argv.slice(2), store = storeFrom()) {
     for (const [k, v] of Object.entries(n)) console.log(`${k}  reserve ${v.reserve}  waitlist ${v.waitlist}  notify ${v.notify}`);
     return rows.length;
   }
-  console.error('usage: node tools/signups.mjs export|counts [--brand b] [--product p] [--list l] [--out file.csv]');
+  console.error('usage: node tools/signups.mjs export|counts [--brand b] [--product p] [--list l] [--out file.csv] [--include-test]');
   process.exitCode = 1;
   return 0;
 }

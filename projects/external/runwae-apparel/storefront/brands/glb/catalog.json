@@ -65,7 +65,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "curves-tee",
@@ -126,7 +131,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "curves-hoodie",
@@ -187,7 +197,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "icon-hoodie",
@@ -248,7 +263,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "curves-crewneck",
@@ -309,7 +329,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "logo-crew",
@@ -358,7 +383,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "chill-shorts",
@@ -411,7 +441,12 @@
      "To be confirmed with the maker."
     ]
    ],
-   "rights_hold": null
+   "rights_hold": null,
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   },
   {
    "id": "good-energy-tote",
@@ -459,7 +494,12 @@
      "To be confirmed with the maker."
     ]
    ],
-   "rights_hold": null
+   "rights_hold": null,
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Not taking orders or reservations yet."
+   }
   }
  ]
 }

@@ -164,7 +164,7 @@ test('buttsstudios: Collection 2027 landing + product pages, waitlist forms, no 
     assert.match(main, /class="buy-price">\$\d+\.00<small>Planned price<\/small>/, `${p.id}: planned price in the state block`);
     assert.equal((main.match(/class="buy" id="buy"/g) ?? []).length, 1, `${p.id}: one state block`);
     assert.match(main, /data-tag-text>Waitlist · 2027</, `${p.id}: state tag`);
-    assert.match(main, /Not taking reservations yet\./, `${p.id}: waitlist reason`);
+    assert.match(main, /Not taking orders or reservations yet\./, `${p.id}: waitlist reason`);
     assert.match(main, /data-gallery/, `${p.id}: gallery`);
     assert.equal((main.match(/>Concept render</g) ?? []).length, 1, `${p.id}: one Concept render tag`);
     assert.equal((main.slice(main.indexOf('class="related"')).match(/class="card"/g) ?? []).length, 4, `${p.id}: 4 related pieces`);

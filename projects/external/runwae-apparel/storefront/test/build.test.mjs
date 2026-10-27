@@ -98,7 +98,7 @@ test('concept renders are captioned as concepts', async () => {
   }
 });
 
-test('Butts Studios: approved scope only, tagline in sans, bag never purchasable, beanie present', async () => {
+test('Butts Studios: approved scope only, tagline in sans, bag waitlist only, beanie present', async () => {
   const out = await build('buttsstudios');
   const idx = readFileSync(join(out, 'index.html'), 'utf8');
   assert.match(idx, /<h1 class="bs-display">Made of Story\.<\/h1>/);
@@ -108,8 +108,9 @@ test('Butts Studios: approved scope only, tagline in sans, bag never purchasable
   assert.match(shop, /Rust/); assert.match(shop, /Black/);
   assert.doesNotMatch(shop, /button-up|backpack/i);
   const bag = readFileSync(join(out, 'products', 'studio-bag.html'), 'utf8');
-  assert.match(bag, /Not available/);
-  assert.doesNotMatch(bag, /data-add|data-notify/);
+  assert.match(bag, /Waitlist/);
+  assert.match(bag, /data-notify/);
+  assert.doesNotMatch(bag, /data-add/);
   assert.doesNotMatch(readFileSync(join(out, 'styles.css'), 'utf8'), /--f-display:(?:(?!sans-serif)[^;}])*\bserif\b/, 'no serif display face');
   const { catalog } = loadBrand('buttsstudios');
   assert.match(catalog.find((p) => p.id === 'plaid-flannel').summary, /No logo on the front/);
@@ -131,7 +132,7 @@ test('Runwae v4 home follows cbce9be5: photo hero, 01 Built on, 02 dark band, de
   const order = ['id="story"', 'What we believe', 'The art behind the clothes', 'class="rw4-row"', 'id="enter-t"'].map((k) => main.indexOf(k));
   assert.ok(order.every((i) => i > 0), order.join()); assert.deepEqual([...order].sort((x, y) => x - y), order, 'who -> belief -> art -> pieces -> enter the shop');
   for (const [id, n] of [['tlt-neighbor-hoodie', 'Luv Thy Neighbor Hoodie'], ['globe-hoodie', 'Globe Hoodie'], ['flannel', 'Flannel']]) assert.match(main, new RegExp(`class="rw5-worn[^"]*" href="products/${id}\\.html"><span>Worn as:</span> ${n}`), n);
-  assert.equal((main.slice(main.indexOf('class="rw4-row"')).match(/class="rw4-status">Not available</g) ?? []).length, 6, 'capsule statuses shown');
+  assert.equal((main.slice(main.indexOf('class="rw4-row"')).match(/class="rw4-status">Waitlist/g) ?? []).length, 6, 'every capsule piece shows waitlist');
   assert.match(idx.slice(0, idx.indexOf('<main')), /class="rw-shoplink" href="shop\.html">Shop</, 'Shop always visible in the header (outside the phone menu)');
   for (const w of ['Ideas', 'People', 'Places', 'Progress']) assert.match(main, new RegExp(`<li>${w}</li>`));
   for (const f of ['v4-label', 'v4-button', 'v4-embroidery', 'v4-globe-patch', 'v4-band']) assert.match(main, new RegExp(f));

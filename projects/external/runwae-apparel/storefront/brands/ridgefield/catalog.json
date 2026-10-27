@@ -60,7 +60,7 @@
    "release": {
     "state": "waitlist",
     "window": "a future release",
-    "reason": "Reservations are not open yet."
+    "reason": "Not taking orders or reservations yet."
    }
   },
   {
@@ -118,7 +118,7 @@
    "release": {
     "state": "waitlist",
     "window": "a future release",
-    "reason": "Reservations are not open yet."
+    "reason": "Not taking orders or reservations yet."
    }
   },
   {
@@ -163,7 +163,7 @@
    "release": {
     "state": "waitlist",
     "window": "a future release",
-    "reason": "Reservations are not open yet."
+    "reason": "Not taking orders or reservations yet."
    }
   },
   {
@@ -217,7 +217,7 @@
    "release": {
     "state": "waitlist",
     "window": "a future release",
-    "reason": "Reservations are not open yet."
+    "reason": "Not taking orders or reservations yet."
    }
   },
   {
@@ -271,7 +271,7 @@
    "release": {
     "state": "waitlist",
     "window": "a future release",
-    "reason": "Reservations are not open yet."
+    "reason": "Not taking orders or reservations yet."
    }
   },
   {
@@ -321,7 +321,7 @@
    "release": {
     "state": "waitlist",
     "window": "a future release",
-    "reason": "Reservations are not open yet."
+    "reason": "Not taking orders or reservations yet."
    }
   }
  ]
