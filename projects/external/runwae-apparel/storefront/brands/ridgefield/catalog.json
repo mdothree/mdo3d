@@ -56,7 +56,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "tee",
@@ -109,7 +114,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "beanie",
@@ -149,7 +159,12 @@
      "placement": "cuff",
      "size": "patch_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "windbreaker",
@@ -198,7 +213,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "flannel",
@@ -247,7 +267,12 @@
      "placement": "neck",
      "size": "label"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "ridgeline-pack",
@@ -292,7 +317,12 @@
      "placement": "front_panel",
      "size": "patch_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   }
  ]
 }

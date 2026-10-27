@@ -73,7 +73,12 @@
      "placement": "neck",
      "size": "label"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "contour-hoodie-black",
@@ -135,7 +140,12 @@
      "placement": "front_chest",
      "size": "chest_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "windbreaker",
@@ -207,7 +217,12 @@
      "placement": "neck",
      "size": "label"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "plaid-flannel",
@@ -265,7 +280,12 @@
      "placement": "neck",
      "size": "label"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "knit-beanie",
@@ -320,7 +340,12 @@
      "placement": "cuff",
      "size": "patch_medium"
     }
-   ]
+   ],
+   "release": {
+    "state": "waitlist",
+    "window": "a future release",
+    "reason": "Reservations are not open yet."
+   }
   },
   {
    "id": "studio-bag",
