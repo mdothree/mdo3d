@@ -119,3 +119,4 @@ build/
 # standalone repos (own GitHub remotes)
 projects/mdo3d/layoffleads/
 projects/mdo3d/promptsforbusiness/
+.keys/
