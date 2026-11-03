@@ -1,4 +1,5 @@
 import { firebaseConfig } from './config/firebase.js';
+import { settleDelivery } from './delivery.js';
 import {
   getAllNumbers,
   getLifePathMeaning,
@@ -165,6 +166,7 @@ async function deliverPremiumReading() {
   banner.className = 'premium-reading-block';
   banner.innerHTML = '<p>🔢 Channeling your full AI numerology reading...</p>';
   target.prepend(banner);
+  const forNumbers = currentNumbers; // the reading this delivery belongs to
   try {
     const res = await fetch(`${API_URL}/api/reading/generate`, {
       method: 'POST',
@@ -179,15 +181,17 @@ async function deliverPremiumReading() {
     });
     if (res.status === 402 || res.status === 403) {
       // The purchase on this device was used up or doesn't cover this reading.
-      entitlementRejected = true;
       banner.remove();
+      if (currentNumbers !== forNumbers) return;
+      entitlementRejected = true;
       showReading();
       return;
     }
     const data = await res.json();
     const r = data.reading || data;
     if (!r || !r.lifePathAnalysis) throw new Error('Empty reading');
-    window.PremiumEntitlement?.consume();
+    // A superseded reading (inputs changed or cleared while it loaded) must not spend the local credit.
+    if (!settleDelivery({ isCurrent: () => currentNumbers === forNumbers, banner, consume: () => window.PremiumEntitlement?.consume() })) return;
 
     const section = (title, body) => body ? `<div class="reading-section"><h3>${title}</h3>${body}</div>` : '';
     const list = (arr) => Array.isArray(arr) && arr.length ? `<ul>${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
