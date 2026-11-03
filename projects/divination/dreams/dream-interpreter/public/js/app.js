@@ -10,6 +10,7 @@ import { ShareImageGenerator } from '../../../shared/ui-components/ShareImageGen
 import { apiClient } from './config/api.js';
 import { firebaseConfig } from './config/firebase.js';
 import { authService } from './services/authService.js';
+import { addEntry, removeEntry } from './journal-store.js';
 
 class DreamInterpreterApp {
     constructor() {
@@ -42,6 +43,12 @@ class DreamInterpreterApp {
         this.updateCharCount();
         this.loadSymbolDatabase();
         this.displayJournal();
+        // Another tab changed the journal: show its version instead of keeping a stale copy.
+        window.addEventListener('storage', (e) => {
+            if (e.key !== 'dreamJournal' && e.key !== null) return;
+            this.dreamJournal = this.loadJournal();
+            this.displayJournal();
+        });
 
         // DIV-HEALTH-CORS: the diagnostic /health ping is cross-origin to the
         // Vercel API and fails CORS with no functional effect on the free loop.
@@ -514,8 +521,11 @@ class DreamInterpreterApp {
             interpretation: this.lastInterpretation || ''
         };
         
-        this.dreamJournal.unshift(entry);
-        const saved = this.saveJournal();
+        // Read-modify-write against live storage so a stale tab can't overwrite other tabs' entries.
+        const res = addEntry(localStorage, entry, this.dreamJournal);
+        this.dreamJournal = res.list;
+        const saved = res.saved;
+        if (!saved) this.journalStorageBlocked = true;
         this.displayJournal();
         // HID-011: only say "saved" when it was; otherwise explain why and what still works.
         this.journalNotice(saved
@@ -596,8 +606,9 @@ class DreamInterpreterApp {
 
     deleteJournalEntry(id) {
         if (confirm('Are you sure you want to delete this dream?')) {
-            this.dreamJournal = this.dreamJournal.filter(entry => entry.id !== id);
-            if (!this.saveJournal()) this.journalNotice('Removed for now, but this browser is blocking storage, so the change can\u2019t be kept.');
+            const res = removeEntry(localStorage, id, this.dreamJournal);
+            this.dreamJournal = res.list;
+            if (!res.saved) this.journalNotice('Removed for now, but this browser is blocking storage, so the change can\u2019t be kept.');
             this.displayJournal();
         }
     }

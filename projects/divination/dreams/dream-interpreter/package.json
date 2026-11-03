@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx http-server public -p 8083 -o",
+    "test": "node --test tests/*.test.mjs",
     "build": "echo 'Static site - no build needed'",
     "deploy": "vercel --prod"
   },
