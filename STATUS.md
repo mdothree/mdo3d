@@ -7,6 +7,9 @@ Seat: [`Organization/Chief-of-Staff/README.md`](Organization/Chief-of-Staff/READ
 · decisions: `~/latarence/docs/DECISIONS.md` · what is broken for real users: `~/latarence/coordination/BROKEN_NOW.md`
 · open calls: `~/jarvis/JARVIS QUESTIONS.md` · access steps: `~/latarence/coordination/SETUP_TODO.md`.*
 
+## Current state front (added 2026-11-03; the blocks below are dated snapshots, not live state)
+Everything below this line is historical (2026-10-16 and 2026-10-17). For current work read, in this order: the fix and deploy ledger (live view `~/grok/live/FIX_AND_DEPLOY_LEDGER.md`; CLI `python3 ~/latarence/coordination/fixledger/fixledger.py list --product mdo3d`), the Latarence working index `~/latarence/COS_WORKING_DOC.md`, and the non-AHL launch board `~/latarence/coordination/launch/NON_AHL_SITES_2026-11-02.md`. `~/latarence/coordination/MANUAL_SHIP_QUEUE.md` is labelled stale in the working index; do not route shipping readers there.
+
 ## 2026-10-17 (updated 2026-10-17 19:30 ET)
 Pointers only. Rows: `~/latarence/coordination/P0_SPRINT_2026-10-16.md` ("DEPLOY lane MDO3 + Butts Studios" section); ships: `~/latarence/coordination/MANUAL_SHIP_QUEUE.md` (S5).
 - **Shipped live (09:12–09:41Z, each cache-busted verify PASS, rollback `.prev`):** all redesigns: Rigor 8/8, Ronna + 5 sub-sites, mdo3d.com hub, names, mdothree + json, divination (oracle/tarot/dreams/numerology), no-italics 10/10 (astrology, iching, runes, pastlife, mdothree tools, layoffleads, promptsforbusiness); **Frontier Ledger** (blacklabb-frontier-ledger.vercel.app, checkout TEST-only); Daily AI Toll refund page (XE-11); Runwae L3 legal + payout guard (XE-6). Prophet 1.0.5 + DocScan 1.0.3 desktop releases (mac+linux) live 17:49Z.
