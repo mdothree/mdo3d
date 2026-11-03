@@ -88,18 +88,20 @@ export class SocialShare {
     document.body.appendChild(modal);
 
     // Close handlers
+    // FS-ORG-10: every close path (overlay, close button, Escape) removes the modal AND the document listener.
+    let escHandler;
     const closeModal = () => {
       modal.remove();
+      document.removeEventListener('keydown', escHandler);
     };
 
     modal.querySelector('.share-modal-overlay').addEventListener('click', closeModal);
     modal.querySelector('.share-modal-close').addEventListener('click', closeModal);
     
     // ESC key to close
-    const escHandler = (e) => {
+    escHandler = (e) => {
       if (e.key === 'Escape') {
         closeModal();
-        document.removeEventListener('keydown', escHandler);
       }
     };
     document.addEventListener('keydown', escHandler);
@@ -207,9 +209,10 @@ export class SocialShare {
 
     // Copy link button
     const copyBtn = modal.querySelector('#share-copy-btn');
-    copyBtn.addEventListener('click', () => {
-      this.copyToClipboard(data.url);
-      copyBtn.textContent = '✓ Copied!';
+    copyBtn.addEventListener('click', async () => {
+      // FS-ORG-09: confirm only after the copy actually succeeded; report failure honestly.
+      const ok = await this.copyToClipboard(data.url);
+      copyBtn.textContent = ok ? '✓ Copied!' : 'Copy failed: select and copy the link';
       setTimeout(() => {
         copyBtn.textContent = '📋 Copy Link';
       }, 2000);
@@ -272,9 +275,14 @@ export class SocialShare {
       textarea.style.opacity = '0';
       document.body.appendChild(textarea);
       textarea.select();
-      document.execCommand('copy');
+      let ok = false;
+      try {
+        ok = document.execCommand('copy') === true;
+      } catch (e) {
+        ok = false;
+      }
       document.body.removeChild(textarea);
-      return true;
+      return ok;
     }
   }
 
