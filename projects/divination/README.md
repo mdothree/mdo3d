@@ -59,10 +59,10 @@ Each tool has its own Firebase project for isolation:
 
 ## Deployment
 
-Each tool is deployed to its own Firebase Hosting site:
+Each tool is deployed to its own Firebase Hosting site. Run from the MDO3D repository root:
 
 ```bash
-cd divination/tarot
+cd projects/divination/tarot
 firebase deploy --project tarot-mdo3d
 ```
 
