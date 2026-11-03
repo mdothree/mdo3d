@@ -57,9 +57,12 @@ export class CardRenderer3D {
     this.addParticles();
 
     // Event listeners
-    window.addEventListener('resize', () => this.onWindowResize());
-    this.container.addEventListener('mousemove', (e) => this.onMouseMove(e));
-    this.container.addEventListener('click', (e) => this.onCardClick(e));
+    this._onResize = () => this.onWindowResize();
+    this._onMouseMove = (e) => this.onMouseMove(e);
+    this._onClick = (e) => this.onCardClick(e);
+    window.addEventListener('resize', this._onResize);
+    this.container.addEventListener('mousemove', this._onMouseMove);
+    this.container.addEventListener('click', this._onClick);
 
     // Start animation loop
     this.animate();
@@ -100,6 +103,8 @@ export class CardRenderer3D {
     const spacing = 0.3;
     const totalWidth = (cardWidth + spacing) * cardCount - spacing;
     const startX = -totalWidth / 2 + cardWidth / 2;
+    this._spreadWidth = totalWidth;
+    this.fitCameraToSpread();
 
     for (let i = 0; i < cardCount; i++) {
       const card = this.createCard(cardWidth, cardHeight, labels[i]);
@@ -302,14 +307,25 @@ export class CardRenderer3D {
     animate();
   }
 
+  // Pull the camera back so the whole spread is inside the frustum on narrow canvases
+  // (cards outside the view cannot be clicked, which blocked reveal completion).
+  fitCameraToSpread() {
+    if (!this._spreadWidth || !this.camera) return;
+    const halfFov = (this.camera.fov * Math.PI) / 360;
+    const needed = (this._spreadWidth / 2 + 0.4) / (Math.tan(halfFov) * (this.camera.aspect || 1));
+    this.camera.position.z = Math.max(5, needed);
+  }
+
   onWindowResize() {
     this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    this.fitCameraToSpread();
   }
 
   animate() {
-    requestAnimationFrame(() => this.animate());
+    if (this._destroyed) return;
+    this._raf = requestAnimationFrame(() => this.animate());
     // HID-005: no ambient drift (particles, camera sway) under prefers-reduced-motion; the scene still renders.
     const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -330,8 +346,15 @@ export class CardRenderer3D {
   }
 
   destroy() {
-    window.removeEventListener('resize', () => this.onWindowResize());
-    this.container.removeChild(this.renderer.domElement);
+    this._destroyed = true;
+    if (this._raf) cancelAnimationFrame(this._raf);
+    window.removeEventListener('resize', this._onResize);
+    this.container.removeEventListener('mousemove', this._onMouseMove);
+    this.container.removeEventListener('click', this._onClick);
+    this.reset();
+    if (this.renderer.domElement.parentNode === this.container) {
+      this.container.removeChild(this.renderer.domElement);
+    }
     this.renderer.dispose();
   }
 
