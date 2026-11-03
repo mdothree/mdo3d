@@ -1,5 +1,8 @@
 # Status
 
+## Current state front (added 2026-11-03; everything below is a dated snapshot, not live state)
+For current work read, in this order: the fix and deploy ledger (live view `~/grok/live/FIX_AND_DEPLOY_LEDGER.md`; CLI `python3 ~/latarence/coordination/fixledger/fixledger.py list --product mdo3d`), the Latarence working index `~/latarence/COS_WORKING_DOC.md`, and the non-AHL launch board `~/latarence/coordination/launch/NON_AHL_SITES_2026-11-02.md`. `~/latarence/coordination/MANUAL_SHIP_QUEUE.md` is labelled stale in the working index; do not route shipping readers there.
+
 ## Summary (2026-10-12)
 
 - **Live URLs** (curl 2026-10-12): https://mdo3d.com **200** · guidance.mdo3d.com **200** · oracle / dreams / tarot / numerology / astrology / fengshui / pastlife / iching / runes .mdo3d.com **200** (all 9) · https://runwae.com **307** (→ /welcome.html) · https://rigor.design **200** · resume.rigor.design **200** · api.rigor.design **200** (but it serves the landing HTML; `/health` **404**) · https://mdothree.com **200**

@@ -10,6 +10,8 @@ Two things flip from here:
 2. **How often does each run?** the `cadence` line per loop (the source of truth; Apply
    reconciles the scheduler).
 
+> **Dormancy note (2026-11-03, ORG-11).** Keep three things apart; "enabled" below means only the first. (1) *Declared intent* is this file (`master_enabled: true`, eight loops `enabled: true`). (2) *Scheduler registration* is a host cron/launchd entry; as of the last check (see "Effective state today" below) nothing is scheduled. (3) *Last completed run* is the newest non-setup row in `LEDGER.md`, which today is only the 2026-07-12 setup row. So these loops are specified, not running. That may be deliberate dormancy; no host scheduler was inspected for this note. Owner: the MDO3 CoS. Activation criterion: Apply has been run and `LEDGER.md` shows a run row for the loop; until then do not describe them as an always-on operator.
+
 ---
 
 ## The switches (source of truth)
