@@ -155,6 +155,7 @@ function _traverse(node, tokens, results) {
       if (!Array.isArray(node)) break;
       const len  = node.length;
       const step = token.step ?? 1;
+      if (step === 0) break; // CQA-JSONPATH-ZERO-STEP: a zero step never advances (RFC 9535: empty selection)
       let start  = token.start ?? (step > 0 ? 0 : len - 1);
       let end    = token.end   ?? (step > 0 ? len : -len - 1);
       if (start < 0) start = Math.max(len + start, 0);
