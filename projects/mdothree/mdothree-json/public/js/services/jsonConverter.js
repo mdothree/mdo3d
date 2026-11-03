@@ -96,7 +96,10 @@ export function jsonToCSV(data, delimiter = ',') {
 // ─── JSON → XML ─────────────────────────────────────────────────────────────
 export function jsonToXML(obj, rootName = 'root', options = {}, indent = 0) {
   const { xmlDecl = true } = options;
-  const xml = toXMLNode(obj, rootName, indent);
+  // CQA-JSON-XML-ARRAY-ROOT: a top-level array would emit sibling <root> elements (no single root); wrap its items.
+  const xml = Array.isArray(obj)
+    ? toXMLNode(Object.fromEntries(obj.length ? [['item', obj]] : []), rootName, indent)
+    : toXMLNode(obj, rootName, indent);
   return xmlDecl ? `<?xml version="1.0" encoding="UTF-8"?>\n${xml}` : xml;
 }
 
