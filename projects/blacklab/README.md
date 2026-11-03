@@ -30,8 +30,9 @@ Monitor and track the rapid developments in transformative technologies that wil
 
 ```
 blacklab/
-├── blacklab-landing/    # Main landing page (blacklabb.com)
-├── blacklab-quantum/    # Quantum tech tracker
-├── blacklab-space/      # Space industry tracker
-└── blacklab-neuro/      # Neurotech tracker
+├── landing/                      # Main landing page (blacklabb.com)
+└── research/
+    ├── blacklab-quantum/         # Quantum tech tracker
+    ├── blacklab-space/           # Space industry tracker
+    └── blacklab-neuro/           # Neurotech tracker
 ```
