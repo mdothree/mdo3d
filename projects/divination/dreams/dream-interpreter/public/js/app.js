@@ -11,6 +11,17 @@ import { apiClient } from './config/api.js';
 import { firebaseConfig } from './config/firebase.js';
 import { authService } from './services/authService.js';
 
+// Full saved entry behind a native <details>, so the whole dream and any saved interpretation can be
+// reopened from the journal (CQA-DREAMS-JOURNAL-READBACK).
+const journalEntryFullHtml = (entry) => {
+    const dream = String(entry.dream ?? '');
+    if (dream.length <= 150 && !entry.interpretation) return '';
+    return `<details class="entry-full"><summary>Open full entry</summary>`
+        + `<p class="entry-dream-full">${escapeHtml(dream)}</p>`
+        + (entry.interpretation ? `<h5>Interpretation</h5><p class="entry-interpretation">${escapeHtml(entry.interpretation)}</p>` : '')
+        + `</details>`;
+};
+
 class DreamInterpreterApp {
     constructor() {
         this.api = apiClient;
@@ -577,6 +588,7 @@ class DreamInterpreterApp {
                     <button class="delete-entry" data-id="${escapeHtml(entry.id)}">Delete</button>
                 </div>
                 <p class="entry-dream">${escapeHtml(entry.dream.substring(0, 150))}${entry.dream.length > 150 ? '…' : ''}</p>
+                ${journalEntryFullHtml(entry)}
                 <div class="entry-symbols">
                     ${entry.symbols.map(s => `<span class="symbol-tag">${escapeHtml(s)}</span>`).join('')}
                 </div>
