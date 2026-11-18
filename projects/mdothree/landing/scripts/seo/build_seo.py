@@ -51,7 +51,7 @@ SITES = [
        tagline='Everyday utility tools for files, text and code',
        tagline2='PDF · Image · QR · JSON · Hash · Time · Color · Text · Password',
        category='UtilitiesApplication', home=True, pages=[
-    P('index.html', 'Browser Utility Tools — mdothree',
+    P('index.html', 'Browser Utility Tools — mdothree by MDO3D',
       'Simple browser tools for everyday tasks: merge and split PDFs, resize images, format JSON, generate hashes, QR codes, and passwords, and convert timestamps.',
       ['online tools', 'browser tools', 'pdf tools', 'image tools', 'json formatter', 'hash generator', 'qr code generator', 'password generator'], app=False),
     P('pro.html', 'Upgrade to Pro — mdothree',
