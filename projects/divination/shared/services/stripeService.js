@@ -32,7 +32,6 @@ export class StripeService {
     }
     try {
       const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
         line_items: [
           {
             price_data: {
@@ -164,7 +163,6 @@ export class StripeService {
   }) {
     try {
       const session = await this.stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
         line_items: [
           {
             price: priceId,
