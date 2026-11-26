@@ -38,7 +38,7 @@
   "fontsHref": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&family=Playfair+Display:wght@600;700&display=swap"
  },
  "copy": {
-  "preview": "Preview · not open for orders",
+  "preview": "",
   "notifyIntro": "One email when it opens.",
   "exchangeLine": "Size exchanges within 14 days of delivery.",
   "checkoutOff": "Checkout opens when the shop does."
@@ -116,7 +116,7 @@
   },
   "waitlist": {
    "tag": "Waitlist",
-   "status": "Waitlist · planned for {window}",
+   "status": "Waitlist",
    "button": "Join the waitlist",
    "reason": "Not taking reservations yet.",
    "helper": "Join the waitlist to help us decide what to make. We will email you when this piece is available.",
