@@ -36,7 +36,7 @@
   "_spec": "~/buttsstudios/design/DESIGN_DIRECTIONS.md: square + X, stroke 12 of 100, X into the corners; Archivo Bold stacked Butts / Studios. Inline SVG copied from ~/buttsstudios/site/index.html."
  },
  "copy": {
-  "preview": "Preview · not open for orders",
+  "preview": "",
   "eyebrow": "Butts Studios · Apparel",
   "intro": "Books, comics, channels, cartoons and art. The clothes come from the same studio.",
   "notifyIntro": "One email when it opens. Nothing else.",
@@ -130,7 +130,7 @@
   },
   "waitlist": {
    "tag": "Waitlist",
-   "status": "Waitlist · planned for {window}",
+   "status": "Waitlist",
    "button": "Join the waitlist",
    "reason": "Not taking reservations yet.",
    "helper": "Join the waitlist to help us decide what to make. We will email you when this piece is available.",

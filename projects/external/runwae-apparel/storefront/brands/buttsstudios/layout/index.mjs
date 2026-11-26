@@ -42,7 +42,7 @@ export function footer({ brand, kit }) {
 <div><p class="bs-mono">Shop</p><a href="${kit.href.shop()}">Apparel</a><a href="${kit.href.shop()}#accessories">Accessories</a><a href="${c27Href(kit)}">Collection 2027</a><a href="${kit.href.cart()}">Bag</a></div>
 <div><p class="bs-mono">Help</p><a href="${kit.href.orders()}">Order lookup</a><a href="${kit.href.policies()}">Shipping and exchanges</a><a href="mailto:${kit.esc(brand.policies.contact)}">${kit.esc(brand.policies.contact)}</a></div>
 <div><p class="bs-mono">Studio</p><a href="${kit.href.story()}">Story</a></div>
-</div><div class="bs-wrap"><p class="bs-fine">© ${new Date().getUTCFullYear()} Butts Studios. Images on this preview are concept renders.</p></div></footer>`;
+</div><div class="bs-wrap"><p class="bs-fine">© ${new Date().getUTCFullYear()} Butts Studios. Images are concept renders.</p></div></footer>`;
 }
 
 const bagPlaceholder = (kit, p) => `<a class="bs-card bs-card--concept" href="${kit.href.product(p)}">
@@ -279,7 +279,7 @@ ${r.reason ? `<p class="buy-reason" data-reason>${kit.esc(r.reason)}</p>` : ''}
 ${action}
 ${r.helper ? `<p class="buy-helper" data-helper>${kit.esc(r.helper)}</p>` : ''}
 ${r.terms ? `<p class="buy-fine" data-terms>${kit.esc(r.terms)}</p>` : ''}
-${v.canAdd ? '' : `<p class="buy-fine" data-consent>${kit.esc(r.consent || 'We use your email only for this piece. Unsubscribe any time.')} <a href="${kit.href.privacy()}">Privacy</a></p>`}
+${v.canAdd ? '' : `<p class="buy-fine" data-consent>${kit.esc(r.consent || 'By joining you agree to get email about this piece. We use your email only for that, never sell it, and you can unsubscribe any time.')} <a href="${kit.href.privacy()}">Privacy</a></p>`}
 </div>
 <div class="acc">
 ${design ? `<details open><summary>${kit.esc(design[0])}</summary><div class="acc-body"><p class="t-body">${kit.esc(design[1])}</p></div></details>` : ''}
