@@ -55,7 +55,7 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
 
   // ---------- a11y + chrome ----------
   k.skipLink = () => '<a class="seed-skip" href="#main">Skip to content</a>';
-  k.previewBanner = () => (brand.mode === 'preview' ? `<div class="seed-preview" role="note">${esc(k.copy('preview', 'Preview: not open for orders'))}</div>` : '');
+  k.previewBanner = () => { const t = k.copy('preview', 'Preview: not open for orders'); return brand.mode === 'preview' && t ? `<div class="seed-preview" role="note">${esc(t)}</div>` : ''; }; // brand.copy.preview = '' turns the banner off
   k.menuButton = (label = 'Menu') => `<button class="seed-menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-toggle><span class="seed-menu-icon" aria-hidden="true"></span><span class="seed-menu-label">${esc(label)}</span></button>`;
   k.bagLink = (label = 'Bag') => `<a class="seed-bag" href="${k.href.cart()}">${esc(label)} <span class="seed-bag-count" data-bag-count>0</span><span class="sr-only"> items</span></a>`;
   k.sr = (t) => `<span class="sr-only">${esc(t)}</span>`;
@@ -83,7 +83,7 @@ export function createKit({ brand, manifest = {}, root = '', views = {} }) {
   k.notifyForm = (p, { label = k.copy('notifyLabel', 'Join the waitlist'), intro, list = 'notify', done = '', consent = '', after = '' } = {}) => `<form class="seed-notify seed-notify--${esc(list)}" data-notify data-product="${esc(p.id)}" data-list="${esc(list)}"${done ? ` data-done="${esc(done)}"` : ''} novalidate>
 <label for="notify-${esc(p.id)}">${esc(intro ?? k.copy('notifyIntro', 'Get one email when it opens.'))}</label>
 <div class="seed-notify-row"><input id="notify-${esc(p.id)}" type="email" name="email" autocomplete="email" placeholder="you@example.com" required><button type="submit">${esc(label)}</button></div>
-${after ? `<p class="seed-fine seed-notify-terms">${esc(after)}</p>` : ''}<p class="seed-fine seed-notify-consent">${esc(consent || 'We use your email only to tell you when this piece opens. Unsubscribe any time.')} <a href="${k.href.privacy()}">Privacy</a></p>
+${after ? `<p class="seed-fine seed-notify-terms">${esc(after)}</p>` : ''}<p class="seed-fine seed-notify-consent">${esc(consent || 'By joining you agree to get email about this piece. We use your email only for that, never sell it, and you can unsubscribe any time.')} <a href="${k.href.privacy()}">Privacy</a></p>
 <p class="seed-msg" role="status" aria-live="polite"></p></form>`;
 
   /** Per-colour galleries: images carry `color` (a colour id). Returns one block per colour, each wrapped in

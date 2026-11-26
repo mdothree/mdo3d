@@ -154,9 +154,9 @@ export const RELEASE_COPY = Object.freeze({
   preorder: { tag: 'Pre-order', status: 'Pre-order · ships {window}', button: 'Pre-order', helper: 'Paid now, made after the pre-order window closes. Ships {window}.' },
   reserve: { tag: 'Reserve', status: 'Reserve · planned for {window}', button: 'Reserve', helper: "Reserving holds your place. It isn't an order and you won't be charged.",
     terms: 'Places are kept in the order they arrive. When orders open, everyone who reserved gets a {priority_window} head start by email before the public.',
-    priority_window: '48-hour', done: "Your place is held. We'll email you before orders open to everyone.", consent: 'We use your email only for this reservation. Unsubscribe any time.', price_suffix: '· planned price' },
+    priority_window: '48-hour', done: "Your place is held. We'll email you before orders open to everyone.", consent: 'By reserving you agree to get email about this piece. We use your email only for that, never sell it, and you can unsubscribe any time.', price_suffix: '· planned price' },
   waitlist: { tag: 'Waitlist', status: 'Waitlist · planned for {window}', button: 'Join the waitlist', reason: "Not taking reservations yet.", helper: "We'll email you when it's available to reserve or order.",
-    done: "You're on the waitlist. We'll email you when it's available to reserve or order.", consent: 'We use your email only for this waitlist. Unsubscribe any time.', price_suffix: '· planned price' },
+    done: "You're on the waitlist. We'll email you when it's available to reserve or order.", consent: 'By joining you agree to get email about this piece. We use your email only for that, never sell it, and you can unsubscribe any time.', price_suffix: '· planned price' },
   waitlist_full: { reason: 'All {limit} reservations are taken.' },
 });
 /** brand.json release_states merged over the defaults, one state at a time. */
@@ -246,7 +246,7 @@ function productViewBase(p, drops, now) {
       v.notify = p.restock_notify !== false;
       break;
     default:
-      v.label = 'Coming soon';
+      v.label = 'Waitlist';
   }
   if (!['available', 'preorder'].includes(status)) v.priceText = price_cents === null ? '' : v.priceText;
   return v;

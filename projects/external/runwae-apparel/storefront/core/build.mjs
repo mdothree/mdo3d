@@ -240,9 +240,9 @@ h1{font:500 clamp(42px,8vw,84px)/1 ${f.display};letter-spacing:.04em;margin:0}.b
 @media (max-width:640px){.shots{grid-template-columns:minmax(0,1fr)}}`);
   const og = shots.length ? `https://${brand.domain}/photos/1.jpg` : null;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(brand.name)}: the first drop is coming</title>
-<meta name="description" content="${esc(brand.name)}, ${esc(brand.endorsement ?? '')}. ${esc(h.sub ?? '')} The first drop is coming soon.">
-<meta property="og:title" content="${esc(brand.name)}"><meta property="og:description" content="The first drop is coming.">
+<title>${esc(brand.name)}: join the waitlist</title>
+<meta name="description" content="${esc(brand.name)}, ${esc(brand.endorsement ?? '')}. ${esc(h.sub ?? '')} Join the waitlist.">
+<meta property="og:title" content="${esc(brand.name)}"><meta property="og:description" content="Join the waitlist.">
 <link rel="canonical" href="https://${esc(brand.domain)}/"><meta property="og:type" content="website"><meta property="og:url" content="https://${esc(brand.domain)}/">
 ${og ? `<meta property="og:image" content="${og}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${og}">` : ''}
 <meta name="twitter:title" content="${esc(brand.name)}"><meta name="theme-color" content="${esc(c.bg ?? '#ffffff')}">
